@@ -209,7 +209,7 @@ function resetRoundValues()
     paused = false
 
     --[[ Copper ]]--
-    currentCopper = 0
+    currentCopper = 180000
 
     --[[ Set Round upgrade levels to initial Science upgrade levels ]]--
     upgrade_round_attack_damage_level = upgrade_science_attack_damage_level
@@ -278,11 +278,7 @@ function resetRoundValues()
     gameplay_silverBuffer = 0
 
     --[[ Enemy properties ]]--
-    enemySpawnRate = 0.6 + math.floor(gameplay_wave / 15) * 0.1
-    pendingEnemies = 6 + math.floor(gameplay_wave / 15) * 3
-    enemiesKilledThisWave = 0
-    enemy_value_health = (1.95 + (gameplay_wave^2.25 / 20)) * (1.2^(math.floor(gameplay_wave / 100)))
-    enemy_value_attack_damage = (1 + (gameplay_wave^2 / 40) - 0.024) * (1.1^math.floor(gameplay_wave / 100))
+    updateEnemyStats(gameplay_difficulty, gameplay_wave)
     enemy_value_attack_speed = 1
 
     --[[ Timers ]]--

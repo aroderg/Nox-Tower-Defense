@@ -4,18 +4,22 @@ function createKillParticle(x, y, origin)
     killParticle.y = y
     killParticle.angle = love.math.random(0, 2 * math.pi * 10000) / 10000
     killParticle.origin = origin
-    if killParticle.origin == "basic" then
-        killParticle.speed = love.math.random(15, 30)
-        killParticle.fadeTime = 0.5
-    elseif killParticle.origin == "sentry" then
-        killParticle.speed = love.math.random(25, 50)
-        killParticle.fadeTime = 1.5
-    elseif killParticle.origin == "centurion" then
-        killParticle.speed = love.math.random(40, 80)
-        killParticle.fadeTime = 3
-    else
-        killParticle.fadeTime = 0
-    end
+    local particleSpeed = {
+        ["basic"] = {15, 30},
+        ["tank"] = {18, 36},
+        ["swift"] = {12, 24},
+        ["sentry"] = {25, 50},
+        ["centurion"] = {30, 60}
+        }
+    local fadeTimes = {
+        ["basic"] = 0.5,
+        ["tank"] = 0.7,
+        ["swift"] = 0.7,
+        ["sentry"] = 1.5,
+        ["centurion"] = 2.5
+        }
+    killParticle.speed = math.random(particleSpeed[origin][1], particleSpeed[origin][2])
+    killParticle.fadeTime = fadeTimes[origin]
     killParticle.timer_fade = 0
     table.insert(particles, killParticle)
 end
@@ -37,6 +41,10 @@ function renderParticles()
         love.graphics.setColor(1, 1, 1, 1-v.timer_fade/v.fadeTime)
         if v.origin == "basic" then
             love.graphics.draw(img_particle_kill_enemy_basic, v.x - 4, v.y - 4)
+        elseif v.origin == "tank" then
+            love.graphics.draw(img_particle_kill_enemy_tank, v.x - 5, v.y - 5)
+        elseif v.origin == "swift" then
+            love.graphics.draw(img_particle_kill_enemy_swift, v.x - 3, v.y - 3)
         elseif v.origin == "sentry" then
             love.graphics.draw(img_particle_kill_enemy_sentry, v.x - 6, v.y - 6)
         elseif v.origin == "centurion" then

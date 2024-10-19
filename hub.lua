@@ -73,6 +73,14 @@ function inHub_visual()
             love.graphics.printf(string.format("Damage Resistance: %.2f%%", tower_value_resistance), 810, 560, 300, "center")
             love.graphics.printf(string.format("Shield Cooldown: %.2fs", tower_value_shield_cooldown), 810, 590, 300, "center")
             love.graphics.printf(string.format("Shield Duration: %.2fs", tower_value_shield_duration), 810, 620, 300, "center")
+            love.graphics.setFont(font_ViraSansBold28)
+            love.graphics.printf(string.format("Level %s", levelNames[gameplay_difficulty]), 810, 740, 300, "center")
+            if gameplay_difficulty > 1 then
+                love.graphics.draw(img_button_arrowLeft, 840, 746)
+            end
+            if gameplay_difficulty < 4 then
+                love.graphics.draw(img_button_arrowRight, 1056, 746)
+            end
             love.graphics.setColor(0.1, 0.15, 0.5, 1)
             love.graphics.rectangle("fill", 860, 900, 200, 80, 4, 4)
             love.graphics.setColor(0.3, 0.75, 0.85, 1)
@@ -456,6 +464,12 @@ function inHub_mouse(x, y)
                 gameOver = false
                 paused = false
                 gameSpeed = 1
+            end
+            if x >= 840 and x <= 864 and y >= 746 and y <= 770 and gameplay_difficulty > 1 then
+                gameplay_difficulty = gameplay_difficulty - 1
+                
+            elseif x >= 1056 and x <= 1080 and y >= 746 and y <= 770 and gameplay_difficulty < 4 then
+                gameplay_difficulty = gameplay_difficulty + 1
             end
 
         elseif hubSection == "Science" then

@@ -256,19 +256,33 @@ function upgradeMenu_mouse(x, y)
 
             if upgrade_unlock_resistance and upgrade_unlock_shield and upgrade_unlock_meteor then
                 --[[ Meteor Amount ]]--
-                if x >= 547 and x <= 627 and y >= 853 and y <= 907 then
+                if x >= 547 and x <= 627 and y >= 993 and y <= 1047 then
                     if currentCopper >= upgrade_round_meteor_amount_cost and upgrade_round_meteor_amount_level < 6 then
                         currentCopper = currentCopper - upgrade_round_meteor_amount_cost
                         upgrade_round_meteor_amount_level = upgrade_round_meteor_amount_level + 1
-                        upgrade_round_meteor_amount_cost = math.floor((12 * (upgrade_round_meteor_amount_level - upgrade_science_meteor_amount_level))^2 + 56)
+                        upgrade_round_meteor_amount_cost = math.floor((12 * ((upgrade_round_meteor_amount_level - upgrade_science_meteor_amount_level) + 1))^2 + 56)
                         tower_value_meteor_amount = math.min(upgrade_round_meteor_amount_level - 1, 5)
+                        local offset = 0
+                        if tower_value_meteor_amount > 1 then
+                            offset = -1/2 * math.pi + meteors[1].angle
+                        end
+                        meteorInitialAngles = {(0 * (2 * math.pi) / tower_value_meteor_amount) - 0.5 * math.pi,
+                            (1 * (2 * math.pi) / tower_value_meteor_amount) - 0.5 * math.pi,
+                            (2 * (2 * math.pi) / tower_value_meteor_amount) - 0.5 * math.pi,
+                            (3 * (2 * math.pi) / tower_value_meteor_amount) - 0.5 * math.pi,
+                            (4 * (2 * math.pi) / tower_value_meteor_amount) - 0.5 * math.pi
+                        }
+                        meteors = {}
+                        for i=1,tower_value_meteor_amount do
+                            createMeteor(meteorInitialAngles[i] + offset)
+                        end
                     end
                 end
                 --[[ Meteor RPM ]]--
-                if x >= 867 and x <= 947 and y >= 923 and y <= 977 then
-                    if currentCopper >= upgrade_round_shieldDuration_cost and upgrade_round_shieldDuration_level < 111 then
+                if x >= 867 and x <= 947 and y >= 853 and y <= 907 then
+                    if currentCopper >= upgrade_round_meteor_RPM_cost and upgrade_round_meteor_RPM_level < 40 then
                         currentCopper = currentCopper - upgrade_round_meteor_RPM_cost
-                        upgrade_round_RPM_level = upgrade_round_meteor_RPM_level + 1
+                        upgrade_round_meteor_RPM_level = upgrade_round_meteor_RPM_level + 1
                         upgrade_round_meteor_RPM_cost = math.floor(4 * ((upgrade_round_meteor_RPM_level - upgrade_science_meteor_RPM_level)^2) + 16)
                         tower_value_meteor_RPM = math.min(0.15 * upgrade_round_meteor_RPM_level + 0.25, 6.25)
                     end

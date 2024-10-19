@@ -16,6 +16,7 @@ function love.load()
     function assetReload()
         --[[ Reload all images ]]--
         img_background = love.graphics.newImage("assets/background.png")
+        img_background_stellar = love.graphics.newImage("assets/background_stellar.png")
         img_currency_copper = love.graphics.newImage("assets/currency_copper.png")
         img_currency_silver = love.graphics.newImage("assets/currency_silver.png")
         img_currency_gold = love.graphics.newImage("assets/currency_gold.png")
@@ -26,6 +27,8 @@ function love.load()
         img_tower_main_shielded = love.graphics.newImage("assets/tower_main_shielded.png")
         img_tower_projectile = love.graphics.newImage("assets/tower_projectile.png")
         img_enemy_basic = love.graphics.newImage("assets/enemy_basic.png")
+        img_enemy_tank = love.graphics.newImage("assets/enemy_tank.png")
+        img_enemy_swift = love.graphics.newImage("assets/enemy_swift.png")
         img_enemy_sentry = love.graphics.newImage("assets/enemy_sentry.png")
         img_enemy_centurion = love.graphics.newImage("assets/enemy_centurion.png")
         img_icon_enemy_health = love.graphics.newImage("assets/icon_enemy_health.png")
@@ -33,6 +36,8 @@ function love.load()
         img_icon_player_attack = love.graphics.newImage("assets/icon_player_attack.png")
         img_particle_collapse = love.graphics.newImage("assets/particle_collapse.png")
         img_particle_kill_enemy_basic = love.graphics.newImage("assets/particle_kill_enemy_basic.png")
+        img_particle_kill_enemy_tank = love.graphics.newImage("assets/particle_kill_enemy_tank.png")
+        img_particle_kill_enemy_swift = love.graphics.newImage("assets/particle_kill_enemy_swift.png")
         img_particle_kill_enemy_sentry = love.graphics.newImage("assets/particle_kill_enemy_sentry.png")
         img_particle_kill_enemy_centurion = love.graphics.newImage("assets/particle_kill_enemy_centurion.png")
         img_button_pause = love.graphics.newImage("assets/button_pause.png")
@@ -51,12 +56,17 @@ function love.load()
     font_Afacad28 = love.graphics.newFont("assets/fonts/Afacad Flux/AfacadFlux-Regular.ttf", 28)
     font_AfacadBold20 = love.graphics.newFont("assets/fonts/Afacad Flux/AfacadFlux-Bold.ttf", 20)
     font_AfacadBold24 = love.graphics.newFont("assets/fonts/Afacad Flux/AfacadFlux-Bold.ttf", 24)
+    font_AfacadBold28 = love.graphics.newFont("assets/fonts/Afacad Flux/AfacadFlux-Bold.ttf", 28)
     font_AfacadBold32 = love.graphics.newFont("assets/fonts/Afacad Flux/AfacadFlux-Bold.ttf", 32)
     font_AfacadBold48 = love.graphics.newFont("assets/fonts/Afacad Flux/AfacadFlux-Bold.ttf", 48)
+    font_ViraSansBold20 = love.graphics.newFont("assets/fonts/Fira Sans/FiraSans-Bold.ttf", 20)
+    font_ViraSansBold28 = love.graphics.newFont("assets/fonts/Fira Sans/FiraSans-Bold.ttf", 28)
     love.graphics.setLineStyle("rough")
     numberShortenings = {"K", "M", "B", "T"}
     settings_particleMultiplierNames = {"None", "Minimal", "Reduced", "Normal", "Rich", "Fancy", "Fabulous", "Stormful"}
     settings_particleMultipliers = {0, 0.25, 0.75, 1, 1.5, 2, 3, 5}
+    levelNames = {"0", "α", "β", "γ"}
+    gameplay_difficulty = 1
     assetReload()
     loadGame()
     resetRoundValues()
@@ -135,23 +145,31 @@ function createProjectile(x, y, angle, speed)
         end
         projectile.x = x
         projectile.y = y
-        if closestEnemy.type == "basic" then
-            projectile.angle = math.atan2(closestEnemy.y - 540 + 12, closestEnemy.x - 960 + 12)
-        elseif closestEnemy.type == "sentry" then
-            projectile.angle = math.atan2(closestEnemy.y - 540 + 24, closestEnemy.x - 960 + 24)
-        elseif closestEnemy.type == "centurion" then
-            projectile.angle = math.atan2(closestEnemy.y - 540 + 32, closestEnemy.x - 960 + 32)
-        end
+        local offsets = {
+            ["basic"] = 10,
+            ["tank"] = 16,
+            ["swift"] = 8,
+            ["sentry"] = 22,
+            ["centurion"] = 30,
+            }
+        projectile.angle = math.atan2(closestEnemy.y - 540 + offsets[closestEnemy.type], closestEnemy.x - 960 + offsets[closestEnemy.type])
         projectile.speed = speed
         table.insert(projectilesOnField, projectile)
     end
 end
 
-function createEnemy(x, y, hp, speed)
+function createEnemy(hp, speed, attackSpeed)
     enemy = {}
     --[[ Make the enemy of basic, Sentry or Centurion type depending on wave and whether the enemy is last in the wave ]]--
+    local typeChoose = love.math.random(0, 10000) / 100
     if pendingEnemies ~= 0 then
-        enemy.type = "basic"
+        if typeChoose <= enemy_spawnPercentage_tank then
+            enemy.type = "tank"
+        elseif typeChoose > enemy_spawnPercentage_tank and typeChoose <= (enemy_spawnPercentage_tank + enemy_spawnPercentage_swift) then
+            enemy.type = "swift"
+        elseif typeChoose > (enemy_spawnPercentage_tank + enemy_spawnPercentage_swift) then
+            enemy.type = "basic"
+        end
     end
 
     if gameplay_wave % 10 == 0 and gameplay_wave % 100 ~= 0 and pendingEnemies == 1 then
@@ -161,75 +179,88 @@ function createEnemy(x, y, hp, speed)
     if gameplay_wave % 100 == 0 and pendingEnemies == 1 then
         enemy.type = "centurion"
     end
-    enemy.x = x
-    enemy.y = y
 
     if enemy.type == "basic" then
         enemy.maxHP = hp
         enemy.currentHP = enemy.maxHP
+        enemy.attackSpeed = attackSpeed
+        enemy.speed = speed
+
+    elseif enemy.type == "tank" then
+        enemy.maxHP = hp * 3
+        enemy.currentHP = enemy.maxHP
+        enemy.attackSpeed = attackSpeed
+        enemy.speed = speed * 0.8
+
+    elseif enemy.type == "swift" then
+        enemy.maxHP = hp * 0.75
+        enemy.currentHP = enemy.maxHP
+        enemy.attackSpeed = attackSpeed * 1.5
+        enemy.speed = speed * 2
         
     elseif enemy.type == "sentry" then
         enemy.maxHP = hp * (10 + math.floor((gameplay_wave - 10) / 10) * 2.5)
         enemy.currentHP = enemy.maxHP
+        enemy.attackSpeed = attackSpeed * 3
         sentryAlive = true
         sentryMaxHP = enemy.maxHP
         sentryCurrentHP = enemy.maxHP
+        enemy.speed = speed * 0.6
 
     elseif enemy.type == "centurion" then
         enemy.maxHP = hp * 256
         enemy.currentHP = enemy.maxHP
+        enemy.attackSpeed = attackSpeed * 5
         centurionAlive = true
         centurionMaxHP = enemy.maxHP
         centurionCurrentHP = enemy.maxHP
+        enemy.speed = speed * 0.5
     end
 
+    --[[ Set offsets to be half of the enemy's width/height ]]--
+    local offsets = {
+                    ["basic"] = 12,
+                    ["tank"] = 18,
+                    ["swift"] = 10,
+                    ["sentry"] = 24,
+                    ["centurion"] = 32,
+            }
+    local spawnproofRange = {
+                    ["basic"] = 400,
+                    ["tank"] = 400,
+                    ["swift"] = 400,
+                    ["sentry"] = 500,
+                    ["centurion"] = 500,
+            }
+
     --[[ Spawn an enemy if their position from the tower is further than the specified value, otherwise reroll ]]--
-    if enemy.type == "basic" then
-        while math.dist(enemy.x + 12, enemy.y + 12, 960, 540) <= 400 do
-            enemy.x = love.math.random(-2, 1899)
-            enemy.y = love.math.random(-2, 1059)
-            print(math.dist(enemy.x + 12, enemy.y + 12, 960, 540))
-            if math.dist(enemy.x + 12, enemy.y + 12, 960, 540) > 400 then
-                break
-            end
-        end
-
-    elseif enemy.type == "sentry" then
-        while math.dist(enemy.x + 24, enemy.y + 24, 960, 540) <= 500 do
-            enemy.x = love.math.random(-2, 1899)
-            enemy.y = love.math.random(-2, 1059)
-            print(math.dist(enemy.x + 24, enemy.y + 24, 960, 540))
-            if math.dist(enemy.x + 24, enemy.y + 24, 960, 540) > 500 then
-                break
-            end
-        end
-
-    elseif enemy.type == "centurion" then
-        while math.dist(enemy.x + 32, enemy.y + 32, 960, 540) <= 500 do
-            enemy.x = love.math.random(-2, 1899)
-            enemy.y = love.math.random(-2, 1059)
-            print(math.dist(enemy.x + 32, enemy.y + 32, 960, 540))
-            if math.dist(enemy.x + 32, enemy.y + 32, 960, 540) > 500 then
-                break
-            end
+    enemy.x = love.math.random(-2, 1918 - offsets[enemy.type])
+    enemy.y = love.math.random(-2, 1078 - offsets[enemy.type])
+    while math.dist(enemy.x + offsets[enemy.type], enemy.y + offsets[enemy.type], 960, 540) <= 400 do
+        enemy.x = love.math.random(-2, 1918 - offsets[enemy.type])
+        enemy.y = love.math.random(-2, 1078 - offsets[enemy.type])
+        print(math.dist(enemy.x + offsets[enemy.type], enemy.y + offsets[enemy.type], 960, 540))
+        if math.dist(enemy.x + offsets[enemy.type], enemy.y + offsets[enemy.type], 960, 540) > 400 then
+            break
         end
     end
     enemy.timer_untilAttack = 0
-    enemy.speed = speed
     table.insert(enemiesOnField, enemy)
 end
 
 function findClosestEnemyInRange()
     --[[ Find the closest enemy within the tower range, returns nil if no enemies are within the tower range ]]--
     distanceToClosestEnemy = math.huge
+    local offsets = {
+        ["basic"] = 12,
+        ["tank"] = 18,
+        ["swift"] = 10,
+        ["sentry"] = 24,
+        ["centurion"] = 32,
+        }
+
     for i,v in ipairs(enemiesOnField) do
-        if v.type == "basic" then
-            distanceToEnemy = math.dist(960, 540, v.x + 12, v.y + 12)
-        elseif v.type == "sentry" then
-            distanceToEnemy = math.dist(960, 540, v.x + 24, v.y + 24)
-        elseif v.type == "centurion" then
-            distanceToEnemy = math.dist(960, 540, v.x + 32, v.y + 32)
-        end
+        distanceToEnemy = math.dist(960, 540, v.x + offsets[v.type], v.y + offsets[v.type])
         if distanceToEnemy < tower_value_range then
             if distanceToEnemy < distanceToClosestEnemy then
                 distanceToClosestEnemy = distanceToEnemy
@@ -280,8 +311,15 @@ function skipWave(wavesSkipped)
 end
 
 function killEnemy(x, y, type, copperDrop, silverDrop, goldDrop, particles)
+    local offsets = {
+        ["basic"] = 10,
+        ["tank"] = 16,
+        ["swift"] = 8,
+        ["sentry"] = 22,
+        ["centurion"] = 30,
+        }
     for i=1,particles or 0 do
-        createKillParticle(type == "basic" and x + 10 or type == "sentry" and x + 22 or type == "centurion" and x + 30, type == "basic" and y + 10 or type == "sentry" and y + 22 or type == "centurion" and y + 30, type)
+        createKillParticle(x + offsets[type], y + offsets[type], type)
     end
 
     gameplay_copperBuffer = gameplay_copperBuffer + (gameplay_copperBonus % 1) * copperDrop
@@ -307,10 +345,34 @@ function killEnemy(x, y, type, copperDrop, silverDrop, goldDrop, particles)
     enemiesKilledThisWave = enemiesKilledThisWave + 1
 end
 
+function updateEnemyStats(difficulty, wave)
+    if difficulty == 1 then --[[ Set stats for Level 0 enemies ]]--
+        enemySpawnRate = 0.6 + math.floor(wave / 15) * 0.1
+        pendingEnemies = 6 + math.floor(wave / 15) * 3
+        enemy_value_health = (1.95 + (wave^2.25 / 20)) * (1.2^(math.floor(wave / 100)))
+        enemy_value_attack_damage = (1 + (wave^2 / 40) - 0.024) * (1.1^math.floor(wave / 100))
+        enemy_value_speed = 60
+        enemy_spawnPercentage_tank = math.min(math.floor(math.log(wave^2, 10) * 100) / 100, 4)
+        enemy_spawnPercentage_swift = math.min(math.floor(math.log(wave^3, 10) * 100) / 1000, 6)
+    elseif difficulty == 2 then --[[ Set stats for Level α enemies ]]--
+        enemySpawnRate = 0.9 + math.floor(wave / 15) * 0.15
+        pendingEnemies = 8 + math.floor(wave / 15) * 4
+        enemy_value_health = (148.95 + wave^2 + (wave^3 / 20)) * (1.22^(math.floor(wave / 100)))
+        enemy_value_attack_damage = (23.95 + wave + (wave^2.4 / 20)) * (1.11^math.floor(wave / 100))
+        enemy_value_speed = 66
+        enemy_spawnPercentage_tank = math.min(math.floor((math.log(wave^2, 10))^0.75 * 100) / 100, 6)
+        enemy_spawnPercentage_swift = math.min(math.floor(math.log(wave^3.75, 10) * 100) / 100, 8)
+    end
+    enemyWaveCap = pendingEnemies
+    enemy_spawnPercentage_basic = 100 - (enemy_spawnPercentage_tank + enemy_spawnPercentage_swift)
+    timer_untilNextWave = 0
+    enemiesKilledThisWave = 0
+end
+
 function love.draw()
     if not inHub then
         love.graphics.setLineWidth(1)
-        love.graphics.draw(img_background, 0, 0)
+        love.graphics.draw(img_background_stellar, 0, 0)
         if tower_value_currentHealth > 0 and not shieldActive then
             love.graphics.draw(img_tower_main, 928, 508)
         elseif tower_value_currentHealth > 0 and shieldActive then
@@ -334,6 +396,10 @@ function love.draw()
         for i,v in ipairs(enemiesOnField) do
             if v.type == "basic" then
                 love.graphics.draw(img_enemy_basic, v.x, v.y)
+            elseif v.type == "tank" then
+                love.graphics.draw(img_enemy_tank, v.x, v.y)
+            elseif v.type == "swift" then
+                love.graphics.draw(img_enemy_swift, v.x, v.y)
             elseif v.type == "sentry" then
                 love.graphics.draw(img_enemy_sentry, v.x, v.y)
             elseif v.type == "centurion" then
@@ -349,9 +415,9 @@ function love.draw()
         for i,v in ipairs(meteors) do
             love.graphics.draw(img_meteor, v.x - 14, v.y - 14)
         end
+        renderParticles()
         drawUpgradeMenu()
         towerInfo_visual()
-        renderParticles()
         love.graphics.setColor(1, 1, 1, 1)
         if sentryAlive then
             drawSentryBossbar()
@@ -360,7 +426,12 @@ function love.draw()
         end
         if skipWaveMessage and settings_waveSkipMessages then
             love.graphics.setColor(1, 1, 1, 1)
-            love.graphics.printf({{1, 1, 1, 1}, "Skipped ", {0.35, 1, 0.75, 1}, string.format("%d ", wavesSkipped), {1, 1, 1, 1}, "wave", {1, 1, 1, 1}, string.format("%s!", wavesSkipped > 1 and "s" or "")}, 1710, 920, 200, "center")
+            love.graphics.setFont(font_Afacad20)
+            if not upgradeMenu then
+                love.graphics.printf({{1, 1, 1, 1}, "Skipped ", {0.35, 1, 0.75, 1}, string.format("%d ", wavesSkipped), {1, 1, 1, 1}, "wave", {1, 1, 1, 1}, string.format("%s!", wavesSkipped > 1 and "s" or "")}, 1710, 920, 200, "center")
+            else
+                love.graphics.printf({{1, 1, 1, 1}, "Skipped ", {0.35, 1, 0.75, 1}, string.format("%d ", wavesSkipped), {1, 1, 1, 1}, "wave", {1, 1, 1, 1}, string.format("%s!", wavesSkipped > 1 and "s" or "")}, 1710, 690, 200, "center")
+            end
         end
         love.graphics.setColor(1, 1, 1, 1)
         love.graphics.draw(img_button_pause, 1870, 10)
@@ -453,6 +524,7 @@ end
 
 function love.update(dt)
     if not inHub then
+        --[[ Automatically shoot the closest enemy in range ]]--
         if timer_untilProjectile < 1 / tower_value_attack_speed then
             timer_untilProjectile = timer_untilProjectile + dt * gameSpeed
         else
@@ -461,18 +533,20 @@ function love.update(dt)
                 createProjectile(957, 537, love.math.random(0, 2 * math.pi * 1000) / 1000, 500)
             end
         end
+        --[[ Spawn an enemy once the enemy spawn timer goes off ]]--
         if timer_untilEnemy < 1 / enemySpawnRate then
             timer_untilEnemy = timer_untilEnemy + dt * gameSpeed
         else
             timer_untilEnemy = 0
             if pendingEnemies > 0 then
-                createEnemy(love.math.random(-2, 1899), love.math.random(-2, 1059), enemy_value_health, 60)
+                createEnemy(enemy_value_health, enemy_value_speed, enemy_value_attack_speed)
                 pendingEnemies = pendingEnemies - 1
             end
         end
         if tower_value_currentHealth > 0 then
             findClosestEnemyInRange()
         end
+        --[[ Move projectiles depending on their angle ]]--
         for i,v in ipairs(projectilesOnField) do
             v.x = v.x + math.cos(v.angle) * v.speed * dt * gameSpeed
             v.y = v.y + math.sin(v.angle) * v.speed * dt * gameSpeed
@@ -480,8 +554,15 @@ function love.update(dt)
                 table.remove(projectilesOnField, i)
             end
             for j,w in ipairs(enemiesOnField) do
-                if v.x > w.x + 2 and v.x < w.x + 22 and v.y > w.y + 2 and v.y < w.y + 22 and w.type == "basic" then
-                    --[[ Detect collision of any projectile with any basic type enemy, remove a part of enemy health if true, add 1 Copper if enemy is killed ]]--
+                local size = {
+                    ["basic"] = 22,
+                    ["tank"] = 34,
+                    ["swift"] = 16,
+                    ["sentry"] = 46,
+                    ["centurion"] = 62,
+                    }
+                if v.x > w.x + 2 and v.x < w.x + size[w.type] and v.y > w.y + 2 and v.y < w.y + size[w.type] then
+                    --[[ Detect collision of any projectile with any enemy, remove a part of enemy health if true, add 1 Copper if enemy is killed ]]--
                     table.remove(projectilesOnField, i)
                     --[[ If the projectile deals crit damage, deal more damage based on Critical Factor ]]--
 
@@ -493,43 +574,38 @@ function love.update(dt)
 
                     --[[ If enemy health is less or equal to 0, kill it by removing it from the field and adding its drop to player's resources ]]--
                     if w.currentHP <= 0 then
-                        killEnemy(w.x, w.y, "basic", 1, 0, 0, math.floor(8 * settings_particleMultipliers[settings_particleMultiplierIndex]))
-                        table.remove(enemiesOnField, j)
-                    end
-                    distanceToClosestEnemy = math.huge
-                    closestEnemy = nil
-                elseif v.x > w.x + 2 and v.x < w.x + 46 and v.y > w.y + 2 and v.y < w.y + 46 and w.type == "sentry" then
-                    --[[ Detect collision of any projectile with Sentry type enemy, remove a part of enemy health if true, add 25 Copper, 10 Silver and 1 Gold if enemy is killed ]]--
-                    table.remove(projectilesOnField, i)
-                    --[[ If the projectile deals crit damage, deal more damage based on Critical Factor ]]--
+                        local copper = {
+                            ["basic"] = 1,
+                            ["tank"] = 2,
+                            ["swift"] = 2,
+                            ["sentry"] = 25,
+                            ["centurion"] = 80
+                            }
 
-                    if v.isCrit then
-                        w.currentHP = w.currentHP - tower_value_attack_damage * tower_value_critical_factor
-                    else
-                        w.currentHP = w.currentHP - tower_value_attack_damage
-                    end
-                    sentryCurrentHP = w.currentHP
-                    --[[ If Sentry health is less or equal to 0, kill it by removing it from the field and adding its drop to player's resources ]]--
-                    if w.currentHP <= 0 then
-                        killEnemy(w.x, w.y, "sentry", 25, 10, 1, math.floor(24 * settings_particleMultipliers[settings_particleMultiplierIndex]))
-                        table.remove(enemiesOnField, j)
-                    end
-                    distanceToClosestEnemy = math.huge
-                    closestEnemy = nil
-                elseif v.x > w.x + 2 and v.x < w.x + 62 and v.y > w.y + 2 and v.y < w.y + 62 and w.type == "centurion" then
-                    --[[ Detect collision of any projectile with Centurion type enemy, remove a part of enemy health if true, add 80 Copper, 50 Silver and 15 Gold if enemy is killed ]]--
-                    table.remove(projectilesOnField, i)
-                    --[[ If the projectile deals crit damage, deal more damage based on Critical Factor ]]--
+                        local silver = {
+                            ["basic"] = 0,
+                            ["tank"] = 1,
+                            ["swift"] = 1,
+                            ["sentry"] = 10,
+                            ["centurion"] = 50
+                            }
+                            
+                        local gold = {
+                            ["basic"] = 0,
+                            ["tank"] = 0,
+                            ["swift"] = 0,
+                            ["sentry"] = 1,
+                            ["centurion"] = 15
+                            }
 
-                    if v.isCrit then
-                        w.currentHP = w.currentHP - tower_value_attack_damage * tower_value_critical_factor
-                    else
-                        w.currentHP = w.currentHP - tower_value_attack_damage
-                    end
-                    centurionCurrentHP = w.currentHP
-                    --[[ If Centurion health is less or equal to 0, kill it by removing it from the field and adding its drop to player's resources ]]--
-                    if w.currentHP <= 0 then
-                        killEnemy(w.x, w.y, "centurion", 80, 50, 15, math.floor(32 * settings_particleMultipliers[settings_particleMultiplierIndex]))
+                        local particleAmount = {
+                            ["basic"] = 8,
+                            ["tank"] = 12,
+                            ["swift"] = 12,
+                            ["sentry"] = 24,
+                            ["centurion"] = 32
+                            }
+                        killEnemy(w.x, w.y, w.type, copper[w.type], silver[w.type], gold[w.type], math.floor(particleAmount[w.type] * settings_particleMultipliers[settings_particleMultiplierIndex]))
                         table.remove(enemiesOnField, j)
                     end
                     distanceToClosestEnemy = math.huge
@@ -537,12 +613,27 @@ function love.update(dt)
                 end
             end
         end
+
         for i,v in ipairs(enemiesOnField) do
-            if v.timer_untilAttack < 1 / enemy_value_attack_speed then
+            if v.timer_untilAttack < 1 / v.attackSpeed then
                 v.timer_untilAttack = v.timer_untilAttack + dt * gameSpeed
             else
-                --[[ If an enemy is close enough, start attacking the tower ]]--
-                if math.dist(v.x + 12, v.y + 12, 960, 540) < 41 and tower_value_currentHealth > 0 and v.type == "basic" then
+                --[[ If a Basic is close enough, start attacking the tower ]]--
+                if math.dist(v.x + 12, v.y + 12, 960, 540) < 46 and tower_value_currentHealth > 0 and v.type == "basic" then
+                    v.timer_untilAttack = 0
+                    if not shieldActive then
+                        tower_value_currentHealth = tower_value_currentHealth - enemy_value_attack_damage * (1 - tower_value_resistance / 100)
+                    end
+                end
+                --[[ If a Tank is close enough, start attacking the tower ]]--
+                if math.dist(v.x + 16, v.y + 12, 960, 540) < 56 and tower_value_currentHealth > 0 and v.type == "tank" then
+                    v.timer_untilAttack = 0
+                    if not shieldActive then
+                        tower_value_currentHealth = tower_value_currentHealth - enemy_value_attack_damage * (1 - tower_value_resistance / 100)
+                    end
+                end
+                --[[ If a Swift is close enough, start attacking the tower ]]--
+                if math.dist(v.x + 8, v.y + 8, 960, 540) < 41 and tower_value_currentHealth > 0 and v.type == "swift" then
                     v.timer_untilAttack = 0
                     if not shieldActive then
                         tower_value_currentHealth = tower_value_currentHealth - enemy_value_attack_damage * (1 - tower_value_resistance / 100)
@@ -556,20 +647,28 @@ function love.update(dt)
                 --[[ If a Centurion is close enough, start attacking the tower ]]--
                 if math.dist(v.x + 32, v.y + 32, 960, 540) < 65 and tower_value_currentHealth > 0 and v.type == "centurion" then
                     v.timer_untilAttack = 0
-                    tower_value_currentHealth = tower_value_currentHealth - enemy_value_attack_damage * 5
+                    tower_value_currentHealth = tower_value_currentHealth - enemy_value_attack_damage
                 end
             end
             --[[ Move each enemy towards the central tower if it is further than the specified distance ]]--
-            if math.dist(v.x + 12, v.y + 12, 960, 540) > 40 and v.type == "basic" then
-                v.angle = math.atan2(540 - v.y - 12, 960 - v.x - 12)
-                v.x = v.x + math.cos(v.angle) * v.speed * dt * gameSpeed
-                v.y = v.y + math.sin(v.angle) * v.speed * dt * gameSpeed
-            elseif math.dist(v.x + 24, v.y + 24, 960, 540) > 52 and v.type == "sentry" then
-                v.angle = math.atan2(540 - v.y - 24, 960 - v.x - 24)
-                v.x = v.x + math.cos(v.angle) * v.speed * dt * gameSpeed
-                v.y = v.y + math.sin(v.angle) * v.speed * dt * gameSpeed
-            elseif math.dist(v.x + 32, v.y + 32, 960, 540) > 64 and v.type == "centurion" then
-                v.angle = math.atan2(540 - v.y - 32, 960 - v.x - 32)
+            local offsets = {
+                ["basic"] = 10,
+                ["tank"] = 16,
+                ["swift"] = 8,
+                ["sentry"] = 22,
+                ["centurion"] = 30,
+                }
+
+            local stopDistance = {
+                ["basic"] = 45,
+                ["tank"] = 55,
+                ["swift"] = 40,
+                ["sentry"] = 52,
+                ["centurion"] = 64
+                }
+
+            if math.dist(v.x + offsets[v.type], v.y + offsets[v.type], 960, 540) > stopDistance[v.type] then
+                v.angle = math.atan2(540 - v.y - offsets[v.type], 960 - v.x - offsets[v.type])
                 v.x = v.x + math.cos(v.angle) * v.speed * dt * gameSpeed
                 v.y = v.y + math.sin(v.angle) * v.speed * dt * gameSpeed
             end
@@ -587,14 +686,54 @@ function love.update(dt)
         for i,v in ipairs(meteors) do
             --[[ Orbit Meteors around the tower ]]--
             v.angle = v.angle + (tower_value_meteor_RPM * (2 * math.pi)) / 60 * dt * gameSpeed
-            v.x = 960 + tower_value_range * math.cos(v.angle)
+            v.x = 960 + tower_value_range * (math.cos(v.angle)) 
             v.y = 540 + tower_value_range * math.sin(v.angle)
+            local size = {
+                ["basic"] = 22,
+                ["tank"] = 34,
+                ["swift"] = 16,
+                ["sentry"] = 46,
+                ["centurion"] = 62,
+                }
             for j,w in ipairs(enemiesOnField) do
-                if v.x + 13 > w.x + 2 and v.x - 13 < w.x + 22 and v.y + 13 > w.y + 2 and v.y - 13 < w.y + 22 and w.type == "basic" and tower_value_currentHealth > 0 then
-                    killEnemy(w.x, w.y, "basic", 1, 0, 0, 8)
-                    table.remove(enemiesOnField, j)
-                    distanceToClosestEnemy = math.huge
-                    closestEnemy = nil
+                if v.x + 13 > w.x + 2 and v.x - 13 < w.x + size[w.type] and v.y + 13 > w.y + 2 and v.y - 13 < w.y + size[w.type] and tower_value_currentHealth > 0 then
+                    if w.type == "basic" or w.type == "tank" or w.type == "swift" then
+                        local copper = {
+                            ["basic"] = 1,
+                            ["tank"] = 2,
+                            ["swift"] = 2,
+                            ["sentry"] = 25,
+                            ["centurion"] = 80
+                            }
+
+                        local silver = {
+                            ["basic"] = 0,
+                            ["tank"] = 1,
+                            ["swift"] = 1,
+                            ["sentry"] = 10,
+                            ["centurion"] = 50
+                            }
+                            
+                        local gold = {
+                            ["basic"] = 0,
+                            ["tank"] = 0,
+                            ["swift"] = 0,
+                            ["sentry"] = 1,
+                            ["centurion"] = 15
+                            }
+
+                        local particleAmount = {
+                            ["basic"] = 8,
+                            ["tank"] = 12,
+                            ["swift"] = 12,
+                            ["sentry"] = 24,
+                            ["centurion"] = 32
+                            }
+                        killEnemy(w.x, w.y, w.type, copper[w.type], silver[w.type], gold[w.type], math.floor(particleAmount[w.type] * settings_particleMultipliers[settings_particleMultiplierIndex]))
+                        table.remove(enemiesOnField, j)
+                        distanceToClosestEnemy = math.huge
+                        closestEnemy = nil
+                    end
                 end
             end
         end
@@ -609,10 +748,10 @@ function love.update(dt)
                 currentSilver = currentSilver + gameplay_silverPerWave
                 gameplay_wave = gameplay_wave + 1
                 local waveSkip = math.random(0, 10000) / 100
-                while waveSkip <= 99.5 do
+                while waveSkip <= ability_waveSkip_chance do
                     wavesSkipped = wavesSkipped + 1
                     local waveSkip = love.math.random(0, 10000) / 100
-                    if waveSkip > 99.5 then
+                    if waveSkip > ability_waveSkip_chance then
                         break
                     end
                 end
@@ -620,12 +759,7 @@ function love.update(dt)
                 if wavesSkipped > 0 then
                     skipWaveMessage = true
                 end
-                enemySpawnRate = 0.6 + math.floor(gameplay_wave / 15) * 0.1
-                pendingEnemies = 6 + math.floor(gameplay_wave / 15) * 3
-                enemy_value_health = (1.95 + (gameplay_wave^2.25 / 20)) * (1.2^(math.floor(gameplay_wave / 100)))
-                enemy_value_attack_damage = (1 + (gameplay_wave^2 / 40) - 0.024) * (1.1^math.floor(gameplay_wave / 100))
-                timer_untilNextWave = 0
-                enemiesKilledThisWave = 0
+                updateEnemyStats(gameplay_difficulty, gameplay_wave)
             end
         end
 
@@ -637,7 +771,7 @@ function love.update(dt)
         end
 
         if skipWaveMessage then
-            if timer_waveSkipMessage < 1.5 then
+            if timer_waveSkipMessage < 3 then
                 timer_waveSkipMessage = timer_waveSkipMessage + dt
             else
                 skipWaveMessage = false
@@ -653,13 +787,6 @@ function love.update(dt)
                 else
                     timer_untilShieldActive = 0
                     shieldActive = true
-                end
-            else
-                if timer_shieldActive < tower_value_shield_duration then
-                    timer_shieldActive = timer_shieldActive + dt * gameSpeed
-                else
-                    timer_shieldActive = 0
-                    shieldActive = false
                 end
             end
         end
