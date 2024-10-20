@@ -305,9 +305,10 @@ function createMeteor(angle)
 end
 
 function skipWave(wavesSkipped)
+    local difficultyMultipliers = {1, 1.75, 2.5, 3.75}
     gameplay_wave = gameplay_wave + wavesSkipped
     currentCopper = currentCopper + gameplay_copperPerWave * wavesSkipped
-    currentSilver = currentSilver + gameplay_silverPerWave * wavesSkipped
+    currentSilver = currentSilver + gameplay_silverPerWave * wavesSkipped * difficultyMultipliers[gameplay_difficulty]
 end
 
 function killEnemy(x, y, type, copperDrop, silverDrop, goldDrop, particles)
@@ -346,7 +347,9 @@ function killEnemy(x, y, type, copperDrop, silverDrop, goldDrop, particles)
 end
 
 function updateEnemyStats(difficulty, wave)
-    if difficulty == 1 then --[[ Set stats for Level 0 enemies ]]--
+    local waveCooldowns = {6, 5, 4, 3.5}
+    if difficulty == 1 then
+        --[[ Set stats for Level 0 enemies ]]--
         enemySpawnRate = 0.6 + math.floor(wave / 15) * 0.1
         pendingEnemies = 6 + math.floor(wave / 15) * 3
         enemy_value_health = (1.95 + (wave^2.25 / 20)) * (1.2^(math.floor(wave / 100)))
@@ -354,7 +357,8 @@ function updateEnemyStats(difficulty, wave)
         enemy_value_speed = 60
         enemy_spawnPercentage_tank = math.min(math.floor(math.log(wave^2, 10) * 100) / 100, 4)
         enemy_spawnPercentage_swift = math.min(math.floor(math.log(wave^3, 10) * 100) / 1000, 6)
-    elseif difficulty == 2 then --[[ Set stats for Level α enemies ]]--
+    elseif difficulty == 2 then
+        --[[ Set stats for Level α enemies ]]--
         enemySpawnRate = 0.9 + math.floor(wave / 15) * 0.15
         pendingEnemies = 8 + math.floor(wave / 15) * 4
         enemy_value_health = (148.95 + wave^2 + (wave^3 / 20)) * (1.22^(math.floor(wave / 100)))
@@ -362,9 +366,28 @@ function updateEnemyStats(difficulty, wave)
         enemy_value_speed = 66
         enemy_spawnPercentage_tank = math.min(math.floor((math.log(wave^2, 10))^0.75 * 100) / 100, 6)
         enemy_spawnPercentage_swift = math.min(math.floor(math.log(wave^3.75, 10) * 100) / 100, 8)
+    elseif difficulty == 3 then
+        --[[ Set stats for Level β enemies ]]--
+        enemySpawnRate = 1.4 + math.floor(wave / 15) * 0.225
+        pendingEnemies = 11 + math.floor(wave / 15) * 5
+        enemy_value_health = (21624.9 + 850 * wave + 25 * wave^2 + (wave^3.5 / 10)) * (1.24^(math.floor(wave / 100)))
+        enemy_value_attack_damage = (708.95 + 90 * wave + wave^2 + (wave^2.9 / 20)) * (1.12^math.floor(wave / 100))
+        enemy_value_speed = 72
+        enemy_spawnPercentage_tank = math.min(math.floor((math.sqrt(2.5 * wave - 2.5)^0.8) * 100) / 100, 10)
+        enemy_spawnPercentage_swift = math.min(math.floor((math.sqrt(2 * wave - 2) - math.log(wave^3, 10)) * 100) / 100, 12.5)
+    elseif difficulty == 4 then
+        --[[ Set stats for Level γ enemies ]]--
+        enemySpawnRate = 1.8 + math.floor(wave / 15) * 0.3
+        pendingEnemies = 13 + math.floor(wave / 15) * 6
+        enemy_value_health = (475749.875 + 24000 * wave + 250 * wave^2 + (wave^4.28 / 8)) * (1.26^(math.floor(wave / 100)))
+        enemy_value_attack_damage = (15099.9 + 900 * wave + (wave^3.4 / 5)) * (1.13^math.floor(wave / 100))
+        enemy_value_speed = 78
+        enemy_spawnPercentage_tank = math.min(math.floor((math.sqrt(4 * wave - 4)^0.85) * 100) / 100, 14)
+        enemy_spawnPercentage_swift = math.min(math.floor((math.sqrt(2 * wave - 2)^1.05) * 100) / 100, 18)
     end
     enemyWaveCap = pendingEnemies
     enemy_spawnPercentage_basic = 100 - (enemy_spawnPercentage_tank + enemy_spawnPercentage_swift)
+    gameplay_wave_cooldown = waveCooldowns[difficulty]
     timer_untilNextWave = 0
     enemiesKilledThisWave = 0
 end
@@ -572,6 +595,12 @@ function love.update(dt)
                         w.currentHP = w.currentHP - tower_value_attack_damage
                     end
 
+                    if w.type == "sentry" then
+                        sentryCurrentHP = w.currentHP
+                    elseif w.type == "centurion" then
+                        centurionCurrentHP = w.currentHP
+                    end
+
                     --[[ If enemy health is less or equal to 0, kill it by removing it from the field and adding its drop to player's resources ]]--
                     if w.currentHP <= 0 then
                         local copper = {
@@ -605,7 +634,9 @@ function love.update(dt)
                             ["sentry"] = 24,
                             ["centurion"] = 32
                             }
-                        killEnemy(w.x, w.y, w.type, copper[w.type], silver[w.type], gold[w.type], math.floor(particleAmount[w.type] * settings_particleMultipliers[settings_particleMultiplierIndex]))
+
+                        local difficultyMultipliers = {1, 1.75, 2.5, 3.75}
+                        killEnemy(w.x, w.y, w.type, copper[w.type], silver[w.type] * difficultyMultipliers[gameplay_difficulty], gold[w.type], math.floor(particleAmount[w.type] * settings_particleMultipliers[settings_particleMultiplierIndex]))
                         table.remove(enemiesOnField, j)
                     end
                     distanceToClosestEnemy = math.huge
@@ -615,42 +646,6 @@ function love.update(dt)
         end
 
         for i,v in ipairs(enemiesOnField) do
-            if v.timer_untilAttack < 1 / v.attackSpeed then
-                v.timer_untilAttack = v.timer_untilAttack + dt * gameSpeed
-            else
-                --[[ If a Basic is close enough, start attacking the tower ]]--
-                if math.dist(v.x + 12, v.y + 12, 960, 540) < 46 and tower_value_currentHealth > 0 and v.type == "basic" then
-                    v.timer_untilAttack = 0
-                    if not shieldActive then
-                        tower_value_currentHealth = tower_value_currentHealth - enemy_value_attack_damage * (1 - tower_value_resistance / 100)
-                    end
-                end
-                --[[ If a Tank is close enough, start attacking the tower ]]--
-                if math.dist(v.x + 16, v.y + 12, 960, 540) < 56 and tower_value_currentHealth > 0 and v.type == "tank" then
-                    v.timer_untilAttack = 0
-                    if not shieldActive then
-                        tower_value_currentHealth = tower_value_currentHealth - enemy_value_attack_damage * (1 - tower_value_resistance / 100)
-                    end
-                end
-                --[[ If a Swift is close enough, start attacking the tower ]]--
-                if math.dist(v.x + 8, v.y + 8, 960, 540) < 41 and tower_value_currentHealth > 0 and v.type == "swift" then
-                    v.timer_untilAttack = 0
-                    if not shieldActive then
-                        tower_value_currentHealth = tower_value_currentHealth - enemy_value_attack_damage * (1 - tower_value_resistance / 100)
-                    end
-                end
-                --[[ If a Sentry is close enough, start attacking the tower ]]--
-                if math.dist(v.x + 24, v.y + 24, 960, 540) < 53 and tower_value_currentHealth > 0 and v.type == "sentry" then
-                    v.timer_untilAttack = 0
-                    tower_value_currentHealth = tower_value_currentHealth - enemy_value_attack_damage * (1 - tower_value_resistance / 100)
-                end
-                --[[ If a Centurion is close enough, start attacking the tower ]]--
-                if math.dist(v.x + 32, v.y + 32, 960, 540) < 65 and tower_value_currentHealth > 0 and v.type == "centurion" then
-                    v.timer_untilAttack = 0
-                    tower_value_currentHealth = tower_value_currentHealth - enemy_value_attack_damage
-                end
-            end
-            --[[ Move each enemy towards the central tower if it is further than the specified distance ]]--
             local offsets = {
                 ["basic"] = 10,
                 ["tank"] = 16,
@@ -660,15 +655,51 @@ function love.update(dt)
                 }
 
             local stopDistance = {
-                ["basic"] = 45,
-                ["tank"] = 55,
-                ["swift"] = 40,
-                ["sentry"] = 52,
-                ["centurion"] = 64
+                ["basic"] = 42,
+                ["tank"] = 48,
+                ["swift"] = 38,
+                ["sentry"] = 58,
+                ["centurion"] = 67
                 }
+            if v.timer_untilAttack < 1 / v.attackSpeed then
+                v.timer_untilAttack = v.timer_untilAttack + dt * gameSpeed
+            else
+                --[[ If a Basic is close enough, start attacking the tower ]]--
+                if math.dist(v.x + 12, v.y + 12, 960, 540) < stopDistance[v.type] + 1 and tower_value_currentHealth > 0 and v.type == "basic" then
+                    v.timer_untilAttack = 0
+                    if not shieldActive then
+                        tower_value_currentHealth = tower_value_currentHealth - enemy_value_attack_damage * (1 - tower_value_resistance / 100)
+                    end
+                end
+                --[[ If a Tank is close enough, start attacking the tower ]]--
+                if math.dist(v.x + 16, v.y + 12, 960, 540) < stopDistance[v.type] + 1 and tower_value_currentHealth > 0 and v.type == "tank" then
+                    v.timer_untilAttack = 0
+                    if not shieldActive then
+                        tower_value_currentHealth = tower_value_currentHealth - enemy_value_attack_damage * (1 - tower_value_resistance / 100)
+                    end
+                end
+                --[[ If a Swift is close enough, start attacking the tower ]]--
+                if math.dist(v.x + 8, v.y + 8, 960, 540) < stopDistance[v.type] + 1 and tower_value_currentHealth > 0 and v.type == "swift" then
+                    v.timer_untilAttack = 0
+                    if not shieldActive then
+                        tower_value_currentHealth = tower_value_currentHealth - enemy_value_attack_damage * (1 - tower_value_resistance / 100)
+                    end
+                end
+                --[[ If a Sentry is close enough, start attacking the tower ]]--
+                if math.dist(v.x + 24, v.y + 24, 960, 540) < stopDistance[v.type] + 1 and tower_value_currentHealth > 0 and v.type == "sentry" then
+                    v.timer_untilAttack = 0
+                    tower_value_currentHealth = tower_value_currentHealth - enemy_value_attack_damage * (1 - tower_value_resistance / 100)
+                end
+                --[[ If a Centurion is close enough, start attacking the tower ]]--
+                if math.dist(v.x + 32, v.y + 32, 960, 540) < stopDistance[v.type] + 1 and tower_value_currentHealth > 0 and v.type == "centurion" then
+                    v.timer_untilAttack = 0
+                    tower_value_currentHealth = tower_value_currentHealth - enemy_value_attack_damage
+                end
+            end
+            --[[ Move each enemy towards the central tower if it is further than the specified distance ]]--
 
-            if math.dist(v.x + offsets[v.type], v.y + offsets[v.type], 960, 540) > stopDistance[v.type] then
-                v.angle = math.atan2(540 - v.y - offsets[v.type], 960 - v.x - offsets[v.type])
+            if math.dist(v.x + offsets[v.type] + 2, v.y + offsets[v.type] + 2, 960, 540) > stopDistance[v.type] then
+                v.angle = math.atan2(540 - v.y - 2 - offsets[v.type], 960 - v.x - 2 - offsets[v.type])
                 v.x = v.x + math.cos(v.angle) * v.speed * dt * gameSpeed
                 v.y = v.y + math.sin(v.angle) * v.speed * dt * gameSpeed
             end
@@ -729,7 +760,9 @@ function love.update(dt)
                             ["sentry"] = 24,
                             ["centurion"] = 32
                             }
-                        killEnemy(w.x, w.y, w.type, copper[w.type], silver[w.type], gold[w.type], math.floor(particleAmount[w.type] * settings_particleMultipliers[settings_particleMultiplierIndex]))
+
+                        local difficultyMultipliers = {1, 1.75, 2.5, 3.75}
+                        killEnemy(w.x, w.y, w.type, copper[w.type], silver[w.type] * difficultyMultipliers[gameplay_difficulty], gold[w.type], math.floor(particleAmount[w.type] * settings_particleMultipliers[settings_particleMultiplierIndex]))
                         table.remove(enemiesOnField, j)
                         distanceToClosestEnemy = math.huge
                         closestEnemy = nil
@@ -745,9 +778,10 @@ function love.update(dt)
             else
                 wavesSkipped = 0
                 currentCopper = currentCopper + gameplay_copperPerWave
-                currentSilver = currentSilver + gameplay_silverPerWave
+                local difficultyMultipliers = {1, 1.75, 2.5, 3.75}
+                currentSilver = currentSilver + gameplay_silverPerWave * difficultyMultipliers[gameplay_difficulty]
                 gameplay_wave = gameplay_wave + 1
-                local waveSkip = math.random(0, 10000) / 100
+                local waveSkip = love.math.random(0, 10000) / 100
                 while waveSkip <= ability_waveSkip_chance do
                     wavesSkipped = wavesSkipped + 1
                     local waveSkip = love.math.random(0, 10000) / 100
@@ -787,6 +821,13 @@ function love.update(dt)
                 else
                     timer_untilShieldActive = 0
                     shieldActive = true
+                end
+            elseif shieldActive then
+                if timer_shieldActive < tower_value_shield_duration then
+                    timer_shieldActive = timer_shieldActive + dt * gameSpeed
+                else
+                    timer_shieldActive = 0
+                    shieldActive = false
                 end
             end
         end

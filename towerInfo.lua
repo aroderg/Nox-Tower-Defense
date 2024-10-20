@@ -107,8 +107,8 @@ function towerInfo_visual()
         love.graphics.setLineStyle("smooth")
         love.graphics.setLineWidth(1)
         if timer_untilNextWave == 0 then
-            love.graphics.arc("line", 1875, 766, 20, 1.5*math.pi, 3.5*math.pi - (enemiesKilledThisWave / (6 + math.floor(gameplay_wave / 15) * 3) * 2 * math.pi))
-            love.graphics.arc("fill", 1875, 766, 20, 1.5*math.pi, 3.5*math.pi - (enemiesKilledThisWave / (6 + math.floor(gameplay_wave / 15) * 3) * 2 * math.pi))
+            love.graphics.arc("line", 1875, 766, 20, 1.5*math.pi, 3.5*math.pi - ((enemiesKilledThisWave / enemyWaveCap) * 2 * math.pi))
+            love.graphics.arc("fill", 1875, 766, 20, 1.5*math.pi, 3.5*math.pi - ((enemiesKilledThisWave / enemyWaveCap) * 2 * math.pi))
         else
             love.graphics.setColor(1, 1, 1, 1)
             love.graphics.arc("line", 1875, 766, 20, 1.5*math.pi, 3.5*math.pi - (timer_untilNextWave / gameplay_wave_cooldown) * 2 * math.pi)

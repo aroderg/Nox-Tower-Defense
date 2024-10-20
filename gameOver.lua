@@ -34,6 +34,24 @@ function gameEnd()
         enemySpawnRate = 0
         closestEnemy = nil
         gameOver = true
+        if gameplay_wave > d1_best_wave and gameplay_difficulty == 1 then
+            d1_best_wave = gameplay_wave
+        elseif gameplay_wave > d2_best_wave and gameplay_difficulty == 2 then
+            d2_best_wave = gameplay_wave
+        elseif gameplay_wave > d3_best_wave and gameplay_difficulty == 3 then
+            d3_best_wave = gameplay_wave
+        elseif gameplay_wave > d4_best_wave and gameplay_difficulty == 4 then
+            d4_best_wave = gameplay_wave
+        end
+        if d1_best_wave > 150 then
+            d2_unlocked = true
+        end
+        if d2_best_wave > 150 then
+            d3_unlocked = true
+        end
+        if d3_best_wave > 150 then
+            d4_unlocked = true
+        end
     end
     if #collapseParticles == 0 then
         gameSpeed = 0

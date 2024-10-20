@@ -75,10 +75,14 @@ function inHub_visual()
             love.graphics.printf(string.format("Shield Duration: %.2fs", tower_value_shield_duration), 810, 620, 300, "center")
             love.graphics.setFont(font_ViraSansBold28)
             love.graphics.printf(string.format("Level %s", levelNames[gameplay_difficulty]), 810, 740, 300, "center")
+            local bestWaves = {d1_best_wave, d2_best_wave, d3_best_wave, d4_best_wave}
+            local highestDiffUnlocked = d4_unlocked and 4 or d3_unlocked and 3 or d2_unlocked and 2 or 1
+            love.graphics.setFont(font_Afacad24)
+            love.graphics.printf(string.format("Best Wave: %s", bestWaves[gameplay_difficulty] or "None"), 810, 780, 300, "center")
             if gameplay_difficulty > 1 then
                 love.graphics.draw(img_button_arrowLeft, 840, 746)
             end
-            if gameplay_difficulty < 4 then
+            if gameplay_difficulty < highestDiffUnlocked then
                 love.graphics.draw(img_button_arrowRight, 1056, 746)
             end
             love.graphics.setColor(0.1, 0.15, 0.5, 1)

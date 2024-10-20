@@ -53,6 +53,13 @@ function saveGame()
             waveSkip = {
                 chance = ability_waveSkip_chance_level
             }
+        },
+
+        pb = {
+            d1 = d1_best_wave,
+            d2 = d2_best_wave,
+            d3 = d3_best_wave,
+            d4 = d4_best_wave,
         }
     }
     data.settings = {
