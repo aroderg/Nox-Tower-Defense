@@ -27,7 +27,7 @@ end
 
 function gameEnd()
     if not gameOver then
-        for i=1, 200 do
+        for i=1, 100 do
             createCollapseParticle()
         end
         pendingEnemies = 0

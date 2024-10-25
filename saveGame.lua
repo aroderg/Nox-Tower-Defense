@@ -9,12 +9,13 @@ function saveGame()
             unlocks = {
                 crit = upgrade_unlock_crit,
                 range = upgrade_unlock_range,
+                clusterFire = upgrade_unlock_clusterFire,
 
                 resistance = upgrade_unlock_resistance,
                 shield = upgrade_unlock_shield,
+                meteor = upgrade_unlock_meteor,
 
                 resourceBonus = upgrade_unlock_resourceBonus,
-                meteor = upgrade_unlock_meteor
             },
             nexus = {
                 attack_damage = upgrade_nexus_attack_damage_level,
@@ -27,6 +28,10 @@ function saveGame()
             critical_chance = upgrade_science_critChance_level,
             critical_factor = upgrade_science_critFactor_level,
             range = upgrade_science_range_level,
+            clusterFire_chance = upgrade_science_clusterFire_chance_level,
+            clusterFire_targets = upgrade_science_clusterFire_targets_level,
+            clusterFire_factor = upgrade_science_clusterFire_factor_level,
+            clusterFire_duration = upgrade_science_clusterFire_duration_level,
             
             health = upgrade_science_health_level,
             regeneration = upgrade_science_regeneration_level,
@@ -43,7 +48,8 @@ function saveGame()
         },
 
         cooldowns = {
-            tokens = timer_untilTokens
+            tokens = timer_untilTokens,
+            electrum = timer_untilElectrum
         },
 
         abilities = {
@@ -65,6 +71,7 @@ function saveGame()
     data.settings = {
         particleMultiplierIndex = settings_particleMultiplierIndex,
         waveskipMessages = settings_waveSkipMessages,
+        notation = settings_notation
     }
 
     serialized = lume.serialize(data)

@@ -3,6 +3,6 @@ function love.conf(t)
     t.window.title = "Nox Tower Defense"
     t.window.width = 0
     t.window.height = 0
-    t.window.fullscreen = true
+    t.window.fullscreen = false
     t.console = true
 end

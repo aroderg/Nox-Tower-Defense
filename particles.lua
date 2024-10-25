@@ -1,3 +1,14 @@
+function createCollapseParticle()
+    collapseParticle = {}
+    collapseParticle.x = 960
+    collapseParticle.y = 540
+    collapseParticle.angle = love.math.random(0, 2 * math.pi * 10000) / 10000
+    collapseParticle.speed = love.math.random(10, 50)
+    collapseParticle.fadeTime = 2.5
+    collapseParticle.timer_fade = 0
+    table.insert(collapseParticles, collapseParticle)
+end
+
 function createKillParticle(x, y, origin)
     killParticle = {}
     killParticle.x = x
@@ -24,36 +35,46 @@ function createKillParticle(x, y, origin)
     table.insert(particles, killParticle)
 end
 
-function createCollapseParticle()
-    collapseParticle = {}
-    collapseParticle.x = 960
-    collapseParticle.y = 540
-    collapseParticle.angle = love.math.random(0, 2 * math.pi * 10000) / 10000
-    collapseParticle.speed = love.math.random(10, 50)
-    collapseParticle.fadeTime = 2.5
-    collapseParticle.timer_fade = 0
-    table.insert(collapseParticles, collapseParticle)
+function createHitTextParticle(x, y, damage, origin, isCrit)
+    hitTextParticle = {}
+    hitTextParticle.x = x
+    hitTextParticle.y = y
+    hitTextParticle.damage = damage
+    hitTextParticle.fadeTime = 0.25
+    hitTextParticle.origin = origin
+    hitTextParticle.isCrit = isCrit
+    hitTextParticle.timer_fade = 0
+    table.insert(hitTextParticles, hitTextParticle)
 end
 
 function renderParticles()
+    local particleAppearances = {
+        ["basic"] = {img_particle_kill_enemy_basic, 4},
+        ["tank"] = {img_particle_kill_enemy_tank, 5},
+        ["swift"] = {img_particle_kill_enemy_swift, 3},
+        ["sentry"] = {img_particle_kill_enemy_sentry, 6},
+        ["centurion"] = {img_particle_kill_enemy_centurion, 8},
+    }
     --[[ Render the particles to be different depending on their origin ]]--
     for i,v in ipairs(particles) do
         love.graphics.setColor(1, 1, 1, 1-v.timer_fade/v.fadeTime)
-        if v.origin == "basic" then
-            love.graphics.draw(img_particle_kill_enemy_basic, v.x - 4, v.y - 4)
-        elseif v.origin == "tank" then
-            love.graphics.draw(img_particle_kill_enemy_tank, v.x - 5, v.y - 5)
-        elseif v.origin == "swift" then
-            love.graphics.draw(img_particle_kill_enemy_swift, v.x - 3, v.y - 3)
-        elseif v.origin == "sentry" then
-            love.graphics.draw(img_particle_kill_enemy_sentry, v.x - 6, v.y - 6)
-        elseif v.origin == "centurion" then
-            love.graphics.draw(img_particle_kill_enemy_centurion, v.x - 8, v.y - 8)
-        end
+        love.graphics.draw(particleAppearances[v.origin][1], v.x - particleAppearances[v.origin][2], v.y - particleAppearances[v.origin][2])
     end
     for i,v in ipairs(collapseParticles) do
         love.graphics.setColor(1, 1, 1, 1-v.timer_fade/v.fadeTime)
         love.graphics.draw(img_particle_collapse, v.x - 6, v.y - 6)
+    end
+    love.graphics.setFont(font_Afacad16)
+    local offsets = {
+        ["basic"] = 10,
+        ["tank"] = 16,
+        ["swift"] = 8,
+        ["sentry"] = 22,
+        ["centurion"] = 30,
+        }
+    for i,v in ipairs(hitTextParticles) do
+        love.graphics.setColor(1, v.isCrit and 0.2 or 1, v.isCrit and 0.4 or 1, 1-v.timer_fade/v.fadeTime)
+        love.graphics.printf(v.damage, math.floor(v.x - 50 + offsets[v.origin]), math.floor(v.y - 15), 100, "center")
     end
 end
 
@@ -73,6 +94,12 @@ function updateParticles(dt)
         v.y = v.y + math.sin(v.angle) * v.speed * dt * gameSpeed
         if v.timer_fade >= v.fadeTime then
             table.remove(collapseParticles, i)
+        end
+    end
+    for i,v in ipairs(hitTextParticles) do
+        v.timer_fade = v.timer_fade + dt * gameSpeed
+        if v.timer_fade >= v.fadeTime then
+            table.remove(hitTextParticles, i)
         end
     end
 end
