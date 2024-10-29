@@ -1,5 +1,5 @@
 function inHub_visual()
-    if inHub then
+    if player.location == "hub" then
         love.graphics.setLineWidth(1)
         love.graphics.setFont(font_Afacad24)
         love.graphics.setLineStyle("smooth")
@@ -12,7 +12,7 @@ function inHub_visual()
         if hubSection == "Main" then
             love.graphics.setColor(1, 0, 0, 1)
         end
-        love.graphics.rectangle("line", 51, 1, 100, 40, 4, 4)
+        love.graphics.rectangle("line", 51, 1, 100, 40, 2, 2)
         love.graphics.printf("Main", 50, 3, 100, "center")
 
         love.graphics.setColor(0, 0.65, 0.3)
@@ -21,7 +21,7 @@ function inHub_visual()
         if hubSection == "Science" then
             love.graphics.setColor(1, 0, 0, 1)
         end
-        love.graphics.rectangle("line", 51, 361, 100, 40, 4, 4)
+        love.graphics.rectangle("line", 51, 361, 100, 40, 2, 2)
         love.graphics.printf("Science", 50, 363, 100, "center")
 
         love.graphics.setColor(0.5, 0, 0.6)
@@ -30,25 +30,21 @@ function inHub_visual()
         if hubSection == "Nexus" then
             love.graphics.setColor(1, 0, 0, 1)
         end
-        love.graphics.rectangle("line", 51, 721, 100, 40, 4, 4)
+        love.graphics.rectangle("line", 51, 721, 100, 40, 2, 2)
         love.graphics.printf("Nexus", 50, 723, 100, "center")
 
         love.graphics.setColor(1, 1, 1, 1)
         love.graphics.setLineWidth(2)
-        love.graphics.rectangle("line", 1820, 100, 150, 200, 8, 8)
+        love.graphics.rectangle("line", 1800, 100, 150, 200, 4, 4)
         love.graphics.setFont(font_Vera16)
-        love.graphics.draw(img_currency_silver, 1830, 110)
-        love.graphics.printf(string.format("%s", notations.convertToLetterNotation(currentSilver, "brief")), 1864, 117, 100, "left")
-        love.graphics.draw(img_currency_gold, 1830, 142)
-        love.graphics.printf(string.format("%s", notations.convertToLetterNotation(currentGold, "brief")), 1864, 149, 100, "left")
-        love.graphics.draw(img_currency_electrum, 1830, 174)
-        love.graphics.printf(string.format("%s", notations.convertToLetterNotation(currentElectrum, "brief")), 1864, 181, 100, "left")
-        love.graphics.draw(img_currency_token, 1830, 206)
-        love.graphics.printf(string.format("%s", notations.convertToLetterNotation(currentTokens, "brief")), 1864, 213, 100, "left")
-
-        love.graphics.setLineStyle("rough")
-        love.graphics.rectangle("line", 1740, 30, 150, 50)
-        love.graphics.printf("Save Game", 1740, 45, 150, "center")
+        love.graphics.draw(img_currency_silver, 1810, 110)
+        love.graphics.printf(string.format("%s", notations.convertToLetterNotation(player.currencies.currentSilver, "brief")), 1844, 117, 100, "left")
+        love.graphics.draw(img_currency_gold, 1810, 142)
+        love.graphics.printf(string.format("%s", notations.convertToLetterNotation(player.currencies.currentGold, "brief")), 1844, 149, 100, "left")
+        love.graphics.draw(img_currency_electrum, 1810, 174)
+        love.graphics.printf(string.format("%s", notations.convertToLetterNotation(player.currencies.currentElectrum, "brief")), 1844, 181, 100, "left")
+        love.graphics.draw(img_currency_token, 1810, 206)
+        love.graphics.printf(string.format("%s", notations.convertToLetterNotation(player.currencies.currentTokens, "brief")), 1844, 213, 100, "left")
 
         love.graphics.setColor(1, 1, 1, 1)
         love.graphics.setLineStyle("smooth")
@@ -62,34 +58,34 @@ function inHub_visual()
             love.graphics.setFont(font_Afacad20)
             love.graphics.printf("View and analyze your tower's initial properties and other statistics.", 760, 120, 400, "center")
             love.graphics.setFont(font_Afacad24)
-            love.graphics.printf(string.format("Attack Damage: %s", notations.convertToLetterNotation(tower_value_attack_damage, "precise")), 810, 320, 300, "center")
-            love.graphics.printf(string.format("Attack Speed: %.2f", tower_value_attack_speed), 810, 350, 300, "center")
-            love.graphics.printf(string.format("Critical Chance: %.1f%%", tower_value_critical_chance), 810, 380, 300, "center")
-            love.graphics.printf(string.format("Critical Factor: x%.2f", tower_value_critical_factor), 810, 410, 300, "center")
-            love.graphics.printf(string.format("Range: %.1f", tower_value_range / 20), 810, 440, 300, "center")
+            love.graphics.printf(string.format("Attack Damage: %s", notations.convertToLetterNotation(player.tower.attackDamage, "precise")), 810, 320, 300, "center")
+            love.graphics.printf(string.format("Attack Speed: %.2f", player.tower.attackSpeed), 810, 350, 300, "center")
+            love.graphics.printf(string.format("Critical Chance: %.1f%%", player.tower.critChance), 810, 380, 300, "center")
+            love.graphics.printf(string.format("Critical Factor: x%.2f", player.tower.critFactor), 810, 410, 300, "center")
+            love.graphics.printf(string.format("Range: %.1f", player.tower.range / 20), 810, 440, 300, "center")
 
-            love.graphics.printf(string.format("Health: %s", notations.convertToLetterNotation(tower_value_maxHealth, "precise")), 810, 500, 300, "center")
-            love.graphics.printf(string.format("Regeneration: %s/s", notations.convertToLetterNotation(tower_value_healthRegen, "precise2")), 810, 530, 300, "center")
-            love.graphics.printf(string.format("Damage Resistance: %.2f%%", tower_value_resistance), 810, 560, 300, "center")
-            love.graphics.printf(string.format("Shield Cooldown: %.1fs", tower_value_shield_cooldown), 810, 590, 300, "center")
-            love.graphics.printf(string.format("Shield Duration: %.2fs", tower_value_shield_duration), 810, 620, 300, "center")
+            love.graphics.printf(string.format("Health: %s", notations.convertToLetterNotation(player.tower.maxHealth, "precise")), 810, 500, 300, "center")
+            love.graphics.printf(string.format("Regeneration: %s/s", notations.convertToLetterNotation(player.tower.regeneration, "precise2")), 810, 530, 300, "center")
+            love.graphics.printf(string.format("Damage Resistance: %.2f%%", player.tower.resistance), 810, 560, 300, "center")
+            love.graphics.printf(string.format("Shield Cooldown: %.1fs", player.tower.shieldCooldown), 810, 590, 300, "center")
+            love.graphics.printf(string.format("Shield Duration: %.2fs", player.tower.shieldDuration), 810, 620, 300, "center")
             love.graphics.setFont(font_ViraSansBold28)
-            love.graphics.printf(string.format("Level %s", levelNames[gameplay_difficulty]), 810, 740, 300, "center")
-            local bestWaves = {d1_best_wave, d2_best_wave, d3_best_wave, d4_best_wave}
-            local highestDiffUnlocked = d4_unlocked and 4 or d3_unlocked and 3 or d2_unlocked and 2 or 1
+            love.graphics.printf(string.format("Level %s", levelNames[player.difficulty.difficulty]), 810, 740, 300, "center")
+            local bestWaves = {player.bestWaves.d1, player.bestWaves.d2, player.bestWaves.d3, player.bestWaves.d4}
+            local highestDiffUnlocked = player.difficulty.unlocks.d4 and 4 or player.difficulty.unlocks.d3 and 3 or player.difficulty.unlocks.d2 and 2 or 1
             love.graphics.setFont(font_Afacad24)
-            love.graphics.printf(string.format("Best Wave: %s", bestWaves[gameplay_difficulty] or "None"), 810, 780, 300, "center")
-            if gameplay_difficulty > 1 then
+            love.graphics.printf(string.format("Best Wave: %s", bestWaves[player.difficulty.difficulty] or "None"), 810, 780, 300, "center")
+            if player.difficulty.difficulty > 1 then
                 love.graphics.draw(img_button_arrowLeft, 840, 746)
             end
-            if gameplay_difficulty < highestDiffUnlocked then
+            if player.difficulty.difficulty < highestDiffUnlocked then
                 love.graphics.draw(img_button_arrowRight, 1056, 746)
             end
             love.graphics.setColor(0.1, 0.15, 0.5, 1)
-            love.graphics.rectangle("fill", 860, 900, 200, 80, 4, 4)
+            love.graphics.rectangle("fill", 860, 900, 200, 80, 3, 3)
             love.graphics.setColor(0.3, 0.75, 0.85, 1)
             love.graphics.setLineWidth(2)
-            love.graphics.rectangle("line", 860, 900, 200, 80, 4, 4)
+            love.graphics.rectangle("line", 860, 900, 200, 80, 3, 3)
             love.graphics.setLineWidth(1)
             love.graphics.setFont(font_Afacad28)
             love.graphics.setColor(1, 1, 1, 1)
@@ -104,104 +100,20 @@ function inHub_visual()
             love.graphics.setFont(font_Afacad20)
             love.graphics.printf("Upgrade your tower's initial properties and unlock new upgrades to push your limits even further.", 760, 120, 400, "center")
 
-            --[[ Attack Damage Science upgrade ]]--
-            processUpgradeModule.draw("Damage", 245, 240, tower_value_attack_damage, upgrade_science_attack_damage_cost, upgrade_science_attack_damage_level, "science", math.huge, "precise", nil, nil)
+            processUpgradeModule.reload()
 
-            --[[ Attack Speed Science upgrade ]]--
-            processUpgradeModule.draw("Attack Speed", 605, 240, tower_value_attack_speed, upgrade_science_attack_speed_cost, upgrade_science_attack_speed_level, "science", 101, "precise2", nil, nil)
-
-            if upgrade_unlock_crit then
-
-                --[[ Crit Chance Science upgrade ]]--
-                processUpgradeModule.draw("Critical Chance", 965, 240, tower_value_critical_chance, upgrade_science_critChance_cost, upgrade_science_critChance_level, "science", 101, "precise", nil, "%")
-
-                --[[ Crit Factor Science upgrade ]]--
-                processUpgradeModule.draw("Critical Factor", 1325, 240, tower_value_critical_factor, upgrade_science_critFactor_cost, upgrade_science_critFactor_level, "science", math.huge, "precise2", "x", nil)
+            local sectionTable = {"ATK", "VIT", "UTL"}
+            for i,v in ipairs(sectionTable) do
+                local section = sectionTable[i]
                 
-                if upgrade_unlock_range then
-
-                    --[[ Range Science upgrade ]]--
-                    processUpgradeModule.draw("Range", 245, 310, tower_value_range / 20, upgrade_science_range_cost, upgrade_science_range_level, "science", 61, "precise", nil, nil)
-
-                    --[[if upgrade_unlock_clusterFire then
-                        --Cluster Fire Chance Science upgrade
-                        processUpgradeModule.draw("Cluster Fire Chance", 605, 310, tower_value_clusterFire_chance, upgrade_science_clusterFire_chance_cost, upgrade_science_clusterFire_chance_level, "science", 101, "precise", nil, "%")
-                        processUpgradeModule.draw("Cluster Fire Targets", 965, 310, tower_value_clusterFire_targets, upgrade_science_clusterFire_targets_cost, upgrade_science_clusterFire_targets_level, "science", 5, "brief", nil, nil)
-                        processUpgradeModule.draw("Cluster Fire Factor", 1325, 310, tower_value_clusterFire_factor, upgrade_science_clusterFire_factor_cost, upgrade_science_clusterFire_factor_level, "science", 51, "precise2", "x", nil)
-                        processUpgradeModule.draw("Cluster Fire Duration", 245, 380, tower_value_clusterFire_duration, upgrade_science_clusterFire_duration_cost, upgrade_science_clusterFire_duration_level, "science", 31, "precise2", nil, "s")
-
+                for j,w in ipairs(upgradeModules["science"][section]) do
+                    if upgradeModules["science"][section][j]["precedingUpgrade"] ~= false then
+                        processUpgradeModule.draw(upgradeModules["science"][section][j])
                     else
-                        --Display an "Unlock" panel if the Cluster Fire upgrades are not unlocked
-                        processUnlockPanel.draw("Cluster Fire", 645, 310, upgrade_unlock_range, 12)
-                    end]]--
-                else
-
-                    --[[ Display an "Unlock" panel if the Range upgrade are not unlocked ]]--
-                    processUnlockPanel.draw("Range", 645, 310, upgrade_unlock_range, 4)
-                end
-            else
-
-                --[[ Display an "Unlock" panel if Crit Chance/Factor upgrades are not unlocked ]]--
-                processUnlockPanel.draw("Crit Chance/Factor", 645, 310, upgrade_unlock_crit, 3)
-            end
-
-            --[[ Health Science upgrade ]]--
-            processUpgradeModule.draw("Health", 245, 540, tower_value_maxHealth, upgrade_science_health_cost, upgrade_science_health_level, "science", math.huge, "precise", nil, nil)
-
-            --[[ Regeneration Science upgrade ]]--
-            processUpgradeModule.draw("Regeneration", 605, 540, tower_value_healthRegen, upgrade_science_regeneration_cost, upgrade_science_regeneration_level, "science", math.huge, "precise2", nil, "/s")
-
-            if upgrade_unlock_resistance then
-
-                --[[ Resistance Science upgrade ]]--
-                processUpgradeModule.draw("Resistance", 965, 540, tower_value_resistance, upgrade_science_resistance_cost, upgrade_science_resistance_level, "science", 201, "precise", nil, "%")
-
-                if upgrade_unlock_shield then
-                    --[[ Shield Cooldown Science upgrade ]]--
-                    processUpgradeModule.draw("Shield Cooldown", 1325, 540, tower_value_shield_cooldown, upgrade_science_shieldCooldown_cost, upgrade_science_shieldCooldown_level, "science", 126, "precise", nil, "s")
-
-                    --[[ Shield Duration Science upgrade ]]--
-                    processUpgradeModule.draw("Shield Duration", 245, 610, tower_value_shield_duration, upgrade_science_shieldDuration_cost, upgrade_science_shieldDuration_level, "science", 111, "precise2", nil, "s")
-                
-                    if upgrade_unlock_meteor then
-                        --[[ Meteor Amount Science upgrade ]]--
-                        processUpgradeModule.draw("Meteor Amount", 605, 610, tower_value_meteor_amount, upgrade_science_meteor_amount_cost, upgrade_science_meteor_amount_level, "science", 6, "brief", nil, nil)
-
-                        --[[ Meteor RPM Science upgrade ]]--
-                        processUpgradeModule.draw("Meteor RPM", 965, 610, tower_value_meteor_RPM, upgrade_science_meteor_RPM_cost, upgrade_science_meteor_RPM_level, "science", 40, "precise2", nil, nil)
-                    else
-                        --[[ Display an "Unlock" panel if Meteor upgrades are not unlocked ]]
-                        processUnlockPanel.draw("Meteor", 645, 680, upgrade_unlock_meteor, 15)
+                        processUnlockPanel.draw(unlockPanels[upgradeModules["science"][section][j][14]])
+                        break
                     end
-                else
-                    --[[ Display an "Unlock" panel if Shield Cooldown/Duration upgrades are not unlocked ]]--
-                    processUnlockPanel.draw("Shield", 645, 610, upgrade_unlock_shield, 9)
                 end
-            else
-
-                --[[ Display an "Unlock" panel if the Resistance upgrade are not unlocked ]]--
-                processUnlockPanel.draw("Resistance", 645, 610, upgrade_unlock_resistance, 6)
-            end
-
-            --[[ Copper/wave Science upgrade ]]--
-            processUpgradeModule.draw("Copper/wave", 245, 840, gameplay_copperPerWave, upgrade_science_copperPerWave_cost, upgrade_science_copperPerWave_level, "science", math.huge, "brief", nil, nil)
-
-            --[[ Silver/wave Science upgrade ]]--
-            processUpgradeModule.draw("Silver/wave", 605, 840, gameplay_silverPerWave, upgrade_science_silverPerWave_cost, upgrade_science_silverPerWave_level, "science", math.huge, "brief", nil, nil)
-
-            if upgrade_unlock_resourceBonus then
-
-                --[[ Copper Bonus Science upgrade ]]--
-                processUpgradeModule.draw("Copper Bonus", 965, 840, gameplay_copperBonus, upgrade_science_copperBonus_cost, upgrade_science_copperBonus_level, "science", 451, "precise2", "x", nil)
-
-                --[[ Silver Bonus Science upgrade ]]--
-                processUpgradeModule.draw("Silver Bonus", 1325, 840, gameplay_silverBonus, upgrade_science_silverBonus_cost, upgrade_science_silverBonus_level, "science", 301, "precise2", "x", nil)
-
-            else
-
-                --[[ Display an "Unlock" panel if Resource Bonus upgrades are not unlocked ]]--
-                processUnlockPanel.draw("Resource Bonus", 645, 910, upgrade_unlock_resourceBonus, 5)
-
             end
 
         elseif hubSection == "Nexus" then
@@ -215,55 +127,55 @@ function inHub_visual()
             love.graphics.printf("Unlock unique abilities and get powerful stat buffs.", 760, 120, 400, "center")
 
             --[[ Electrum sub-menu ]]--
-            love.graphics.rectangle("line", 1670, 100, 150, 200, 3, 3)
-            love.graphics.draw(img_currency_silver, 1680, 110)
-            love.graphics.draw(img_currency_gold, 1779, 110)
+            love.graphics.rectangle("line", 1650, 100, 150, 200, 4, 4)
+            love.graphics.draw(img_currency_silver, 1660, 110)
+            love.graphics.draw(img_currency_gold, 1759, 110)
             love.graphics.setFont(font_Vera16)
-            love.graphics.printf("160", 1675, 140, 40, "center")
-            love.graphics.printf("2", 1775, 140, 40, "center")
-            love.graphics.line(1696, 160, 1745, 190)
-            love.graphics.line(1795, 160, 1745, 190)
-            love.graphics.line(1745, 190, 1745, 200)
-            love.graphics.draw(img_currency_electrum, 1729, 200)
-            love.graphics.print("1", 1740, 230)
-            love.graphics.rectangle("line", 1675, 265, 140, 30)
+            love.graphics.printf("160", 1655, 140, 40, "center")
+            love.graphics.printf("2", 1755, 140, 40, "center")
+            love.graphics.line(1676, 160, 1725, 190)
+            love.graphics.line(1775, 160, 1725, 190)
+            love.graphics.line(1725, 190, 1725, 200)
+            love.graphics.draw(img_currency_electrum, 1709, 200)
+            love.graphics.print("1", 1720, 230)
+            love.graphics.rectangle("line", 1655, 265, 140, 30)
             love.graphics.setFont(font_Afacad20)
-            love.graphics.printf("Alloy (24s)", 1675, 265, 140, "center")
+            love.graphics.printf("Alloy (24s)", 1655, 265, 140, "center")
 
-            if electrumAlloying then
+            if not player.canClaim.electrum then
                 love.graphics.setColor(1, 0, 0, 1)
-                love.graphics.rectangle("fill", 1675, 254, 140, 8)
+                love.graphics.rectangle("fill", 1655, 254, 140, 8)
                 love.graphics.setColor(0, 1, 0, 1)
-                love.graphics.rectangle("fill", 1675, 254, (timer_untilElectrum / 24) * 140, 8)
+                love.graphics.rectangle("fill", 1655, 254, (player.timers.electrum / player.cooldowns.electrum) * 140, 8)
             end
 
             --[[ Token sub-menu ]]--
             love.graphics.setColor(1, 1, 1, 1)
-            love.graphics.rectangle("line", 1470, 100, 200, 200, 3, 3)
+            love.graphics.rectangle("line", 1450, 100, 200, 200, 4, 4)
             love.graphics.setFont(font_AfacadBold20)
-            love.graphics.printf("Claim your tokens!", 1470, 110, 200, "center")
-            love.graphics.draw(img_currency_token_big, 1538, 136)
+            love.graphics.printf("Claim your tokens!", 1450, 110, 200, "center")
+            love.graphics.draw(img_currency_token_big, 1518, 136)
             love.graphics.setFont(font_VeraBold18)
-            love.graphics.printf("15", 1520, 200, 100, "center")
-            love.graphics.rectangle("line", 1475, 265, 190, 30)
+            love.graphics.printf("15", 1500, 200, 100, "center")
+            love.graphics.rectangle("line", 1455, 265, 190, 30)
             love.graphics.setFont(font_Afacad20)
-            if not tokensOnCooldown then
-                love.graphics.printf("Claim", 1475, 265, 190, "center")
+            if player.canClaim.tokens then
+                love.graphics.printf("Claim", 1455, 265, 190, "center")
             else
-                love.graphics.printf(string.format("%dm %ds", (tokenCooldown - timer_untilTokens) / 60, (tokenCooldown - timer_untilTokens) % 60), 1475, 265, 190, "center")
+                love.graphics.printf(string.format("%dm %ds", (player.cooldowns.tokens - player.timers.tokens) / 60, (player.cooldowns.tokens - player.timers.tokens) % 60), 1455, 265, 190, "center")
             end
-            if tokensOnCooldown then
+            if not player.canClaim.tokens then
                 love.graphics.setColor(1, 0, 0, 1)
-                love.graphics.rectangle("fill", 1475, 254, 190, 8)
+                love.graphics.rectangle("fill", 1455, 254, 190, 8)
                 love.graphics.setColor(0, 1, 0, 1)
-                love.graphics.rectangle("fill", 1475, 254, (timer_untilTokens / tokenCooldown) * 190, 8)
+                love.graphics.rectangle("fill", 1455, 254, (player.timers.tokens / player.cooldowns.tokens) * 190, 8)
             end
 
             --[[ Buff sub-menu ]]--
             love.graphics.setColor(1, 1, 1, 1)
             love.graphics.rectangle("line", 650, 250, 150, 200, 4, 4)
             love.graphics.printf("Attack Damage", 650, 250, 150, "center")
-            love.graphics.printf(string.format("x%.2f", upgrade_nexus_attack_damage_buff), 650, 280, 150, "center")
+            love.graphics.printf(string.format("x%.2f", player.upgrades.nexus.attackDamage.value), 650, 280, 150, "center")
             love.graphics.setColor(0.6, 0.45, 0.25, 1)
             love.graphics.rectangle("fill", 655, 405, 140, 40)
             love.graphics.setColor(1, 1, 1, 1)
@@ -271,9 +183,9 @@ function inHub_visual()
             love.graphics.setLineWidth(1)
             love.graphics.rectangle("line", 655, 405, 140, 40)
             love.graphics.setFont(font_Afacad24)
-            if upgrade_nexus_attack_damage_level < 41 then
+            if player.upgrades.nexus.attackDamage.level < 41 then
                 love.graphics.draw(img_currency_token, 660, 410)
-                love.graphics.print(upgrade_nexus_attack_damage_cost, 692, 409)
+                love.graphics.print(player.upgrades.nexus.attackDamage.cost, 692, 409)
             else
                 love.graphics.printf("Max", 655, 409, 140, "center")
             end
@@ -283,7 +195,7 @@ function inHub_visual()
             love.graphics.setLineWidth(2)
             love.graphics.rectangle("line", 810, 250, 150, 200, 4, 4)
             love.graphics.printf("Attack Speed", 810, 250, 150, "center")
-            love.graphics.printf(string.format("x%.2f", upgrade_nexus_attack_speed_buff), 810, 280, 150, "center")
+            love.graphics.printf(string.format("x%.2f", player.upgrades.nexus.attackSpeed.value), 810, 280, 150, "center")
             love.graphics.setColor(0.6, 0.45, 0.25, 1)
             love.graphics.rectangle("fill", 815, 405, 140, 40)
             love.graphics.setColor(1, 1, 1, 1)
@@ -291,9 +203,9 @@ function inHub_visual()
             love.graphics.setLineWidth(1)
             love.graphics.rectangle("line", 815, 405, 140, 40)
             love.graphics.setFont(font_Afacad24)
-            if upgrade_nexus_attack_speed_level < 26 then
+            if player.upgrades.nexus.attackSpeed.level < 26 then
                 love.graphics.draw(img_currency_token, 820, 410)
-                love.graphics.print(upgrade_nexus_attack_speed_cost, 852, 409)
+                love.graphics.print(player.upgrades.nexus.attackSpeed.cost, 852, 409)
             else
                 love.graphics.printf("Max", 815, 409, 140, "center")
             end
@@ -303,7 +215,7 @@ function inHub_visual()
             love.graphics.setLineWidth(2)
             love.graphics.rectangle("line", 970, 250, 150, 200, 4, 4)
             love.graphics.printf("Health", 970, 250, 150, "center")
-            love.graphics.printf(string.format("x%.2f", upgrade_nexus_health_buff), 970, 280, 150, "center")
+            love.graphics.printf(string.format("x%.2f", player.upgrades.nexus.health.value), 970, 280, 150, "center")
             love.graphics.setColor(0.6, 0.45, 0.25, 1)
             love.graphics.rectangle("fill", 975, 405, 140, 40)
             love.graphics.setColor(1, 1, 1, 1)
@@ -311,9 +223,9 @@ function inHub_visual()
             love.graphics.setLineWidth(1)
             love.graphics.rectangle("line", 975, 405, 140, 40)
             love.graphics.setFont(font_Afacad24)
-            if upgrade_nexus_health_level < 41 then
+            if player.upgrades.nexus.health.level < 41 then
                 love.graphics.draw(img_currency_token, 980, 410)
-                love.graphics.print(upgrade_nexus_health_cost, 1012, 409)
+                love.graphics.print(player.upgrades.nexus.health.cost, 1012, 409)
             else
                 love.graphics.printf("Max", 975, 409, 140, "center")
             end
@@ -323,7 +235,7 @@ function inHub_visual()
             love.graphics.setLineWidth(2)
             love.graphics.rectangle("line", 1130, 250, 150, 200, 4, 4)
             love.graphics.printf("Regeneration", 1130, 250, 150, "center")
-            love.graphics.printf(string.format("x%.2f", upgrade_nexus_regeneration_buff), 1130, 280, 150, "center")
+            love.graphics.printf(string.format("x%.2f", player.upgrades.nexus.regeneration.value), 1130, 280, 150, "center")
             love.graphics.setColor(0.6, 0.45, 0.25, 1)
             love.graphics.rectangle("fill", 1135, 405, 140, 40)
             love.graphics.setColor(1, 1, 1, 1)
@@ -331,9 +243,9 @@ function inHub_visual()
             love.graphics.setLineWidth(1)
             love.graphics.rectangle("line", 1135, 405, 140, 40)
             love.graphics.setFont(font_Afacad24)
-            if upgrade_nexus_regeneration_level < 41 then
+            if player.upgrades.nexus.regeneration.level < 41 then
                 love.graphics.draw(img_currency_token, 1140, 410)
-                love.graphics.print(upgrade_nexus_regeneration_cost, 1172, 409)
+                love.graphics.print(player.upgrades.nexus.regeneration.cost, 1172, 409)
             else
                 love.graphics.printf("Max", 1135, 409, 140, "center")
             end
@@ -345,6 +257,9 @@ function inHub_visual()
             love.graphics.setLineStyle("smooth")
             love.graphics.setLineWidth(2)
             love.graphics.rectangle("line", 650, 550, 630, 150, 4, 4)
+            love.graphics.setLineStyle("rough")
+            love.graphics.setLineWidth(1)
+            love.graphics.line(650, 585, 1280, 585)
             love.graphics.setFont(font_AfacadBold24)
             love.graphics.printf("Wave Skip", 650, 550, 630, "center")
             love.graphics.setColor(0.6, 0.45, 0.25, 1)
@@ -354,16 +269,20 @@ function inHub_visual()
             love.graphics.setLineWidth(1)
             love.graphics.rectangle("line", 1155, 590, 120, 105)
             love.graphics.setFont(font_Afacad24)
-            if ability_unlock_waveSkip then
+            if player.abilities.waveSkip.unlocked then
+                love.graphics.setColor(0.5, 0.3, 0.1, 1)
+                love.graphics.rectangle("fill", 1155, 590, 120, 25)
+                love.graphics.setColor(1, 1, 1, 1)
+                love.graphics.rectangle("line", 1155, 590, 120, 25)
                 love.graphics.setFont(font_Afacad20)
-                love.graphics.printf("Chance +2%", 1155, 590, 120, "center")
-                if ability_waveSkip_chance_level < 16 then
-                    love.graphics.draw(img_currency_electrum, 1195, 632, 0, 20/32)
+                love.graphics.printf("Chance", 1155, 589, 120, "center")
+                if player.abilities.waveSkip.level < 11 then
+                    love.graphics.draw(img_currency_electrum, 1195, 642, 0, 20/32)
                     love.graphics.setFont(font_Afacad24)
-                    love.graphics.print(notations.convertToLetterNotation(ability_waveSkip_chance_cost, "brief"), 1214, 625)
+                    love.graphics.print(notations.convertToLetterNotation(player.abilities.waveSkip.cost, "brief"), 1214, 635)
                 else
                     love.graphics.setFont(font_Afacad24)
-                    love.graphics.printf("Max", 1155, 625, 120, "center")
+                    love.graphics.printf("Max", 1155, 635, 120, "center")
                 end
             else
                 love.graphics.printf("Unlock", 1155, 590, 120, "center")
@@ -371,13 +290,13 @@ function inHub_visual()
                 love.graphics.print("20", 1209, 625)
             end
             love.graphics.setFont(font_Afacad20)
-            love.graphics.printf(string.format("There is a %d%% chance of skipping a wave and immediately advancing to the next wave.", ability_waveSkip_chance), 655, 600, 400, "left")
+            love.graphics.printf(string.format("There is a %d%% chance of skipping a wave and immediately advancing to the next wave.", player.abilities.waveSkip.value), 660, 612, 400, "left")
         end
     end
 end
 
 function inHub_mouse(x, y)
-    if inHub then
+    if player.location == "hub" then
         
         --[[ Process mouse clicks on sidebar, go to different sections based on the button pressed ]]--
         if x >= 0 and x <= 50 and y >= 0 and y <= 360 then
@@ -389,319 +308,134 @@ function inHub_mouse(x, y)
         if x >= 0 and x <= 50 and y >= 720 and y <= 1080 then
             hubSection = "Nexus"
         end
-        if x >= 1740 and x <= 1890 and y >= 30 and y <= 80 then
-            saveGame()
-        end
         
         --[[ Exit Hub and go to battle ]]--
         if hubSection == "Main" then
             if x >= 860 and x <= 1060 and y >= 900 and y <= 980 then
-                inHub = false
+                player.location = "round"
+                gameplay.difficulty = player.difficulty.difficulty
                 resetRoundValues()
+                towers.reload()
                 gameOver = false
-                paused = false
+                player.menu.paused = false
                 gameSpeed = 1
             end
-            local levelUnlocks = {d2_unlocked, d3_unlocked, d4_unlocked}
-            if x >= 840 and x <= 864 and y >= 746 and y <= 770 and gameplay_difficulty > 1 and levelUnlocks[gameplay_difficulty - 1] then
-                gameplay_difficulty = gameplay_difficulty - 1
+            local levelUnlocks = {player.difficulty.unlocks.d2, player.difficulty.unlocks.d3, player.difficulty.unlocks.d4}
+            if x >= 840 and x <= 864 and y >= 746 and y <= 770 and player.difficulty.difficulty > 1 and levelUnlocks[player.difficulty.difficulty - 1] then
+                player.difficulty.difficulty = player.difficulty.difficulty - 1
                 
-            elseif x >= 1056 and x <= 1080 and y >= 746 and y <= 770 and gameplay_difficulty < 4 and levelUnlocks[gameplay_difficulty] then
-                gameplay_difficulty = gameplay_difficulty + 1
+            elseif x >= 1056 and x <= 1080 and y >= 746 and y <= 770 and player.difficulty.difficulty < 4 and levelUnlocks[player.difficulty.difficulty] then
+                player.difficulty.difficulty = player.difficulty.difficulty + 1
             end
 
         elseif hubSection == "Science" then
 
-            --[[ Attack Damage Science upgrade ]]--
-            if x >= 502 and x <= 592 and y >= 243 and y <= 297 then
-                if currentSilver >= upgrade_science_attack_damage_cost then
-                    currentSilver = currentSilver - upgrade_science_attack_damage_cost
-                    upgrade_science_attack_damage_level = upgrade_science_attack_damage_level + 1
-                    upgrade_science_attack_damage_cost = math.floor(0.4 * upgrade_science_attack_damage_level^2 + 2.6)
-                    tower_value_attack_damage = ((0.25 * upgrade_science_attack_damage_level - 0.25)^3 + 4) * upgrade_nexus_attack_damage_buff
-                end
-            end
+            player.upgrades.science.attackDamage.level, player.upgrades.science.attackDamage.cost, player.tower.attackDamage = processUpgradeModule.upgrade(x, y, upgradeModules["science"]["ATK"][1], reloadFormulae(upgradeModules["science"]["ATK"][1][8] + 1)["science"]["ATK"][1][1], reloadFormulae(upgradeModules["science"]["ATK"][1][8] + 1)["science"]["ATK"][1][2])
+            player.upgrades.science.attackSpeed.level, player.upgrades.science.attackSpeed.cost, player.tower.attackSpeed = processUpgradeModule.upgrade(x, y, upgradeModules["science"]["ATK"][2], reloadFormulae(upgradeModules["science"]["ATK"][2][8] + 1)["science"]["ATK"][2][1], reloadFormulae(upgradeModules["science"]["ATK"][2][8] + 1)["science"]["ATK"][2][2])
+            player.upgrades.science.critChance.level, player.upgrades.science.critChance.cost, player.tower.critChance = processUpgradeModule.upgrade(x, y, upgradeModules["science"]["ATK"][3], reloadFormulae(upgradeModules["science"]["ATK"][3][8] + 1)["science"]["ATK"][3][1], reloadFormulae(upgradeModules["science"]["ATK"][3][8] + 1)["science"]["ATK"][3][2])
+            player.upgrades.science.critFactor.level, player.upgrades.science.critFactor.cost, player.tower.critFactor = processUpgradeModule.upgrade(x, y, upgradeModules["science"]["ATK"][4], reloadFormulae(upgradeModules["science"]["ATK"][4][8] + 1)["science"]["ATK"][4][1], reloadFormulae(upgradeModules["science"]["ATK"][4][8] + 1)["science"]["ATK"][4][2])
+            
+            player.upgrades.science.health.level, player.upgrades.science.health.cost, player.tower.maxHealth = processUpgradeModule.upgrade(x, y, upgradeModules["science"]["VIT"][1], reloadFormulae(upgradeModules["science"]["VIT"][1][8] + 1)["science"]["VIT"][1][1], reloadFormulae(upgradeModules["science"]["VIT"][1][8] + 1)["science"]["VIT"][1][2])
+            player.upgrades.science.regeneration.level, player.upgrades.science.regeneration.cost, player.tower.regeneration = processUpgradeModule.upgrade(x, y, upgradeModules["science"]["VIT"][2], reloadFormulae(upgradeModules["science"]["VIT"][2][8] + 1)["science"]["VIT"][2][1], reloadFormulae(upgradeModules["science"]["VIT"][2][8] + 1)["science"]["VIT"][2][2])
+            player.upgrades.science.resistance.level, player.upgrades.science.resistance.cost, player.tower.resistance = processUpgradeModule.upgrade(x, y, upgradeModules["science"]["VIT"][3], reloadFormulae(upgradeModules["science"]["VIT"][3][8] + 1)["science"]["VIT"][3][1], reloadFormulae(upgradeModules["science"]["VIT"][3][8] + 1)["science"]["VIT"][3][2])
+            player.upgrades.science.shieldCooldown.level, player.upgrades.science.shieldCooldown.cost, player.tower.shieldCooldown = processUpgradeModule.upgrade(x, y, upgradeModules["science"]["VIT"][4], reloadFormulae(upgradeModules["science"]["VIT"][4][8] + 1)["science"]["VIT"][4][1], reloadFormulae(upgradeModules["science"]["VIT"][4][8] + 1)["science"]["VIT"][4][2])
+            player.upgrades.science.shieldDuration.level, player.upgrades.science.shieldDuration.cost, player.tower.shieldDuration = processUpgradeModule.upgrade(x, y, upgradeModules["science"]["VIT"][5], reloadFormulae(upgradeModules["science"]["VIT"][5][8] + 1)["science"]["VIT"][5][1], reloadFormulae(upgradeModules["science"]["VIT"][5][8] + 1)["science"]["VIT"][5][2])
+            player.upgrades.science.meteorAmount.level, player.upgrades.science.meteorAmount.cost, player.tower.meteorAmount = processUpgradeModule.upgrade(x, y, upgradeModules["science"]["VIT"][6], reloadFormulae(upgradeModules["science"]["VIT"][6][8] + 1)["science"]["VIT"][6][1], reloadFormulae(upgradeModules["science"]["VIT"][6][8] + 1)["science"]["VIT"][6][2])
+            player.upgrades.science.meteorRPM.level, player.upgrades.science.meteorRPM.cost, player.tower.meteorRPMs = processUpgradeModule.upgrade(x, y, upgradeModules["science"]["VIT"][7], reloadFormulae(upgradeModules["science"]["VIT"][7][8] + 1)["science"]["VIT"][7][1], reloadFormulae(upgradeModules["science"]["VIT"][7][8] + 1)["science"]["VIT"][7][2])
 
-            --[[ Attack Speed Science upgrade ]]--
-            if x >= 862 and x <= 952 and y >= 243 and y <= 297 then
-                if currentSilver >= upgrade_science_attack_speed_cost and upgrade_science_attack_speed_level < 101 then
-                    currentSilver = currentSilver - upgrade_science_attack_speed_cost
-                    upgrade_science_attack_speed_level = upgrade_science_attack_speed_level + 1
-                    upgrade_science_attack_speed_cost = math.floor(8^((upgrade_science_attack_speed_level - 1) / 20) + 3 * upgrade_science_attack_speed_level + 4)
-                    tower_value_attack_speed = (math.min(0.5 + 0.04 * (upgrade_science_attack_speed_level - 1), 4.5)) * upgrade_nexus_attack_speed_buff
-                end
-            end
+            player.upgrades.science.copperPerWave.level, player.upgrades.science.copperPerWave.cost, player.tower.copperPerWave = processUpgradeModule.upgrade(x, y, upgradeModules["science"]["UTL"][1], reloadFormulae(upgradeModules["science"]["UTL"][1][8] + 1)["science"]["UTL"][1][1], reloadFormulae(upgradeModules["science"]["UTL"][1][8] + 1)["science"]["UTL"][1][2])
+            player.upgrades.science.silverPerWave.level, player.upgrades.science.silverPerWave.cost, player.tower.silverPerWave = processUpgradeModule.upgrade(x, y, upgradeModules["science"]["UTL"][2], reloadFormulae(upgradeModules["science"]["UTL"][2][8] + 1)["science"]["UTL"][2][1], reloadFormulae(upgradeModules["science"]["UTL"][2][8] + 1)["science"]["UTL"][2][2])
+            player.upgrades.science.copperBonus.level, player.upgrades.science.copperBonus.cost, player.tower.copperBonus = processUpgradeModule.upgrade(x, y, upgradeModules["science"]["UTL"][3], reloadFormulae(upgradeModules["science"]["UTL"][3][8] + 1)["science"]["UTL"][3][1], reloadFormulae(upgradeModules["science"]["UTL"][3][8] + 1)["science"]["UTL"][3][2])
+            player.upgrades.science.silverBonus.level, player.upgrades.science.silverBonus.cost, player.tower.silverBonus = processUpgradeModule.upgrade(x, y, upgradeModules["science"]["UTL"][4], reloadFormulae(upgradeModules["science"]["UTL"][4][8] + 1)["science"]["UTL"][4][1], reloadFormulae(upgradeModules["science"]["UTL"][4][8] + 1)["science"]["UTL"][4][2])
 
-            if upgrade_unlock_crit then
-
-                --[[ Crit Chance Science upgrade ]]--
-                if x >= 1222 and x <= 1312 and y >= 243 and y <= 297 then
-                    if currentSilver >= upgrade_science_critChance_cost and upgrade_science_critChance_level < 101 then
-                        currentSilver = currentSilver - upgrade_science_critChance_cost
-                        upgrade_science_critChance_level = upgrade_science_critChance_level + 1
-                        upgrade_science_critChance_cost = math.floor((upgrade_science_critChance_level / 2)^2 + 4 * upgrade_science_critChance_level + 1.75)
-                        tower_value_critical_chance = math.min((upgrade_science_critChance_level - 1) / 2, 50)
-                    end
-                end
-
-                --[[ Crit Factor Science upgrade ]]--
-                if x >= 1582 and x <= 1672 and y >= 243 and y <= 297 then
-                    if currentSilver >= upgrade_science_critFactor_cost then
-                        currentSilver = currentSilver - upgrade_science_critFactor_cost
-                        upgrade_science_critFactor_level = upgrade_science_critFactor_level + 1
-                        upgrade_science_critFactor_cost = math.floor(0.2 * (upgrade_science_critFactor_level^2) + 1.8)
-                        tower_value_critical_factor = 1 + ((upgrade_science_critFactor_level - 1) / 20)
-                    end
-                end
-
-                if upgrade_unlock_range then
-                    --[[ Range Science upgrade ]]--
-                    if x >= 502 and x <= 592 and y >= 313 and y <= 367 then
-                        if currentSilver >= upgrade_science_range_cost and upgrade_science_range_level < 61 then
-                            currentSilver = currentSilver - upgrade_science_range_cost
-                            upgrade_science_range_level = upgrade_science_range_level + 1
-                            upgrade_science_range_cost = math.floor((upgrade_science_range_level^2 + 5 * upgrade_science_range_level) / 3 + 2 * upgrade_science_range_level + 4)
-                            tower_value_range = math.min(240 + 2 * (upgrade_science_range_level - 1), 360)
-                        end
-                    end
-
-                    if upgrade_unlock_clusterFire then
-                        --[[ Cluster Fire Chance Science upgrade ]]--
-                        if x >= 862 and x <= 942 and y >= 313 and y <= 367 then
-                            if currentSilver >= upgrade_science_clusterFire_chance_cost and upgrade_science_clusterFire_chance_level < 101 then
-                                currentSilver = currentSilver - upgrade_science_clusterFire_chance_cost
-                                upgrade_science_clusterFire_chance_level = upgrade_science_clusterFire_chance_level + 1
-                                upgrade_science_clusterFire_chance_cost = math.floor((0.5 * (upgrade_science_clusterFire_chance_level - 1))^2 + 5 * (upgrade_science_clusterFire_chance_level - 1) + 30)
-                                tower_value_clusterFire_chance = math.min(0.3 * (upgrade_science_clusterFire_chance_level - 1), 30)
-                            end
-                        end
-                    else
-                        upgrade_unlock_clusterFire = processUnlockPanel.click(x, y, 1182, 313, upgrade_unlock_clusterFire, 12)
-                    end
-
-                else
-                    --[[ Range upgrade unlock ]]--
-                    upgrade_unlock_range = processUnlockPanel.click(x, y, 1182, 313, upgrade_unlock_range, 4)
-                end
-            else
-
-                --[[ Crit Chance/Factor upgrade unlock ]]--
-                upgrade_unlock_crit = processUnlockPanel.click(x, y, 1182, 313, upgrade_unlock_crit, 4)
-            end
-
-            --[[ Health Science upgrade ]]--
-            if x >= 502 and x <= 592 and y >= 543 and y <= 597 then
-                if currentSilver >= upgrade_science_health_cost then
-                    currentSilver = currentSilver - upgrade_science_health_cost
-                    upgrade_science_health_level = upgrade_science_health_level + 1
-                    upgrade_science_health_cost = math.floor(0.6 * upgrade_science_health_level^2 + 3.4)
-                    tower_value_maxHealth = ((0.3 * upgrade_science_health_level - 0.3)^3.75 + 14.6 + 0.4 * upgrade_science_health_level) * upgrade_nexus_health_buff
-                end
-            end
-
-            --[[ Regeneration Science upgrade ]]--
-            if x >= 862 and x <= 952 and y >= 543 and y <= 597 then
-                if currentSilver >= upgrade_science_regeneration_cost then
-                    currentSilver = currentSilver - upgrade_science_regeneration_cost
-                    upgrade_science_regeneration_level = upgrade_science_regeneration_level + 1
-                    upgrade_science_regeneration_cost = math.floor(upgrade_science_regeneration_level^1.75 + 2 * upgrade_science_regeneration_level + 3)
-                    tower_value_healthRegen = (((0.8 * upgrade_science_regeneration_level - 0.8)^2.75) / 50) * upgrade_nexus_regeneration_buff
-                end
-            end
-
-            if upgrade_unlock_resistance then
-
-                --[[ Resistance Science upgrade ]]--
-                if x >= 1222 and x <= 1312 and y >= 543 and y <= 597 then
-                    if currentSilver >= upgrade_science_resistance_cost and upgrade_science_resistance_level < 121 then
-                        currentSilver = currentSilver - upgrade_science_resistance_cost
-                        upgrade_science_resistance_level = upgrade_science_resistance_level + 1
-                        upgrade_science_resistance_cost = math.floor(upgrade_science_resistance_level * math.sqrt(2 * upgrade_science_resistance_level) + 3 - math.sqrt(2))
-                        tower_value_resistance = math.min(0.75 * (upgrade_science_resistance_level - 1), 90)
-                    end
-                end
-
-                if upgrade_unlock_shield then
-                    --[[ Shield Cooldown Science upgrade ]]--
-                    if x >= 1582 and x <= 1672 and y >= 543 and y <= 597 then
-                        if currentSilver >= upgrade_science_shieldCooldown_cost and upgrade_science_shieldCooldown_level < 126 then
-                            currentSilver = currentSilver - upgrade_science_shieldCooldown_cost
-                            upgrade_science_shieldCooldown_level = upgrade_science_shieldCooldown_level + 1
-                            upgrade_science_shieldCooldown_cost = math.floor(upgrade_science_shieldCooldown_level^(math.log(upgrade_science_shieldCooldown_level, 10)) + 3)
-                            tower_value_shield_cooldown = math.max(120 - 0.6 * (upgrade_science_shieldCooldown_level - 1), 42)
-                        end
-                    end
-
-                    --[[ Shield Duration Science upgrade ]]--
-                    if x >= 502 and x <= 592 and y >= 613 and y <= 667 then
-                        if currentSilver >= upgrade_science_shieldDuration_cost and upgrade_science_shieldDuration_level < 111 then
-                            currentSilver = currentSilver - upgrade_science_shieldDuration_cost
-                            upgrade_science_shieldDuration_level = upgrade_science_shieldDuration_level + 1
-                            upgrade_science_shieldDuration_cost = math.floor((upgrade_science_shieldDuration_level)^(math.log(upgrade_science_shieldDuration_level) / 2) + 3)
-                            tower_value_shield_duration = math.min(0.05 * (upgrade_science_shieldDuration_level - 1) + 0.5, 6)
-                        end
-                    end
-
-                    if upgrade_unlock_meteor then
-                        --[[ Meteor Amount Science upgrade ]]--
-                        if x >= 862 and x <= 952 and y >= 613 and y <= 667 then
-                            if currentSilver >= upgrade_science_meteor_amount_cost and upgrade_science_meteor_amount_level < 6 then
-                                currentSilver = currentSilver - upgrade_science_meteor_amount_cost
-                                upgrade_science_meteor_amount_level = upgrade_science_meteor_amount_level + 1
-                                upgrade_science_meteor_amount_cost = math.floor((16 * upgrade_science_meteor_amount_level)^2 + 144)
-                                tower_value_meteor_amount = math.min(upgrade_science_meteor_amount_level - 1, 5)
-                            end
-                        end
-
-                        --[[ Meteor RPM Science upgrade ]]--
-                        if x >= 1222 and x <= 1312 and y >= 613 and y <= 667 then
-                            if currentSilver >= upgrade_science_meteor_RPM_cost and upgrade_science_meteor_RPM_level < 40 then
-                                currentSilver = currentSilver - upgrade_science_meteor_RPM_cost
-                                upgrade_science_meteor_RPM_level = upgrade_science_meteor_RPM_level + 1
-                                upgrade_science_meteor_RPM_cost = math.floor((3 * upgrade_science_meteor_RPM_level)^2 + 41)
-                                tower_value_meteor_RPM = math.min(0.15 * upgrade_science_meteor_RPM_level + 0.25, 6.25)
-                            end
-                        end
-                    else
-                        --[[ Meteor upgrades unlock ]]--
-                        upgrade_unlock_meteor = processUnlockPanel.click(x, y, 1182, 683, upgrade_unlock_meteor, 15)
-                    end
-                else
-                    --[[ Shield Cooldown/Duration upgrade unlock ]]--
-                    upgrade_unlock_shield = processUnlockPanel.click(x, y, 1182, 613, upgrade_unlock_shield, 9)
-                end
-            else
-
-                --[[ Resistance upgrade unlock ]]--
-                upgrade_unlock_resistance = processUnlockPanel.click(x, y, 1182, 613, upgrade_unlock_resistance, 6)
-            end
-
-            --[[ Copper/wave Science upgrade ]]--
-            if x >= 502 and x <= 592 and y >= 843 and y <= 897 then
-                if currentSilver >= upgrade_science_copperPerWave_cost then
-                    currentSilver = currentSilver - upgrade_science_copperPerWave_cost
-                    upgrade_science_copperPerWave_level = upgrade_science_copperPerWave_level + 1
-                    upgrade_science_copperPerWave_cost = math.floor((upgrade_science_copperPerWave_level^2 + upgrade_science_copperPerWave_level + 1) * 3 + 11)
-                    gameplay_copperPerWave = 4 * (upgrade_science_copperPerWave_level - 1)
-                end
-            end
-
-            --[[ Silver/wave Science upgrade ]]--
-            if x >= 862 and x <= 952 and y >= 843 and y <= 897 then
-                if currentSilver >= upgrade_science_silverPerWave_cost then
-                    currentSilver = currentSilver - upgrade_science_silverPerWave_cost
-                    upgrade_science_silverPerWave_level = upgrade_science_silverPerWave_level + 1
-                    upgrade_science_silverPerWave_cost = math.floor(((8 * upgrade_science_silverPerWave_level) / 5)^2 + 27.44)
-                    gameplay_silverPerWave = 3 * (upgrade_science_silverPerWave_level - 1)
-                end
-            end
-
-            if upgrade_unlock_resourceBonus then
-
-                --[[ Copper Bonus Science upgrade ]]--
-                if x >= 1222 and x <= 1312 and y >= 843 and y <= 897 then
-                    if currentSilver >= upgrade_science_copperBonus_cost and upgrade_science_copperBonus_level < 451 then
-                        currentSilver = currentSilver - upgrade_science_copperBonus_cost
-                        upgrade_science_copperBonus_level = upgrade_science_copperBonus_level + 1
-                        upgrade_science_copperBonus_cost = math.floor((0.4 * (upgrade_science_copperBonus_level - 1))^1.9 + 8)
-                        gameplay_copperBonus = math.min(1 + 0.02 * (upgrade_science_copperBonus_level - 1), 10)
-                    end
-                end
-
-                --[[ Silver Bonus Science upgrade ]]--
-                if x >= 1582 and x <= 1672 and y >= 843 and y <= 897 then
-                    if currentSilver >= upgrade_science_silverBonus_cost and upgrade_science_silverBonus_level < 301 then
-                        currentSilver = currentSilver - upgrade_science_silverBonus_cost
-                        upgrade_science_silverBonus_level = upgrade_science_silverBonus_level + 1
-                        upgrade_science_silverBonus_cost = math.floor(0.4 * upgrade_science_silverBonus_level^2 + upgrade_science_silverBonus_level + 8.6)
-                        gameplay_silverBonus = math.min(1 + 0.01 * (upgrade_science_silverBonus_level - 1), 4)
-                    end
-                end
-
-            else
-
-                --[[ Resource Bonus upgrade unlock ]]--
-                upgrade_unlock_resourceBonus = processUnlockPanel.click(x, y, 1182, 913, upgrade_unlock_resourceBonus, 5)
-            end
+            unlockPanelsPressed = 0
+            player.upgrades.unlocks.crit = processUnlockPanel.clickCheck(x, y, unlockPanels["crit"])
+            player.upgrades.unlocks.range = processUnlockPanel.clickCheck(x, y, unlockPanels["range"])
+            player.upgrades.unlocks.resistance = processUnlockPanel.clickCheck(x, y, unlockPanels["resistance"])
+            player.upgrades.unlocks.shield = processUnlockPanel.clickCheck(x, y, unlockPanels["shield"])
+            player.upgrades.unlocks.meteor = processUnlockPanel.clickCheck(x, y, unlockPanels["meteor"])
+            player.upgrades.unlocks.resourceBonus = processUnlockPanel.clickCheck(x, y, unlockPanels["resourceBonus"])
 
         elseif hubSection == "Nexus" then
-            --[[ If in Nexus, clicking the Alloy button starts the Electrum alloying process after spending 40 Silver and 4 Gold ]]--
-            if x >= 1675 and x <= 1815 and y >= 265 and y <= 295 then
-                if currentSilver >= 160 and currentGold >= 2 and not electrumAlloying then
-                    timer_untilElectrum = 0
-                    electrumAlloying = true
-                    currentSilver = currentSilver - 160
-                    currentGold = currentGold - 2
+            --[[ If in Nexus, clicking the Alloy button starts the Electrum alloying process after spending 160 Silver and 2 Gold ]]--
+            if x >= 1655 and x <= 1795 and y >= 265 and y <= 295 then
+                if player.currencies.currentSilver >= 160 and player.currencies.currentGold >= 2 and player.canClaim.electrum then
+                    player.canClaim.electrum = false
+                    player.timers.electrum = 0
+                    player.currencies.currentSilver = player.currencies.currentSilver - 160
+                    player.currencies.currentGold = player.currencies.currentGold - 2
                 end
             end
 
             --[[ Claiming tokens ]]--
-            if x >= 1475 and x <= 1665 and y >= 265 and y <= 295 then
-                if not tokensOnCooldown then
-                    currentTokens = currentTokens + 15
-                    timer_untilTokens = 0
-                    tokensOnCooldown = true
+            if x >= 1455 and x <= 1645 and y >= 265 and y <= 295 then
+                if player.canClaim.tokens then
+                    player.currencies.currentTokens = player.currencies.currentTokens + 15
+                    player.canClaim.tokens = false
+                    player.timers.tokens = 0
                 end
             end
 
             --[[ Attack Damage stat buff ]]--
             if x >= 655 and x <= 795 and y >= 405 and y <= 445 then
-                if currentTokens >= upgrade_nexus_attack_damage_cost and upgrade_nexus_attack_damage_level < 41 then
-                    currentTokens = currentTokens - upgrade_nexus_attack_damage_cost
-                    upgrade_nexus_attack_damage_level = upgrade_nexus_attack_damage_level + 1
-                    upgrade_nexus_attack_damage_cost = 50 + ((upgrade_nexus_attack_damage_level * (upgrade_nexus_attack_damage_level - 1)) / 2) * 10
-                    upgrade_nexus_attack_damage_buff = math.min(1 + (upgrade_nexus_attack_damage_level - 1) * 10/100, 5)
-                    tower_value_attack_damage = ((0.2 * upgrade_science_attack_damage_level - 0.2)^2.75 + 4 + upgrade_science_attack_damage_level) * upgrade_nexus_attack_damage_buff
+                if player.currencies.currentTokens >= player.upgrades.nexus.attackDamage.cost and player.upgrades.nexus.attackDamage.level < 41 then
+                    player.currencies.currentTokens = player.currencies.currentTokens - player.upgrades.nexus.attackDamage.cost
+                    player.upgrades.nexus.attackDamage.level = player.upgrades.nexus.attackDamage.level + 1
+                    player.upgrades.nexus.attackDamage.cost = 50 + ((player.upgrades.nexus.attackDamage.level * (player.upgrades.nexus.attackDamage.level - 1)) / 2) * 10
+                    player.upgrades.nexus.attackDamage.value = math.min(1 + (player.upgrades.nexus.attackDamage.level - 1) * 10/100, 5)
+                    player.tower.attackDamage = ((0.25 * player.upgrades.science.attackDamage.level - 0.25)^3 + 4 + player.upgrades.nexus.attackDamage.level) * player.upgrades.nexus.attackDamage.value
                 end
+                processUpgradeModule.reload()
             end
 
             --[[ Attack Speed stat buff ]]--
             if x >= 815 and x <= 955 and y >= 405 and y <= 445 then
-                if currentTokens >= upgrade_nexus_attack_speed_cost and upgrade_nexus_attack_speed_level < 26 then
-                    currentTokens = currentTokens - upgrade_nexus_attack_speed_cost
-                    upgrade_nexus_attack_speed_level = upgrade_nexus_attack_speed_level + 1
-                    upgrade_nexus_attack_speed_cost = 50 + ((upgrade_nexus_attack_speed_level * (upgrade_nexus_attack_speed_level - 1)) / 2) * 10
-                    upgrade_nexus_attack_speed_buff = math.min(1 + (upgrade_nexus_attack_speed_level - 1) * 4/100, 2)
-                    tower_value_attack_speed = (math.min(0.5 + 0.04 * (upgrade_science_attack_speed_level - 1), 4.5)) * upgrade_nexus_attack_speed_buff
+                if player.currencies.currentTokens >= player.upgrades.nexus.attackSpeed.cost and player.upgrades.nexus.attackSpeed.level < 26 then
+                    player.currencies.currentTokens = player.currencies.currentTokens - player.upgrades.nexus.attackSpeed.cost
+                    player.upgrades.nexus.attackSpeed.level = player.upgrades.nexus.attackSpeed.level + 1
+                    player.upgrades.nexus.attackSpeed.cost = 50 + ((player.upgrades.nexus.attackSpeed.level * (player.upgrades.nexus.attackSpeed.level - 1)) / 2) * 10
+                    player.upgrades.nexus.attackSpeed.value = math.min(1 + (player.upgrades.nexus.attackSpeed.level - 1) * 4/100, 2)
+                    player.tower.attackSpeed = (math.min(0.5 + 0.04 * (player.upgrades.science.attackSpeed.level - 1), 4.5)) * player.upgrades.nexus.attackSpeed.value
                 end
+                processUpgradeModule.reload()
             end
 
             --[[ Health stat buff ]]--
             if x >= 975 and x <= 1115 and y >= 405 and y <= 445 then
-                if currentTokens >= upgrade_nexus_health_cost and upgrade_nexus_health_level < 41 then
-                    currentTokens = currentTokens - upgrade_nexus_health_cost
-                    upgrade_nexus_health_level = upgrade_nexus_health_level + 1
-                    upgrade_nexus_health_cost = 50 + ((upgrade_nexus_health_level * (upgrade_nexus_health_level - 1)) / 2) * 10
-                    upgrade_nexus_health_buff = math.min(1 + (upgrade_nexus_health_level - 1) * 10/100, 5)
-                    tower_value_maxHealth = ((0.2 * upgrade_science_health_level - 0.2)^3.75 + 4 + upgrade_science_health_level) * upgrade_nexus_health_buff
+                if player.currencies.currentTokens >= player.upgrades.nexus.health.cost and player.upgrades.nexus.health.level < 41 then
+                    player.currencies.currentTokens = player.currencies.currentTokens - player.upgrades.nexus.health.cost
+                    player.upgrades.nexus.health.level = player.upgrades.nexus.health.level + 1
+                    player.upgrades.nexus.health.cost = 50 + ((player.upgrades.nexus.health.level * (player.upgrades.nexus.health.level - 1)) / 2) * 10
+                    player.upgrades.nexus.health.value = math.min(1 + (player.upgrades.nexus.health.level - 1) * 10/100, 5)
+                    player.tower.maxHealth = ((0.3 * player.upgrades.science.health.level - 0.3)^3.75 + 14.6 + 0.4 * player.upgrades.science.health.level) * player.upgrades.nexus.health.value
                 end
+                processUpgradeModule.reload()
             end
 
             --[[ Regeneration stat buff ]]--
             if x >= 1135 and x <= 1275 and y >= 405 and y <= 445 then
-                if currentTokens >= upgrade_nexus_regeneration_cost and upgrade_nexus_regeneration_level < 41 then
-                    currentTokens = currentTokens - upgrade_nexus_regeneration_cost
-                    upgrade_nexus_regeneration_level = upgrade_nexus_regeneration_level + 1
-                    upgrade_nexus_regeneration_cost = 50 + ((upgrade_nexus_regeneration_level * (upgrade_nexus_regeneration_level - 1)) / 2) * 10
-                    upgrade_nexus_regeneration_buff = math.min(1 + (upgrade_nexus_regeneration_level - 1) * 10/100, 5)
-                    tower_value_healthRegen = (((2 * upgrade_science_regeneration_level + 1)^2) / 50 - 0.18) * upgrade_nexus_regeneration_buff
+                if player.currencies.currentTokens >= player.upgrades.nexus.regeneration.cost and player.upgrades.nexus.regeneration.level < 41 then
+                    player.currencies.currentTokens = player.currencies.currentTokens - player.upgrades.nexus.regeneration.cost
+                    player.upgrades.nexus.regeneration.level = player.upgrades.nexus.regeneration.level + 1
+                    player.upgrades.nexus.regeneration.cost = 50 + ((player.upgrades.nexus.regeneration.level * (player.upgrades.nexus.regeneration.level - 1)) / 2) * 10
+                    player.upgrades.nexus.regeneration.value = math.min(1 + (player.upgrades.nexus.regeneration.level - 1) * 10/100, 5)
+                    player.tower.regeneration = (((0.8 * player.upgrades.science.regeneration.level - 0.8)^2.75) / 50) * player.upgrades.nexus.regeneration.value
                 end
+                processUpgradeModule.reload()
             end
 
             if x >= 1155 and x <= 1275 and y >= 590 and y <= 695 then
-                if ability_unlock_waveSkip then
-                    if currentElectrum >= ability_waveSkip_chance_cost and ability_waveSkip_chance_level < 16 then
-                        currentElectrum = currentElectrum - ability_waveSkip_chance_cost
-                        ability_waveSkip_chance_level = ability_waveSkip_chance_level + 1
-                        ability_waveSkip_chance_cost = (ability_waveSkip_chance_level * (ability_waveSkip_chance_level - 1)) / 2 + 4
-                        ability_waveSkip_chance = 2 * ability_waveSkip_chance_level + 3
-                    end
-                elseif not ability_unlock_waveSkip then
-                    if currentElectrum >= 20 then
-                        currentElectrum = currentElectrum - 20
-                        ability_unlock_waveSkip = true
-                        ability_waveSkip_chance_cost = (ability_waveSkip_chance_level * (ability_waveSkip_chance_level - 1)) / 2 + 4
-                        ability_waveSkip_chance = 5
+                if player.currencies.currentElectrum >= player.abilities.waveSkip.cost and player.abilities.waveSkip.level < 11 then
+                    if player.abilities.waveSkip.unlocked then
+                        player.currencies.currentElectrum = player.currencies.currentElectrum - player.abilities.waveSkip.cost
+                        player.abilities.waveSkip.level = player.abilities.waveSkip.level + 1
+                        player.abilities.waveSkip.cost = (player.abilities.waveSkip.level * (player.abilities.waveSkip.level - 1)) / 2 + 4
+                        player.abilities.waveSkip.value = math.min(6 * player.abilities.waveSkip.level - 1, 65)
+                    else
+                        player.currencies.currentElectrum = player.currencies.currentElectrum - 20
+                        player.abilities.waveSkip.unlocked = true
+                        player.abilities.waveSkip.cost = (player.abilities.waveSkip.level * (player.abilities.waveSkip.level - 1)) / 2 + 4
+                        player.abilities.waveSkip.value = 5
                     end
                 end
             end

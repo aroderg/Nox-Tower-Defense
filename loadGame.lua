@@ -1,337 +1,543 @@
 function loadGame()
+    -- Initialise player
+    player = {}
     if love.filesystem.getInfo("SAVEFILE.sav") then
         file = love.filesystem.read("SAVEFILE.sav")
         data = lume.deserialize(file)
 
-        paused = false
-        inHub = true
-        tokenCooldown = 600
-        if data then
-            timer_untilTokens = data.player.cooldowns.tokens or 0
-            if timer_untilTokens > 0 then
-                tokensOnCooldown = true
-            else
-                tokensOnCooldown = false
-            end
-
-            timer_untilElectrum = data.player.cooldowns.electrum or 0
-            if timer_untilElectrum > 0 then
-                electrumAlloying = true
-            else
-                electrumAlloying = false
-            end
-
-            currentSilver = data.player.currentSilver or 0
-            currentGold = data.player.currentGold or 0
-            currentElectrum = data.player.currentElectrum or 0
-            currentTokens = data.player.currentTokens or 0
-
-            --[[ Set upgrade unlocks ]]--
-            if data.player.upgrades.unlocks then
-                upgrade_unlock_crit = data.player.upgrades.unlocks.crit or false
-                upgrade_unlock_range = data.player.upgrades.unlocks.range or false
-                upgrade_unlock_clusterFire = data.player.upgrades.unlocks.clusterFire or false
-
-                upgrade_unlock_resistance = data.player.upgrades.unlocks.resistance or false
-                upgrade_unlock_shield = data.player.upgrades.unlocks.shield or false
-                upgrade_unlock_meteor = data.player.upgrades.unlocks.meteor or false
-
-                upgrade_unlock_resourceBonus = data.player.upgrades.unlocks.resourceBonus or false
-            end
-
-            --[[ Set initial Science upgrade levels ]]--
-            if data.player.upgrades then
-                upgrade_science_attack_damage_level = data.player.upgrades.attack_damage or 1
-                upgrade_science_attack_speed_level = data.player.upgrades.attack_speed or 1
-                upgrade_science_critChance_level = data.player.upgrades.critical_chance or 1
-                upgrade_science_critFactor_level = data.player.upgrades.critical_factor or 1
-                upgrade_science_range_level = data.player.upgrades.range or 1
-                upgrade_science_clusterFire_chance_level = data.player.upgrades.clusterFire_chance or 1
-                upgrade_science_clusterFire_targets_level = data.player.upgrades.clusterFire_targets or 1
-                upgrade_science_clusterFire_factor_level = data.player.upgrades.clusterFire_factor or 1
-                upgrade_science_clusterFire_duration_level = data.player.upgrades.clusterFire_duration or 1
-
-                upgrade_science_health_level = data.player.upgrades.health or 1
-                upgrade_science_regeneration_level = data.player.upgrades.regeneration or 1
-                upgrade_science_resistance_level = data.player.upgrades.resistance or 1
-                upgrade_science_shieldCooldown_level = data.player.upgrades.shield_cooldown or 1
-                upgrade_science_shieldDuration_level = data.player.upgrades.shield_duration or 1
-                upgrade_science_meteor_amount_level = data.player.upgrades.meteor_amount or 1
-                upgrade_science_meteor_RPM_level = data.player.upgrades.meteor_RPM or 1
-
-                upgrade_science_copperPerWave_level = data.player.upgrades.copperPerWave or 1
-                upgrade_science_silverPerWave_level = data.player.upgrades.silverPerWave or 1
-                upgrade_science_copperBonus_level = data.player.upgrades.copperBonus or 1
-                upgrade_science_silverBonus_level = data.player.upgrades.silverBonus or 1
-
-                --[[ Set initial Nexus upgrade levels ]]--
-                upgrade_nexus_attack_damage_level = data.player.upgrades.nexus.attack_damage or 1
-                upgrade_nexus_attack_speed_level = data.player.upgrades.nexus.attack_speed or 1
-                upgrade_nexus_health_level = data.player.upgrades.nexus.health or 1
-                upgrade_nexus_regeneration_level = data.player.upgrades.nexus.regeneration or 1
-                
-                --[[ Set Nexus upgrade multipliers ]]--
-                upgrade_nexus_attack_damage_buff = math.min(1 + (upgrade_nexus_attack_damage_level - 1) * 10/100, 5)
-                upgrade_nexus_attack_speed_buff = math.min(1 + (upgrade_nexus_attack_speed_level - 1) * 4/100, 2)
-                upgrade_nexus_health_buff = math.min(1 + (upgrade_nexus_health_level - 1) * 10/100, 5)
-                upgrade_nexus_regeneration_buff = math.min(1 + (upgrade_nexus_regeneration_level - 1) * 10/100, 5)
-            end
-
-            if data.player.abilities then
-                --[[ Set ability unlocks ]]--
-                ability_unlock_waveSkip = data.player.abilities.unlocks.waveSkip or false
-
-                --[[ Set ability levels ]]--
-                ability_waveSkip_chance_level = data.player.abilities.waveSkip.chance or 1
-
-                --[[ Set ability costs (in Electrum) ]]--
-                ability_waveSkip_chance_cost = (ability_waveSkip_chance_level * (ability_waveSkip_chance_level - 1)) / 2 + 4
-
-                --[[ Set ability stats ]]--
-                if ability_unlock_waveSkip then
-                    ability_waveSkip_chance = math.min(2 * ability_waveSkip_chance_level + 3, 35)
-                else
-                    ability_waveSkip_chance = 0
-                end
-            end
-
-            if data.settings then
-                settings_particleMultiplierIndex = data.settings.particleMultiplierIndex or 4
-                settings_waveSkipMessages = data.settings.waveSkipMessages or true
-                settings_notation = data.settings.notation or "kmbt"
-                settings_tooltips = data.settings.tooltips or true
-            end
-
-            if data.player.pb then
-                d1_best_wave = data.player.pb.d1 or 0
-                d2_best_wave = data.player.pb.d2 or 0
-                d3_best_wave = data.player.pb.d3 or 0
-                d4_best_wave = data.player.pb.d4 or 0
-            end
+        player.location = "hub"
+        player.cooldowns = {
+            electrum = 24,
+            tokens = 600
+        }
+        player.timers = {
+            electrum = data.player.timers.electrum,
+            tokens = data.player.timers.tokens
+        }
+        player.canClaim = {}
+        if data.player.timers.tokens > 0 then
+            player.canClaim.tokens = false
+        else
+            player.canClaim.tokens = true
         end
+        if data.player.timers.electrum > 0 then
+            player.canClaim.electrum = false
+        else
+            player.canClaim.electrum = true
+        end
+
+        player.currencies = {
+            currentSilver = data.player.currentSilver,
+            currentGold = data.player.currentGold,
+            currentElectrum = data.player.currentElectrum,
+            currentTokens = data.player.currentTokens,
+        }
+
+        --[[ Set upgrade unlocks ]]--
+        player.upgrades = {
+            unlocks = {
+                crit = data.player.upgrades.unlocks.crit,
+                range = data.player.upgrades.unlocks.range,
+
+                resistance = data.player.upgrades.unlocks.resistance,
+                shield = data.player.upgrades.unlocks.shield,
+                meteor = data.player.upgrades.unlocks.meteor,
+
+                resourceBonus = data.player.upgrades.unlocks.resourceBonus
+            },
+            science = {
+                attackDamage = {
+                    level = data.player.upgrades.attackDamage,
+                    cost = 1,
+                    value = 1
+                },
+                attackSpeed = {
+                    level = data.player.upgrades.attackSpeed,
+                    cost = 1,
+                    value = 1
+                },
+                critChance = {
+                    level = data.player.upgrades.critChance,
+                    cost = 1,
+                    value = 1
+                },
+                critFactor = {
+                    level = data.player.upgrades.critFactor,
+                    cost = 1,
+                    value = 1
+                },
+                range = {
+                    level = data.player.upgrades.range,
+                    cost = 1,
+                    value = 1
+                },
+
+                health = {
+                    level = data.player.upgrades.health,
+                    cost = 1,
+                    value = 1
+                },
+                regeneration = {
+                    level = data.player.upgrades.regeneration,
+                    cost = 1,
+                    value = 1
+                },
+                resistance = {
+                    level = data.player.upgrades.resistance,
+                    cost = 1,
+                    value = 1
+                },
+                shieldCooldown = {
+                    level = data.player.upgrades.shieldCooldown,
+                    cost = 1,
+                    value = 1
+                },
+                shieldDuration = {
+                    level = data.player.upgrades.shieldDuration,
+                    cost = 1,
+                    value = 1
+                },
+                meteorAmount = {
+                    level = data.player.upgrades.meteorAmount,
+                    cost = 1,
+                    value = 1
+                },
+                meteorRPM = {
+                    level = data.player.upgrades.meteorRPM,
+                    cost = 1,
+                    value = 1
+                },
+                
+                copperPerWave = {
+                    level = data.player.upgrades.copperPerWave,
+                    cost = 1,
+                    value = 1
+                },
+                silverPerWave = {
+                    level = data.player.upgrades.silverPerWave,
+                    cost = 1,
+                    value = 1
+                },
+                copperBonus = {
+                    level = data.player.upgrades.copperBonus,
+                    cost = 1,
+                    value = 1
+                },
+                silverBonus = {
+                    level = data.player.upgrades.silverBonus,
+                    cost = 1,
+                    value = 1
+                },
+            },
+
+            nexus = {
+                attackDamage = {
+                    level = data.player.upgrades.nexus.attackDamage,
+                    cost = 1,
+                    value = math.min(1 + (data.player.upgrades.nexus.attackDamage - 1) * 10/100, 5)
+                },
+                attackSpeed = {
+                    level = data.player.upgrades.nexus.attackSpeed,
+                    cost = 1,
+                    value = math.min(1 + (data.player.upgrades.nexus.attackSpeed - 1) * 4/100, 2)
+                },
+                health = {
+                    level = data.player.upgrades.nexus.health,
+                    cost = 1,
+                    value = math.min(1 + (data.player.upgrades.nexus.health - 1) * 10/100, 5)
+                },
+                regeneration = {
+                    level = data.player.upgrades.nexus.regeneration,
+                    cost = 1,
+                    value = math.min(1 + (data.player.upgrades.nexus.regeneration - 1) * 10/100, 5)
+                },
+            }
+        }
+
+        player.abilities = {
+            waveSkip = {
+                unlocked = data.player.abilities.unlocks.waveSkip,
+                level = data.player.abilities.waveSkip.chance
+            }
+        }
+        if not data.player.abilities.unlocks.waveSkip then
+            player.abilities.waveSkip.cost = 20
+            player.abilities.waveSkip.value = 0
+        else
+            player.abilities.waveSkip.cost = (player.abilities.waveSkip.level * (player.abilities.waveSkip.level - 1)) / 2 + 4
+            player.abilities.waveSkip.value = math.min(6 * player.abilities.waveSkip.level - 1, 65)
+        end
+
+        player.settings = {
+            particleMultiplier = data.settings.particleMultiplierIndex,
+            waveSkipMessages = data.settings.waveSkipMessages,
+            notation = data.settings.notation,
+            tooltips = data.settings.tooltips,
+        }
+
+        player.bestWaves = {
+            d1 = data.player.pb.d1,
+            d2 = data.player.pb.d2,
+            d3 = data.player.pb.d3,
+            d4 = data.player.pb.d4,
+        }
 
     else
 
-        paused = false
-        inHub = false
-        currentSilver = 0
-        currentGold = 0
-        currentElectrum = 0
-        currentTokens = 0
+        player.paused = false
+        player.location = "round"
+        player.cooldowns = {
+            electrum = 24,
+            tokens = 600
+        }
+        player.timers = {
+            electrum = 0,
+            tokens = 600
+        }
 
-        timer_untilTokens = 0
-        tokenCooldown = 600
-        tokensOnCooldown = false
+        player.canClaim = {}
+
+        player.canClaim.tokens = true
+        player.canClaim.electrum = true
+
+        player.currencies = {
+            currentSilver = 0,
+            currentGold = 0,
+            currentElectrum = 0,
+            currentTokens = 0,
+        }
 
         --[[ Set upgrade unlocks ]]--
-        upgrade_unlock_crit = false
-        upgrade_unlock_range = false
-        upgrade_unlock_clusterFire = false
+        player.upgrades = {
+            unlocks = {
+                crit = false,
+                range = false,
 
-        upgrade_unlock_resistance = false
-        upgrade_unlock_shield = false
-        upgrade_unlock_meteor = false
+                resistance = false,
+                shield = false,
+                meteor = false,
 
-        upgrade_unlock_resourceBonus = false
+                resourceBonus = false
+            },
+            science = {
+                attackDamage = {
+                    level = 1,
+                    cost = 1,
+                    value = 1
+                },
+                attackSpeed = {
+                    level = 1,
+                    cost = 1,
+                    value = 1
+                },
+                critChance = {
+                    level = 1,
+                    cost = 1,
+                    value = 1
+                },
+                critFactor = {
+                    level = 1,
+                    cost = 1,
+                    value = 1
+                },
+                range = {
+                    level = 1,
+                    cost = 1,
+                    value = 1
+                },
 
-        --[[ Set initial Science upgrade levels ]]--
-        upgrade_science_attack_damage_level = 1
-        upgrade_science_attack_speed_level = 1
-        upgrade_science_critChance_level = 1
-        upgrade_science_critFactor_level = 1
-        upgrade_science_range_level = 1
-        upgrade_science_clusterFire_chance_level = 1
-        upgrade_science_clusterFire_targets_level = 1
-        upgrade_science_clusterFire_factor_level = 1
-        upgrade_science_clusterFire_duration_level = 1
+                health = {
+                    level = 1,
+                    cost = 1,
+                    value = 1
+                },
+                regeneration = {
+                    level = 1,
+                    cost = 1,
+                    value = 1
+                },
+                resistance = {
+                    level = 1,
+                    cost = 1,
+                    value = 1
+                },
+                shieldCooldown = {
+                    level = 1,
+                    cost = 1,
+                    value = 1
+                },
+                shieldDuration = {
+                    level = 1,
+                    cost = 1,
+                    value = 1
+                },
+                meteorAmount = {
+                    level = 1,
+                    cost = 1,
+                    value = 1
+                },
+                meteorRPM = {
+                    level = 1,
+                    cost = 1,
+                    value = 1
+                },
+                
+                copperPerWave = {
+                    level = 1,
+                    cost = 1,
+                    value = 1
+                },
+                silverPerWave = {
+                    level = 1,
+                    cost = 1,
+                    value = 1
+                },
+                copperBonus = {
+                    level = 1,
+                    cost = 1,
+                    value = 1
+                },
+                silverBonus = {
+                    level = 1,
+                    cost = 1,
+                    value = 1
+                },
+            },
 
-        upgrade_science_health_level = 1
-        upgrade_science_regeneration_level = 1
-        upgrade_science_resistance_level = 1
-        upgrade_science_shieldCooldown_level = 1
-        upgrade_science_shieldDuration_level = 1
-        upgrade_science_meteor_amount_level = 1
-        upgrade_science_meteor_RPM_level = 1
+            nexus = {
+                attackDamage = {
+                    level = 1,
+                    cost = 1,
+                    value = 1
+                },
+                attackSpeed = {
+                    level = 1,
+                    cost = 1,
+                    value = 1
+                },
+                health = {
+                    level = 1,
+                    cost = 1,
+                    value = 1
+                },
+                regeneration = {
+                    level = 1,
+                    cost = 1,
+                    value = 1
+                },
+            }
+        }
 
-        upgrade_science_copperPerWave_level = 1
-        upgrade_science_silverPerWave_level = 1
-        upgrade_science_copperBonus_level = 1
-        upgrade_science_silverBonus_level = 1
+        player.abilities = {
+            waveSkip = {
+                unlocked = false,
+                level = 1,
+                cost = 20,
+                value = 0
+            }
+        }
 
-        --[[ Set initial Nexus upgrade levels ]]--
-        upgrade_nexus_attack_damage_level = 1
-        upgrade_nexus_attack_speed_level = 1
-        upgrade_nexus_health_level = 1
-        upgrade_nexus_regeneration_level = 1
+        player.settings = {
+            particleMultiplier = 4,
+            waveSkipMessages = true,
+            notation = "kmbt",
+            tooltips = true,
+        }
 
-        --[[ Set Nexus upgrade multipliers ]]--
-        upgrade_nexus_attack_damage_buff = math.min(1 + (upgrade_nexus_attack_damage_level - 1) * 10/100, 5)
-        upgrade_nexus_attack_speed_buff = math.min(1 + (upgrade_nexus_attack_speed_level - 1) * 4/100, 2)
-        upgrade_nexus_health_buff = math.min(1 + (upgrade_nexus_health_level - 1) * 10/100, 5)
-        upgrade_nexus_regeneration_buff = math.min(1 + (upgrade_nexus_regeneration_level - 1) * 10/100, 5)
-
-        --[[ Set Nexus upgrade costs (in Tokens) ]]--
-        upgrade_nexus_attack_damage_cost = 50 + ((upgrade_nexus_attack_damage_level * (upgrade_nexus_attack_damage_level - 1)) / 2) * 10
-        upgrade_nexus_attack_speed_cost = 50 + ((upgrade_nexus_attack_speed_level * (upgrade_nexus_attack_speed_level - 1)) / 2) * 10
-        upgrade_nexus_health_cost = 50 + ((upgrade_nexus_health_level * (upgrade_nexus_health_level - 1)) / 2) * 10
-        upgrade_nexus_regeneration_cost = 50 + ((upgrade_nexus_regeneration_level * (upgrade_nexus_regeneration_level - 1)) / 2) * 10
-
-        --[[ Set ability unlocks ]]--
-        ability_unlock_waveSkip = false
-
-        --[[ Set ability levels ]]--
-        ability_waveSkip_chance_level = 1
-
-        --[[ Set ability costs (in Electrum) ]]--
-        ability_waveSkip_chance_cost = (ability_waveSkip_chance_level * (ability_waveSkip_chance_level - 1)) / 2 + 4
-
-        --[[ Set ability stats ]]--
-        ability_waveSkip_chance = 0
-
-        settings_particleMultiplierIndex = 4
-        settings_waveSkipMessages = true
-        settings_notation = "kmbt"
-        settings_tooltips = true
-
-        d1_best_wave = 0
-        d2_best_wave = 0
-        d3_best_wave = 0
-        d4_best_wave = 0
+        player.bestWaves = {
+            d1 = 0,
+            d2 = 0,
+            d3 = 0,
+            d4 = 0,
+        }
     end
 
     --[[ Set Science upgrade costs (in Silver) ]]--
-    upgrade_science_attack_damage_cost = math.floor(0.4 * upgrade_science_attack_damage_level^2 + 2.6)
-    upgrade_science_attack_speed_cost = math.floor(8^((upgrade_science_attack_speed_level - 1) / 20) + 3 * upgrade_science_attack_speed_level + 4)
-    upgrade_science_critChance_cost = math.floor((upgrade_science_critChance_level / 2)^2 + 4 * upgrade_science_critChance_level + 1.75)
-    upgrade_science_critFactor_cost = math.floor(0.2 * (upgrade_science_critFactor_level^2) + 1.8)
-    upgrade_science_range_cost = math.floor((upgrade_science_range_level^2 + 5 * upgrade_science_range_level) / 3 + 2 * upgrade_science_range_level + 4)
-    --[[upgrade_science_clusterFire_chance_cost = math.floor((0.5 * (upgrade_science_clusterFire_chance_level - 1))^2 + 5 * (upgrade_science_clusterFire_chance_level - 1) + 30)
-    upgrade_science_clusterFire_targets_cost = math.floor(172 + 28 * (upgrade_science_clusterFire_targets_level^3) + 4 * (upgrade_science_clusterFire_targets_level - 1))
-    upgrade_science_clusterFire_factor_cost = math.floor((upgrade_science_clusterFire_factor_level * math.log(upgrade_science_clusterFire_factor_level, 10))^1.75 + 15 + 5 * (upgrade_science_clusterFire_factor_level - 1))
-    upgrade_science_clusterFire_duration_cost = math.floor(upgrade_science_clusterFire_duration_level^2 + upgrade_science_clusterFire_duration_level + 23)]]--
+    player.upgrades.science.attackDamage.cost = math.floor(0.4 * player.upgrades.science.attackDamage.level^2 + 2.6)
+    player.upgrades.science.attackSpeed.cost = math.floor(8^((player.upgrades.science.attackSpeed.level - 1) / 20) + 3 * player.upgrades.science.attackSpeed.level + 4)
+    player.upgrades.science.critChance.cost = math.floor((player.upgrades.science.critChance.level / 2)^2 + 4 * player.upgrades.science.critChance.level + 1.75)
+    player.upgrades.science.critFactor.cost = math.floor(0.2 * (player.upgrades.science.critFactor.level^2) + 1.8)
+    player.upgrades.science.range.cost = math.floor((player.upgrades.science.range.level^2 + 5 * player.upgrades.science.range.level) / 3 + 2 * player.upgrades.science.range.level + 4)
 
-    upgrade_science_health_cost = math.floor(0.6 * upgrade_science_health_level^2 + 3.4)
-    upgrade_science_regeneration_cost = math.floor(upgrade_science_regeneration_level^1.75 + 2 * upgrade_science_regeneration_level + 3)
-    upgrade_science_resistance_cost = math.floor(upgrade_science_resistance_level * math.sqrt(2 * upgrade_science_resistance_level) + 3 - math.sqrt(2))
-    upgrade_science_shieldCooldown_cost = math.floor(upgrade_science_shieldCooldown_level^(math.log(upgrade_science_shieldCooldown_level, 10)) + 3)
-    upgrade_science_shieldDuration_cost = math.floor((upgrade_science_shieldDuration_level)^(math.log(upgrade_science_shieldDuration_level) / 2) + 3)
-    upgrade_science_meteor_amount_cost = math.floor((16 * upgrade_science_meteor_amount_level)^2 + 144)
-    upgrade_science_meteor_RPM_cost = math.floor((3 * upgrade_science_meteor_RPM_level)^2 + 41)
+    player.upgrades.science.health.cost = math.floor(0.6 * player.upgrades.science.health.level^2 + 3.4)
+    player.upgrades.science.regeneration.cost = math.floor(player.upgrades.science.regeneration.level^1.75 + 2 * player.upgrades.science.regeneration.level + 3)
+    player.upgrades.science.resistance.cost = math.floor(player.upgrades.science.resistance.level * math.sqrt(2 * player.upgrades.science.resistance.level) + 3 - math.sqrt(2))
+    player.upgrades.science.shieldCooldown.cost = math.floor(player.upgrades.science.shieldCooldown.level^(math.log(player.upgrades.science.shieldCooldown.level, 10)) + 3)
+    player.upgrades.science.shieldDuration.cost = math.floor((player.upgrades.science.shieldDuration.level)^(math.log(player.upgrades.science.shieldDuration.level) / 2) + 3)
+    player.upgrades.science.meteorAmount.cost = math.floor((16 * player.upgrades.science.meteorAmount.level)^2 + 144)
+    player.upgrades.science.meteorRPM.cost = math.floor((3 * player.upgrades.science.meteorRPM.level)^2 + 41)
 
-    upgrade_science_copperPerWave_cost = math.floor((upgrade_science_copperPerWave_level^2 + upgrade_science_copperPerWave_level + 1) * 3 + 11)
-    upgrade_science_silverPerWave_cost = math.floor(((8 * upgrade_science_silverPerWave_level) / 5)^2 + 27.44)
-    upgrade_science_copperBonus_cost = math.floor((0.4 * (upgrade_science_copperBonus_level - 1))^1.9 + 8)
-    upgrade_science_silverBonus_cost = math.floor(0.4 * upgrade_science_silverBonus_level^2 + upgrade_science_silverBonus_level + 8.6)
+    player.upgrades.science.copperPerWave.cost = math.floor((player.upgrades.science.copperPerWave.level^2 + player.upgrades.science.copperPerWave.level + 1) * 3 + 11)
+    player.upgrades.science.silverPerWave.cost = math.floor(((8 * player.upgrades.science.silverPerWave.level) / 5)^2 + 27.44)
+    player.upgrades.science.copperBonus.cost = math.floor((0.4 * (player.upgrades.science.copperBonus.level - 1))^1.9 + 8)
+    player.upgrades.science.silverBonus.cost = math.floor(0.4 * player.upgrades.science.silverBonus.level^2 + player.upgrades.science.silverBonus.level + 8.6)
 
     --[[ Set Nexus upgrade costs (in Tokens) ]]--
-    upgrade_nexus_attack_damage_cost = 50 + ((upgrade_nexus_attack_damage_level * (upgrade_nexus_attack_damage_level - 1)) / 2) * 10
-    upgrade_nexus_attack_speed_cost = 50 + ((upgrade_nexus_attack_speed_level * (upgrade_nexus_attack_speed_level - 1)) / 2) * 10
-    upgrade_nexus_health_cost = 50 + ((upgrade_nexus_health_level * (upgrade_nexus_health_level - 1)) / 2) * 10
-    upgrade_nexus_regeneration_cost = 50 + ((upgrade_nexus_regeneration_level * (upgrade_nexus_regeneration_level - 1)) / 2) * 10
+    player.upgrades.nexus.attackDamage.cost = 50 + ((player.upgrades.nexus.attackDamage.level * (player.upgrades.nexus.attackDamage.level - 1)) / 2) * 10
+    player.upgrades.nexus.attackSpeed.cost = 50 + ((player.upgrades.nexus.attackSpeed.level * (player.upgrades.nexus.attackSpeed.level - 1)) / 2) * 10
+    player.upgrades.nexus.health.cost = 50 + ((player.upgrades.nexus.health.level * (player.upgrades.nexus.health.level - 1)) / 2) * 10
+    player.upgrades.nexus.regeneration.cost = 50 + ((player.upgrades.nexus.regeneration.level * (player.upgrades.nexus.regeneration.level - 1)) / 2) * 10
 
-    d2_unlocked = d1_best_wave > 150 and true or false
-    d3_unlocked = d2_best_wave > 150 and true or false
-    d4_unlocked = d3_best_wave > 150 and true or false
+    player.difficulty = {
+        difficulty = 1,
+        unlocks = {
+            d1 = true,
+            d2 = player.bestWaves.d1 > 150 and true or false,
+            d3 = player.bestWaves.d2 > 150 and true or false,
+            d4 = player.bestWaves.d3 > 150 and true or false
+        }
+    }
 
-    saveGame()
+    player.stats = {}
+
+    --saveGame()
 end
 
 function resetRoundValues()
     --[[ Reset all properties to initial at the start of the round ]]--
 
-    paused = false
+    player.menu = {}
+    player.menu.paused = false
+    player.menu.settings = false
+    player.menu.upgrades = false
 
     --[[ Copper ]]--
-    currentCopper = 555555
+    player.currencies.currentCopper = 0
 
     --[[ Set Round upgrade levels to initial Science upgrade levels ]]--
-    upgrade_round_attack_damage_level = upgrade_science_attack_damage_level
-    upgrade_round_attack_speed_level = upgrade_science_attack_speed_level
-    upgrade_round_critChance_level = upgrade_science_critChance_level
-    upgrade_round_critFactor_level = upgrade_science_critFactor_level
-    upgrade_round_range_level = upgrade_science_range_level
-    upgrade_round_clusterFire_chance_level = upgrade_science_clusterFire_chance_level
-    upgrade_round_clusterFire_targets_level = upgrade_science_clusterFire_targets_level
-    upgrade_round_clusterFire_factor_level = upgrade_science_clusterFire_factor_level
-    upgrade_round_clusterFire_duration_level = upgrade_science_clusterFire_duration_level
+    player.upgrades.round = {
+        attackDamage = {
+            level = player.upgrades.science.attackDamage.level,
+            cost = 2,
+            value = 1
+        },
+        attackSpeed = {
+            level = player.upgrades.science.attackSpeed.level,
+            cost = 5,
+            value = 1
+        },
+        critChance = {
+            level = player.upgrades.science.critChance.level,
+            cost = 6,
+            value = 1
+        },
+        critFactor = {
+            level = player.upgrades.science.critFactor.level,
+            cost = 2,
+            value = 1
+        },
+        range = {
+            level = player.upgrades.science.range.level,
+            cost = 2,
+            value = 1
+        },
 
-    upgrade_round_health_level = upgrade_science_health_level
-    upgrade_round_regeneration_level = upgrade_science_regeneration_level
-    upgrade_round_resistance_level = upgrade_science_resistance_level
-    upgrade_round_shieldCooldown_level = upgrade_science_shieldCooldown_level
-    upgrade_round_shieldDuration_level = upgrade_science_shieldDuration_level
-    upgrade_round_meteor_amount_level = upgrade_science_meteor_amount_level
-    upgrade_round_meteor_RPM_level = upgrade_science_meteor_RPM_level
+        health = {
+            level = player.upgrades.science.health.level,
+            cost = 3,
+            value = 1
+        },
+        regeneration = {
+            level = player.upgrades.science.regeneration.level,
+            cost = 5,
+            value = 1
+        },
+        resistance = {
+            level = player.upgrades.science.resistance.level,
+            cost = 4,
+            value = 1
+        },
+        shieldCooldown = {
+            level = player.upgrades.science.shieldCooldown.level,
+            cost = 4,
+            value = 1
+        },
+        shieldDuration = {
+            level = player.upgrades.science.shieldDuration.level,
+            cost = 3,
+            value = 1
+        },
+        meteorAmount = {
+            level = player.upgrades.science.meteorAmount.level,
+            cost = 200,
+            value = 1
+        },
+        meteorRPM = {
+            level = player.upgrades.science.meteorRPM.level,
+            cost = 20,
+            value = 1
+        },
+        
+        copperPerWave = {
+            level = player.upgrades.science.copperPerWave.level,
+            cost = 10,
+            value = 1
+        },
+        silverPerWave = {
+            level = player.upgrades.science.silverPerWave.level,
+            cost = 10,
+            value = 1
+        },
+        copperBonus = {
+            level = player.upgrades.science.copperBonus.level,
+            cost = 4,
+            value = 1
+        },
+        silverBonus = {
+            level = player.upgrades.science.silverBonus.level,
+            cost = 7,
+            value = 1
+        },
+    }
 
-    upgrade_round_copperPerWave_level = upgrade_science_copperPerWave_level
-    upgrade_round_silverPerWave_level = upgrade_science_silverPerWave_level
-    upgrade_round_copperBonus_level = upgrade_science_copperBonus_level
-    upgrade_round_silverBonus_level = upgrade_science_silverBonus_level
-
-    --[[ Set Round upgrade costs to what they would've costed at level 1 ]]--
-    upgrade_round_attack_damage_cost = 2
-    upgrade_round_attack_speed_cost = 5
-    upgrade_round_critChance_cost = 6
-    upgrade_round_critFactor_cost = 2
-    upgrade_round_range_cost = 2
-    upgrade_round_clusterFire_chance_cost = 20
-    upgrade_round_clusterFire_targets_cost = 100
-    upgrade_round_clusterFire_factor_cost = 15
-    upgrade_round_clusterFire_duration_cost = 25
-
-    upgrade_round_health_cost = 3
-    upgrade_round_resistance_cost = 5
-    upgrade_round_regeneration_cost = 4
-    upgrade_round_shieldCooldown_cost = 4
-    upgrade_round_shieldDuration_cost = 3
-    upgrade_round_meteor_amount_cost = 200
-    upgrade_round_meteor_RPM_cost = 20
-
-    upgrade_round_copperPerWave_cost = 10
-    upgrade_round_silverPerWave_cost = 10
-    upgrade_round_copperBonus_cost = 4
-    upgrade_round_silverBonus_cost = 7
-
+    local maxHealth = ((0.3 * player.upgrades.round.health.level - 0.3)^3.75 + 14.6 + 0.4 * player.upgrades.round.health.level) * player.upgrades.nexus.health.value
     --[[ Tower properties ]]--
-    tower_value_attack_damage = math.huge--((0.25 * upgrade_round_attack_damage_level - 0.25)^3 + 4) * upgrade_nexus_attack_damage_buff
-    tower_value_attack_speed = (math.min(0.5 + 0.04 * (upgrade_round_attack_speed_level - 1), 4.5)) * upgrade_nexus_attack_speed_buff
-    tower_value_critical_chance = math.min((upgrade_round_critChance_level - 1) / 2, 50)
-    tower_value_critical_factor = 1 + ((upgrade_round_critFactor_level - 1) / 20)
-    tower_value_range = math.min(240 + 2 * (upgrade_round_range_level - 1), 360)
-    tower_value_clusterFire_chance = math.min(0.3 * (upgrade_round_clusterFire_chance_level - 1), 30)
-    tower_value_clusterFire_targets = math.min(upgrade_round_clusterFire_targets_level + 1, 6)
-    tower_value_clusterFire_factor = math.min(1 + (upgrade_round_clusterFire_factor_level - 1) / 50, 2)
-    tower_value_clusterFire_duration = math.min(0.2 + 0.02 * (upgrade_round_clusterFire_duration_level - 1), 0.8)
-
-    tower_value_maxHealth = ((0.3 * upgrade_round_health_level - 0.3)^3.75 + 14.6 + 0.4 * upgrade_round_health_level) * upgrade_nexus_health_buff
-    tower_value_currentHealth = tower_value_maxHealth
-    tower_value_healthRegen = (((0.8 * upgrade_round_regeneration_level - 0.8)^2.75) / 50) * upgrade_nexus_regeneration_buff
-    tower_value_resistance = math.min(0.75 * (upgrade_round_resistance_level - 1), 90)
-    tower_value_shield_cooldown = math.max(120 - 0.6 * (upgrade_round_shieldCooldown_level - 1), 45)
-    tower_value_shield_duration = math.min(0.05 * (upgrade_round_shieldDuration_level - 1) + 0.5, 6)
-    tower_value_meteor_amount = math.min(upgrade_round_meteor_amount_level - 1, 5)
-    tower_value_meteor_RPM = math.min(0.15 * upgrade_round_meteor_RPM_level + 0.25, 6.25)
+    player.tower = {
+        attackDamage = ((0.25 * player.upgrades.round.attackDamage.level - 0.25)^3 + 4 + player.upgrades.round.attackDamage.level) * player.upgrades.nexus.attackDamage.value,
+        attackSpeed = (math.min(0.5 + 0.04 * (player.upgrades.round.attackSpeed.level - 1), 4.5)) * player.upgrades.nexus.attackSpeed.value,
+        critChance = math.min((player.upgrades.round.critChance.level - 1) / 2, 50),
+        critFactor = 1 + ((player.upgrades.round.critFactor.level - 1) / 20),
+        range = math.min(240 + 2 * (player.upgrades.round.range.level - 1), 360),
+        maxHealth = ((0.3 * player.upgrades.round.health.level - 0.3)^3.75 + 14.6 + 0.4 * player.upgrades.round.health.level) * player.upgrades.nexus.health.value,
+        currentHealth = maxHealth,
+        regeneration = (((0.8 * player.upgrades.round.regeneration.level - 0.8)^2.75) / 50) * player.upgrades.nexus.regeneration.value,
+        resistance = math.min(0.75 * (player.upgrades.round.resistance.level - 1), 90),
+        shieldCooldown = math.max(120 - 0.6 * (player.upgrades.round.shieldCooldown.level - 1), 45),
+        shieldDuration = math.min(0.05 * (player.upgrades.round.shieldDuration.level - 1) + 0.5, 6),
+        meteorAmount = math.min(player.upgrades.round.meteorAmount.level - 1, 5),
+        meteorRPM = math.min(0.15 * player.upgrades.round.meteorRPM.level + 0.25, 6.25),
+        copperPerWave = 4 * (player.upgrades.round.copperPerWave.level - 1),
+        silverPerWave = 3 * (player.upgrades.round.silverPerWave.level - 1),
+        copperBonus = math.min(1 + 0.02 * (player.upgrades.round.copperBonus.level - 1), 10),
+        silverBonus = math.min(1 + 0.01 * (player.upgrades.round.silverBonus.level - 1), 4),
+    }
 
     --[[ Gameplay properties ]]--
-    gameplay_wave = 1000
-    gameplay_copperPerWave = 4 * (upgrade_round_copperPerWave_level - 1)
-    gameplay_silverPerWave = 3 * (upgrade_round_silverPerWave_level - 1)
-    gameplay_copperBonus = math.min(1 + 0.02 * (upgrade_science_copperBonus_level - 1), 10)
-    gameplay_silverBonus = math.min(1 + 0.01 * (upgrade_science_silverBonus_level - 1), 4)
-    gameplay_copperBuffer = 0
-    gameplay_silverBuffer = 0
-
+    gameplay = {
+        difficulty = player.difficulty.difficulty,
+        wave = 1
+    }
+    misc = {
+        copperBuffer = 0,
+        silverBuffer = 0
+    }
+    player.stats.wave = {
+        enemiesKilled = 0
+    }
+    enemyAttributes = {}
     --[[ Enemy properties ]]--
-    updateEnemyStats(gameplay_difficulty, gameplay_wave)
-    enemy_value_attack_speed = 1
+
+    updateEnemyStats(gameplay.difficulty, gameplay.wave)
 
     --[[ Timers ]]--
-    timer_untilProjectile = 0
-    timer_untilEnemy = 0
-    timer_untilNextWave = 0
-    timer_untilShieldActive = 0
-    timer_shieldActive = 0
-    timer_waveSkipMessage = 0
+    timers = {
+        projectile = 0,
+        enemy = 0,
+        nextWave = 0,
+        shieldActivation = 0,
+        shieldActive = 0,
+        waveSkip = 3
+    }
 
     --[[ Misc ]]--
     waveSkipMessage = false
@@ -341,8 +547,8 @@ function resetRoundValues()
     collapseParticles = {}
     hitTextParticles = {}
     meteors = {}
-    for i=1,tower_value_meteor_amount do
-        createMeteor(((i-1) * (2 * math.pi) / tower_value_meteor_amount) - 0.5 * math.pi)
+    for i=1,player.tower.meteorAmount do
+        createMeteor(((i-1) * (2 * math.pi) / player.tower.meteorAmount) - 0.5 * math.pi)
     end
     sentryAlive = false
     centurionAlive = false

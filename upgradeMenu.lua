@@ -1,5 +1,5 @@
 function drawUpgradeMenu()
-    if upgradeMenu then
+    if player.menu.upgrades then
         love.graphics.setLineStyle("smooth")
         love.graphics.setLineWidth(3)
         love.graphics.setColor(0.106, 0.11, 0.22, 1)
@@ -22,7 +22,7 @@ function drawUpgradeMenu()
             love.graphics.setColor(1, 0, 0, 1)
         end
         love.graphics.setLineStyle("smooth")
-        love.graphics.rectangle("line", 1789, 801, 100, 40, 4, 4)
+        love.graphics.rectangle("line", 1789, 801, 100, 40, 2, 2)
         love.graphics.printf("ATK", 1789, 803, 100, "center")
         love.graphics.setColor(0.8, 0.35, 0, 1)
         love.graphics.rectangle("fill", 1890, 800, 30, 93)
@@ -32,7 +32,7 @@ function drawUpgradeMenu()
             love.graphics.setColor(1, 0, 0, 1)
         end
         love.graphics.setLineStyle("smooth")
-        love.graphics.rectangle("line", 1789, 894, 100, 40, 4, 4)
+        love.graphics.rectangle("line", 1789, 894, 100, 40, 2, 2)
         love.graphics.printf("VIT", 1789, 896, 100, "center")
         love.graphics.setColor(0, 0.7, 0.8, 1)
         love.graphics.rectangle("fill", 1890, 893, 30, 93)
@@ -42,90 +42,27 @@ function drawUpgradeMenu()
             love.graphics.setColor(1, 0, 0, 1)
         end
         love.graphics.setLineStyle("smooth")
-        love.graphics.rectangle("line", 1789, 987, 100, 40, 4, 4)
+        love.graphics.rectangle("line", 1789, 987, 100, 40, 2, 2)
         love.graphics.printf("UTL", 1789, 989, 100, "center")
         love.graphics.setColor(0, 0.8, 0.4, 1)
         love.graphics.rectangle("fill", 1890, 986, 30, 93)
 
         love.graphics.setLineStyle("rough")
-        if roundUpgradeSection == "ATK" then
-            love.graphics.setColor(0.8, 0.35, 0, 1)
-            love.graphics.setFont(font_VeraBold18)
-            love.graphics.print("(ATK)", 145, 816)
+        love.graphics.setFont(font_VeraBold18)
 
-            --[[ Attack Damage upgrade ]]--
-            processUpgradeModule.draw("Damage", 10, 850, tower_value_attack_damage, upgrade_round_attack_damage_cost, upgrade_round_attack_damage_cost, "round", math.huge, "precise", nil, nil)
+        processUpgradeModule.reload()
 
-            --[[ Attack Speed upgrade ]]--
-            processUpgradeModule.draw("Attack Speed", 10, 920, tower_value_attack_speed, upgrade_round_attack_speed_cost, upgrade_round_attack_speed_level, "round", 101, "precise2", nil, nil)
+        local sectionColors = {
+            ["ATK"] = {0.8, 0.35, 0, 1},
+            ["VIT"] = {0, 0.7, 0.8, 1},
+            ["UTL"] = {0, 0.8, 0.4, 1}
+        }
+            love.graphics.setColor(sectionColors[roundUpgradeSection])
+            love.graphics.print("(" .. roundUpgradeSection .. ")", 145, 816)
 
-            if upgrade_unlock_crit then
-                --[[ Crit Chance upgrade ]]--
-                processUpgradeModule.draw("Critical Chance", 10, 990, tower_value_critical_chance, upgrade_round_critChance_cost, upgrade_round_critChance_level, "round", 101, "precise", nil, "%")
-
-                --[[ Crit Factor upgrade ]]--
-                processUpgradeModule.draw("Critical Factor", 370, 850, tower_value_critical_factor, upgrade_round_critFactor_cost, upgrade_round_critFactor_level, "round", math.huge, "precise2", "x", nil)
+            for i,v in ipairs(upgradeModules["round"][roundUpgradeSection]) do
+                processUpgradeModule.draw(upgradeModules["round"][roundUpgradeSection][i])
             end
-
-            if upgrade_unlock_crit and upgrade_unlock_range then
-                --[[ Range upgrade ]]--
-                processUpgradeModule.draw("Range", 370, 920, tower_value_range / 20, upgrade_round_range_cost, upgrade_round_range_level, "round", 61, "precise", nil, nil)
-            end
-        elseif roundUpgradeSection == "VIT" then
-            love.graphics.setColor(0, 0.7, 0.8, 1)
-            love.graphics.setFont(font_VeraBold18)
-            love.graphics.print("(VIT)", 145, 816)
-
-            --[[ Health upgrade ]]--
-            processUpgradeModule.draw("Health", 10, 850, tower_value_maxHealth, upgrade_round_health_cost, upgrade_round_health_level, "round", math.huge, "precise", nil, nil)
-
-            --[[ Regeneration upgrade ]]--
-            processUpgradeModule.draw("Regeneration", 10, 920, tower_value_healthRegen, upgrade_round_regeneration_cost, upgrade_round_regeneration_level, "round", math.huge, "precise2", nil, "/s")
-
-            if upgrade_unlock_resistance then
-                --[[ Resistance upgrade ]]--
-                processUpgradeModule.draw("Resistance", 10, 990, tower_value_resistance, upgrade_round_resistance_cost, upgrade_round_resistance_level, "round", 121, "precise2", nil, "%")
-            end
-
-            if upgrade_unlock_resistance and upgrade_unlock_shield then
-                --[[ Shield Cooldown upgrade ]]--
-                processUpgradeModule.draw("Shield Cooldown", 370, 850, tower_value_shield_cooldown, upgrade_round_shieldCooldown_cost, upgrade_round_shieldCooldown_level, "round", 126, "precise", nil, "s")
-
-                --[[ Shield Duration upgrade ]]--
-                processUpgradeModule.draw("Shield Duration", 370, 920, tower_value_shield_duration, upgrade_round_shieldDuration_cost, upgrade_round_shieldDuration_level, "round", 111, "precise2", nil, "s")
-
-            end
-
-            if upgrade_unlock_resistance and upgrade_unlock_shield and upgrade_unlock_meteor then
-                
-                --[[ Meteor Amount upgrade ]]--
-                processUpgradeModule.draw("Meteor Amount", 370, 990, tower_value_meteor_amount, upgrade_round_meteor_amount_cost, upgrade_round_meteor_amount_level, "round", 6, "brief", nil, nil)
-
-                --[[ Meteor RPM upgrade ]]--
-                processUpgradeModule.draw("Meteor RPM", 730, 850, tower_value_meteor_RPM, upgrade_round_meteor_RPM_cost, upgrade_round_meteor_RPM_level, "round", 40, "precise2", nil, nil)
-            end
-
-        elseif roundUpgradeSection == "UTL" then
-            love.graphics.setColor(0, 0.8, 0.4, 1)
-            love.graphics.setFont(font_VeraBold18)
-            love.graphics.print("(UTL)", 145, 816)
-
-            --[[ Copper/wave upgrade ]]--
-            processUpgradeModule.draw("Copper/wave", 10, 850, gameplay_copperPerWave, upgrade_round_copperPerWave_cost, upgrade_round_copperPerWave_level, "round", math.huge, "brief", nil, nil)
-
-            --[[ Silver/wave upgrade ]]--
-            processUpgradeModule.draw("Silver/wave", 10, 920, gameplay_silverPerWave, upgrade_round_silverPerWave_cost, upgrade_round_silverPerWave_level, "round", math.huge, "brief", nil, nil)
-
-            if upgrade_unlock_resourceBonus then
-
-                --[[ Copper Bonus upgrade ]]--
-                processUpgradeModule.draw("Copper Bonus", 10, 990, gameplay_copperBonus, upgrade_round_copperBonus_cost, upgrade_round_copperBonus_level, "round", 451, "precise2", "x", nil)
-
-                --[[ Silver Bonus upgrade ]]--
-                processUpgradeModule.draw("Silver Bonus", 370, 850, gameplay_silverBonus, upgrade_round_silverBonus_cost, upgrade_round_silverBonus_level, "round", 301, "precise2", "x", nil)
-
-            end
-        end
 
         love.graphics.setColor(1, 1, 1, 1)
     else
@@ -144,190 +81,27 @@ function drawUpgradeMenu()
 end
 
 function upgradeMenu_mouse(x, y)
-    if upgradeMenu and not paused then
+    if player.menu.upgrades and not player.menu.paused and player.tower.currentHealth > 0 then
+
         if roundUpgradeSection == "ATK" then
-            --[[ Attack Damage ]]--
-            if x >= 277 and x <= 357 and y >= 853 and y <= 907 then
-                if currentCopper >= upgrade_round_attack_damage_cost then
-                    currentCopper = currentCopper - upgrade_round_attack_damage_cost
-                    upgrade_round_attack_damage_level = upgrade_round_attack_damage_level + 1
-                    upgrade_round_attack_damage_cost = math.floor((0.2 * ((upgrade_round_attack_damage_level - upgrade_science_attack_damage_level + 1)^2) + 0.4 * (upgrade_round_attack_damage_level - upgrade_science_attack_damage_level + 1) + 0.4) / ((upgrade_round_attack_damage_level - upgrade_science_attack_damage_level + 1)^0.2) + 1)
-                    tower_value_attack_damage = ((0.25 * upgrade_round_attack_damage_level - 0.25)^3 + 4) * upgrade_nexus_attack_damage_buff
-                end
-            end
-
-            --[[ Attack Speed ]]--
-            if x >= 277 and x <= 357 and y >= 923 and y <= 977 then
-                if currentCopper >= upgrade_round_attack_speed_cost and upgrade_round_attack_speed_level < 101 then
-                    currentCopper = currentCopper - upgrade_round_attack_speed_cost
-                    upgrade_round_attack_speed_level = upgrade_round_attack_speed_level + 1
-                    upgrade_round_attack_speed_cost = math.floor(5 * ((upgrade_round_attack_speed_level - upgrade_science_attack_speed_level + 1)^math.log(((upgrade_round_attack_speed_level - upgrade_science_attack_speed_level + 1) + 10) / 10)))
-                    tower_value_attack_speed = (math.min(0.5 + 0.04 * (upgrade_round_attack_speed_level - 1), 4.5)) * upgrade_nexus_attack_speed_buff
-                end
-            end
-
-            if upgrade_unlock_crit then
-                --[[ Crit Chance ]]--
-                if x >= 277 and x <= 357 and y >= 993 and y <= 1047 then
-                    if currentCopper >= upgrade_round_critChance_cost and upgrade_round_critChance_level < 101 then
-                        currentCopper = currentCopper - upgrade_round_critChance_cost
-                        upgrade_round_critChance_level = upgrade_round_critChance_level + 1
-                        upgrade_round_critChance_cost = math.floor(((upgrade_round_critChance_level - upgrade_science_critChance_level) / 2)^2 + 5.75)
-                        tower_value_critical_chance = math.min((upgrade_round_critChance_level - 1) / 2, 50)
-                    end
-                end
-
-                --[[ Crit Factor ]]--
-                if x >= 987 and x <= 1077 and y >= 853 and y <= 907 then
-                    if currentCopper >= upgrade_round_critFactor_cost then
-                        currentCopper = currentCopper - upgrade_round_critFactor_cost
-                        upgrade_round_critFactor_level = upgrade_round_critFactor_level + 1
-                        upgrade_round_critFactor_cost = math.floor(0.1 * ((upgrade_round_critFactor_level - upgrade_science_critFactor_level)^2) + (upgrade_round_critFactor_level - upgrade_science_critFactor_level) + 0.9)
-                        tower_value_critical_factor = 1 + ((upgrade_round_critFactor_level - 1) / 20)
-                    end
-                end
-            end
-
-            if upgrade_unlock_crit and upgrade_unlock_range then
-                --[[ Range ]]--
-                if x >= 987 and x <= 1077 and y >= 923 and y <= 977 then
-                    if currentCopper >= upgrade_round_range_cost and upgrade_round_range_level < 121 then
-                        currentCopper = currentCopper - upgrade_round_range_cost
-                        upgrade_round_range_level = upgrade_round_range_level + 1
-                        upgrade_round_range_cost = math.floor(((upgrade_round_range_level - upgrade_science_range_level)^2 + 5 * (upgrade_round_range_level - upgrade_science_range_level)) / 6 + 2 * (upgrade_round_range_level - upgrade_science_range_level) + 5/3)
-                        tower_value_range = math.min(240 + 2 * (upgrade_round_range_level - 1), 360)
-                    end
-                end
-            end
-        
+            player.upgrades.round.attackDamage.level, player.upgrades.round.attackDamage.cost, player.tower.attackDamage = processUpgradeModule.upgrade(x, y, upgradeModules["round"]["ATK"][1], reloadFormulae(upgradeModules["science"]["ATK"][1][8], upgradeModules["round"]["ATK"][1][8] + 1)["round"]["ATK"][1][1], reloadFormulae(upgradeModules["science"]["ATK"][1][8], upgradeModules["round"]["ATK"][1][8] + 1)["round"]["ATK"][1][2])
+            player.upgrades.round.attackSpeed.level, player.upgrades.round.attackSpeed.cost, player.tower.attackSpeed = processUpgradeModule.upgrade(x, y, upgradeModules["round"]["ATK"][2], reloadFormulae(upgradeModules["science"]["ATK"][2][8], upgradeModules["round"]["ATK"][2][8] + 1)["round"]["ATK"][2][1], reloadFormulae(upgradeModules["science"]["ATK"][2][8], upgradeModules["round"]["ATK"][2][8] + 1)["round"]["ATK"][2][2])
+            player.upgrades.round.critChance.level, player.upgrades.round.critChance.cost, player.tower.critChance = processUpgradeModule.upgrade(x, y, upgradeModules["round"]["ATK"][3], reloadFormulae(upgradeModules["science"]["ATK"][3][8], upgradeModules["round"]["ATK"][3][8] + 1)["round"]["ATK"][3][1], reloadFormulae(upgradeModules["science"]["ATK"][3][8], upgradeModules["round"]["ATK"][3][8] + 1)["round"]["ATK"][3][2])
+            player.upgrades.round.critFactor.level, player.upgrades.round.critFactor.cost, player.tower.critFactor = processUpgradeModule.upgrade(x, y, upgradeModules["round"]["ATK"][4], reloadFormulae(upgradeModules["science"]["ATK"][4][8], upgradeModules["round"]["ATK"][4][8] + 1)["round"]["ATK"][4][1], reloadFormulae(upgradeModules["science"]["ATK"][4][8], upgradeModules["round"]["ATK"][4][8] + 1)["round"]["ATK"][4][2])
+            player.upgrades.round.range.level, player.upgrades.round.range.cost, player.tower.range = processUpgradeModule.upgrade(x, y, upgradeModules["round"]["ATK"][5], reloadFormulae(upgradeModules["science"]["ATK"][5][8], upgradeModules["round"]["ATK"][5][8] + 1)["round"]["ATK"][5][1], reloadFormulae(upgradeModules["science"]["ATK"][5][8], upgradeModules["round"]["ATK"][5][8] + 1)["round"]["ATK"][5][2])
         elseif roundUpgradeSection == "VIT" then
-            --[[ Health ]]--
-            if x >= 277 and x <= 357 and y >= 853 and y <= 907 then
-                if currentCopper >= upgrade_round_health_cost then
-                    currentCopper = currentCopper - upgrade_round_health_cost
-                    upgrade_round_health_level = upgrade_round_health_level + 1
-                    upgrade_round_health_cost = math.floor((0.2 * ((upgrade_round_health_level - upgrade_science_health_level + 1)^2) + 0.4 * (upgrade_round_health_level - upgrade_science_health_level + 1) + 0.4) / ((upgrade_round_health_level - upgrade_science_health_level + 1)^(1/6)) + 1.95)
-                    local hpPercentage = tower_value_currentHealth / tower_value_maxHealth
-                    tower_value_maxHealth = ((0.3 * upgrade_round_health_level - 0.3)^3.75 + 14.6 + 0.4 * upgrade_round_health_level) * upgrade_nexus_health_buff
-                    tower_value_currentHealth = tower_value_maxHealth * hpPercentage
-                end
-            end
-
-            --[[ Health Regeneration ]]--
-            if x >= 277 and x <= 357 and y >= 923 and y <= 977 then
-                if currentCopper >= upgrade_round_regeneration_cost then
-                    currentCopper = currentCopper - upgrade_round_regeneration_cost
-                    upgrade_round_regeneration_level = upgrade_round_regeneration_level + 1
-                    upgrade_round_regeneration_cost = math.floor((upgrade_round_regeneration_level - upgrade_science_regeneration_level + 1)^1.5 + 3)
-                    tower_value_healthRegen = (((0.8 * upgrade_round_regeneration_level - 0.8)^2.75) / 50) * upgrade_nexus_regeneration_buff
-                end
-            end
-
-            if upgrade_unlock_resistance then
-                --[[ Resistance ]]--
-                if x >= 277 and x <= 357 and y >= 993 and y <= 1047 then
-                    if currentCopper >= upgrade_round_resistance_cost and upgrade_round_resistance_level < 61 then
-                        currentCopper = currentCopper - upgrade_round_resistance_cost
-                        upgrade_round_resistance_level = upgrade_round_resistance_level + 1
-                        upgrade_round_resistance_cost = math.floor((upgrade_round_resistance_level - upgrade_science_resistance_level) * math.sqrt(upgrade_round_resistance_level - upgrade_science_resistance_level) + 4)
-                        tower_value_resistance = math.min(0.75 * (upgrade_round_resistance_level - 1), 90)
-                    end
-                end
-            end
-
-            if upgrade_unlock_resistance and upgrade_unlock_shield then
-                --[[ Shield Cooldown ]]--
-                if x >= 627 and x <= 717 and y >= 853 and y <= 907 then
-                    if currentCopper >= upgrade_round_shieldCooldown_cost and upgrade_round_shieldCooldown_level < 116 then
-                        currentCopper = currentCopper - upgrade_round_shieldCooldown_cost
-                        upgrade_round_shieldCooldown_level = upgrade_round_shieldCooldown_level + 1
-                        upgrade_round_shieldCooldown_cost = math.floor((upgrade_round_shieldCooldown_level - upgrade_science_shieldCooldown_level)^(math.log(upgrade_round_shieldCooldown_level - upgrade_science_shieldCooldown_level, 10) / 1.2) + 3)
-                        tower_value_shield_cooldown = math.max(120 - 0.6 * (upgrade_round_shieldCooldown_level - 1), 45)
-                    end
-                end
-                --[[ Shield Duration ]]--
-                if x >= 627 and x <= 717 and y >= 923 and y <= 977 then
-                    if currentCopper >= upgrade_round_shieldDuration_cost and upgrade_round_shieldDuration_level < 111 then
-                        currentCopper = currentCopper - upgrade_round_shieldDuration_cost
-                        upgrade_round_shieldDuration_level = upgrade_round_shieldDuration_level + 1
-                        upgrade_round_shieldDuration_cost = math.floor((upgrade_round_shieldDuration_level - upgrade_science_shieldDuration_level)^(math.log(upgrade_round_shieldDuration_level - upgrade_science_shieldDuration_level) / 2.5) + 2)
-                        tower_value_shield_duration = math.min(0.05 * (upgrade_round_shieldDuration_level - 1) + 0.5, 6)
-                    end
-                end
-            end
-
-            if upgrade_unlock_resistance and upgrade_unlock_shield and upgrade_unlock_meteor then
-                --[[ Meteor Amount ]]--
-                if x >= 627 and x <= 717 and y >= 993 and y <= 1047 then
-                    if currentCopper >= upgrade_round_meteor_amount_cost and upgrade_round_meteor_amount_level < 6 then
-                        currentCopper = currentCopper - upgrade_round_meteor_amount_cost
-                        upgrade_round_meteor_amount_level = upgrade_round_meteor_amount_level + 1
-                        upgrade_round_meteor_amount_cost = math.floor((12 * (upgrade_round_meteor_amount_level - upgrade_science_meteor_amount_level + 1))^2 + 56)
-                        tower_value_meteor_amount = math.min(upgrade_round_meteor_amount_level - 1, 5)
-                        local offset = 0
-                        if tower_value_meteor_amount > 1 then
-                            offset = -1/2 * math.pi + meteors[1].angle
-                        end
-                        meteors = {}
-                        for i=1,tower_value_meteor_amount do
-                            createMeteor(((i-1) * (2 * math.pi) / tower_value_meteor_amount) - 0.5 * math.pi)
-                        end
-                    end
-                end
-                --[[ Meteor RPM ]]--
-                if x >= 987 and x <= 1077 and y >= 853 and y <= 907 then
-                    if currentCopper >= upgrade_round_meteor_RPM_cost and upgrade_round_meteor_RPM_level < 40 then
-                        currentCopper = currentCopper - upgrade_round_meteor_RPM_cost
-                        upgrade_round_meteor_RPM_level = upgrade_round_meteor_RPM_level + 1
-                        upgrade_round_meteor_RPM_cost = math.floor(4 * ((upgrade_round_meteor_RPM_level - upgrade_science_meteor_RPM_level + 1)^2) + 16)
-                        tower_value_meteor_RPM = math.min(0.15 * upgrade_round_meteor_RPM_level + 0.25, 6.25)
-                    end
-                end
-            end
-
+            player.upgrades.round.health.level, player.upgrades.round.health.cost, player.tower.maxHealth = processUpgradeModule.upgrade(x, y, upgradeModules["round"]["VIT"][1], reloadFormulae(upgradeModules["science"]["VIT"][1][8], upgradeModules["round"]["VIT"][1][8] + 1)["round"]["VIT"][1][1], reloadFormulae(upgradeModules["science"]["VIT"][1][8], upgradeModules["round"]["VIT"][1][8] + 1)["round"]["VIT"][1][2])
+            player.upgrades.round.regeneration.level, player.upgrades.round.regeneration.cost, player.tower.regeneration = processUpgradeModule.upgrade(x, y, upgradeModules["round"]["VIT"][2], reloadFormulae(upgradeModules["science"]["VIT"][2][8], upgradeModules["round"]["VIT"][2][8] + 1)["round"]["VIT"][2][1], reloadFormulae(upgradeModules["science"]["VIT"][2][8], upgradeModules["round"]["VIT"][2][8] + 1)["round"]["VIT"][2][2])
+            player.upgrades.round.resistance.level, player.upgrades.round.resistance.cost, player.tower.resistance = processUpgradeModule.upgrade(x, y, upgradeModules["round"]["VIT"][3], reloadFormulae(upgradeModules["science"]["VIT"][3][8], upgradeModules["round"]["VIT"][3][8] + 1)["round"]["VIT"][3][1], reloadFormulae(upgradeModules["science"]["VIT"][3][8], upgradeModules["round"]["VIT"][3][8] + 1)["round"]["VIT"][3][2])
+            player.upgrades.round.shieldCooldown.level, player.upgrades.round.shieldCooldown.cost, player.tower.shieldCooldown = processUpgradeModule.upgrade(x, y, upgradeModules["round"]["VIT"][4], reloadFormulae(upgradeModules["science"]["VIT"][4][8], upgradeModules["round"]["VIT"][4][8] + 1)["round"]["VIT"][4][1], reloadFormulae(upgradeModules["science"]["VIT"][4][8], upgradeModules["round"]["VIT"][4][8] + 1)["round"]["VIT"][4][2])
+            player.upgrades.round.shieldDuration.level, player.upgrades.round.shieldDuration.cost, player.tower.shieldDuration = processUpgradeModule.upgrade(x, y, upgradeModules["round"]["VIT"][5], reloadFormulae(upgradeModules["science"]["VIT"][5][8], upgradeModules["round"]["VIT"][5][8] + 1)["round"]["VIT"][5][1], reloadFormulae(upgradeModules["science"]["VIT"][5][8], upgradeModules["round"]["VIT"][5][8] + 1)["round"]["VIT"][5][2])
+            player.upgrades.round.meteorAmount.level, player.upgrades.round.meteorAmount.cost, player.tower.meteorAmount = processUpgradeModule.upgrade(x, y, upgradeModules["round"]["VIT"][6], reloadFormulae(upgradeModules["science"]["VIT"][6][8], upgradeModules["round"]["VIT"][6][8] + 1)["round"]["VIT"][6][1], reloadFormulae(upgradeModules["science"]["VIT"][6][8], upgradeModules["round"]["VIT"][6][8] + 1)["round"]["VIT"][6][2])
+            player.upgrades.round.meteorRPM.level, player.upgrades.round.meteorRPM.cost, player.tower.meteorRPM = processUpgradeModule.upgrade(x, y, upgradeModules["round"]["VIT"][7], reloadFormulae(upgradeModules["science"]["VIT"][7][8], upgradeModules["round"]["VIT"][7][8] + 1)["round"]["VIT"][7][1], reloadFormulae(upgradeModules["science"]["VIT"][7][8], upgradeModules["round"]["VIT"][7][8] + 1)["round"]["VIT"][7][2])
         elseif roundUpgradeSection == "UTL" then
-            --[[ Copper/wave ]]--
-            if x >= 277 and x <= 357 and y >= 853 and y <= 907 then
-                if currentCopper >= upgrade_round_copperPerWave_cost then
-                    currentCopper = currentCopper - upgrade_round_copperPerWave_cost
-                    upgrade_round_copperPerWave_level = upgrade_round_copperPerWave_level + 1
-                    upgrade_round_copperPerWave_cost = math.floor((upgrade_round_copperPerWave_level - upgrade_science_copperPerWave_level + 1) * ((upgrade_round_copperPerWave_level - upgrade_science_copperPerWave_level + 1) + 1) / 2 + 9)
-                    gameplay_copperPerWave = 4 * (upgrade_round_copperPerWave_level - 1)
-                end
-            end
-
-            --[[ Silver/wave ]]--
-            if x >= 277 and x <= 357 and y >= 923 and y <= 977 then
-                if currentCopper >= upgrade_round_silverPerWave_cost then
-                    currentCopper = currentCopper - upgrade_round_silverPerWave_cost
-                    upgrade_round_silverPerWave_level = upgrade_round_silverPerWave_level + 1
-                    upgrade_round_silverPerWave_cost = math.floor(((upgrade_round_silverPerWave_level - upgrade_science_silverPerWave_level + 1) + 2)^2 + 1)
-                    gameplay_silverPerWave = 3 * (upgrade_round_silverPerWave_level - 1)
-                end
-            end
-
-            if upgrade_unlock_resourceBonus then
-
-                --[[ Copper Bonus ]]--
-                if x >= 277 and x <= 357 and y >= 993 and y <= 1047 then
-                    if currentCopper >= upgrade_round_copperBonus_cost and upgrade_round_copperBonus_level < 451 then
-                        currentCopper = currentCopper - upgrade_round_copperBonus_cost
-                        upgrade_round_copperBonus_level = upgrade_round_copperBonus_level + 1
-                        upgrade_round_copperBonus_cost = math.floor((0.2 * (upgrade_round_copperBonus_level - upgrade_science_copperBonus_level))^2 + 2 * (upgrade_round_copperBonus_level - upgrade_science_copperBonus_level) + 3.96)
-                        gameplay_copperBonus = math.min(1 + 0.02 * (upgrade_round_copperBonus_level - 1), 10)
-                    end
-                end
-
-                --[[ Silver Bonus ]]--
-                if x >= 627 and x <= 717 and y >= 853 and y <= 907 then
-                    if currentCopper >= upgrade_round_silverBonus_cost and upgrade_round_silverBonus_level < 301 then
-                        currentCopper = currentCopper - upgrade_round_silverBonus_cost
-                        upgrade_round_silverBonus_level = upgrade_round_silverBonus_level + 1
-                        upgrade_round_silverBonus_cost = (0.4 * (upgrade_round_silverBonus_level - upgrade_science_silverBonus_level)^1.6 + 6.6)
-                        gameplay_silverBonus = math.min(1 + 0.01 * (upgrade_round_silverBonus_level - 1), 4)
-                    end
-                end
-            end
+            player.upgrades.round.copperPerWave.level, player.upgrades.round.copperPerWave.cost, player.tower.copperPerWave = processUpgradeModule.upgrade(x, y, upgradeModules["round"]["UTL"][1], reloadFormulae(upgradeModules["science"]["UTL"][1][8], upgradeModules["round"]["UTL"][1][8] + 1)["round"]["UTL"][1][1], reloadFormulae(upgradeModules["science"]["UTL"][1][8], upgradeModules["round"]["UTL"][1][8] + 1)["round"]["UTL"][1][2])
+            player.upgrades.round.silverPerWave.level, player.upgrades.round.silverPerWave.cost, player.tower.silverPerWave = processUpgradeModule.upgrade(x, y, upgradeModules["round"]["UTL"][2], reloadFormulae(upgradeModules["science"]["UTL"][2][8], upgradeModules["round"]["UTL"][2][8] + 1)["round"]["UTL"][2][1], reloadFormulae(upgradeModules["science"]["UTL"][2][8], upgradeModules["round"]["UTL"][2][8] + 1)["round"]["UTL"][2][2])
+            player.upgrades.round.copperBonus.level, player.upgrades.round.copperBonus.cost, player.tower.copperBonus = processUpgradeModule.upgrade(x, y, upgradeModules["round"]["UTL"][3], reloadFormulae(upgradeModules["science"]["UTL"][3][8], upgradeModules["round"]["UTL"][3][8] + 1)["round"]["UTL"][3][1], reloadFormulae(upgradeModules["science"]["UTL"][3][8], upgradeModules["round"]["UTL"][3][8] + 1)["round"]["UTL"][3][2])
+            player.upgrades.round.silverBonus.level, player.upgrades.round.silverBonus.cost, player.tower.silverBonus = processUpgradeModule.upgrade(x, y, upgradeModules["round"]["UTL"][4], reloadFormulae(upgradeModules["science"]["UTL"][4][8], upgradeModules["round"]["UTL"][4][8] + 1)["round"]["UTL"][4][1], reloadFormulae(upgradeModules["science"]["UTL"][4][8], upgradeModules["round"]["UTL"][4][8] + 1)["round"]["UTL"][4][2])
         end
 
         if x >= 1890 and x <= 1920 and y >= 800 and y <= 893 then

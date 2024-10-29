@@ -1,77 +1,74 @@
 function saveGame()
     data = {}
     data.player = {
-        currentSilver = currentSilver,
-        currentGold = currentGold,
-        currentElectrum = currentElectrum,
-        currentTokens = currentTokens,
+        currentSilver = player.currencies.currentSilver,
+        currentGold = player.currencies.currentGold,
+        currentElectrum = player.currencies.currentElectrum,
+        currentTokens = player.currencies.currentTokens,
         upgrades = {
             unlocks = {
-                crit = upgrade_unlock_crit,
-                range = upgrade_unlock_range,
-                clusterFire = upgrade_unlock_clusterFire,
+                crit = player.upgrades.unlocks.crit,
+                range = player.upgrades.unlocks.range,
+                clusterFire = player.upgrades.unlocks.clusterFire,
 
-                resistance = upgrade_unlock_resistance,
-                shield = upgrade_unlock_shield,
-                meteor = upgrade_unlock_meteor,
+                resistance = player.upgrades.unlocks.resistance,
+                shield = player.upgrades.unlocks.shield,
+                meteor = player.upgrades.unlocks.meteor,
 
-                resourceBonus = upgrade_unlock_resourceBonus,
+                resourceBonus = player.upgrades.unlocks.resourceBonus,
             },
             nexus = {
-                attack_damage = upgrade_nexus_attack_damage_level,
-                attack_speed = upgrade_nexus_attack_speed_level,
-                health = upgrade_nexus_health_level,
-                regeneration = upgrade_nexus_regeneration_level,
+                attackDamage = player.upgrades.nexus.attackDamage.level,
+                attackSpeed = player.upgrades.nexus.attackSpeed.level,
+                health = player.upgrades.nexus.health.level,
+                regeneration = player.upgrades.nexus.regeneration.level,
             },
-            attack_damage = upgrade_science_attack_damage_level,
-            attack_speed = upgrade_science_attack_speed_level,
-            critical_chance = upgrade_science_critChance_level,
-            critical_factor = upgrade_science_critFactor_level,
-            range = upgrade_science_range_level,
-            clusterFire_chance = upgrade_science_clusterFire_chance_level,
-            clusterFire_targets = upgrade_science_clusterFire_targets_level,
-            clusterFire_factor = upgrade_science_clusterFire_factor_level,
-            clusterFire_duration = upgrade_science_clusterFire_duration_level,
+            attackDamage = player.upgrades.science.attackDamage.level,
+            attackSpeed = player.upgrades.science.attackSpeed.level,
+            critChance = player.upgrades.science.critChance.level,
+            critFactor = player.upgrades.science.critFactor.level,
+            range = player.upgrades.science.range.level,
             
-            health = upgrade_science_health_level,
-            regeneration = upgrade_science_regeneration_level,
-            resistance = upgrade_science_resistance_level,
-            shield_cooldown = upgrade_science_shieldCooldown_level,
-            shield_duration = upgrade_science_shieldDuration_level,
-            meteor_amount = upgrade_science_meteor_amount_level,
-            meteor_RPM = upgrade_science_meteor_RPM_level,
+            health = player.upgrades.science.health.level,
+            regeneration = player.upgrades.science.regeneration.level,
+            resistance = player.upgrades.science.resistance.level,
+            shieldCooldown = player.upgrades.science.shieldCooldown.level,
+            shieldDuration = player.upgrades.science.shieldDuration.level,
+            meteorAmount = player.upgrades.science.meteorAmount.level,
+            meteorRPM = player.upgrades.science.meteorRPM.level,
 
-            copperPerWave = upgrade_science_copperPerWave_level,
-            silverPerWave = upgrade_science_silverPerWave_level,
-            copperBonus = upgrade_science_copperBonus_level,
-            silverBonus = upgrade_science_silverBonus_level,
+            copperPerWave = player.upgrades.science.copperPerWave.level,
+            silverPerWave = player.upgrades.science.silverPerWave.level,
+            copperBonus = player.upgrades.science.copperBonus.level,
+            silverBonus = player.upgrades.science.silverBonus.level,
         },
 
-        cooldowns = {
-            tokens = timer_untilTokens,
-            electrum = timer_untilElectrum
+        timers = {
+            tokens = player.timers.tokens,
+            electrum = player.timers.electrum
         },
 
         abilities = {
             unlocks = {
-                waveSkip = ability_unlock_waveSkip
+                waveSkip = player.abilities.waveSkip.unlocked
             },
             waveSkip = {
-                chance = ability_waveSkip_chance_level
+                chance = player.abilities.waveSkip.level
             }
         },
 
         pb = {
-            d1 = d1_best_wave,
-            d2 = d2_best_wave,
-            d3 = d3_best_wave,
-            d4 = d4_best_wave,
+            d1 = player.bestWaves.d1,
+            d2 = player.bestWaves.d2,
+            d3 = player.bestWaves.d3,
+            d4 = player.bestWaves.d4,
         }
     }
     data.settings = {
-        particleMultiplierIndex = settings_particleMultiplierIndex,
-        waveskipMessages = settings_waveSkipMessages,
-        notation = settings_notation
+        particleMultiplierIndex = player.settings.particleMultiplier,
+        waveSkipMessages = player.settings.waveSkipMessages,
+        notation = player.settings.notation,
+        tooltips = player.settings.tooltips
     }
 
     serialized = lume.serialize(data)
