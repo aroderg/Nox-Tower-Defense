@@ -43,10 +43,10 @@ function gameEnd()
         elseif gameplay.wave > player.bestWaves.d4 and gameplay.difficulty == 4 then
             player.bestWaves.d4 = gameplay.wave
         end
-        if player.bestWaves.d1 > 150 then
+        if player.bestWaves.d1 > 99 then
             player.difficulty.unlocks.d2 = true
         end
-        if player.bestWaves.d2 > 150 then
+        if player.bestWaves.d2 > 99 then
             player.difficulty.unlocks.d3 = true
         end
         if player.bestWaves.d3 > 150 then

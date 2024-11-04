@@ -1,7 +1,11 @@
 function towerInfo_visual()
     if not player.menu.upgrades then
         --[[ Print out tower info ]]--
-        love.graphics.setColor(0.106, 0.11, 0.22, 1)
+        if background == "main" or background == "stellar" then
+            love.graphics.setColor(0.106, 0.11, 0.22, 1)
+        elseif background == "eclipse" then
+            love.graphics.setColor(0.13, 0.05, 0, 1)
+        end
         love.graphics.rectangle("fill", 10, 950, 200, 70)
         love.graphics.setColor(1, 1, 1, 1)
         love.graphics.rectangle("line", 10, 950, 200, 70)
@@ -22,7 +26,11 @@ function towerInfo_visual()
         love.graphics.setLineStyle("rough")
 
         --[[ Print out enemy info ]]--
-        love.graphics.setColor(0.106, 0.11, 0.22, 1)
+        if background == "main" or background == "stellar" then
+            love.graphics.setColor(0.106, 0.11, 0.22, 1)
+        elseif background == "eclipse" then
+            love.graphics.setColor(0.13, 0.05, 0, 1)
+        end
         love.graphics.rectangle("fill", 1690, 950, 220, 70)
         love.graphics.setColor(1, 1, 1, 1)
         love.graphics.rectangle("line", 1690, 950, 220, 70)
@@ -55,13 +63,21 @@ function towerInfo_visual()
             love.graphics.arc("line", 1875, 996, 20, 1.5*math.pi, 3.5*math.pi - (timers.nextWave / gameplay.waveCooldown) * 2 * math.pi)
             love.graphics.arc("fill", 1875, 996, 20, 1.5*math.pi, 3.5*math.pi - (timers.nextWave / gameplay.waveCooldown) * 2 * math.pi)
         end
-        love.graphics.setColor(0.106, 0.11, 0.22, 1)
+        if background == "main" or background == "stellar" then
+            love.graphics.setColor(0.106, 0.11, 0.22, 1)
+        elseif background == "eclipse" then
+            love.graphics.setColor(0.13, 0.05, 0, 1)
+        end
         love.graphics.setLineWidth(10)
         love.graphics.ellipse("line", 1875, 996, 5, 5)
         
     else
         --[[ Print out tower info ]]--
-        love.graphics.setColor(0.106, 0.11, 0.22, 1)
+        if background == "main" or background == "stellar" then
+            love.graphics.setColor(0.106, 0.11, 0.22, 1)
+        elseif background == "eclipse" then
+            love.graphics.setColor(0.13, 0.05, 0, 1)
+        end
         love.graphics.rectangle("fill", 10, 720, 200, 70)
         love.graphics.setColor(1, 1, 1, 1)
         love.graphics.rectangle("line", 10, 720, 200, 70)
@@ -82,7 +98,11 @@ function towerInfo_visual()
         love.graphics.setLineStyle("rough")
 
         --[[ Print out enemy info ]]--
-        love.graphics.setColor(0.106, 0.11, 0.22, 1)
+        if background == "main" or background == "stellar" then
+            love.graphics.setColor(0.106, 0.11, 0.22, 1)
+        elseif background == "eclipse" then
+            love.graphics.setColor(0.13, 0.05, 0, 1)
+        end
         love.graphics.rectangle("fill", 1690, 720, 220, 70)
         love.graphics.setColor(1, 1, 1, 1)
         love.graphics.rectangle("line", 1690, 720, 220, 70)
@@ -114,7 +134,11 @@ function towerInfo_visual()
             love.graphics.arc("line", 1875, 766, 20, 1.5*math.pi, 3.5*math.pi - (timers.nextWave / gameplay.waveCooldown) * 2 * math.pi)
             love.graphics.arc("fill", 1875, 766, 20, 1.5*math.pi, 3.5*math.pi - (timers.nextWave / gameplay.waveCooldown) * 2 * math.pi)
         end
-        love.graphics.setColor(0.106, 0.11, 0.22, 1)
+        if background == "main" or background == "stellar" then
+            love.graphics.setColor(0.106, 0.11, 0.22, 1)
+        elseif background == "eclipse" then
+            love.graphics.setColor(0.13, 0.05, 0, 1)
+        end
         love.graphics.setLineWidth(10)
         love.graphics.ellipse("line", 1875, 766, 5, 5)
     end

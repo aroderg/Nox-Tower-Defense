@@ -16,16 +16,16 @@ function createKillParticle(x, y, origin)
     killParticle.angle = love.math.random(0, 2 * math.pi * 10000) / 10000
     killParticle.origin = origin
     local particleSpeed = {
-        ["basic"] = {15, 30},
-        ["tank"] = {18, 36},
-        ["swift"] = {12, 24},
-        ["sentry"] = {25, 50},
-        ["centurion"] = {30, 60}
+        ["basic"] = {5, 30},
+        ["tank"] = {6, 36},
+        ["swift"] = {4, 24},
+        ["sentry"] = {8, 48},
+        ["centurion"] = {11, 66}
         }
     local fadeTimes = {
-        ["basic"] = 0.5,
-        ["tank"] = 0.7,
-        ["swift"] = 0.7,
+        ["basic"] = 0.6,
+        ["tank"] = 0.8,
+        ["swift"] = 0.5,
         ["sentry"] = 1.5,
         ["centurion"] = 2.5
         }
@@ -48,7 +48,7 @@ function createHitTextParticle(x, y, damage, origin, isCrit)
 end
 
 function renderParticles()
-    local particleAppearances = {
+    local killParticleAppearances = {
         ["basic"] = {img_particle_kill_enemy_basic, 4},
         ["tank"] = {img_particle_kill_enemy_tank, 5},
         ["swift"] = {img_particle_kill_enemy_swift, 3},
@@ -58,7 +58,7 @@ function renderParticles()
     --[[ Render the particles to be different depending on their origin ]]--
     for i,v in ipairs(particles) do
         love.graphics.setColor(1, 1, 1, 1-v.timer_fade/v.fadeTime)
-        love.graphics.draw(particleAppearances[v.origin][1], v.x - particleAppearances[v.origin][2], v.y - particleAppearances[v.origin][2])
+        love.graphics.draw(killParticleAppearances[v.origin][1], v.x - killParticleAppearances[v.origin][2], v.y - killParticleAppearances[v.origin][2])
     end
     for i,v in ipairs(collapseParticles) do
         love.graphics.setColor(1, 1, 1, 1-v.timer_fade/v.fadeTime)

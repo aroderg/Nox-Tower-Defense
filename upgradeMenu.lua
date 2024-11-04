@@ -2,7 +2,11 @@ function drawUpgradeMenu()
     if player.menu.upgrades then
         love.graphics.setLineStyle("smooth")
         love.graphics.setLineWidth(3)
-        love.graphics.setColor(0.106, 0.11, 0.22, 1)
+        if background == "main" or background == "stellar" then
+            love.graphics.setColor(0.106, 0.11, 0.22, 1)
+        elseif background == "eclipse" then
+            love.graphics.setColor(0.13, 0.05, 0, 1)
+        end
         love.graphics.rectangle("fill", 860, 750, 200, 52)
         love.graphics.setColor(1, 1, 1, 1)
         love.graphics.rectangle("line", 860, 750, 200, 52, 2, 2)
@@ -68,7 +72,11 @@ function drawUpgradeMenu()
     else
         love.graphics.setLineStyle("smooth")
         love.graphics.setLineWidth(3)
-        love.graphics.setColor(0.106, 0.11, 0.22, 1)
+        if background == "main" or background == "stellar" then
+            love.graphics.setColor(0.106, 0.11, 0.22, 1)
+        elseif background == "eclipse" then
+            love.graphics.setColor(0.13, 0.05, 0, 1)
+        end
         love.graphics.rectangle("fill", 860, 1030, 200, 52)
         love.graphics.setColor(1, 1, 1, 1)
         love.graphics.rectangle("line", 860, 1030, 200, 52, 2, 2)

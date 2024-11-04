@@ -161,7 +161,7 @@ function loadGame()
             }
         }
         if not data.player.abilities.unlocks.waveSkip then
-            player.abilities.waveSkip.cost = 20
+            player.abilities.waveSkip.cost = 15
             player.abilities.waveSkip.value = 0
         else
             player.abilities.waveSkip.cost = (player.abilities.waveSkip.level * (player.abilities.waveSkip.level - 1)) / 2 + 4
@@ -353,38 +353,38 @@ function loadGame()
     end
 
     --[[ Set Science upgrade costs (in Silver) ]]--
-    player.upgrades.science.attackDamage.cost = math.floor(0.4 * player.upgrades.science.attackDamage.level^2 + 2.6)
-    player.upgrades.science.attackSpeed.cost = math.floor(8^((player.upgrades.science.attackSpeed.level - 1) / 20) + 3 * player.upgrades.science.attackSpeed.level + 4)
-    player.upgrades.science.critChance.cost = math.floor((player.upgrades.science.critChance.level / 2)^2 + 4 * player.upgrades.science.critChance.level + 1.75)
-    player.upgrades.science.critFactor.cost = math.floor(0.2 * (player.upgrades.science.critFactor.level^2) + 1.8)
-    player.upgrades.science.range.cost = math.floor((player.upgrades.science.range.level^2 + 5 * player.upgrades.science.range.level) / 3 + 2 * player.upgrades.science.range.level + 4)
+    player.upgrades.science.attackDamage.cost = reloadFormulae(player.upgrades.science.attackDamage.level)["science"]["ATK"][1][1]
+    player.upgrades.science.attackSpeed.cost = reloadFormulae(player.upgrades.science.attackSpeed.level)["science"]["ATK"][2][1]
+    player.upgrades.science.critChance.cost = reloadFormulae(player.upgrades.science.critChance.level)["science"]["ATK"][3][1]
+    player.upgrades.science.critFactor.cost = reloadFormulae(player.upgrades.science.critFactor.level)["science"]["ATK"][4][1]
+    player.upgrades.science.range.cost = reloadFormulae(player.upgrades.science.range.level)["science"]["ATK"][5][1]
 
-    player.upgrades.science.health.cost = math.floor(0.6 * player.upgrades.science.health.level^2 + 3.4)
-    player.upgrades.science.regeneration.cost = math.floor(player.upgrades.science.regeneration.level^1.75 + 2 * player.upgrades.science.regeneration.level + 3)
-    player.upgrades.science.resistance.cost = math.floor(player.upgrades.science.resistance.level * math.sqrt(2 * player.upgrades.science.resistance.level) + 3 - math.sqrt(2))
-    player.upgrades.science.shieldCooldown.cost = math.floor(player.upgrades.science.shieldCooldown.level^(math.log(player.upgrades.science.shieldCooldown.level, 10)) + 3)
-    player.upgrades.science.shieldDuration.cost = math.floor((player.upgrades.science.shieldDuration.level)^(math.log(player.upgrades.science.shieldDuration.level) / 2) + 3)
-    player.upgrades.science.meteorAmount.cost = math.floor((16 * player.upgrades.science.meteorAmount.level)^2 + 144)
-    player.upgrades.science.meteorRPM.cost = math.floor((3 * player.upgrades.science.meteorRPM.level)^2 + 41)
+    player.upgrades.science.health.cost = reloadFormulae(player.upgrades.science.health.level)["science"]["VIT"][1][1]
+    player.upgrades.science.regeneration.cost = reloadFormulae(player.upgrades.science.regeneration.level)["science"]["VIT"][2][1]
+    player.upgrades.science.resistance.cost = reloadFormulae(player.upgrades.science.resistance.level)["science"]["VIT"][3][1]
+    player.upgrades.science.shieldCooldown.cost = reloadFormulae(player.upgrades.science.shieldCooldown.level)["science"]["VIT"][4][1]
+    player.upgrades.science.shieldDuration.cost = reloadFormulae(player.upgrades.science.shieldDuration.level)["science"]["VIT"][5][1]
+    player.upgrades.science.meteorAmount.cost = reloadFormulae(player.upgrades.science.meteorAmount.level)["science"]["VIT"][6][1]
+    player.upgrades.science.meteorRPM.cost = reloadFormulae(player.upgrades.science.meteorRPM.level)["science"]["VIT"][7][1]
 
-    player.upgrades.science.copperPerWave.cost = math.floor((player.upgrades.science.copperPerWave.level^2 + player.upgrades.science.copperPerWave.level + 1) * 3 + 11)
-    player.upgrades.science.silverPerWave.cost = math.floor(((8 * player.upgrades.science.silverPerWave.level) / 5)^2 + 27.44)
-    player.upgrades.science.copperBonus.cost = math.floor((0.4 * (player.upgrades.science.copperBonus.level - 1))^1.9 + 8)
-    player.upgrades.science.silverBonus.cost = math.floor(0.4 * player.upgrades.science.silverBonus.level^2 + player.upgrades.science.silverBonus.level + 8.6)
+    player.upgrades.science.copperPerWave.cost = reloadFormulae(player.upgrades.science.copperPerWave.level)["science"]["UTL"][1][1]
+    player.upgrades.science.silverPerWave.cost = reloadFormulae(player.upgrades.science.silverPerWave.level)["science"]["UTL"][2][1]
+    player.upgrades.science.copperBonus.cost = reloadFormulae(player.upgrades.science.copperBonus.level)["science"]["UTL"][3][1]
+    player.upgrades.science.silverBonus.cost = reloadFormulae(player.upgrades.science.silverBonus.level)["science"]["UTL"][4][1]
 
     --[[ Set Nexus upgrade costs (in Tokens) ]]--
-    player.upgrades.nexus.attackDamage.cost = 50 + ((player.upgrades.nexus.attackDamage.level * (player.upgrades.nexus.attackDamage.level - 1)) / 2) * 10
-    player.upgrades.nexus.attackSpeed.cost = 50 + ((player.upgrades.nexus.attackSpeed.level * (player.upgrades.nexus.attackSpeed.level - 1)) / 2) * 10
-    player.upgrades.nexus.health.cost = 50 + ((player.upgrades.nexus.health.level * (player.upgrades.nexus.health.level - 1)) / 2) * 10
-    player.upgrades.nexus.regeneration.cost = 50 + ((player.upgrades.nexus.regeneration.level * (player.upgrades.nexus.regeneration.level - 1)) / 2) * 10
+    player.upgrades.nexus.attackDamage.cost = 20 + ((player.upgrades.nexus.attackDamage.level * (player.upgrades.nexus.attackDamage.level - 1)) / 2) * 5
+    player.upgrades.nexus.attackSpeed.cost = 20 + ((player.upgrades.nexus.attackSpeed.level * (player.upgrades.nexus.attackSpeed.level - 1)) / 2) * 5
+    player.upgrades.nexus.health.cost = 20 + ((player.upgrades.nexus.health.level * (player.upgrades.nexus.health.level - 1)) / 2) * 5
+    player.upgrades.nexus.regeneration.cost = 20 + ((player.upgrades.nexus.regeneration.level * (player.upgrades.nexus.regeneration.level - 1)) / 2) * 5
 
     player.difficulty = {
         difficulty = 1,
         unlocks = {
             d1 = true,
-            d2 = player.bestWaves.d1 > 150 and true or false,
-            d3 = player.bestWaves.d2 > 150 and true or false,
-            d4 = player.bestWaves.d3 > 150 and true or false
+            d2 = player.bestWaves.d1 > 99 and true or false,
+            d3 = player.bestWaves.d2 > 99 and true or false,
+            d4 = player.bestWaves.d3 > 99 and true or false
         }
     }
 
@@ -490,26 +490,27 @@ function resetRoundValues()
         },
     }
 
-    local maxHealth = ((0.3 * player.upgrades.round.health.level - 0.3)^3.75 + 14.6 + 0.4 * player.upgrades.round.health.level) * player.upgrades.nexus.health.value
+    local maxHealth = reloadFormulae(player.upgrades.round.health.level)["science"]["VIT"][1][2]
     --[[ Tower properties ]]--
     player.tower = {
-        attackDamage = ((0.25 * player.upgrades.round.attackDamage.level - 0.25)^3 + 4 + player.upgrades.round.attackDamage.level) * player.upgrades.nexus.attackDamage.value,
-        attackSpeed = (math.min(0.5 + 0.04 * (player.upgrades.round.attackSpeed.level - 1), 4.5)) * player.upgrades.nexus.attackSpeed.value,
-        critChance = math.min((player.upgrades.round.critChance.level - 1) / 2, 50),
-        critFactor = 1 + ((player.upgrades.round.critFactor.level - 1) / 20),
-        range = math.min(240 + 2 * (player.upgrades.round.range.level - 1), 360),
-        maxHealth = ((0.3 * player.upgrades.round.health.level - 0.3)^3.75 + 14.6 + 0.4 * player.upgrades.round.health.level) * player.upgrades.nexus.health.value,
+        attackDamage = reloadFormulae(player.upgrades.round.attackDamage.level)["science"]["ATK"][1][2],
+        attackSpeed = reloadFormulae(player.upgrades.round.attackSpeed.level)["science"]["ATK"][2][2],
+        critChance = reloadFormulae(player.upgrades.round.critChance.level)["science"]["ATK"][3][2],
+        critFactor = reloadFormulae(player.upgrades.round.critFactor.level)["science"]["ATK"][4][2],
+        range = reloadFormulae(player.upgrades.round.range.level)["science"]["ATK"][5][2],
+        maxHealth = reloadFormulae(player.upgrades.round.health.level)["science"]["VIT"][1][2],
         currentHealth = maxHealth,
-        regeneration = (((0.8 * player.upgrades.round.regeneration.level - 0.8)^2.75) / 50) * player.upgrades.nexus.regeneration.value,
-        resistance = math.min(0.75 * (player.upgrades.round.resistance.level - 1), 90),
-        shieldCooldown = math.max(120 - 0.6 * (player.upgrades.round.shieldCooldown.level - 1), 45),
-        shieldDuration = math.min(0.05 * (player.upgrades.round.shieldDuration.level - 1) + 0.5, 6),
-        meteorAmount = math.min(player.upgrades.round.meteorAmount.level - 1, 5),
-        meteorRPM = math.min(0.15 * player.upgrades.round.meteorRPM.level + 0.25, 6.25),
-        copperPerWave = 4 * (player.upgrades.round.copperPerWave.level - 1),
-        silverPerWave = 3 * (player.upgrades.round.silverPerWave.level - 1),
-        copperBonus = math.min(1 + 0.02 * (player.upgrades.round.copperBonus.level - 1), 10),
-        silverBonus = math.min(1 + 0.01 * (player.upgrades.round.silverBonus.level - 1), 4),
+        regeneration = reloadFormulae(player.upgrades.round.regeneration.level)["science"]["VIT"][2][2],
+        resistance = reloadFormulae(player.upgrades.round.resistance.level)["science"]["VIT"][3][2],
+        shieldCooldown = reloadFormulae(player.upgrades.round.shieldCooldown.level)["science"]["VIT"][4][2],
+        shieldDuration = reloadFormulae(player.upgrades.round.shieldDuration.level)["science"]["VIT"][5][2],
+        meteorAmount = reloadFormulae(player.upgrades.round.meteorAmount.level)["science"]["VIT"][6][2],
+        meteorRPM = reloadFormulae(player.upgrades.round.meteorRPM.level)["science"]["VIT"][7][2],
+        
+        copperPerWave = reloadFormulae(player.upgrades.round.copperPerWave.level)["science"]["UTL"][1][2],
+        silverPerWave = reloadFormulae(player.upgrades.round.silverPerWave.level)["science"]["UTL"][2][2],
+        copperBonus = reloadFormulae(player.upgrades.round.copperBonus.level)["science"]["UTL"][3][2],
+        silverBonus = reloadFormulae(player.upgrades.round.silverBonus.level)["science"]["UTL"][4][2],
     }
 
     --[[ Gameplay properties ]]--

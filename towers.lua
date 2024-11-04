@@ -37,6 +37,7 @@ function towers.reload()
         end
     end
     function towers.eclipse2(i, dt)
+        love.graphics.setColor(1, 1, 1, 1)
         local maxFrames = 120
         local changeRate = 16
         local startDelay = 0
@@ -45,14 +46,22 @@ function towers.reload()
                 if i then
                     startDelayTimer = startDelayTimer + dt
                 else
-                    love.graphics.draw(img_tower_eclipse_sun2, 928, 508)
+                    if not shieldActive then
+                        love.graphics.draw(img_tower_eclipse_sun2, 928, 508)
+                    else
+                        love.graphics.draw(img_tower_eclipse_sun2_shielded, 928, 508)
+                    end
                 end
             else
                 if i then
                     frameExact = frameExact + dt * changeRate
                     frame = math.floor(frameExact)
                 else
-                    love.graphics.draw(img_tower_eclipse_sun2, 928, 508)
+                    if not shieldActive then
+                        love.graphics.draw(img_tower_eclipse_sun2, 928, 508)
+                    else
+                        love.graphics.draw(img_tower_eclipse_sun2_shielded, 928, 508)
+                    end
                     love.graphics.draw(img_tower_eclipse_moon2, 950 + math.sin(frame / (maxFrames / math.pi)) * 20, 530)
                     love.graphics.draw(img_tower_eclipse_moon2, 950, 530 + math.sin(frame / (maxFrames / math.pi)) * 20)
                     love.graphics.draw(img_tower_eclipse_moon2, 950, 530 - math.sin(frame / (maxFrames / math.pi)) * 20)

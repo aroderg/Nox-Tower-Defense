@@ -25,10 +25,10 @@ function tooltips.general()
         local roundTooltips = {
             ["ATK"] = {
                 {10, 850, 254, 60, 180, 40, "Damage dealt by projectiles.", string.format("Level: %d/%s", player.upgrades.round.attackDamage.level, math.huge), ["precedingUpgrade"] = true}, --Attack Damage Round upgrade tooltip
-                {10, 920, 254, 60, 230, 40, "Speed the tower fires projectiles at.", string.format("Level: %d/%d", math.min(player.upgrades.round.attackSpeed.level, 101), 101), ["precedingUpgrade"] = true}, --Attack Speed Round upgrade tooltip
+                {10, 920, 254, 60, 230, 40, "Speed the tower fires projectiles at.", string.format("Level: %d/%d", math.min(player.upgrades.round.attackSpeed.level, 106), 106), ["precedingUpgrade"] = true}, --Attack Speed Round upgrade tooltip
                 {10, 990, 254, 60, 280, 40, "Chance to deal increased projectile damage.", string.format("Level: %d/%d", math.min(player.upgrades.round.critChance.level, 101), 101), ["precedingUpgrade"] = player.upgrades.unlocks.crit}, --Critical Chance Round upgrade tooltip
                 {370, 850, 254, 60, 400, 40, "How much the projectile damage is multiplied by on critical hits.", string.format("Level: %d/%s", player.upgrades.round.critFactor.level, math.huge), ["precedingUpgrade"] = player.upgrades.unlocks.crit}, --Critical Factor Round upgrade tooltip
-                {370, 920, 254, 60, 240, 40, "Maximum enemy detection distance.", string.format("Level: %d/%d", math.min(player.upgrades.round.attackSpeed.level, 121), 121), ["precedingUpgrade"] = player.upgrades.unlocks.range}, --Critical Factor Round upgrade tooltip
+                {370, 920, 254, 60, 240, 40, "Maximum enemy detection distance.", string.format("Level: %d/%d", math.min(player.upgrades.round.range.level, 81), 81), ["precedingUpgrade"] = player.upgrades.unlocks.range}, --Critical Factor Round upgrade tooltip
             },
 
             ["VIT"] = {
@@ -59,10 +59,10 @@ function tooltips.general()
 
         local hubTooltips = {
             {245, 240, 254, 60, 180, 40, "Damage dealt by projectiles.", string.format("Level: %d/%s", player.upgrades.science.attackDamage.level, math.huge), ["precedingUpgrade"] = true}, --Attack Damage Hub upgrade tooltip
-            {605, 240, 254, 60, 230, 40, "Speed the tower fires projectiles at.", string.format("Level: %d/%d", math.min(player.upgrades.science.attackSpeed.level, 101), 101), ["precedingUpgrade"] = true}, --Attack Speed Science upgrade tooltip
+            {605, 240, 254, 60, 230, 40, "Speed the tower fires projectiles at.", string.format("Level: %d/%d", math.min(player.upgrades.science.attackSpeed.level, 106), 106), ["precedingUpgrade"] = true}, --Attack Speed Science upgrade tooltip
             {965, 240, 254, 60, 280, 40, "Chance to deal increased projectile damage.", string.format("Level: %d/%d", math.min(player.upgrades.science.critChance.level, 101), 101), ["precedingUpgrade"] = player.upgrades.unlocks.crit}, --Critical Chance Science upgrade tooltip
             {1325, 240, 254, 60, 400, 40, "How much the projectile damage is multiplied by on critical hits.", string.format("Level: %d/%s", player.upgrades.science.critFactor.level, math.huge), ["precedingUpgrade"] = player.upgrades.unlocks.crit}, --Critical Factor Science upgrade tooltip
-            {245, 310, 254, 60, 240, 40, "Maximum enemy detection distance.", string.format("Level: %d/%d", math.min(player.upgrades.science.range.level, 121), 121), ["precedingUpgrade"] = player.upgrades.unlocks.range}, --Critical Factor Science upgrade tooltip
+            {245, 310, 254, 60, 240, 40, "Maximum enemy detection distance.", string.format("Level: %d/%d", math.min(player.upgrades.science.range.level, 81), 81), ["precedingUpgrade"] = player.upgrades.unlocks.range}, --Critical Factor Science upgrade tooltip
             
             {245, 540, 254, 60, 340, 40, "Maximum amount of true damage the tower can take.", string.format("Level: %d/%s", player.upgrades.science.health.level, math.huge), ["precedingUpgrade"] = true}, --Health Science upgrade tooltip
             {605, 540, 254, 60, 290, 40, "Speed the tower recovers its health over time.", string.format("Level: %d/%s", player.upgrades.science.regeneration.level, math.huge), ["precedingUpgrade"] = true}, --Regeneration Science upgrade tooltip
