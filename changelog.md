@@ -1,3 +1,10 @@
+## NoxTD: Update Eclipse **B**
+### Nov 10, 2024
+- Added the Gameplay Info, Battle Stats and Savefile Stats menus.
+- Renamed "Special Abilities" to "Gameplay Modifiers".
+- Added the Hyperloop Gameplay Modifier.
+- Enemy health and damage growth is slower on Levels α and β.
+
 ## NoxTD: Update Eclipse **A**
 ### Nov 04, 2024
 

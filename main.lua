@@ -50,6 +50,8 @@ function love.load()
         img_button_pause = love.graphics.newImage("assets/button_pause.png")
         img_button_arrowLeft = love.graphics.newImage("assets/button_arrowLeft.png")
         img_button_arrowRight = love.graphics.newImage("assets/button_arrowRight.png")
+        img_button_arrowLeft_big = love.graphics.newImage("assets/button_arrowLeft_big.png")
+        img_button_arrowRight_big = love.graphics.newImage("assets/button_arrowRight_big.png")
         img_meteor = love.graphics.newImage("assets/meteor.png")
     end
     function fontReload()
@@ -103,7 +105,7 @@ function processUpgradeModule.reload()
             ["VIT"] = {
                 {"Health", 10, 850, 350, 60, player.tower.maxHealth, player.upgrades.round.health.cost, player.upgrades.round.health.level, "round", math.huge, "precise", nil, nil, ["precedingUpgrade"] = 0}, --Health Science Upgrade
                 {"Regeneration", 10, 920, 350, 60, player.tower.regeneration, player.upgrades.round.regeneration.cost, player.upgrades.round.regeneration.level, "round", math.huge, "precise2", nil, "/s", ["precedingUpgrade"] = 0}, --Regeneration Science Upgrade
-                {"Resistance", 10, 990, 350, 60, player.tower.resistance, player.upgrades.round.resistance.cost, player.upgrades.round.resistance.level, "round", 201, "precise2", nil, "%", ["precedingUpgrade"] = player.upgrades.unlocks.resistance}, --Resistance Science Upgrade
+                {"Resistance", 10, 990, 350, 60, player.tower.resistance, player.upgrades.round.resistance.cost, player.upgrades.round.resistance.level, "round", 121, "precise2", nil, "%", ["precedingUpgrade"] = player.upgrades.unlocks.resistance}, --Resistance Science Upgrade
                 {"Shield Cooldown", 370, 850, 350, 60, player.tower.shieldCooldown, player.upgrades.round.shieldCooldown.cost, player.upgrades.round.shieldCooldown.level, "round", 126, "precise", nil, "s", ["precedingUpgrade"] = player.upgrades.unlocks.shield}, --Shield Cooldown Science Upgrade
                 {"Shield Duration", 370, 920, 350, 60, player.tower.shieldDuration, player.upgrades.round.shieldDuration.cost, player.upgrades.round.shieldDuration.level, "round", 111, "precise2", nil, "s", ["precedingUpgrade"] = player.upgrades.unlocks.shield}, --Shield Duration Science Upgrade
                 {"Meteor Amount", 370, 990, 350, 60, player.tower.meteorAmount, player.upgrades.round.meteorAmount.cost, player.upgrades.round.meteorAmount.level, "round", 6, "brief", nil, nil, ["precedingUpgrade"] = player.upgrades.unlocks.meteor}, --Meteor Amount Science Upgrade
@@ -129,7 +131,7 @@ function processUpgradeModule.reload()
             ["VIT"] = {
                 {"Health", 245, 540, 350, 60, player.tower.maxHealth, player.upgrades.science.health.cost, player.upgrades.science.health.level, "science", math.huge, "precise", nil, nil, ["precedingUpgrade"] = 0}, --Health Science Upgrade
                 {"Regeneration", 605, 540, 350, 60, player.tower.regeneration, player.upgrades.science.regeneration.cost, player.upgrades.science.regeneration.level, "science", math.huge, "precise2", nil, "/s", ["precedingUpgrade"] = 0}, --Regeneration Science Upgrade
-                {"Resistance", 965, 540, 350, 60, player.tower.resistance, player.upgrades.science.resistance.cost, player.upgrades.science.resistance.level, "science", 201, "precise2", nil, "%", ["precedingUpgrade"] = player.upgrades.unlocks.resistance, "resistance"}, --Resistance Science Upgrade
+                {"Resistance", 965, 540, 350, 60, player.tower.resistance, player.upgrades.science.resistance.cost, player.upgrades.science.resistance.level, "science", 121, "precise2", nil, "%", ["precedingUpgrade"] = player.upgrades.unlocks.resistance, "resistance"}, --Resistance Science Upgrade
                 {"Shield Cooldown", 1325, 540, 350, 60, player.tower.shieldCooldown, player.upgrades.science.shieldCooldown.cost, player.upgrades.science.shieldCooldown.level, "science", 126, "precise", nil, "s", ["precedingUpgrade"] = player.upgrades.unlocks.shield, "shield"}, --Shield Cooldown Science Upgrade
                 {"Shield Duration", 245, 610, 350, 60, player.tower.shieldDuration, player.upgrades.science.shieldDuration.cost, player.upgrades.science.shieldDuration.level, "science", 111, "precise2", nil, "s", ["precedingUpgrade"] = player.upgrades.unlocks.shield, "shield"}, --Shield Duration Science Upgrade
                 {"Meteor Amount", 605, 610, 350, 60, player.tower.meteorAmount, player.upgrades.science.meteorAmount.cost, player.upgrades.science.meteorAmount.level, "science", 6, "brief", nil, nil, ["precedingUpgrade"] = player.upgrades.unlocks.meteor, "meteor"}, --Meteor Amount Science Upgrade
@@ -247,9 +249,9 @@ function processUpgradeModule.draw(module)
             love.graphics.print(string.format("%s: %s%s%s", attributes["name"] or "Upgrade Name", attributes["prefix"] or "", notations.convertToLetterNotation(attributes["value"], attributes["precision"]), attributes["suffix"] or ""), attributes["ux"] + 5, attributes["uy"] + ((attributes["height"] - buttonXY[2] * 2) / 2) - 11)
         end
         love.graphics.setColor(0.05, 0.35, 0.45, 1)
-        if attributes["type"] == "round" and player.currencies.currentCopper >= attributes["cost"] then
+        if attributes["type"] == "round" and player.currencies.currentCopper >= attributes["cost"] and attributes["level"] < attributes["maxLevel"] then
             love.graphics.setColor(0.05, 0.35, 0.45, 1)
-        elseif attributes["type"] == "science" and player.currencies.currentSilver >= attributes["cost"] then
+        elseif attributes["type"] == "science" and player.currencies.currentSilver >= attributes["cost"] and attributes["level"] < attributes["maxLevel"] then
             love.graphics.setColor(0.05, 0.35, 0.45, 1)
         else
             love.graphics.setColor(0.03, 0.2, 0.25)
@@ -301,11 +303,12 @@ function processUpgradeModule.upgrade(x, y, module, costFormula, valueFormula)
     local buttonXY = {257, 3}
     if x >= attributes["ux"] + buttonXY[1] and x <= attributes["ux"] + attributes["width"] - 3 and y >= attributes["uy"] + buttonXY[2] and y <= attributes["uy"] + attributes["height"] - 3 and attributes["level"] < attributes["maxLevel"] and attributes["precedingUpgrade"] ~= false then
         if attributes["type"] == "round" then
-            if player.currencies.currentCopper >= attributes["cost"] then
-                player.currencies.currentCopper = player.currencies.currentCopper - attributes["cost"]
+            if player.currencies.currentCopper >= math.floor(attributes["cost"]) then
+                player.currencies.currentCopper = player.currencies.currentCopper - math.floor(attributes["cost"])
                 attributes["level"] = attributes["level"] + 1
                 attributes["cost"] = math.floor(costFormula)
                 attributes["value"] = valueFormula
+                player.stats.battle.upgradesAcquired = player.stats.battle.upgradesAcquired + 1
                 if module == upgradeModules["round"]["VIT"][1] then
                     local hpPercentage = player.tower.currentHealth / player.tower.maxHealth
                     player.tower.currentHealth = attributes["value"] * hpPercentage
@@ -322,11 +325,12 @@ function processUpgradeModule.upgrade(x, y, module, costFormula, valueFormula)
             end
 
         elseif attributes["type"] == "science" then
-            if player.currencies.currentSilver >= attributes["cost"] then
-                player.currencies.currentSilver = player.currencies.currentSilver - attributes["cost"]
+            if player.currencies.currentSilver >= math.floor(attributes["cost"]) then
+                player.currencies.currentSilver = player.currencies.currentSilver - math.floor(attributes["cost"])
                 attributes["level"] = attributes["level"] + 1
                 attributes["cost"] = math.floor(costFormula)
                 attributes["value"] = valueFormula
+                player.stats.save.upgradesAcquired.science = player.stats.save.upgradesAcquired.science + 1
             end
         end
     end
@@ -407,6 +411,8 @@ function createProjectile(x, y, speed)
         projectile.speed = speed
         table.insert(projectilesOnField, projectile)
     end
+    player.stats.battle.projectilesFired = player.stats.battle.projectilesFired + 1
+    player.stats.save.projectilesFired = player.stats.save.projectilesFired + 1
 end
 
 function createEnemy(hp, speed, attackSpeed, attackDamage)
@@ -500,12 +506,12 @@ function createEnemy(hp, speed, attackSpeed, attackDamage)
             }
 
     local attempts = 0
-    enemy.x = love.math.random(-302 - offsets[enemy.type] * 2, 2218 + offsets[enemy.type] * 2)
-    enemy.y = love.math.random(-302 - offsets[enemy.type] * 2, 1378 + offsets[enemy.type] * 2)
+    enemy.x = love.math.random(-202 - offsets[enemy.type] * 2, 2118 + offsets[enemy.type] * 2)
+    enemy.y = love.math.random(-202 - offsets[enemy.type] * 2, 1278 + offsets[enemy.type] * 2)
     while enemy.x - offsets[enemy.type] * 2 > 0 or enemy.x + offsets[enemy.type] * 2 < 1920 and enemy.y - offsets[enemy.type] * 2 > 0 or enemy.y + offsets[enemy.type] * 2 < 1080 do
         attempts = attempts + 1
-        enemy.x = love.math.random(-302 - offsets[enemy.type] * 2, 2218 + offsets[enemy.type] * 2)
-        enemy.y = love.math.random(-302 - offsets[enemy.type] * 2, 1378 + offsets[enemy.type] * 2)
+        enemy.x = love.math.random(-202 - offsets[enemy.type] * 2, 2118 + offsets[enemy.type] * 2)
+        enemy.y = love.math.random(-202 - offsets[enemy.type] * 2, 1278 + offsets[enemy.type] * 2)
         if enemy.x + offsets[enemy.type] * 2 < 0 or enemy.x - offsets[enemy.type] * 2 > 1920 or enemy.y + offsets[enemy.type] * 2 < 0 or enemy.y - offsets[enemy.type] * 2 > 1080 then
             break
         end
@@ -576,23 +582,34 @@ end
 
 function skipWave(wavesSkipped)
     gameplay.wave = gameplay.wave + wavesSkipped
+
+    local oldCopperAmount = player.currencies.currentCopper
     misc.copperBuffer = misc.copperBuffer + (player.tower.copperBonus % 1) * player.tower.copperPerWave * wavesSkipped
     player.currencies.currentCopper = player.currencies.currentCopper + math.floor(player.tower.copperBonus) * player.tower.copperPerWave * wavesSkipped
     if misc.copperBuffer >= 1 then
         player.currencies.currentCopper = player.currencies.currentCopper + math.floor(misc.copperBuffer)
         misc.copperBuffer = misc.copperBuffer - math.floor(misc.copperBuffer)
     end
+    local newCopperAmount = player.currencies.currentCopper
+    local copperEarned = newCopperAmount - oldCopperAmount
+    player.stats.battle.copperEarned = player.stats.battle.copperEarned + copperEarned
 
+    local oldSilverAmount = player.currencies.currentSilver
     misc.silverBuffer = misc.silverBuffer + (player.tower.silverBonus % 1) * player.tower.silverPerWave * wavesSkipped
     player.currencies.currentSilver = player.currencies.currentSilver + math.floor(player.tower.silverBonus) * player.tower.silverPerWave * wavesSkipped
     if misc.silverBuffer >= 1 then
         player.currencies.currentSilver = player.currencies.currentSilver + math.floor(misc.silverBuffer)
         misc.silverBuffer = misc.silverBuffer - math.floor(misc.silverBuffer)
     end
+    local newSilverAmount = player.currencies.currentSilver
+    local silverEarned = newSilverAmount - oldSilverAmount
+    player.stats.battle.silverEarned = player.stats.battle.silverEarned + silverEarned
 
     if wavesSkipped > 0 then
         waveSkipMessage = true
     end
+    player.stats.battle.wavesSkipped = player.stats.battle.wavesSkipped + wavesSkipped
+    player.stats.save.wavesSkipped = player.stats.save.wavesSkipped + wavesSkipped
     timers.waveSkip = 0
 end
 
@@ -608,27 +625,38 @@ function killEnemy(x, y, type, copperDrop, silverDrop, goldDrop, particles)
         createKillParticle(x + offsets[type], y + offsets[type], type)
     end
 
+    local oldCopperAmount = player.currencies.currentCopper
     misc.copperBuffer = misc.copperBuffer + (player.tower.copperBonus % 1) * copperDrop
     player.currencies.currentCopper = player.currencies.currentCopper + math.floor(player.tower.copperBonus) * copperDrop
     if misc.copperBuffer >= 1 then
         player.currencies.currentCopper = player.currencies.currentCopper + math.floor(misc.copperBuffer)
         misc.copperBuffer = misc.copperBuffer - math.floor(misc.copperBuffer)
     end
+    local newCopperAmount = player.currencies.currentCopper
+    local copperEarned = newCopperAmount - oldCopperAmount
+    player.stats.battle.copperEarned = player.stats.battle.copperEarned + copperEarned
 
+    local oldSilverAmount = player.currencies.currentSilver
     misc.silverBuffer = misc.silverBuffer + (player.tower.silverBonus % 1) * silverDrop
     player.currencies.currentSilver = player.currencies.currentSilver + math.floor(player.tower.silverBonus) * silverDrop
     if misc.silverBuffer >= 1 then
         player.currencies.currentSilver = player.currencies.currentSilver + math.floor(misc.silverBuffer)
         misc.silverBuffer = misc.silverBuffer - math.floor(misc.silverBuffer)
     end
+    local newSilverAmount = player.currencies.currentSilver
+    local silverEarned = newSilverAmount - oldSilverAmount
+    player.stats.battle.silverEarned = player.stats.battle.silverEarned + silverEarned
 
     player.currencies.currentGold = player.currencies.currentGold + goldDrop
+    player.stats.battle.goldEarned = player.stats.battle.goldEarned + goldDrop
     if type == "sentry" then
         sentryAlive = false
     elseif type == "centurion" then
         centurionAlive = false
     end
     player.stats.wave.enemiesKilled = player.stats.wave.enemiesKilled + 1
+    player.stats.battle.enemiesKilled = player.stats.battle.enemiesKilled + 1
+    player.stats.save.enemiesKilled = player.stats.save.enemiesKilled + 1
 end
 
 function updateEnemyStats(difficulty, wave)
@@ -651,17 +679,17 @@ function updateEnemyStats(difficulty, wave)
         --[[ Set stats for Level α enemies ]]--
         enemyAttributes.spawnRate = 0.9 + (math.floor(0.12 * math.sqrt(wave) * 10)) / 10
         pendingEnemies = 7 + math.floor(3 * math.sqrt(1.2 * wave))
-        enemyAttributes.health = (574.9 + (5 * wave)^2 + (wave^3 / 10)) * (1.26^(math.floor(wave / 100)))
-        enemyAttributes.attackDamage = (183.98 + 16 * wave + (wave^3 / 50)) * (1.13^math.floor(wave / 100))
+        enemyAttributes.health = (245.9 + (2 * wave)^2 + (wave^3 / 10)) * (1.26^(math.floor(wave / 100)))
+        enemyAttributes.attackDamage = (70.98 + 9 * wave + (wave^3 / 50)) * (1.13^math.floor(wave / 100))
         enemyAttributes.speed = 68
-        tankSpawnChance = math.min(math.floor((math.log(wave^2, 10))^0.75 * 100) / 100, 6)
+        tankSpawnChance = math.min(math.floor((math.log(wave^5, 10))^0.75 * 100) / 100, 6)
         swiftSpawnChance = math.min(math.floor(math.log(wave^3.75, 10) * 100) / 100, 8)
     elseif difficulty == 3 then
         --[[ Set stats for Level β enemies ]]--
         enemyAttributes.spawnRate = 1.3 + (math.floor((0.2 * wave) / (math.sqrt(1.75 * wave))) * 10) / 10
         pendingEnemies = 10 + 2 * math.floor((math.sqrt(17 * wave)) / 2)
-        enemyAttributes.health = (57374.9 + (25 * wave)^2 + 2000 * wave + (wave^3.5 / 10)) * (1.32^(math.floor(wave / 100)))
-        enemyAttributes.attackDamage = (2913.95 + (6 * wave)^2 + 800 * wave + (wave^3 / 20)) * (1.16^math.floor(wave / 100))
+        enemyAttributes.health = (15574.9 + (15 * wave)^2 + 200 * wave + (wave^3.15 / 10)) * (1.32^(math.floor(wave / 100)))
+        enemyAttributes.attackDamage = (2063.95 + (6 * wave)^2 + 400 * wave + (wave^2.75 / 20)) * (1.16^math.floor(wave / 100))
         enemyAttributes.speed = 76
         tankSpawnChance = math.min(math.floor((math.sqrt(2.5 * wave - 2.5)^0.8) * 100) / 100, 10)
         swiftSpawnChance = math.min(math.floor((math.sqrt(2 * wave - 2) - math.log(wave^3, 10)) * 100) / 100, 12.5)
@@ -739,9 +767,6 @@ function love.draw()
         renderParticles()
         drawUpgradeMenu()
         towerInfo_visual()
-        if not player.menu.paused and player.menu.upgrades then
-            tooltips.displayRound()
-        end
         love.graphics.setColor(1, 1, 1, 1)
         if sentryAlive then
             drawSentryBossbar()
@@ -761,6 +786,74 @@ function love.draw()
         love.graphics.draw(img_button_pause, 1870, 10)
         love.graphics.setLineWidth(2)
         love.graphics.rectangle("line", 1870, 10, 40, 40, 2, 2)
+        if player.menu.gameplayInfo then
+            love.graphics.setLineWidth(1)
+            love.graphics.setColor(0, 0, 0, 0.5)
+            love.graphics.rectangle("fill", 0, 0, 1920, 1080)
+            love.graphics.setColor(0.2, 0, 0.35, 1)
+            love.graphics.rectangle("fill", 710, 240, 500, 600, 2, 2)
+            love.graphics.setColor(1, 1, 1, 1)
+            love.graphics.rectangle("line", 710, 240, 500, 600, 2, 2)
+            love.graphics.setFont(font_AfacadBold24)
+            love.graphics.printf(string.format("Gameplay Info - Wave %d", gameplay.wave), 710, 243, 500, "center")
+            love.graphics.setFont(font_AfacadBold20)
+            local columnCenters = {760, 860, 960, 1060, 1160}
+            local rowCenters = {290, 340, 390, 440, 490, 540}
+            local wrapWidth = 200
+            local enemySize = {24, 36, 20, 48, 64}
+            local enemyStats = {
+                {"Enemy", "Health", "Damage", "Speed", "Chance"},
+                {img_enemy_basic, img_enemy_tank, img_enemy_swift, img_enemy_sentry, img_enemy_centurion},
+                {enemyAttributes.health, enemyAttributes.health * 5, enemyAttributes.health * 0.75, enemyAttributes.health * (10 + math.floor((gameplay.wave - 10) / 10) * 2.5), enemyAttributes.health * 256},
+                {enemyAttributes.attackDamage, enemyAttributes.attackDamage * 1.2, enemyAttributes.attackDamage, enemyAttributes.attackDamage * 4, enemyAttributes.attackDamage * 10},
+                {enemyAttributes.speed / 20, enemyAttributes.speed * 0.8 / 20, enemyAttributes.speed * 2 / 20, enemyAttributes.speed * 0.6 / 20, enemyAttributes.speed * 0.5 / 20},
+                {enemyAttributes.spawn.basic, enemyAttributes.spawn.tank, enemyAttributes.spawn.swift, gameplay.wave % 10 == 0 and gameplay.wave % 100 ~= 0 and 100 or 0, gameplay.wave % 100 == 0 and 100 or 0},
+            }
+            for i=1,#enemyStats[1] do
+                love.graphics.printf(enemyStats[1][i], columnCenters[i] - wrapWidth / 2, rowCenters[1], wrapWidth, "center")
+            end
+            for i=1,#enemyStats[2] do
+                love.graphics.draw(enemyStats[2][i], columnCenters[1] - 13, rowCenters[i+1], 0, 24 / enemySize[i])
+            end
+            love.graphics.setFont(font_Afacad20)
+            for i=1,3 do
+                for j=1,#enemyStats[2] do
+                    love.graphics.printf(notations.convertToLetterNotation(enemyStats[i+2][j], "precise"), columnCenters[i+1] - wrapWidth / 2, rowCenters[j+1] - 2, wrapWidth, "center")
+                end
+            end
+            for i=1,#enemyStats[2] do
+                love.graphics.printf(string.format("%.1f%%", enemyStats[6][i]), columnCenters[5] - wrapWidth / 2, rowCenters[i+1] - 2, wrapWidth, "center")
+            end
+            love.graphics.printf({{1, 1, 1, 1}, "Enemy spawn cap: ", {1, 0.8, 0.5, 1}, string.format("%d", enemyAttributes.waveCap)}, 710, 760, 500, "center")
+            love.graphics.printf({{1, 1, 1, 1}, "Enemy spawn rate: ", {1, 0.8, 0.5, 1}, string.format("%.1f", enemyAttributes.spawnRate)}, 710, 800, 500, "center")
+            love.graphics.draw(img_button_arrowRight_big, 1210, 522)
+            tooltips.displayGameplayInfo()
+        end
+        if player.menu.battleStats then
+            love.graphics.setLineWidth(1)
+            love.graphics.setColor(0, 0, 0, 0.5)
+            love.graphics.rectangle("fill", 0, 0, 1920, 1080)
+            love.graphics.setColor(0.2, 0, 0.35, 1)
+            love.graphics.rectangle("fill", 710, 240, 500, 600, 2, 2)
+            love.graphics.setColor(1, 1, 1, 1)
+            love.graphics.rectangle("line", 710, 240, 500, 600, 2, 2)
+            love.graphics.setFont(font_AfacadBold24)
+            love.graphics.printf("Player Stats - Battle", 710, 243, 500, "center")
+            love.graphics.draw(img_button_arrowLeft_big, 674, 522)
+            local rowCenters = {290, 320, 350, 380, 410, 440, 470, 500, 530, 560}
+            local statNames = {"Battle Time", "Enemies Killed", "Damage Taken", "Damage Dealt", "Copper Earned", "Silver Earned", "Damage Absorbed", "Waves Skipped", "Projectiles Fired", "Upgrades Acquired"}
+            local statVars = {player.stats.battle.time, {player.stats.battle.enemiesKilled, "brief"}, {player.stats.battle.damageTaken, "precise"}, {player.stats.battle.damageDealt, "precise"}, {player.stats.battle.copperEarned, "brief"}, {player.stats.battle.silverEarned, "brief"}, {player.stats.battle.shieldDamageAbsorb, "precise"}, {player.stats.battle.wavesSkipped, "brief"}, {player.stats.battle.projectilesFired, "brief"}, {player.stats.battle.upgradesAcquired, "brief"}}
+            for i=1,#statNames do
+                love.graphics.setFont(font_Afacad20)
+                love.graphics.printf(statNames[i], 810, rowCenters[i], 200, "left")
+                love.graphics.setFont(font_AfacadBold20)
+                if i ~= 1 then
+                    love.graphics.printf({{0, 1 - i / 50, 0.8 + i / 250, 1}, string.format("%s", notations.convertToLetterNotation(statVars[i][1], statVars[i][2]))}, 910, rowCenters[i], 200, "right")    
+                else
+                    love.graphics.printf({{0, 1 - i / 50, 0.8 + i / 250, 1}, string.format("%dm %ds", statVars[i] / 60, statVars[i] % 60)}, 910, rowCenters[i], 200, "right")    
+                end
+            end
+        end
         if player.menu.paused then
             love.graphics.setColor(0, 0, 0, 0.5)
             love.graphics.rectangle("fill", 0, 0, 1920, 1080)
@@ -867,6 +960,26 @@ function love.draw()
         if hubSection == "Science" then
             tooltips.displayHub()
         end
+        if player.menu.saveStats then
+            love.graphics.setLineWidth(1)
+            love.graphics.setColor(0, 0, 0, 0.5)
+            love.graphics.rectangle("fill", 0, 0, 1920, 1080)
+            love.graphics.setColor(0.2, 0, 0.35, 1)
+            love.graphics.rectangle("fill", 710, 240, 500, 600, 2, 2)
+            love.graphics.setColor(1, 1, 1, 1)
+            love.graphics.rectangle("line", 710, 240, 500, 600, 2, 2)
+            love.graphics.setFont(font_AfacadBold24)
+            love.graphics.printf("Player Stats - Savefile", 710, 243, 500, "center")
+            local rowCenters = {290, 320, 350, 380, 410, 440, 470, 500}
+            local statNames = {"Enemies Killed", "Damage Dealt", "Silver Earned", "Waves Skipped", "Projectiles Fired", "Science Upgrades", "Nexus Upgrades", "Waves Defeated"}
+            local statVars = {{player.stats.save.enemiesKilled, "brief"}, {player.stats.save.damageDealt, "precise"}, {player.stats.save.silverEarned, "brief"}, {player.stats.save.wavesSkipped, "brief"}, {player.stats.save.projectilesFired, "brief"}, {player.stats.save.upgradesAcquired.science, "brief"}, {player.stats.save.upgradesAcquired.nexus, "brief"}, {player.stats.save.wavesBeaten, "brief"}}
+            for i=1,#statNames do
+                love.graphics.setFont(font_Afacad20)
+                love.graphics.printf(statNames[i], 810, rowCenters[i], 200, "left")
+                love.graphics.setFont(font_AfacadBold20)
+                love.graphics.printf({{0.8 + i / 250, 0.5 - i / 50, 0.1, 1}, string.format("%s", notations.convertToLetterNotation(statVars[i][1], statVars[i][2]))}, 910, rowCenters[i], 200, "right")    
+            end
+        end
     end
     love.graphics.setColor(1, 1, 1, 1)
 end
@@ -921,6 +1034,8 @@ function love.update(dt)
                     local critFactor = v.isCrit and player.tower.critFactor or 1
                     local damage = player.tower.attackDamage * critFactor
                     createHitTextParticle(w.x, w.y, notations.convertToLetterNotation(math.min(w.currentHP, damage), "precise"), w.type, v.isCrit)
+                    player.stats.battle.damageDealt = player.stats.battle.damageDealt + math.min(damage, w.currentHP)
+                    player.stats.save.damageDealt = player.stats.save.damageDealt + math.min(damage, w.currentHP)
                     w.currentHP = w.currentHP - damage
 
                     if w.type == "sentry" then
@@ -998,18 +1113,23 @@ function love.update(dt)
                     if not v.shieldIgnore then
                         if not shieldActive then
                             player.tower.currentHealth = player.tower.currentHealth - v.attackDamage * damageReduction
+                            player.stats.battle.damageTaken = player.stats.battle.damageTaken + v.attackDamage * damageReduction
+                        else
+                            player.stats.battle.shieldDamageAbsorb = player.stats.battle.shieldDamageAbsorb + v.attackDamage * damageReduction
                         end
-                    elseif v.shieldIgnore then
+                    else
                         player.tower.currentHealth = player.tower.currentHealth - v.attackDamage * damageReduction
+                        player.stats.battle.damageTaken = player.stats.battle.damageTaken + v.attackDamage * damageReduction
                     end
                 end
             end
             --[[ Move each enemy towards the central tower if it is further than the specified distance ]]--
 
             if math.dist(v.x + offsets[v.type] + 2, v.y + offsets[v.type] + 2, 960, 540) > stopDistance[v.type] then
+                local hyperloopMultiplier = math.dist(v.x + offsets[v.type] + 2, v.y + offsets[v.type] + 2, 960, 540) > player.tower.range and 1 + player.modifiers.hyperloop.value / 100 or 1
                 v.angle = math.atan2(540 - v.y - 2 - offsets[v.type], 960 - v.x - 2 - offsets[v.type])
-                v.x = v.x + math.cos(v.angle) * v.speed * dt * gameSpeed
-                v.y = v.y + math.sin(v.angle) * v.speed * dt * gameSpeed
+                v.x = v.x + math.cos(v.angle) * v.speed * dt * gameSpeed * hyperloopMultiplier
+                v.y = v.y + math.sin(v.angle) * v.speed * dt * gameSpeed * hyperloopMultiplier
             end
             --[[ Regenerate 1% of Centurion health per second ]]
             if v.type == "centurion" and player.tower.currentHealth > 0 then
@@ -1084,26 +1204,36 @@ function love.update(dt)
                     wavesSkipped = 0
                     timers.nextWave = 0
 
+                    local oldCopperAmount = player.currencies.currentCopper
                     misc.copperBuffer = misc.copperBuffer + (player.tower.copperBonus % 1) * player.tower.copperPerWave
                     player.currencies.currentCopper = player.currencies.currentCopper + math.floor(player.tower.copperBonus) * player.tower.copperPerWave
                     if misc.copperBuffer >= 1 then
                         player.currencies.currentCopper = player.currencies.currentCopper + math.floor(misc.copperBuffer)
                         misc.copperBuffer = misc.copperBuffer - math.floor(misc.copperBuffer)
                     end
+                    local newCopperAmount = player.currencies.currentCopper
+                    local copperEarned = newCopperAmount - oldCopperAmount
+                    player.stats.battle.copperEarned = player.stats.battle.copperEarned + copperEarned
 
+                    local oldSilverAmount = player.currencies.currentSilver
                     misc.silverBuffer = misc.silverBuffer + (player.tower.silverBonus % 1) * player.tower.silverPerWave * difficultyMultipliers[gameplay.difficulty]
                     player.currencies.currentSilver = player.currencies.currentSilver + math.floor(player.tower.silverBonus) * player.tower.silverPerWave * difficultyMultipliers[gameplay.difficulty]
                     if misc.silverBuffer >= 1 then
                         player.currencies.currentSilver = player.currencies.currentSilver + math.floor(misc.silverBuffer)
                         misc.silverBuffer = misc.silverBuffer - math.floor(misc.silverBuffer)
                     end
+                    local newSilverAmount = player.currencies.currentSilver
+                    local silverEarned = newSilverAmount - oldSilverAmount
+                    player.stats.battle.silverEarned = player.stats.battle.silverEarned + silverEarned
+                    player.stats.save.silverEarned = player.stats.save.silverEarned + silverEarned
 
                     gameplay.wave = gameplay.wave + 1
+                    player.stats.save.wavesBeaten = player.stats.save.wavesBeaten + 1
                     local waveSkip = love.math.random(0, 10000) / 100
-                    while waveSkip <= player.abilities.waveSkip.value do
+                    while waveSkip <= player.modifiers.waveSkip.value do
                         wavesSkipped = wavesSkipped + 1
                         local waveSkip = love.math.random(0, 10000) / 100
-                        if waveSkip > player.abilities.waveSkip.value then
+                        if waveSkip > player.modifiers.waveSkip.value then
                             break
                         end
                     end
@@ -1148,6 +1278,7 @@ function love.update(dt)
 
         checkIfTowerCollapsed()
         updateParticles(dt)
+        player.stats.battle.time = player.stats.battle.time + dt * gameSpeed
 
     elseif player.location == "hub" then
         --[[ Set a timer for alloying Electrum, add 1 Electrum when the timer runs out ]]--
@@ -1177,25 +1308,25 @@ function love.mousepressed(x, y)
 
     if player.tower.currentHealth > 0 then
         --[[ Open/close upgrade menu ]]--
-        if x >= 860 and x <= 1060 and y >= 1030 and y <= 1080 and not player.menu.upgrades and not player.menu.paused then
+        if x >= 860 and x <= 1060 and y >= 1030 and y <= 1080 and not player.menu.upgrades and not player.menu.paused and not player.menu.gameplayInfo and not player.menu.battleStats then
             player.menu.upgrades = true
-        elseif x >= 860 and x <= 1060 and y >= 750 and y <= 800 and player.menu.upgrades and not player.menu.paused then
+        elseif x >= 860 and x <= 1060 and y >= 750 and y <= 800 and player.menu.upgrades and not player.menu.paused and not player.menu.gameplayInfo and not player.menu.battleStats then
             player.menu.upgrades = false
         end
 
-        if x >= 1870 and x <= 1910 and y >= 10 and y <= 50 and not paused then
+        if x >= 1870 and x <= 1910 and y >= 10 and y <= 50 and not player.menu.paused and not player.menu.gameplayInfo and not player.menu.battleStats then
             gameSpeed = 0
             player.menu.paused = true
         end
 
-        if x >= 810 and x <= 950 and y >= 610 and y <= 670 and player.menu.paused and not player.menu.settings then
+        if x >= 810 and x <= 950 and y >= 610 and y <= 670 and player.menu.paused and not player.menu.settings and not player.menu.gameplayInfo and not player.menu.battleStats then
             gameSpeed = 1
             player.menu.paused = false
-        elseif x >= 970 and x <= 1110 and y >= 610 and y <= 670 and player.menu.paused and not player.menu.settings then
+        elseif x >= 970 and x <= 1110 and y >= 610 and y <= 670 and player.menu.paused and not player.menu.settings and not player.menu.gameplayInfo and not player.menu.battleStats then
             gameSpeed = 1
             player.menu.paused = false
             player.tower.currentHealth = 0
-        elseif x >= 890 and x <= 1150 and y >= 530 and y <= 570 and player.menu.paused and not player.menu.settings then
+        elseif x >= 890 and x <= 1150 and y >= 530 and y <= 570 and player.menu.paused and not player.menu.settings and not player.menu.gameplayInfo and not player.menu.battleStats then
             player.menu.settings = true
         end
     end
@@ -1238,6 +1369,18 @@ function love.mousepressed(x, y)
         end
     end
 
+    if player.menu.gameplayInfo then
+        if x >= 1210 and x <= 1246 and y >= 522 and y <= 558 then
+            player.menu.gameplayInfo = false
+            player.menu.battleStats = true
+        end
+    elseif player.menu.battleStats then
+        if x >= 674 and x <= 710 and y >= 522 and y <= 558 then
+            player.menu.gameplayInfo = true
+            player.menu.battleStats = false
+        end
+    end
+
     --[[ If the "To Hub" button is pressed at the end screen, go to Hub ]]--
     if gameOver and #collapseParticles == 0 and player.location == "round" then
         if x >= 870 and x <= 1050 and y >= 760 and y <= 820 then
@@ -1258,6 +1401,20 @@ function love.keypressed(key)
     if key == "escape" then
         saveGame()
         love.event.quit()
+    end
+    if key == "tab" and not player.menu.paused and player.tower.currentHealth > 0 then
+        if player.location == "round" then
+            if not player.menu.battleStats then
+                player.menu.gameplayInfo = not player.menu.gameplayInfo
+                gameSpeed = player.menu.gameplayInfo and 0 or 1
+            else
+                player.menu.gameplayInfo = false
+                player.menu.battleStats = false
+                gameSpeed = player.menu.gameplayInfo and 0 or 1
+            end
+        elseif player.location == "hub" then
+            player.menu.saveStats = not player.menu.saveStats
+        end
     end
 end
 

@@ -124,7 +124,7 @@ function inHub_visual()
             love.graphics.setFont(font_AfacadBold48)
             love.graphics.printf("Nexus", 810, 50, 300, "center")
             love.graphics.setFont(font_Afacad20)
-            love.graphics.printf("Unlock unique abilities and get powerful stat buffs.", 760, 120, 400, "center")
+            love.graphics.printf("Unlock unique modifiers and get powerful stat buffs.", 760, 120, 400, "center")
 
             --[[ Electrum sub-menu ]]--
             love.graphics.rectangle("line", 1650, 100, 150, 200, 4, 4)
@@ -251,52 +251,63 @@ function inHub_visual()
             end
 
             love.graphics.setFont(font_AfacadBold32)
-            love.graphics.printf("Unique abilities", 810, 500, 300, "center")
+            love.graphics.printf("Gameplay modifiers", 810, 500, 300, "center")
 
-            love.graphics.setFont(font_Afacad20)
-            love.graphics.setLineStyle("smooth")
-            love.graphics.setLineWidth(2)
-            love.graphics.rectangle("line", 650, 550, 630, 150, 4, 4)
-            love.graphics.setLineStyle("rough")
-            love.graphics.setLineWidth(1)
-            love.graphics.line(650, 585, 1280, 585)
-            love.graphics.setFont(font_AfacadBold24)
-            love.graphics.printf("Wave Skip", 650, 550, 630, "center")
-            love.graphics.setColor(0.6, 0.45, 0.25, 1)
-            love.graphics.rectangle("fill", 1155, 590, 120, 105)
-            love.graphics.setColor(1, 1, 1, 1)
-            love.graphics.setLineStyle("rough")
-            love.graphics.setLineWidth(1)
-            love.graphics.rectangle("line", 1155, 590, 120, 105)
-            love.graphics.setFont(font_Afacad24)
-            if player.abilities.waveSkip.unlocked then
-                love.graphics.setColor(0.5, 0.3, 0.1, 1)
-                love.graphics.rectangle("fill", 1155, 590, 120, 25)
-                love.graphics.setColor(1, 1, 1, 1)
-                love.graphics.rectangle("line", 1155, 590, 120, 25)
+            local gameplayModifiers = {
+                {name = "Wave Skip", unlockCost = 10, value = player.modifiers.waveSkip.value, cost = player.modifiers.waveSkip.cost, maxLevel = 10, text = {{1, 1, 1, 1}, "There is a ", {0, 1, 0.7, 1}, string.format("%d%%", player.modifiers.waveSkip.value), {1, 1, 1, 1}, " chance of skipping a wave and immediately advancing to the next wave."}, upgradeText = "Chance", unlock = player.modifiers.waveSkip.unlocked, level = player.modifiers.waveSkip.level},
+                {name = "Hyperloop", unlockCost = 15, value = player.modifiers.hyperloop.value, cost = player.modifiers.hyperloop.cost, maxLevel = 11, text = {{1, 1, 1, 1}, "All enemies outside of the tower range are ", {1, 0.5, 0.3, 1}, string.format("%d%%", player.modifiers.hyperloop.value), {1, 1, 1, 1}, " faster."}, upgradeText = "Speed", unlock = player.modifiers.hyperloop.unlocked, level = player.modifiers.hyperloop.level},
+            }
+
+            for i=1,2 do
                 love.graphics.setFont(font_Afacad20)
-                love.graphics.printf("Chance", 1155, 589, 120, "center")
-                if player.abilities.waveSkip.level < 11 then
-                    love.graphics.draw(img_currency_electrum, 1195, 642, 0, 20/32)
-                    love.graphics.setFont(font_Afacad24)
-                    love.graphics.print(notations.convertToLetterNotation(player.abilities.waveSkip.cost, "brief"), 1214, 635)
+                love.graphics.setLineStyle("smooth")
+                love.graphics.setLineWidth(2)
+                love.graphics.rectangle("line", 650, 550 + 140 * (i - 1), 630, 120, 4, 4)
+                love.graphics.setLineStyle("rough")
+                love.graphics.setLineWidth(1)
+                love.graphics.line(650, 585 + 140 * (i - 1), 1280, 585 + 140 * (i - 1))
+                love.graphics.setFont(font_AfacadBold24)
+                love.graphics.printf(gameplayModifiers[i].name, 650, 550 + 140 * (i - 1), 630, "center")
+                if player.currencies.currentElectrum >= gameplayModifiers[i].cost and gameplayModifiers[i].level < gameplayModifiers[i].maxLevel then
+                    love.graphics.setColor(0.6, 0.45, 0.25, 1)
                 else
-                    love.graphics.setFont(font_Afacad24)
-                    love.graphics.printf("Max", 1155, 635, 120, "center")
+                    love.graphics.setColor(0.35, 0.25, 0.15, 1)
                 end
-            else
-                love.graphics.printf("Unlock", 1155, 590, 120, "center")
-                love.graphics.draw(img_currency_electrum, 1190, 632, 0, 20/32)
-                love.graphics.print("15", 1209, 625)
+                love.graphics.rectangle("fill", 1155, 590 + 140 * (i - 1), 120, 75)
+                love.graphics.setColor(1, 1, 1, 1)
+                love.graphics.setLineStyle("rough")
+                love.graphics.setLineWidth(1)
+                love.graphics.rectangle("line", 1155, 590 + 140 * (i - 1), 120, 75)
+                love.graphics.setColor(0.5, 0.3, 0.1, 1)
+                love.graphics.rectangle("fill", 1155, 590 + 140 * (i - 1), 120, 25)
+                love.graphics.setColor(1, 1, 1, 1)
+                love.graphics.rectangle("line", 1155, 590 + 140 * (i - 1), 120, 25)
+                love.graphics.setFont(font_Afacad20)
+                if gameplayModifiers[i].unlock then
+                    love.graphics.setFont(font_Afacad20)
+                    love.graphics.printf(gameplayModifiers[i].upgradeText, 1155, 589 + 140 * (i - 1), 120, "center")
+                    if gameplayModifiers[i].level < gameplayModifiers[i].maxLevel then
+                        love.graphics.draw(img_currency_electrum, 1160, 630 + 140 * (i - 1), 0, 20/32)
+                        love.graphics.setFont(font_Afacad20)
+                        love.graphics.print(notations.convertToLetterNotation(gameplayModifiers[i].cost, "brief"), 1180, 626 + 140 * (i - 1))
+                    else
+                        love.graphics.setFont(font_Afacad20)
+                        love.graphics.printf("Max", 1155, 626 + 140 * (i - 1), 120, "center")
+                    end
+                else
+                    love.graphics.printf("Unlock", 1155, 589 + 140 * (i - 1), 120, "center")
+                    love.graphics.draw(img_currency_electrum, 1160, 630 + 140 * (i - 1), 0, 20/32)
+                    love.graphics.print(notations.convertToLetterNotation(gameplayModifiers[i].cost, "brief"), 1180, 626 + 140 * (i - 1))
+                end
+                love.graphics.setFont(font_Afacad20)
+                love.graphics.printf(gameplayModifiers[i].text, 660, 585 + 140 * (i - 1), 350, "left")
             end
-            love.graphics.setFont(font_Afacad20)
-            love.graphics.printf(string.format("There is a %d%% chance of skipping a wave and immediately advancing to the next wave.", player.abilities.waveSkip.value), 660, 612, 400, "left")
         end
     end
 end
 
 function inHub_mouse(x, y)
-    if player.location == "hub" then
+    if player.location == "hub" and not player.menu.saveStats then
         
         --[[ Process mouse clicks on sidebar, go to different sections based on the button pressed ]]--
         if x >= 0 and x <= 50 and y >= 0 and y <= 360 then
@@ -385,6 +396,7 @@ function inHub_mouse(x, y)
                     player.upgrades.nexus.attackDamage.cost = 20 + ((player.upgrades.nexus.attackDamage.level * (player.upgrades.nexus.attackDamage.level - 1)) / 2) * 5
                     player.upgrades.nexus.attackDamage.value = math.min(1 + (player.upgrades.nexus.attackDamage.level - 1) * 10/100, 5)
                     player.tower.attackDamage = ((0.25 * player.upgrades.science.attackDamage.level - 0.25)^3 + 4 + player.upgrades.science.attackDamage.level) * player.upgrades.nexus.attackDamage.value
+                    player.stats.save.upgradesAcquired.nexus = player.stats.save.upgradesAcquired.nexus + 1
                 end
                 processUpgradeModule.reload()
             end
@@ -397,6 +409,7 @@ function inHub_mouse(x, y)
                     player.upgrades.nexus.attackSpeed.cost = 20 + ((player.upgrades.nexus.attackSpeed.level * (player.upgrades.nexus.attackSpeed.level - 1)) / 2) * 5
                     player.upgrades.nexus.attackSpeed.value = math.min(1 + (player.upgrades.nexus.attackSpeed.level - 1) * 4/100, 2)
                     player.tower.attackSpeed = (math.min(0.5 + 0.04 * (player.upgrades.science.attackSpeed.level - 1), 4.5)) * player.upgrades.nexus.attackSpeed.value
+                    player.stats.save.upgradesAcquired.nexus = player.stats.save.upgradesAcquired.nexus + 1
                 end
                 processUpgradeModule.reload()
             end
@@ -409,6 +422,7 @@ function inHub_mouse(x, y)
                     player.upgrades.nexus.health.cost = 20 + ((player.upgrades.nexus.health.level * (player.upgrades.nexus.health.level - 1)) / 2) * 5
                     player.upgrades.nexus.health.value = math.min(1 + (player.upgrades.nexus.health.level - 1) * 10/100, 5)
                     player.tower.maxHealth = ((0.3 * player.upgrades.science.health.level - 0.3)^3.75 + 14.6 + 0.4 * player.upgrades.science.health.level) * player.upgrades.nexus.health.value
+                    player.stats.save.upgradesAcquired.nexus = player.stats.save.upgradesAcquired.nexus + 1
                 end
                 processUpgradeModule.reload()
             end
@@ -421,22 +435,37 @@ function inHub_mouse(x, y)
                     player.upgrades.nexus.regeneration.cost = 20 + ((player.upgrades.nexus.regeneration.level * (player.upgrades.nexus.regeneration.level - 1)) / 2) * 5
                     player.upgrades.nexus.regeneration.value = math.min(1 + (player.upgrades.nexus.regeneration.level - 1) * 10/100, 5)
                     player.tower.regeneration = (((0.8 * player.upgrades.science.regeneration.level - 0.8)^2.75) / 50) * player.upgrades.nexus.regeneration.value
+                    player.stats.save.upgradesAcquired.nexus = player.stats.save.upgradesAcquired.nexus + 1
                 end
                 processUpgradeModule.reload()
             end
 
-            if x >= 1155 and x <= 1275 and y >= 590 and y <= 695 then
-                if player.currencies.currentElectrum >= player.abilities.waveSkip.cost and player.abilities.waveSkip.level < 11 then
-                    if player.abilities.waveSkip.unlocked then
-                        player.currencies.currentElectrum = player.currencies.currentElectrum - player.abilities.waveSkip.cost
-                        player.abilities.waveSkip.level = player.abilities.waveSkip.level + 1
-                        player.abilities.waveSkip.cost = (player.abilities.waveSkip.level * (player.abilities.waveSkip.level - 1)) / 2 + 4
-                        player.abilities.waveSkip.value = math.min(6 * player.abilities.waveSkip.level - 1, 65)
+            if x >= 1155 and x <= 1275 and y >= 615 and y <= 665 then
+                if player.currencies.currentElectrum >= player.modifiers.waveSkip.cost and player.modifiers.waveSkip.level < 10 then
+                    if player.modifiers.waveSkip.unlocked then
+                        player.currencies.currentElectrum = player.currencies.currentElectrum - player.modifiers.waveSkip.cost
+                        player.modifiers.waveSkip.level = player.modifiers.waveSkip.level + 1
+                        player.modifiers.waveSkip.cost = (player.modifiers.waveSkip.level * (player.modifiers.waveSkip.level - 1)) / 2 + 4
+                        player.modifiers.waveSkip.value = math.min(4 * player.modifiers.waveSkip.level, 40)
+                    else
+                        player.currencies.currentElectrum = player.currencies.currentElectrum - 10
+                        player.modifiers.waveSkip.unlocked = true
+                        player.modifiers.waveSkip.cost = (player.modifiers.waveSkip.level * (player.modifiers.waveSkip.level - 1)) / 2 + 4
+                        player.modifiers.waveSkip.value = 4
+                    end
+                end
+            elseif x >= 1155 and x <= 1275 and y >= 755 and y <= 805 then
+                if player.currencies.currentElectrum >= player.modifiers.hyperloop.cost and player.modifiers.hyperloop.level < 11 then
+                    if player.modifiers.waveSkip.unlocked then
+                        player.currencies.currentElectrum = player.currencies.currentElectrum - player.modifiers.hyperloop.cost
+                        player.modifiers.hyperloop.level = player.modifiers.hyperloop.level + 1
+                        player.modifiers.hyperloop.cost = player.modifiers.hyperloop.level^2 - 2 * player.modifiers.hyperloop.level + 11
+                        player.modifiers.hyperloop.value = math.min(2 + 8 * player.modifiers.hyperloop.level, 90)
                     else
                         player.currencies.currentElectrum = player.currencies.currentElectrum - 15
-                        player.abilities.waveSkip.unlocked = true
-                        player.abilities.waveSkip.cost = (player.abilities.waveSkip.level * (player.abilities.waveSkip.level - 1)) / 2 + 4
-                        player.abilities.waveSkip.value = 5
+                        player.modifiers.hyperloop.unlocked = true
+                        player.modifiers.hyperloop.cost = player.modifiers.hyperloop.level^2 - 2 * player.modifiers.hyperloop.level + 11
+                        player.modifiers.hyperloop.value = 10
                     end
                 end
             end

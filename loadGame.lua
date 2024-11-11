@@ -154,18 +154,29 @@ function loadGame()
             }
         }
 
-        player.abilities = {
+        player.modifiers = {
             waveSkip = {
-                unlocked = data.player.abilities.unlocks.waveSkip,
-                level = data.player.abilities.waveSkip.chance
+                unlocked = data.player.modifiers.unlocks.waveSkip,
+                level = data.player.modifiers.waveSkip.level
+            },
+            hyperloop = {
+                unlocked = data.player.modifiers.unlocks.hyperloop,
+                level = data.player.modifiers.hyperloop.level,
             }
         }
-        if not data.player.abilities.unlocks.waveSkip then
-            player.abilities.waveSkip.cost = 15
-            player.abilities.waveSkip.value = 0
+        if not data.player.modifiers.unlocks.waveSkip then
+            player.modifiers.waveSkip.cost = 10
+            player.modifiers.waveSkip.value = 0
         else
-            player.abilities.waveSkip.cost = (player.abilities.waveSkip.level * (player.abilities.waveSkip.level - 1)) / 2 + 4
-            player.abilities.waveSkip.value = math.min(6 * player.abilities.waveSkip.level - 1, 65)
+            player.modifiers.waveSkip.cost = (player.modifiers.waveSkip.level * (player.modifiers.waveSkip.level - 1)) / 2 + 4
+            player.modifiers.waveSkip.value = math.min(4 * player.modifiers.waveSkip.level, 40)
+        end
+        if not data.player.modifiers.unlocks.hyperloop then
+            player.modifiers.hyperloop.cost = 15
+            player.modifiers.hyperloop.value = 0
+        else
+            player.modifiers.hyperloop.cost = player.modifiers.hyperloop.level^2 - 2 * player.modifiers.hyperloop.level + 11
+            player.modifiers.hyperloop.value = math.min(2 + 8 * player.modifiers.hyperloop.level, 90)
         end
 
         player.settings = {
@@ -180,6 +191,20 @@ function loadGame()
             d2 = data.player.pb.d2,
             d3 = data.player.pb.d3,
             d4 = data.player.pb.d4,
+        }
+
+        player.stats = {}
+        player.stats.save = {
+            enemiesKilled = data.player.stats.enemiesKilled,
+            damageDealt = data.player.stats.damageDealt,
+            silverEarned = data.player.stats.silverEarned,
+            wavesSkipped = data.player.stats.wavesSkipped,
+            projectilesFired = data.player.stats.projectilesFired,
+            upgradesAcquired = {
+                science = data.player.stats.upgradesAcquired.science,
+                nexus = data.player.stats.upgradesAcquired.nexus
+            },
+            wavesBeaten = data.player.stats.wavesBeaten
         }
 
     else
@@ -328,11 +353,17 @@ function loadGame()
             }
         }
 
-        player.abilities = {
+        player.modifiers = {
             waveSkip = {
                 unlocked = false,
                 level = 1,
-                cost = 20,
+                cost = 15,
+                value = 0
+            },
+            hyperloop = {
+                unlocked = false,
+                level = 1,
+                cost = 10,
                 value = 0
             }
         }
@@ -349,6 +380,20 @@ function loadGame()
             d2 = 0,
             d3 = 0,
             d4 = 0,
+        }
+
+        player.stats = {}
+        player.stats.save = {
+            enemiesKilled = 0,
+            damageDealt = 0,
+            silverEarned = 0,
+            wavesSkipped = 0,
+            projectilesFired = 0,
+            upgradesAcquired = {
+                science = 0,
+                nexus = 0
+            },
+            wavesBeaten = 0
         }
     end
 
@@ -388,7 +433,8 @@ function loadGame()
         }
     }
 
-    player.stats = {}
+    player.menu = {}
+    player.menu.saveStats = false
 
     --saveGame()
 end
@@ -400,6 +446,9 @@ function resetRoundValues()
     player.menu.paused = false
     player.menu.settings = false
     player.menu.upgrades = false
+    player.menu.gameplayInfo = false
+    player.menu.battleStats = false
+    player.menu.saveStats = false
 
     --[[ Copper ]]--
     player.currencies.currentCopper = 0
@@ -520,7 +569,22 @@ function resetRoundValues()
     }
     misc = {
         copperBuffer = 0,
-        silverBuffer = 0
+        silverBuffer = 0,
+        copperAtStart = player.currencies.currentCopper,
+        silverAtStart = player.currencies.currentSilver
+    }
+    player.stats.battle = {
+        time = 0,
+        enemiesKilled = 0,
+        damageTaken = 0,
+        damageDealt = 0,
+        copperEarned = 0,
+        silverEarned = 0,
+        shieldDamageAbsorb = 0,
+        wavesSkipped = 0,
+        projectilesFired = 0,
+        upgradesAcquired = 0,
+        goldEarned = 0
     }
     player.stats.wave = {
         enemiesKilled = 0

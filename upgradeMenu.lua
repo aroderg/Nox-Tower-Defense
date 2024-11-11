@@ -69,6 +69,9 @@ function drawUpgradeMenu()
             end
 
         love.graphics.setColor(1, 1, 1, 1)
+        if not player.menu.paused and player.tower.currentHealth > 0 and not player.menu.gameplayInfo and not player.menu.battleStats then
+            tooltips.displayRound()
+        end
     else
         love.graphics.setLineStyle("smooth")
         love.graphics.setLineWidth(3)
@@ -89,7 +92,7 @@ function drawUpgradeMenu()
 end
 
 function upgradeMenu_mouse(x, y)
-    if player.menu.upgrades and not player.menu.paused and player.tower.currentHealth > 0 then
+    if player.menu.upgrades and not player.menu.paused and player.tower.currentHealth > 0 and not player.menu.gameplayInfo and not player.menu.battleStats then
 
         if roundUpgradeSection == "ATK" then
             player.upgrades.round.attackDamage.level, player.upgrades.round.attackDamage.cost, player.tower.attackDamage = processUpgradeModule.upgrade(x, y, upgradeModules["round"]["ATK"][1], reloadFormulae(upgradeModules["science"]["ATK"][1][8], upgradeModules["round"]["ATK"][1][8] + 1)["round"]["ATK"][1][1], reloadFormulae(upgradeModules["science"]["ATK"][1][8], upgradeModules["round"]["ATK"][1][8] + 1)["round"]["ATK"][1][2])

@@ -48,12 +48,16 @@ function saveGame()
             electrum = player.timers.electrum
         },
 
-        abilities = {
+        modifiers = {
             unlocks = {
-                waveSkip = player.abilities.waveSkip.unlocked
+                waveSkip = player.modifiers.waveSkip.unlocked,
+                hyperloop = player.modifiers.hyperloop.unlocked
             },
             waveSkip = {
-                chance = player.abilities.waveSkip.level
+                level = player.modifiers.waveSkip.level
+            },
+            hyperloop = {
+                level = player.modifiers.hyperloop.level
             }
         },
 
@@ -62,6 +66,19 @@ function saveGame()
             d2 = player.bestWaves.d2,
             d3 = player.bestWaves.d3,
             d4 = player.bestWaves.d4,
+        },
+
+        stats = {
+            enemiesKilled = player.stats.save.enemiesKilled,
+            damageDealt = player.stats.save.damageDealt,
+            silverEarned = player.stats.save.silverEarned,
+            wavesSkipped = player.stats.save.wavesSkipped,
+            projectilesFired = player.stats.save.projectilesFired,
+            upgradesAcquired = {
+                science = player.stats.save.upgradesAcquired.science,
+                nexus = player.stats.save.upgradesAcquired.nexus
+            },
+            wavesBeaten = player.stats.save.wavesBeaten
         }
     }
     data.settings = {

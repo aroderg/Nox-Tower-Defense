@@ -13,7 +13,9 @@ function tooltips.general()
             love.graphics.setColor(0, 0, 0, 1)
             love.graphics.setFont(font_Vera12)
             love.graphics.printf(desc, mx + 4, my - height, width, "left")
-            love.graphics.printf(desc2, mx + 4, my - height + 20, width, "left")
+            if desc2 then
+                love.graphics.printf(desc2, mx + 4, my - height + 20, width, "left")
+            end
         end
 
         function tooltips.hoverCheck(x, y, width, height)
@@ -82,6 +84,22 @@ function tooltips.general()
             for i,v in ipairs(hubTooltips) do
                 if tooltips.hoverCheck(hubTooltips[i][1], hubTooltips[i][2], hubTooltips[i][3], hubTooltips[i][4]) and hubTooltips[i]["precedingUpgrade"] then
                     tooltips.appearance(hubTooltips[i][5], hubTooltips[i][6], hubTooltips[i][7], hubTooltips[i][8])
+                end
+            end
+        end
+
+        local gameplayInfoTooltips = {
+            {748, 340, 22, 22, 40, 19, "Basic"},
+            {748, 390, 22, 22, 38, 19, "Tank"},
+            {748, 440, 22, 22, 40, 19, "Swift"},
+            {748, 490, 22, 22, 50, 19, "Sentry"},
+            {748, 540, 22, 22, 68, 19, "Centurion"}
+        }
+
+        function tooltips.displayGameplayInfo()
+            for i,v in ipairs(gameplayInfoTooltips) do
+                if tooltips.hoverCheck(gameplayInfoTooltips[i][1], gameplayInfoTooltips[i][2], gameplayInfoTooltips[i][3], gameplayInfoTooltips[i][4]) then
+                    tooltips.appearance(gameplayInfoTooltips[i][5], gameplayInfoTooltips[i][6], gameplayInfoTooltips[i][7], gameplayInfoTooltips[i][8])
                 end
             end
         end

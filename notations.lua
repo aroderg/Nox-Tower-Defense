@@ -1,13 +1,13 @@
 notations = {
     numbers = {
-        kmbt = {"K", "M", "B", "T"},
-        e = {"e3", "e6", "e9", "e12"},
-        alphabet = {"a", "b", "c", "d"},
+        kmbt = {"K", "M", "B", "T", "Qa", "Qi", "Sx", "Sp", "Oc", "No", "Dc"},
+        e = {"e3", "e6", "e9", "e12", "e15", "e18", "e21", "e24", "e27", "e30", "e33"},
+        alphabet = {"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k"},
     },
     kmbt = {},
     e = {},
     alphabet = {}
-    }
+}
 
 function notations.getLetterForNumber(x)
     if x >= 1000 then
