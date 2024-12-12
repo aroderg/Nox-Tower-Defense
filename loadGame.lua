@@ -8,11 +8,15 @@ function loadGame()
         player.location = "hub"
         player.cooldowns = {
             electrum = 24,
-            tokens = 600
+            tokens = 600,
+            abilityAssembly_min = 400,
+            abilityAssembly_max = 800,
+            abilityAssembly_current = data.player.cooldowns.abilityAssembly
         }
         player.timers = {
             electrum = data.player.timers.electrum,
-            tokens = data.player.timers.tokens
+            tokens = data.player.timers.tokens,
+            abilityAssembly = data.player.timers.abilityAssembly
         }
         player.canClaim = {}
         if data.player.timers.tokens > 0 then
@@ -24,6 +28,11 @@ function loadGame()
             player.canClaim.electrum = false
         else
             player.canClaim.electrum = true
+        end
+        if data.player.timers.abilityAssembly > 0 then
+            player.canClaim.ability = false
+        else
+            player.canClaim.ability = true
         end
 
         player.currencies = {
@@ -184,6 +193,7 @@ function loadGame()
             waveSkipMessages = data.settings.waveSkipMessages,
             notation = data.settings.notation,
             tooltips = data.settings.tooltips,
+            volume = data.settings.volume
         }
 
         player.bestWaves = {
@@ -207,23 +217,66 @@ function loadGame()
             wavesBeaten = data.player.stats.wavesBeaten
         }
 
+        player.abilities = {
+            equipped = 0,
+            maxEquipped = 1,
+            spikedCrystals = {
+                unlocked = data.player.abilities.spikedCrystals.unlocked,
+                level = data.player.abilities.spikedCrystals.level,
+                equipped = data.player.abilities.spikedCrystals.equipped,
+                amount = data.player.abilities.spikedCrystals.amount
+            },
+            scatterFire = {
+                unlocked = data.player.abilities.scatterFire.unlocked,
+                level = data.player.abilities.scatterFire.level,
+                equipped = data.player.abilities.scatterFire.equipped,
+                amount = data.player.abilities.scatterFire.amount
+            },
+            burstFire = {
+                unlocked = data.player.abilities.burstFire.unlocked,
+                level = data.player.abilities.burstFire.level,
+                equipped = data.player.abilities.burstFire.equipped,
+                amount = data.player.abilities.burstFire.amount
+            },
+            rainforest = {
+                unlocked = data.player.abilities.rainforest.unlocked,
+                level = data.player.abilities.rainforest.level,
+                equipped = data.player.abilities.rainforest.equipped,
+                amount = data.player.abilities.rainforest.amount
+            },
+            magmaTouch = {
+                unlocked = data.player.abilities.magmaTouch.unlocked,
+                level = data.player.abilities.magmaTouch.level,
+                equipped = data.player.abilities.magmaTouch.equipped,
+                amount = data.player.abilities.magmaTouch.amount
+            },
+        }
+
+        player.misc = {}
+        player.misc.abilityAssembling = data.player.misc.abilityAssembling
+
     else
 
         player.paused = false
         player.location = "round"
         player.cooldowns = {
             electrum = 24,
-            tokens = 600
+            tokens = 600,
+            abilityAssembly_min = 400,
+            abilityAssembly_max = 800,
+            abilityAssembly_current = 600
         }
         player.timers = {
             electrum = 0,
-            tokens = 600
+            tokens = 600,
+            abilityAssembly = 0
         }
 
         player.canClaim = {}
 
         player.canClaim.tokens = true
         player.canClaim.electrum = true
+        player.canClaim.ability = true
 
         player.currencies = {
             currentSilver = 0,
@@ -373,6 +426,7 @@ function loadGame()
             waveSkipMessages = true,
             notation = "kmbt",
             tooltips = true,
+            volume = 1
         }
 
         player.bestWaves = {
@@ -395,6 +449,44 @@ function loadGame()
             },
             wavesBeaten = 0
         }
+
+        player.abilities = {
+            equipped = 0,
+            maxEquipped = 1,
+            spikedCrystals = {
+                unlocked = false,
+                level = 0,
+                equipped = false,
+                amount = 0
+            },
+            scatterFire = {
+                unlocked = false,
+                level = 0,
+                equipped = false,
+                amount = 0
+            },
+            burstFire = {
+                unlocked = false,
+                level = 0,
+                equipped = false,
+                amount = 0
+            },
+            rainforest = {
+                unlocked = false,
+                level = 0,
+                equipped = false,
+                amount = 0
+            },
+            magmaTouch = {
+                unlocked = false,
+                level = 0,
+                equipped = false,
+                amount = 0
+            }
+        }
+
+        player.misc = {}
+        player.misc.abilityAssembling = false
     end
 
     --[[ Set Science upgrade costs (in Silver) ]]--
@@ -433,8 +525,181 @@ function loadGame()
         }
     }
 
-    player.menu = {}
+    player.menu = {
+        abilities = {
+            spikedCrystals = false,
+            scatterFire = false,
+            burstFire = false,
+            rainforest = false,
+            magmaTouch = false
+        }
+    }
     player.menu.saveStats = false
+    player.menu.rolledAbilityDisplay = false
+
+    function abilityFunctions.updateInternals() --update the ability levels and leveling info
+
+        levelingInfo = {
+            {
+                --| SPIKED CRYSTALS - LEVELS FROM 0 to 11 |--
+                quantity =          {4,   4,   5,   5,   6,    6,    7,   7,   8,   8,   9,   10},
+                damage =            {250, 275, 300, 325, 350,  375,  400, 450, 500, 550, 600, 600}, -- %
+                frequency =         {16,  15,  14,  13,  12.2, 11.6, 10,  9.5, 9,   8.6, 8.2, 8},
+                levelRequirements = {2,   2,   2,   3,   3,    4,    5,   6,   8,   10,  12,  15}
+            },
+            {
+                --| SCATTER FIRE - LEVELS FROM 0 to 11 |--
+                quantity =          {4, 4,   4, 6, 6,   6, 8,  8,   10,  10, 12, 16},
+                frequency =         {1, 1.5, 2, 2, 2.5, 3, 3,  3.5, 3.5, 4,  4,  4}, -- %
+                levelRequirements = {2, 2,   3, 3, 4,   4, 5,  6,   7,   8,  10, 15}
+            },
+            {
+                --| BURST FIRE - LEVELS FROM 0 to 8 |--
+                quantity =          {4,   4, 4,   6,   6, 8, 8,   12,   12, 12},
+                frequency =         {1.5, 2, 2.5, 2.5, 3, 3, 3.5, 3.5,  4,  5}, -- %
+                levelRequirements = {2,   3, 4,   5,   6, 8, 10,  15,   15, 18}
+            },
+            {
+                --| RAINFOREST - LEVELS FROM 0 to 10 |--
+                density =           {10, 12, 14, 16, 18, 20, 22.5, 25, 27.5, 30, 32.5},
+                frequency =         10, -- waves
+                levelRequirements = {1,  1,  2,  2,  3,  3,  4,    5,  6,    7,  8}
+            },
+            {
+                --| MAGMA TOUCH - LEVELS FROM 0 to 9 |--
+                frequency =         {20,  18.5, 16, 14.5, 13.5, 12.5, 11.5, 11,   10.5, 10},
+                damage =            {7.5, 8.5,  10, 12,   14,   16,   18,   20,   23.5, 27.5}, -- %
+                levelRequirements = {3,   3,    4,  4,    5,    7,    9,    12,   16,   20}
+            }
+        }
+
+        internalAbilities = {
+            {
+                name = "Spiked Crystals",
+                internalName = "spikedCrystals",
+                effect = {{1, 1, 1, 1}, "Spawn up to ", {1, 0.5, 0.4, 1}, levelingInfo[1].quantity[player.abilities.spikedCrystals.level + 1], {1, 1, 1, 1}, " crystals inside the tower's range. Upon getting touched by an enemy, the crystal explodes and deals ", {1, 0.4, 0.8, 1}, levelingInfo[1].damage[player.abilities.spikedCrystals.level + 1], {1, 1, 1, 1}, "% damage to nearby enemies."},
+                event = "Time",
+                frequency = levelingInfo[1].frequency[player.abilities.spikedCrystals.level + 1],
+                level = player.abilities.spikedCrystals.level,
+                preview = img_ability_preview_spikedCrystals,
+                equipped = player.abilities.spikedCrystals.equipped,
+                unlocked = player.abilities.spikedCrystals.unlocked,
+                menu = player.menu.abilities.spikedCrystals,
+                amount = player.abilities.spikedCrystals.amount,
+                class = "B",
+                nextLevelRequirement = levelingInfo[1].levelRequirements[player.abilities.spikedCrystals.level + 1],
+                levelRequirements = levelingInfo[1].levelRequirements
+            },
+            {
+                name = "Scatter Fire",
+                internalName = "scatterFire",
+                effect = {{1, 1, 1, 1}, "Shoot out ", {0.5, 0.9, 0.8, 1}, levelingInfo[2].quantity[player.abilities.scatterFire.level + 1], {1, 1, 1, 1}, " projectiles going from a random point on the screen."},
+                event = "Projectile",
+                frequency = levelingInfo[2].frequency[player.abilities.scatterFire.level + 1],
+                level = player.abilities.scatterFire.level,
+                preview = img_ability_preview_scatterFire,
+                equipped = player.abilities.scatterFire.equipped,
+                unlocked = player.abilities.scatterFire.unlocked,
+                menu = player.menu.abilities.scatterFire,
+                amount = player.abilities.scatterFire.amount,
+                class = "C",
+                nextLevelRequirement = levelingInfo[2].levelRequirements[player.abilities.scatterFire.level + 1],
+                levelRequirements = levelingInfo[2].levelRequirements
+            },
+            {
+                name = "Burst Fire",
+                internalName = "burstFire",
+                effect = {{1, 1, 1, 1}, "Shoot out ", {0.75, 0.75, 0.75, 1}, levelingInfo[3].quantity[player.abilities.burstFire.level + 1], {1, 1, 1, 1}, " projectiles going from the center of the tower."},
+                event = "Projectile",
+                frequency = levelingInfo[3].frequency[player.abilities.burstFire.level + 1],
+                level = player.abilities.burstFire.level,
+                preview = img_ability_preview_burstFire,
+                equipped = player.abilities.burstFire.equipped,
+                unlocked = player.abilities.burstFire.unlocked,
+                menu = player.menu.abilities.burstFire,
+                amount = player.abilities.burstFire.amount,
+                class = "C",
+                nextLevelRequirement = levelingInfo[3].levelRequirements[player.abilities.burstFire.level + 1],
+                levelRequirements = levelingInfo[3].levelRequirements
+            },
+            {
+                name = "Rainforest",
+                internalName = "rainforest",
+                effect = {{1, 1, 1, 1}, "Cover the tower's range in a dense rainforest for 5 waves, slowing all enemies' move and attack speed by ", {0.5, 0.85, 1, 1}, levelingInfo[4].density[player.abilities.rainforest.level + 1], {1, 1, 1, 1}, "%.\nFirst covering happens at wave 20."},
+                event = "Wave",
+                guaranteed = true,
+                frequency = levelingInfo[4].frequency,
+                level = player.abilities.rainforest.level,
+                preview = img_ability_preview_rainforest,
+                equipped = player.abilities.rainforest.equipped,
+                unlocked = player.abilities.rainforest.unlocked,
+                menu = player.menu.abilities.rainforest,
+                amount = player.abilities.rainforest.amount,
+                class = "A",
+                nextLevelRequirement = levelingInfo[4].levelRequirements[player.abilities.rainforest.level + 1],
+                levelRequirements = levelingInfo[4].levelRequirements
+            },
+            {
+                name = "Magma Touch",
+                internalName = "magmaTouch",
+                effect = {{1, 1, 1, 1}, "Summon a magma pool in a random position on the screen. Applies a burning effect on any enemy touching it, dealing ", {1, 0.6, 0.15, 1}, levelingInfo[5].damage[player.abilities.magmaTouch.level], {1, 1, 1, 1}, "% damage each second for 4 seconds before disappearing. Maximum of 20 magma pools."},
+                event = "Time",
+                frequency = levelingInfo[5].frequency[player.abilities.magmaTouch.level + 1],
+                level = player.abilities.magmaTouch.level,
+                preview = img_ability_preview_magmaTouch,
+                equipped = player.abilities.magmaTouch.equipped,
+                unlocked = player.abilities.rainforest.unlocked,
+                menu = player.menu.abilities.magmaTouch,
+                amount = player.abilities.magmaTouch.amount,
+                class = "D",
+                nextLevelRequirement = levelingInfo[5].levelRequirements[player.abilities.magmaTouch.level + 1],
+                levelRequirements = levelingInfo[5].levelRequirements
+            }
+        }
+
+        abilityClasses = {
+            "D", "C", "B", "A"
+        }
+        abilityClassProbabilities = {
+            D = 60,
+            C = 25,
+            B = 10,
+            A = 5
+        }
+
+        equipSlotRequirements = {
+            {difficulty = 1, wave = 100},
+            {difficulty = 2, wave = 100},
+            {difficulty = 2, wave = 200},
+            {difficulty = 3, wave = 50},
+            {difficulty = 4, wave = 50}
+        }
+        function abilityFunctions.updateSlotCount()
+            player.abilities.maxEquipped = 0
+            for i,v in ipairs(equipSlotRequirements) do
+                if player.bestWaves["d" .. v.difficulty] >= v.wave then
+                    player.abilities.maxEquipped = player.abilities.maxEquipped + 1
+                else
+                    break
+                end
+            end
+        end
+    end
+
+    function abilityFunctions.upgrade(x, y, ability)
+        if x >= 700 and x <= 856 and y >= 418 and y <= 458 then
+            if ability.menu and ability.unlocked and ability.amount >= ability.levelRequirements[ability.level] and ability.level < #ability.levelRequirements - 1 then
+                ability.amount = ability.amount - ability.levelRequirements[ability.level]
+                ability.level = ability.level + 1
+            end
+        end
+        return ability.level, ability.amount
+    end
+
+    abilityFunctions.updateInternals()
+    abilityFunctions.updateSlotCount()
+
+    player.maxGameSpeed = 1
 
     --saveGame()
 end
@@ -442,7 +707,6 @@ end
 function resetRoundValues()
     --[[ Reset all properties to initial at the start of the round ]]--
 
-    player.menu = {}
     player.menu.paused = false
     player.menu.settings = false
     player.menu.upgrades = false
@@ -565,7 +829,8 @@ function resetRoundValues()
     --[[ Gameplay properties ]]--
     gameplay = {
         difficulty = player.difficulty.difficulty,
-        wave = 1
+        wave = 1,
+        gameSpeed = player.maxGameSpeed
     }
     misc = {
         copperBuffer = 0,
@@ -601,20 +866,27 @@ function resetRoundValues()
         nextWave = 0,
         shieldActivation = 0,
         shieldActive = 0,
-        waveSkip = 3
+        waveSkip = 3,
+        crystal = 0,
+        magmaPool = 0
     }
 
     --[[ Misc ]]--
     waveSkipMessage = false
     projectilesOnField = {}
     enemiesOnField = {}
-    particles = {}
+    killParticles = {}
     collapseParticles = {}
     hitTextParticles = {}
+    meteorParticles = {}
+    crystalExplosionParticles = {}
+    burnParticles = {}
     meteors = {}
     for i=1,player.tower.meteorAmount do
         createMeteor(((i-1) * (2 * math.pi) / player.tower.meteorAmount) - 0.5 * math.pi)
     end
+    spikedCrystals = {}
+    magmaPools = {}
     sentryAlive = false
     centurionAlive = false
 end

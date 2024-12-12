@@ -28,15 +28,15 @@ function tooltips.general()
             ["ATK"] = {
                 {10, 850, 254, 60, 180, 40, "Damage dealt by projectiles.", string.format("Level: %d/%s", player.upgrades.round.attackDamage.level, math.huge), ["precedingUpgrade"] = true}, --Attack Damage Round upgrade tooltip
                 {10, 920, 254, 60, 230, 40, "Speed the tower fires projectiles at.", string.format("Level: %d/%d", math.min(player.upgrades.round.attackSpeed.level, 106), 106), ["precedingUpgrade"] = true}, --Attack Speed Round upgrade tooltip
-                {10, 990, 254, 60, 280, 40, "Chance to deal increased projectile damage.", string.format("Level: %d/%d", math.min(player.upgrades.round.critChance.level, 101), 101), ["precedingUpgrade"] = player.upgrades.unlocks.crit}, --Critical Chance Round upgrade tooltip
-                {370, 850, 254, 60, 400, 40, "How much the projectile damage is multiplied by on critical hits.", string.format("Level: %d/%s", player.upgrades.round.critFactor.level, math.huge), ["precedingUpgrade"] = player.upgrades.unlocks.crit}, --Critical Factor Round upgrade tooltip
+                {10, 990, 254, 60, 280, 40, "Chance to deal increased projectile damage.", string.format("Level: %d/%d", math.min(player.upgrades.round.critChance.level, 51), 51), ["precedingUpgrade"] = player.upgrades.unlocks.crit}, --Critical Chance Round upgrade tooltip
+                {370, 850, 254, 60, 400, 40, "How much the projectile damage is multiplied by on critical hits.", string.format("Level: %d/%s", math.min(player.upgrades.science.critFactor.level, 181), 181), 181, ["precedingUpgrade"] = player.upgrades.unlocks.crit}, --Critical Factor Round upgrade tooltip
                 {370, 920, 254, 60, 240, 40, "Maximum enemy detection distance.", string.format("Level: %d/%d", math.min(player.upgrades.round.range.level, 81), 81), ["precedingUpgrade"] = player.upgrades.unlocks.range}, --Critical Factor Round upgrade tooltip
             },
 
             ["VIT"] = {
                 {10, 850, 254, 60, 340, 40, "Maximum amount of true damage the tower can take.", string.format("Level: %d/%s", player.upgrades.round.health.level, math.huge), ["precedingUpgrade"] = true}, --Health Round upgrade tooltip
                 {10, 920, 254, 60, 290, 40, "Speed the tower recovers its health over time.", string.format("Level: %d/%s", player.upgrades.round.regeneration.level, math.huge), ["precedingUpgrade"] = true}, --Regeneration Round upgrade tooltip
-                {10, 990, 254, 60, 310, 40, "The percentage incoming damage is reduced by.", string.format("Level: %d/%d", math.min(player.upgrades.round.resistance.level, 121), 121), ["precedingUpgrade"] = player.upgrades.unlocks.resistance}, --Resistance Round upgrade tooltip
+                {10, 990, 254, 60, 310, 40, "The percentage incoming damage is reduced by.", string.format("Level: %d/%d", math.min(player.upgrades.round.resistance.level, 101), 101), ["precedingUpgrade"] = player.upgrades.unlocks.resistance}, --Resistance Round upgrade tooltip
                 {370, 850, 254, 60, 210, 40, "Time between Shield activations.", string.format("Level: %d/%d", math.min(player.upgrades.round.shieldCooldown.level, 126), 126), ["precedingUpgrade"] = player.upgrades.unlocks.shield}, --Shield Cooldown Round upgrade tooltip
                 {370, 920, 254, 60, 340, 40, "How long the tower is immune to non-boss attacks for.", string.format("Level: %d/%d", math.min(player.upgrades.round.shieldDuration.level, 111), 111), ["precedingUpgrade"] = player.upgrades.unlocks.shield}, --Shield Duration Round upgrade tooltip
                 {370, 990, 254, 60, 500, 40, "Amount of Meteors orbiting around the tower, instantly killing non-boss enemies.", string.format("Level: %d/%d", math.min(player.upgrades.round.meteorAmount.level, 6), 6), ["precedingUpgrade"] = player.upgrades.unlocks.meteor}, --Meteor Amount Round upgrade tooltip
@@ -62,13 +62,13 @@ function tooltips.general()
         local hubTooltips = {
             {245, 240, 254, 60, 180, 40, "Damage dealt by projectiles.", string.format("Level: %d/%s", player.upgrades.science.attackDamage.level, math.huge), ["precedingUpgrade"] = true}, --Attack Damage Hub upgrade tooltip
             {605, 240, 254, 60, 230, 40, "Speed the tower fires projectiles at.", string.format("Level: %d/%d", math.min(player.upgrades.science.attackSpeed.level, 106), 106), ["precedingUpgrade"] = true}, --Attack Speed Science upgrade tooltip
-            {965, 240, 254, 60, 280, 40, "Chance to deal increased projectile damage.", string.format("Level: %d/%d", math.min(player.upgrades.science.critChance.level, 101), 101), ["precedingUpgrade"] = player.upgrades.unlocks.crit}, --Critical Chance Science upgrade tooltip
-            {1325, 240, 254, 60, 400, 40, "How much the projectile damage is multiplied by on critical hits.", string.format("Level: %d/%s", player.upgrades.science.critFactor.level, math.huge), ["precedingUpgrade"] = player.upgrades.unlocks.crit}, --Critical Factor Science upgrade tooltip
+            {965, 240, 254, 60, 280, 40, "Chance to deal increased projectile damage.", string.format("Level: %d/%d", math.min(player.upgrades.science.critChance.level, 51), 51), ["precedingUpgrade"] = player.upgrades.unlocks.crit}, --Critical Chance Science upgrade tooltip
+            {1325, 240, 254, 60, 400, 40, "How much the projectile damage is multiplied by on critical hits.", string.format("Level: %d/%s", math.min(player.upgrades.science.critFactor.level, 181), 181), 181, ["precedingUpgrade"] = player.upgrades.unlocks.crit}, --Critical Factor Science upgrade tooltip
             {245, 310, 254, 60, 240, 40, "Maximum enemy detection distance.", string.format("Level: %d/%d", math.min(player.upgrades.science.range.level, 81), 81), ["precedingUpgrade"] = player.upgrades.unlocks.range}, --Critical Factor Science upgrade tooltip
             
             {245, 540, 254, 60, 340, 40, "Maximum amount of true damage the tower can take.", string.format("Level: %d/%s", player.upgrades.science.health.level, math.huge), ["precedingUpgrade"] = true}, --Health Science upgrade tooltip
             {605, 540, 254, 60, 290, 40, "Speed the tower recovers its health over time.", string.format("Level: %d/%s", player.upgrades.science.regeneration.level, math.huge), ["precedingUpgrade"] = true}, --Regeneration Science upgrade tooltip
-            {965, 540, 254, 60, 310, 40, "The percentage incoming damage is reduced by.", string.format("Level: %d/%d", math.min(player.upgrades.science.resistance.level, 121), 121), ["precedingUpgrade"] = player.upgrades.unlocks.resistance}, --Resistance Science upgrade tooltip
+            {965, 540, 254, 60, 310, 40, "The percentage incoming damage is reduced by.", string.format("Level: %d/%d", math.min(player.upgrades.science.resistance.level, 101), 101), ["precedingUpgrade"] = player.upgrades.unlocks.resistance}, --Resistance Science upgrade tooltip
             {1325, 540, 254, 60, 210, 40, "Time between Shield activations.", string.format("Level: %d/%d", math.min(player.upgrades.science.shieldCooldown.level, 126), 126), ["precedingUpgrade"] = player.upgrades.unlocks.shield}, --Shield Cooldown Science upgrade tooltip
             {245, 610, 254, 60, 340, 40, "How long the tower is immune to non-boss attacks for.", string.format("Level: %d/%d", math.min(player.upgrades.science.shieldDuration.level, 111), 111), ["precedingUpgrade"] = player.upgrades.unlocks.shield}, --Shield Duration Science upgrade tooltip
             {605, 610, 254, 60, 500, 40, "Amount of Meteors orbiting around the tower, instantly killing non-boss enemies.", string.format("Level: %d/%d", math.min(player.upgrades.science.meteorAmount.level, 6), 6), ["precedingUpgrade"] = player.upgrades.unlocks.meteor}, --Meteor Amount Science upgrade tooltip
@@ -100,6 +100,20 @@ function tooltips.general()
             for i,v in ipairs(gameplayInfoTooltips) do
                 if tooltips.hoverCheck(gameplayInfoTooltips[i][1], gameplayInfoTooltips[i][2], gameplayInfoTooltips[i][3], gameplayInfoTooltips[i][4]) then
                     tooltips.appearance(gameplayInfoTooltips[i][5], gameplayInfoTooltips[i][6], gameplayInfoTooltips[i][7], gameplayInfoTooltips[i][8])
+                end
+            end
+        end
+
+        local abilityInfoTooltips = {
+            {1040, 205, 24, 24, 390, 48, "Maximum amount of Abilities that can be equipped at once." .. ((player.abilities.maxEquipped + 1 < #equipSlotRequirements) and string.format("\n\nNext Ability slot unlocks after beating Wave %d of Difficulty %d.", equipSlotRequirements[player.abilities.maxEquipped + 1].wave, equipSlotRequirements[player.abilities.maxEquipped + 1].difficulty) or "All Ability slots are unlocked!")},
+            {810, 253, 204, 54, 215, 46, "Assembling an Ability takes somewhere between " .. string.format("%dm %ds", player.cooldowns.abilityAssembly_min / 60, player.cooldowns.abilityAssembly_min % 60) .. " and " .. string.format("%dm %ds", player.cooldowns.abilityAssembly_max / 60, player.cooldowns.abilityAssembly_max % 60) .. "."},
+            {1110, 268, 24, 24, 150, 75, "Class Probabilities:\nD: 60%\nC: 25%\nB: 10%\nA: 5%"}
+        }
+
+        function tooltips.displayAbilityInfo()
+            for i,v in ipairs(abilityInfoTooltips) do
+                if tooltips.hoverCheck(abilityInfoTooltips[i][1], abilityInfoTooltips[i][2], abilityInfoTooltips[i][3], abilityInfoTooltips[i][4]) then
+                    tooltips.appearance(abilityInfoTooltips[i][5], abilityInfoTooltips[i][6], abilityInfoTooltips[i][7], abilityInfoTooltips[i][8])
                 end
             end
         end

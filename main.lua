@@ -10,15 +10,16 @@ function love.load()
     require "gameOver"
     require "hub"
     require "notations"
+    require "abilityObjects"
     hubSection = "Main"
     roundUpgradeSection = "ATK"
-    gameSpeed = 1
-    background = "eclipse"
+    background = "nova"
+    --- Reloads all images.
     function assetReload()
-        --[[ Reload all images ]]--
         img_background = love.graphics.newImage("assets/background.png")
         img_background_stellar = love.graphics.newImage("assets/background_stellar.png")
         img_background_eclipse = love.graphics.newImage("assets/background_eclipse.png")
+        img_background_nova = love.graphics.newImage("assets/background_nova.png")
         img_currency_copper = love.graphics.newImage("assets/currency_copper.png")
         img_currency_silver = love.graphics.newImage("assets/currency_silver.png")
         img_currency_gold = love.graphics.newImage("assets/currency_gold.png")
@@ -47,19 +48,48 @@ function love.load()
         img_particle_kill_enemy_swift = love.graphics.newImage("assets/particle_kill_enemy_swift.png")
         img_particle_kill_enemy_sentry = love.graphics.newImage("assets/particle_kill_enemy_sentry.png")
         img_particle_kill_enemy_centurion = love.graphics.newImage("assets/particle_kill_enemy_centurion.png")
+        img_particle_crystalExplosion = love.graphics.newImage("assets/particle_crystalExplosion.png")
+        img_particle_burn = love.graphics.newImage("assets/particle_burn.png")
         img_button_pause = love.graphics.newImage("assets/button_pause.png")
         img_button_arrowLeft = love.graphics.newImage("assets/button_arrowLeft.png")
         img_button_arrowRight = love.graphics.newImage("assets/button_arrowRight.png")
         img_button_arrowLeft_big = love.graphics.newImage("assets/button_arrowLeft_big.png")
         img_button_arrowRight_big = love.graphics.newImage("assets/button_arrowRight_big.png")
+        img_button_questionMark = love.graphics.newImage("assets/button_questionMark.png")
         img_meteor = love.graphics.newImage("assets/meteor.png")
+        img_particle_meteor = love.graphics.newImage("assets/particle_meteor.png")
+        img_crystal = love.graphics.newImage("assets/crystal.png")
+        img_crystal_multilayered_l1 = love.graphics.newImage("assets/crystal_multilayered_l1.png")
+        img_crystal_multilayered_l2 = love.graphics.newImage("assets/crystal_multilayered_l2.png")
+        img_crystal_multilayered_l3 = love.graphics.newImage("assets/crystal_multilayered_l3.png")
+        img_crystal_aoe = love.graphics.newImage("assets/crystal_aoe.png")
+        img_rainforest = love.graphics.newImage("assets/rainforest.png")
+        img_magmaTouch_pool = love.graphics.newImage("assets/magmaTouch_pool.png")
+        img_ability_preview_spikedCrystals = love.graphics.newImage("assets/ability_preview_spikedCrystals.png")
+        img_ability_preview_scatterFire = love.graphics.newImage("assets/ability_preview_scatterFire.png")
+        img_ability_preview_burstFire = love.graphics.newImage("assets/ability_preview_burstFire.png")
+        img_ability_preview_rainforest = love.graphics.newImage("assets/ability_preview_rainforest.png")
+        img_ability_preview_magmaTouch = love.graphics.newImage("assets/ability_preview_magmaTouch.png")
+
+        audio_enemy_kill = love.audio.newSource("assets/audio/enemy_kill.wav", "static")
+        audio_enemy_kill_centurion = love.audio.newSource("assets/audio/enemy_kill_centurion.wav", "static")
+        audio_enemy_kill_sentry = love.audio.newSource("assets/audio/enemy_kill_sentry.wav", "static")
+        audio_crystal_explosion = love.audio.newSource("assets/audio/crystal_explode.wav", "static")
+        audio_tower_scatterFire__burstFire = love.audio.newSource("assets/audio/tower_scatterFire-burstFire.wav", "static")
+        audio_tower_damageTaken = love.audio.newSource("assets/audio/tower_damageTaken.wav", "static")
+        audio_tower_damageAbsorbed = love.audio.newSource("assets/audio/tower_damageAbsorbed.wav", "static")
+        audio_tower_collapse = love.audio.newSource("assets/audio/tower_collapse.wav", "static")
+        audio_tower_fire = love.audio.newSource("assets/audio/tower_fire.wav", "static")
+        audio_rainforest_activation = love.audio.newSource("assets/audio/rainforest_activation.wav", "static")
     end
+    --- Reloads all fonts.
     function fontReload()
         font_Vera12 = love.graphics.newFont("assets/fonts/Vera/Vera.ttf", 12)
         font_Vera16 = love.graphics.newFont("assets/fonts/Vera/Vera.ttf", 16)
         font_VeraBold16 = love.graphics.newFont("assets/fonts/Vera/VeraBd.ttf", 16)
         font_VeraBold18 = love.graphics.newFont("assets/fonts/Vera/VeraBd.ttf", 18)
         font_VeraBold24 = love.graphics.newFont("assets/fonts/Vera/VeraBd.ttf", 24)
+
         font_Afacad12 = love.graphics.newFont("assets/fonts/Afacad Flux/AfacadFlux-Regular.ttf", 12)
         font_Afacad16 = love.graphics.newFont("assets/fonts/Afacad Flux/AfacadFlux-Regular.ttf", 16)
         font_Afacad20 = love.graphics.newFont("assets/fonts/Afacad Flux/AfacadFlux-Regular.ttf", 20)
@@ -70,14 +100,14 @@ function love.load()
         font_AfacadBold28 = love.graphics.newFont("assets/fonts/Afacad Flux/AfacadFlux-Bold.ttf", 28)
         font_AfacadBold32 = love.graphics.newFont("assets/fonts/Afacad Flux/AfacadFlux-Bold.ttf", 32)
         font_AfacadBold48 = love.graphics.newFont("assets/fonts/Afacad Flux/AfacadFlux-Bold.ttf", 48)
-        font_ViraSansBold20 = love.graphics.newFont("assets/fonts/Fira Sans/FiraSans-Bold.ttf", 20)
-        font_ViraSansBold28 = love.graphics.newFont("assets/fonts/Fira Sans/FiraSans-Bold.ttf", 28)
+        font_AfacadSemiBold24 = love.graphics.newFont("assets/fonts/Afacad Flux/AfacadFlux-SemiBold.ttf", 24)
+        font_AfacadSemiBold28 = love.graphics.newFont("assets/fonts/Afacad Flux/AfacadFlux-SemiBold.ttf", 28)
     end
+    TOWER_SIZE = 56
     love.graphics.setLineStyle("rough")
     settings_particleMultiplierNames = {"None", "Minimal", "Reduced", "Normal", "Rich", "Fancy", "Fabulous", "Stormful"}
     settings_notationNames = {"kmbt", "e", "alphabet"}
     settings_particleMultipliers = {0, 0.25, 0.75, 1, 1.5, 2, 3, 5}
-    levelNames = {"0", "α", "β", "γ"}
     difficultyMultipliers = {1, 1.75, 2.5, 3.75}
     assetReload()
     fontReload()
@@ -91,6 +121,7 @@ function math.dist(x1,y1, x2,y2) return ((x2-x1)^2+(y2-y1)^2)^0.5 end
 
 processUpgradeModule = {}
 
+---Simply reloads all Battle/Science upgrade modules and upgrade unlock panels with their respective effects and costs.
 function processUpgradeModule.reload()
     upgradeModules = {
         round = {
@@ -105,7 +136,7 @@ function processUpgradeModule.reload()
             ["VIT"] = {
                 {"Health", 10, 850, 350, 60, player.tower.maxHealth, player.upgrades.round.health.cost, player.upgrades.round.health.level, "round", math.huge, "precise", nil, nil, ["precedingUpgrade"] = 0}, --Health Science Upgrade
                 {"Regeneration", 10, 920, 350, 60, player.tower.regeneration, player.upgrades.round.regeneration.cost, player.upgrades.round.regeneration.level, "round", math.huge, "precise2", nil, "/s", ["precedingUpgrade"] = 0}, --Regeneration Science Upgrade
-                {"Resistance", 10, 990, 350, 60, player.tower.resistance, player.upgrades.round.resistance.cost, player.upgrades.round.resistance.level, "round", 121, "precise2", nil, "%", ["precedingUpgrade"] = player.upgrades.unlocks.resistance}, --Resistance Science Upgrade
+                {"Resistance", 10, 990, 350, 60, player.tower.resistance, player.upgrades.round.resistance.cost, player.upgrades.round.resistance.level, "round", 101, "precise2", nil, "%", ["precedingUpgrade"] = player.upgrades.unlocks.resistance}, --Resistance Science Upgrade
                 {"Shield Cooldown", 370, 850, 350, 60, player.tower.shieldCooldown, player.upgrades.round.shieldCooldown.cost, player.upgrades.round.shieldCooldown.level, "round", 126, "precise", nil, "s", ["precedingUpgrade"] = player.upgrades.unlocks.shield}, --Shield Cooldown Science Upgrade
                 {"Shield Duration", 370, 920, 350, 60, player.tower.shieldDuration, player.upgrades.round.shieldDuration.cost, player.upgrades.round.shieldDuration.level, "round", 111, "precise2", nil, "s", ["precedingUpgrade"] = player.upgrades.unlocks.shield}, --Shield Duration Science Upgrade
                 {"Meteor Amount", 370, 990, 350, 60, player.tower.meteorAmount, player.upgrades.round.meteorAmount.cost, player.upgrades.round.meteorAmount.level, "round", 6, "brief", nil, nil, ["precedingUpgrade"] = player.upgrades.unlocks.meteor}, --Meteor Amount Science Upgrade
@@ -131,7 +162,7 @@ function processUpgradeModule.reload()
             ["VIT"] = {
                 {"Health", 245, 540, 350, 60, player.tower.maxHealth, player.upgrades.science.health.cost, player.upgrades.science.health.level, "science", math.huge, "precise", nil, nil, ["precedingUpgrade"] = 0}, --Health Science Upgrade
                 {"Regeneration", 605, 540, 350, 60, player.tower.regeneration, player.upgrades.science.regeneration.cost, player.upgrades.science.regeneration.level, "science", math.huge, "precise2", nil, "/s", ["precedingUpgrade"] = 0}, --Regeneration Science Upgrade
-                {"Resistance", 965, 540, 350, 60, player.tower.resistance, player.upgrades.science.resistance.cost, player.upgrades.science.resistance.level, "science", 121, "precise2", nil, "%", ["precedingUpgrade"] = player.upgrades.unlocks.resistance, "resistance"}, --Resistance Science Upgrade
+                {"Resistance", 965, 540, 350, 60, player.tower.resistance, player.upgrades.science.resistance.cost, player.upgrades.science.resistance.level, "science", 101, "precise2", nil, "%", ["precedingUpgrade"] = player.upgrades.unlocks.resistance, "resistance"}, --Resistance Science Upgrade
                 {"Shield Cooldown", 1325, 540, 350, 60, player.tower.shieldCooldown, player.upgrades.science.shieldCooldown.cost, player.upgrades.science.shieldCooldown.level, "science", 126, "precise", nil, "s", ["precedingUpgrade"] = player.upgrades.unlocks.shield, "shield"}, --Shield Cooldown Science Upgrade
                 {"Shield Duration", 245, 610, 350, 60, player.tower.shieldDuration, player.upgrades.science.shieldDuration.cost, player.upgrades.science.shieldDuration.level, "science", 111, "precise2", nil, "s", ["precedingUpgrade"] = player.upgrades.unlocks.shield, "shield"}, --Shield Duration Science Upgrade
                 {"Meteor Amount", 605, 610, 350, 60, player.tower.meteorAmount, player.upgrades.science.meteorAmount.cost, player.upgrades.science.meteorAmount.level, "science", 6, "brief", nil, nil, ["precedingUpgrade"] = player.upgrades.unlocks.meteor, "meteor"}, --Meteor Amount Science Upgrade
@@ -148,31 +179,34 @@ function processUpgradeModule.reload()
     }
 
     unlockPanels = {
-        ["crit"] = {"Crit Chance/Factor", 645, 310, 620, 60, player.upgrades.unlocks.crit, 3},
-        ["range"] = {"Range", 645, 310, 620, 60, player.upgrades.unlocks.range, 4},
-        ["resistance"] = {"Resistance", 645, 610, 620, 60, player.upgrades.unlocks.resistance, 5},
-        ["shield"] = {"Shield", 645, 610, 620, 60, player.upgrades.unlocks.shield, 8},
-        ["meteor"] = {"Meteor", 645, 610, 620, 60, player.upgrades.unlocks.meteor, 12},
-        ["resourceBonus"] = {"Resource Bonus", 645, 910, 620, 60, player.upgrades.unlocks.resourceBonus, 5}
+        crit = {"Crit Chance/Factor", 645, 310, 620, 60, player.upgrades.unlocks.crit, 3},
+        range = {"Range", 645, 310, 620, 60, player.upgrades.unlocks.range, 4},
+        resistance = {"Resistance", 645, 610, 620, 60, player.upgrades.unlocks.resistance, 5},
+        shield = {"Shield", 645, 610, 620, 60, player.upgrades.unlocks.shield, 8},
+        meteor = {"Meteor", 645, 610, 620, 60, player.upgrades.unlocks.meteor, 12},
+        resourceBonus = {"Resource Bonus", 645, 910, 620, 60, player.upgrades.unlocks.resourceBonus, 5}
     }
 end
 
+---Reload Battle/Science upgrade costs and values (effects) based on their level and whether you're in the Hub or in a Battle.
+---@param x number Battle upgrade level.
+---@param z number Science upgrade level.
 function reloadFormulae(x, z)
     z = z or 1
     local upgradeModuleFormulae = {
         round = {
-            ["ATK"] = {
+            ATK = {
                 {(0.2 * ((z - x + 1)^2) + 0.4 * (z - x + 1) + 0.4) / ((z - x + 1)^0.2) + 1, ((0.25 * z - 0.25)^3 + 4 + z) * player.upgrades.nexus.attackDamage.value}, --Attack Damage Round upgrade
                 {5 * ((z - x + 1)^math.log(((z - x + 1) + 10) / 10)), (math.min(0.8 + 0.04 * (z - 1), 5)) * player.upgrades.nexus.attackSpeed.value}, --Attack Speed Round upgrade
-                {((z - x) / 2)^2 + 5.75, math.min((z - 1) / 2, 50)}, --Critical Chance Round upgrade
-                {0.1 * ((z - x)^2) + (z - x) + 0.9, 1 + ((z - 1) / 20)}, --Critical Factor Round upgrade
+                {((z - x) / 2)^2 + 5.75, math.min(0.3 * (z - 1), 15)}, --Critical Chance Round upgrade
+                {0.1 * ((z - x)^2) + (z - x) + 0.9, math.min(1 + 0.05 * (z - 1), 10)}, --Critical Factor Round upgrade
                 {((z - x)^2 + 5 * (z - x)) / 6 + 2 * (z - x) + 5/3, math.min(240 + 2 * (z - 1), 400)}, --Range Round upgrade
             },
 
-            ["VIT"] = {
+            VIT = {
                 {(0.2 * ((z - x + 1)^2) + 0.4 * (z - x + 1) + 0.4) / ((z - x + 1)^(1/6)) + 1.95, ((0.3 * z - 0.3)^3.75 + 14.6 + 0.4 * z) * player.upgrades.nexus.health.value}, --Health Round upgrade
                 {(z - x + 1)^1.5 + 3, (((0.8 * z - 0.8)^2.5) / 50) * player.upgrades.nexus.regeneration.value}, --Regeneration Round upgrade
-                {(z - x) * math.sqrt(z - x) + 4, math.min(0.75 * (z - 1), 90)}, --Resistance Round upgrade
+                {(z - x) * math.sqrt(z - x) + 4, math.min(0.75 * (z - 1), 75)}, --Resistance Round upgrade
                 {(z - x)^(math.log(z - x, 10) / 1.2) + 3, math.max(120 - 0.6 * (z - 1), 45)}, --Shield Cooldown Round upgrade
                 {(z - x)^(math.log(z - x) / 2.5) + 2, math.min(0.05 * (z - 1) + 0.5, 6)}, --Shield Duration upgrade
                 {(12 * (z - x + 1))^2 + 56, math.min(z - 1, 5)}, --Meteor Amount Round upgrade
@@ -180,7 +214,7 @@ function reloadFormulae(x, z)
 
             },
 
-            ["UTL"] = {
+            UTL = {
                 {(z - x + 1) * ((z - x + 1) + 1) / 2 + 9, 6 * (z - 1)}, --Copper/wave Round upgrade
                 {((z - x + 1) + 2)^2 + 1, 3 * (z - 1)}, --Silver/wave Round upgrade
                 {(0.2 * (z - x))^2 + 2 * (z - x) + 3.96, math.min(1 + 0.02 * (z - 1), 10)}, --Copper Bonus Round upgrade
@@ -188,18 +222,18 @@ function reloadFormulae(x, z)
             }
         },
         science = {
-            ["ATK"] = {
+            ATK = {
                 {0.4 * x^2 + 2.6, ((0.25 * x - 0.25)^3 + 4 + x) * player.upgrades.nexus.attackDamage.value}, --Attack Damage Science upgrade
                 {8^((x - 1) / 20) + 3 * x + 4, (math.min(0.8 + 0.04 * (x - 1), 5)) * player.upgrades.nexus.attackSpeed.value}, --Attack Speed Science upgrade
-                {(x / 2)^2 + 4 * x + 1.75, math.min((x - 1) / 2, 50)}, --Critical Chance Science Upgrade
-                {0.2 * (x^2) + 1.8, 1 + ((x - 1) / 20)}, --Critical Factor Science upgrade
+                {(x / 2)^2 + 4 * x + 1.75, math.min(0.3 * (x - 1), 15)}, --Critical Chance Science Upgrade
+                {0.2 * (x^2) + 1.8, math.min(1 + 0.05 * (x - 1), 10)}, --Critical Factor Science upgrade
                 {(x^2 + 5 * x) / 3 + 2 * x + 4, math.min(240 + 2 * (x - 1), 400)}, --Range Science upgrade
             },
 
-            ["VIT"] = {
+            VIT = {
                 {0.6 * x^2 + 3.4, ((0.3 * x - 0.3)^3.75 + 14.6 + 0.4 * x) * player.upgrades.nexus.health.value}, --Health Science upgrade
                 {x^1.75 + 2 * x + 3, (((0.8 * x - 0.8)^2.5) / 50) * player.upgrades.nexus.regeneration.value}, --Regeneration Science upgrade
-                {x * math.sqrt(2 * x) + 3 - math.sqrt(2), math.min(0.75 * (x - 1), 90)}, --Resistance Science Upgrade
+                {x * math.sqrt(2 * x) + 3 - math.sqrt(2), math.min(0.75 * (x - 1), 75)}, --Resistance Science Upgrade
                 {x^(math.log(x, 10)) + 3, math.max(120 - 0.6 * (x - 1), 42)}, --Shield Cooldown Science upgrade
                 {(x)^(math.log(x) / 2) + 3, math.min(0.05 * (x - 1) + 0.5, 6)}, --Shield Duration upgrade
                 {(16 * x)^2 + 144, math.min(x - 1, 5)}, --Meteor Amount Science upgrade
@@ -207,7 +241,7 @@ function reloadFormulae(x, z)
 
             },
 
-            ["UTL"] = {
+            UTL = {
                 {(x^2 + x + 1) * 3 + 11, 6 * (x - 1)}, --Copper/wave Science Upgrade
                 {((8 * x) / 5)^2 + 27.44, 3 * (x - 1)}, --Silver/wave Science Upgrade
                 {(0.4 * (x - 1))^1.9 + 8, math.min(1 + 0.02 * (x - 1), 10)}, --Copper Bonus Science Upgrade
@@ -218,203 +252,231 @@ function reloadFormulae(x, z)
     return upgradeModuleFormulae
 end
 
+---Draw an upgrade module, work for both Battle and Science upgrades.
+---@param module table Upgrade module to draw.
 function processUpgradeModule.draw(module)
     local attributes = {
-        ["name"] = module[1],
-        ["ux"] = module[2],
-        ["uy"] = module[3],
-        ["width"] = module[4],
-        ["height"] = module[5],
-        ["value"] = module[6],
-        ["cost"] = module[7],
-        ["level"] = module[8],
-        ["type"] = module[9],
-        ["maxLevel"] = module[10],
-        ["precision"] = module[11],
-        ["prefix"] = module[12],
-        ["suffix"] = module[13],
-        ["precedingUpgrade"] = module["precedingUpgrade"]
+        name = module[1],
+        ux = module[2],
+        uy = module[3],
+        width = module[4],
+        height = module[5],
+        value = module[6],
+        cost = module[7],
+        level = module[8],
+        type = module[9],
+        maxLevel = module[10],
+        precision = module[11],
+        prefix = module[12],
+        suffix = module[13],
+        precedingUpgrade = module.precedingUpgrade
     }
-    if module["precedingUpgrade"] ~= false then
+    if attributes.precedingUpgrade ~= false then
         love.graphics.setColor(0, 0.1, 0.2, 1)
-        love.graphics.rectangle("fill", attributes["ux"], attributes["uy"], attributes["width"], attributes["height"])
+        love.graphics.rectangle("fill", attributes.ux, attributes.uy, attributes.width, attributes.height)
         love.graphics.setColor(0.1, 0.55, 0.98, 1)
-        love.graphics.rectangle("line", attributes["ux"], attributes["uy"], attributes["width"], attributes["height"])
+        love.graphics.rectangle("line", attributes.ux, attributes.uy, attributes.width, attributes.height)
         love.graphics.setColor(1, 1, 1, 1)
         love.graphics.setFont(font_Afacad20)
-        local buttonXY = {attributes["width"] - 90 - 3, 3}
+        local buttonXY = {attributes.width - 90 - 3, 3}
         if module == upgradeModules["round"]["ATK"][5] or module == upgradeModules["science"]["ATK"][5] then
-            love.graphics.print(string.format("%s: %s%s%s", attributes["name"] or "Upgrade Name", attributes["prefix"] or "", notations.convertToLetterNotation(attributes["value"] / 20, attributes["precision"]), attributes["suffix"] or ""), attributes["ux"] + 5, attributes["uy"] + ((attributes["height"] - buttonXY[2] * 2) / 2) - 11)
+            love.graphics.print(string.format("%s: %s%s%s", attributes.name or "Upgrade Name", attributes.prefix or "", notations.convertToLetterNotation(attributes.value / 20, attributes.precision), attributes.suffix or ""), attributes.ux + 5, attributes.uy + ((attributes.height - buttonXY[2] * 2) / 2) - 11)
         else
-            love.graphics.print(string.format("%s: %s%s%s", attributes["name"] or "Upgrade Name", attributes["prefix"] or "", notations.convertToLetterNotation(attributes["value"], attributes["precision"]), attributes["suffix"] or ""), attributes["ux"] + 5, attributes["uy"] + ((attributes["height"] - buttonXY[2] * 2) / 2) - 11)
+            love.graphics.print(string.format("%s: %s%s%s", attributes.name or "Upgrade Name", attributes.prefix or "", notations.convertToLetterNotation(attributes.value, attributes.precision), attributes.suffix or ""), attributes.ux + 5, attributes.uy + ((attributes.height - buttonXY[2] * 2) / 2) - 11)
         end
         love.graphics.setColor(0.05, 0.35, 0.45, 1)
-        if attributes["type"] == "round" and player.currencies.currentCopper >= attributes["cost"] and attributes["level"] < attributes["maxLevel"] then
+        if attributes.type == "round" and player.currencies.currentCopper >= attributes.cost and attributes.level < attributes.maxLevel then
             love.graphics.setColor(0.05, 0.35, 0.45, 1)
-        elseif attributes["type"] == "science" and player.currencies.currentSilver >= attributes["cost"] and attributes["level"] < attributes["maxLevel"] then
+        elseif attributes.type == "science" and player.currencies.currentSilver >= attributes.cost and attributes.level < attributes.maxLevel then
             love.graphics.setColor(0.05, 0.35, 0.45, 1)
         else
             love.graphics.setColor(0.03, 0.2, 0.25)
         end
-        love.graphics.rectangle("fill", attributes["ux"] + buttonXY[1], attributes["uy"] + buttonXY[2], attributes["width"] - buttonXY[1] - 3, attributes["height"] - buttonXY[2] * 2)
+        love.graphics.rectangle("fill", attributes.ux + buttonXY[1], attributes.uy + buttonXY[2], attributes.width - buttonXY[1] - 3, attributes.height - buttonXY[2] * 2)
         love.graphics.setColor(1, 1, 1, 1)
-        love.graphics.rectangle("line", attributes["ux"] + buttonXY[1], attributes["uy"] + buttonXY[2], attributes["width"] - buttonXY[1] - 3, attributes["height"] - buttonXY[2] * 2)
-        if attributes["level"] < attributes["maxLevel"] then
-            if attributes["type"] == "round" then
-                love.graphics.draw(img_currency_copper, attributes["ux"] + buttonXY[1] + 4, attributes["uy"] + (attributes["height"] - buttonXY[2] * 2 - 15) / 2, 0, 20/32)
-                if player.currencies.currentCopper >= attributes["cost"] then
+        love.graphics.rectangle("line", attributes.ux + buttonXY[1], attributes.uy + buttonXY[2], attributes.width - buttonXY[1] - 3, attributes.height - buttonXY[2] * 2)
+        if attributes.level < attributes.maxLevel then
+            if attributes.type == "round" then
+                love.graphics.draw(img_currency_copper, attributes.ux + buttonXY[1] + 4, attributes.uy + (attributes.height - buttonXY[2] * 2 - 15) / 2, 0, 20/32)
+                if player.currencies.currentCopper >= attributes.cost then
                     love.graphics.setColor(1, 1, 1, 1)
                 else
                     love.graphics.setColor(1, 0.5, 0.5, 1)
                 end
             else
-                love.graphics.draw(img_currency_silver, attributes["ux"] + buttonXY[1] + 4, attributes["uy"] + (attributes["height"] - buttonXY[2] * 2 - 15) / 2, 0, 20/32)
-                if player.currencies.currentSilver >= attributes["cost"] then
+                love.graphics.draw(img_currency_silver, attributes.ux + buttonXY[1] + 4, attributes.uy + (attributes.height - buttonXY[2] * 2 - 15) / 2, 0, 20/32)
+                if player.currencies.currentSilver >= attributes.cost then
                     love.graphics.setColor(1, 1, 1, 1)
                 else
                     love.graphics.setColor(1, 0.5, 0.5, 1)
                 end
             end
-            love.graphics.print(string.format("%s", notations.convertToLetterNotation(attributes["cost"], "brief")), attributes["ux"] + buttonXY[1] + 24, attributes["uy"] + ((attributes["height"] - buttonXY[2] * 2) / 2) - 11)
+            love.graphics.print(string.format("%s", notations.convertToLetterNotation(attributes.cost, "brief")), attributes.ux + buttonXY[1] + 24, attributes.uy + ((attributes.height - buttonXY[2] * 2) / 2) - 11)
         else
-            love.graphics.printf("Max", attributes["ux"] + buttonXY[1], attributes["uy"] + ((attributes["height"] - buttonXY[2] * 2) / 2) - 12, attributes["width"] - buttonXY[1] - 3, "center")
+            love.graphics.printf("Max", attributes.ux + buttonXY[1], attributes.uy + ((attributes.height - buttonXY[2] * 2) / 2) - 12, attributes.width - buttonXY[1] - 3, "center")
         end
     end
 end
 
-function processUpgradeModule.increment(level)
-    return level + 1
-end
-
+---Levels up an upgrade if the player has enough currency.
+---@param x number Mouse cursor position (horizontal).
+---@param y number Mouse cursor position (vertical).
+---@param module table Upgrade module to upgrade.
+---@param costFormula number Cost formula for the upgrade to follow.
+---@param valueFormula number Value formula for the upgrade to follow.
 function processUpgradeModule.upgrade(x, y, module, costFormula, valueFormula)
-    --UX and UY is the upgrade button placement, X and Y relates to mouse cursor
     local attributes = {
-        ["ux"] = module[2],
-        ["uy"] = module[3],
-        ["width"] = module[4],
-        ["height"] = module[5],
-        ["value"] = module[6],
-        ["cost"] = module[7],
-        ["level"] = module[8],
-        ["type"] = module[9],
-        ["maxLevel"] = module[10],
-        ["precedingUpgrade"] = module["precedingUpgrade"],
+        ux = module[2],
+        uy = module[3],
+        width = module[4],
+        height = module[5],
+        value = module[6],
+        cost = module[7],
+        level = module[8],
+        type = module[9],
+        maxLevel = module[10],
+        precedingUpgrade = module.precedingUpgrade
     }
     local buttonXY = {257, 3}
-    if x >= attributes["ux"] + buttonXY[1] and x <= attributes["ux"] + attributes["width"] - 3 and y >= attributes["uy"] + buttonXY[2] and y <= attributes["uy"] + attributes["height"] - 3 and attributes["level"] < attributes["maxLevel"] and attributes["precedingUpgrade"] ~= false then
-        if attributes["type"] == "round" then
-            if player.currencies.currentCopper >= math.floor(attributes["cost"]) then
-                player.currencies.currentCopper = player.currencies.currentCopper - math.floor(attributes["cost"])
-                attributes["level"] = attributes["level"] + 1
-                attributes["cost"] = math.floor(costFormula)
-                attributes["value"] = valueFormula
+    if x >= attributes.ux + buttonXY[1] and x <= attributes.ux + attributes.width - 3 and y >= attributes.uy + buttonXY[2] and y <= attributes.uy + attributes.height - 3 and attributes.level < attributes.maxLevel and attributes.precedingUpgrade ~= false then
+        if attributes.type == "round" then
+            if player.currencies.currentCopper >= math.floor(attributes.cost) then
+                player.currencies.currentCopper = player.currencies.currentCopper - math.floor(attributes.cost)
+                attributes.level = attributes.level + 1
+                attributes.cost = math.floor(costFormula)
+                attributes.value = valueFormula
                 player.stats.battle.upgradesAcquired = player.stats.battle.upgradesAcquired + 1
                 if module == upgradeModules["round"]["VIT"][1] then
                     local hpPercentage = player.tower.currentHealth / player.tower.maxHealth
-                    player.tower.currentHealth = attributes["value"] * hpPercentage
+                    player.tower.currentHealth = attributes.value * hpPercentage
                 elseif module == upgradeModules["round"]["VIT"][6] then
                     local offset = 0
                     if player.tower.meteorAmount > 0 then
                         offset = -1/2 * math.pi + meteors[1].angle
                     end
                     meteors = {}
-                    for i=1,attributes["value"] do
-                        createMeteor(((i-1) * (2 * math.pi) / attributes["value"]) - 0.5 * math.pi + offset)
+                    for i=1,attributes.value do
+                        createMeteor(((i-1) * (2 * math.pi) / attributes.value) - 0.5 * math.pi + offset)
                     end
                 end
             end
 
-        elseif attributes["type"] == "science" then
-            if player.currencies.currentSilver >= math.floor(attributes["cost"]) then
-                player.currencies.currentSilver = player.currencies.currentSilver - math.floor(attributes["cost"])
-                attributes["level"] = attributes["level"] + 1
-                attributes["cost"] = math.floor(costFormula)
-                attributes["value"] = valueFormula
+        elseif attributes.type == "science" then
+            if player.currencies.currentSilver >= math.floor(attributes.cost) then
+                player.currencies.currentSilver = player.currencies.currentSilver - math.floor(attributes.cost)
+                attributes.level = attributes.level + 1
+                attributes.cost = math.floor(costFormula)
+                attributes.value = valueFormula
                 player.stats.save.upgradesAcquired.science = player.stats.save.upgradesAcquired.science + 1
             end
         end
     end
-    return attributes["level"], attributes["cost"], attributes["value"]
+    return attributes.level, attributes.cost, attributes.value
 end
 
 processUnlockPanel = {}
 
+--- Draw an unlock panel if the succeeding upgrades are not unlocked.
+---@param unlockPanel table The unlock panel to draw.
 function processUnlockPanel.draw(unlockPanel)
-    --[[ Display an "Unlock" panel if upgrades are not unlocked ]]--
     local attributes = {
-        ["name"] = unlockPanel[1],
-        ["ux"] = unlockPanel[2],
-        ["uy"] = unlockPanel[3],
-        ["width"] = unlockPanel[4],
-        ["height"] = unlockPanel[5],
-        ["upgrade"] = unlockPanel[6],
-        ["cost"] = unlockPanel[7]
+        name = unlockPanel[1],
+        ux = unlockPanel[2],
+        uy = unlockPanel[3],
+        width = unlockPanel[4],
+        height = unlockPanel[5],
+        upgrade = unlockPanel[6],
+        cost = unlockPanel[7]
     }
     love.graphics.setColor(0, 0.1, 0.2, 1)
-    love.graphics.rectangle("fill", attributes["ux"], attributes["uy"], attributes["width"], attributes["height"])
+    love.graphics.rectangle("fill", attributes.ux, attributes.uy, attributes.width, attributes.height)
     love.graphics.setColor(0.1, 0.55, 0.98, 1)
-    love.graphics.rectangle("line", attributes["ux"], attributes["uy"], attributes["width"], attributes["height"])
+    love.graphics.rectangle("line", attributes.ux, attributes.uy, attributes.width, attributes.height)
     love.graphics.setFont(font_Afacad20)
     love.graphics.setColor(1, 1, 1, 1)
-    local buttonXY = {attributes["width"] - 90 - 3, 3}
-    love.graphics.printf("Unlock " .. attributes["name"] .. " upgrades", attributes["ux"], attributes["uy"] + ((attributes["height"] - buttonXY[2] * 2) / 2) - 11, attributes["width"] - buttonXY[2], "center")
+    local buttonXY = {attributes.width - 90 - 3, 3}
+    love.graphics.printf("Unlock " .. attributes.name .. " upgrades", attributes.ux, attributes.uy + ((attributes.height - buttonXY[2] * 2) / 2) - 11, attributes.width - buttonXY[2], "center")
     love.graphics.setColor(0.05, 0.35, 0.45, 1)
-    love.graphics.rectangle("fill", attributes["ux"] + buttonXY[1], attributes["uy"] + buttonXY[2], attributes["width"] - buttonXY[1] - 3, attributes["height"] - buttonXY[2] * 2)
+    love.graphics.rectangle("fill", attributes.ux + buttonXY[1], attributes.uy + buttonXY[2], attributes.width - buttonXY[1] - 3, attributes.height - buttonXY[2] * 2)
     love.graphics.setColor(1, 1, 1, 1)
-    love.graphics.rectangle("line", attributes["ux"] + buttonXY[1], attributes["uy"] + buttonXY[2], attributes["width"] - buttonXY[1] - 3, attributes["height"] - buttonXY[2] * 2)
-    love.graphics.draw(img_currency_electrum, attributes["ux"] + buttonXY[1] + 4, attributes["uy"] + (attributes["height"] - buttonXY[2] * 2 - 15) / 2, 0, 20/32)
-    love.graphics.print(attributes["cost"], attributes["ux"] + buttonXY[1] + 24, attributes["uy"] + ((attributes["height"] - buttonXY[2] * 2) / 2) - 11)
+    love.graphics.rectangle("line", attributes.ux + buttonXY[1], attributes.uy + buttonXY[2], attributes.width - buttonXY[1] - 3, attributes.height - buttonXY[2] * 2)
+    love.graphics.draw(img_currency_electrum, attributes.ux + buttonXY[1] + 4, attributes.uy + (attributes.height - buttonXY[2] * 2 - 15) / 2, 0, 20/32)
+    love.graphics.print(attributes.cost, attributes.ux + buttonXY[1] + 24, attributes.uy + ((attributes.height - buttonXY[2] * 2) / 2) - 11)
 end
 
+--- Check if any unlock panel is clicked. and unlock the corresponding upgrade(s) if the player has enough currency.
+---@param x number Mouse cursor position (horizontal).
+---@param y number Mouse cursor position (vertical).
+---@param unlockPanel table The unlock panel to check for clicks.
 function processUnlockPanel.clickCheck(x, y, unlockPanel)
     local attributes = {
-        ["ux"] = unlockPanel[2],
-        ["uy"] = unlockPanel[3],
-        ["width"] = unlockPanel[4],
-        ["height"] = unlockPanel[5],
-        ["upgrade"] = unlockPanel[6],
-        ["cost"] = unlockPanel[7]
+        ux = unlockPanel[2],
+        uy = unlockPanel[3],
+        width = unlockPanel[4],
+        height = unlockPanel[5],
+        upgrade = unlockPanel[6],
+        cost = unlockPanel[7]
     }
     --[[ Upgrade unlock ]]--
-    local buttonXY = {attributes["width"] - 90 - 3, 3}
-    if x >= attributes["ux"] + buttonXY[1] and x <= attributes["ux"] + attributes["width"] - 3 and y >= attributes["uy"] + buttonXY[2] and y <= attributes["uy"] + attributes["height"] - 3 and player.currencies.currentElectrum >= attributes["cost"] and not attributes["upgrade"] and unlockPanelsPressed == 0 then
-        player.currencies.currentElectrum = player.currencies.currentElectrum - attributes["cost"]
+    local buttonXY = {attributes.width - 90 - 3, 3}
+    if x >= attributes.ux + buttonXY[1] and x <= attributes.ux + attributes.width - 3 and y >= attributes.uy + buttonXY[2] and y <= attributes.uy + attributes.height - 3 and player.currencies.currentElectrum >= attributes.cost and not attributes.upgrade and unlockPanelsPressed == 0 then
+        player.currencies.currentElectrum = player.currencies.currentElectrum - attributes.cost
         unlockPanelsPressed = unlockPanelsPressed + 1
-        attributes["upgrade"] = true
+        attributes.upgrade = true
     end
-    return attributes["upgrade"]
+    return attributes.upgrade
 end
 
-function createProjectile(x, y, speed)
-    --[[ Create a projectile that aims for the closest enemy in range, if no enemy is found then don't create the projectile ]]--
-    findClosestEnemyInRange()
-    if closestEnemies[1] ~= nil then
-        projectile = {}
-        if player.upgrades.unlocks.crit then
-            local isCrit = love.math.random(0, 10000) / 100
-            if isCrit <= player.tower.critChance then
-                projectile.isCrit = true
-            else
-                projectile.isCrit = false
-            end
+--- Create a projectile flying in a specified angle.
+---@param x number Starting horizontal position of the projectile.
+---@param y number Starting vertical position of the projectile.
+---@param speed number Speed of the projectile (px/s).
+---@param scatterFire boolean Whether this projectile was triggered by Scatter Fire.
+---@param burstFire boolean Whether this projectile was triggered by Burst Fire.
+function createProjectile(x, y, speed, scatterFire, burstFire)
+    local projectilesCreated = 0
+    projectile = {}
+    projectile.x = x
+    projectile.y = y
+    projectile.speed = speed
+    if player.upgrades.unlocks.crit then
+        local isCrit = love.math.random(0, 10000) / 100
+        if isCrit <= player.tower.critChance then
+            projectile.isCrit = true
+        else
+            projectile.isCrit = false
         end
-        projectile.x = x
-        projectile.y = y
+    end
+    if scatterFire then
+        projectile.scatterFire = true
+        projectile.angle = love.math.random(0, 2 * math.pi * 10000) / 10000
+        projectilesCreated = projectilesCreated + 1
+    elseif burstFire then
+        projectile.burstFire = true
+        projectile.angle = love.math.random(0, 2 * math.pi * 10000) / 10000
+        projectilesCreated = projectilesCreated + 1
+    else
+        findClosestEnemyInRange()
         local offsets = {
-            ["basic"] = 10,
-            ["tank"] = 16,
-            ["swift"] = 8,
-            ["sentry"] = 22,
-            ["centurion"] = 30,
+            basic = 10,
+            tank = 16,
+            swift = 8,
+            sentry = 22,
+            centurion = 30,
             }
         projectile.angle = math.atan2(closestEnemies[1].y - 540 + offsets[closestEnemies[1].type], closestEnemies[1].x - 960 + offsets[closestEnemies[1].type])
-        projectile.speed = speed
-        table.insert(projectilesOnField, projectile)
+        projectilesCreated = projectilesCreated + 1
     end
-    player.stats.battle.projectilesFired = player.stats.battle.projectilesFired + 1
-    player.stats.save.projectilesFired = player.stats.save.projectilesFired + 1
+    table.insert(projectilesOnField, projectile)
+    player.stats.battle.projectilesFired = player.stats.battle.projectilesFired + projectilesCreated
+    player.stats.save.projectilesFired = player.stats.save.projectilesFired + projectilesCreated
 end
 
+--- Create an enemy and place it on the game field.
+---@param hp number The amount of health points the enemy has.
+---@param speed number The speed at which the enemy moves on the game field.
+---@param attackSpeed number How fast the enemy attacks (times per second).
+---@param attackDamage number The damage the enemy deals when attacking.
 function createEnemy(hp, speed, attackSpeed, attackDamage)
     enemy = {}
     --[[ Make the enemy of basic, Sentry or Centurion type depending on wave and whether the enemy is last in the wave ]]--
@@ -428,6 +490,9 @@ function createEnemy(hp, speed, attackSpeed, attackDamage)
             enemy.type = "basic"
         end
     end
+
+    enemy.burningTime = 0
+    enemy.burningUntilDamage = 1
 
     if gameplay.wave % 10 == 0 and gameplay.wave % 100 ~= 0 and enemyAttributes.pendingEnemies == 1 then
         enemy.type = "sentry"
@@ -491,18 +556,11 @@ function createEnemy(hp, speed, attackSpeed, attackDamage)
 
     --[[ Set offsets to be half of the enemy's width/height ]]--
     local offsets = {
-                    ["basic"] = 12,
-                    ["tank"] = 16,
-                    ["swift"] = 10,
-                    ["sentry"] = 24,
-                    ["centurion"] = 32,
-            }
-    local spawnproofRange = {
-                    ["basic"] = 400,
-                    ["tank"] = 400,
-                    ["swift"] = 400,
-                    ["sentry"] = 500,
-                    ["centurion"] = 500,
+                    basic = 12,
+                    tank = 16,
+                    swift = 10,
+                    sentry = 24,
+                    centurion = 32,
             }
 
     local attempts = 0
@@ -520,14 +578,14 @@ function createEnemy(hp, speed, attackSpeed, attackDamage)
     table.insert(enemiesOnField, enemy)
 end
 
+--- Find the closest enemy within the tower range, returns nil if no enemies are within the tower range.
 function findClosestEnemyInRange()
-    --[[ Find the closest enemy within the tower range, returns nil if no enemies are within the tower range ]]--
     local offsets = {
-        ["basic"] = 12,
-        ["tank"] = 18,
-        ["swift"] = 10,
-        ["sentry"] = 24,
-        ["centurion"] = 32,
+        basic = 12,
+        tank = 18,
+        swift = 10,
+        sentry = 24,
+        centurion = 32,
         }
 
     table.sort(enemiesOnField, function(a, b)
@@ -543,8 +601,8 @@ function findClosestEnemyInRange()
     return closestEnemies
 end
 
+--- Draw the Sentry boss bar if the Sentry is alive.
 function drawSentryBossbar()
-    --[[ Draw a boss bar if the Sentry is alive ]]--
     love.graphics.setFont(font_VeraBold16)
     love.graphics.setColor(1, 1, 1, 1)
     love.graphics.printf(string.format("Sentry - Wave %d", gameplay.wave), 810, 12, 300, "center")
@@ -558,8 +616,8 @@ function drawSentryBossbar()
     love.graphics.printf(string.format("%s/%s", notations.convertToLetterNotation(sentryCurrentHP, "precise"), notations.convertToLetterNotation(sentryMaxHP, "precise")), 810, 40, 300, "center")
 end
 
+--- Draw the Centurion boss bar if the Centurion is alive.
 function drawCenturionBossbar()
-    --[[ Draw a boss bar if the Centurion is alive ]]--
     love.graphics.setFont(font_VeraBold16)
     love.graphics.setColor(1, 1, 1, 1)
     love.graphics.printf(string.format("Centurion - Wave %d", gameplay.wave), 810, 12, 300, "center")
@@ -573,13 +631,18 @@ function drawCenturionBossbar()
     love.graphics.printf(string.format("%s/%s", notations.convertToLetterNotation(centurionCurrentHP, "precise"), notations.convertToLetterNotation(centurionMaxHP, "precise")), 810, 40, 300, "center")
 end
 
+--- Create a Meteor.
+---@param angle number Angle which the Meteor spawns at.
 function createMeteor(angle)
-    --[[ Create a meteor at initial coordinates ]]--
     meteor = {}
     meteor.angle = angle
+    meteor.particleFreq = 0.065
+    meteor.timer_particle = 0
     table.insert(meteors, meteor)
 end
 
+--- Skip waves and give the player some resources based on how many waves were skipped and the bonuses per wave
+---@param wavesSkipped number The amount of waves being skipped.
 function skipWave(wavesSkipped)
     gameplay.wave = gameplay.wave + wavesSkipped
 
@@ -613,21 +676,55 @@ function skipWave(wavesSkipped)
     timers.waveSkip = 0
 end
 
-function killEnemy(x, y, type, copperDrop, silverDrop, goldDrop, particles)
+--- Kill the specified enemy by adding its drops to the player's resources, removing the enemy from the game field and creating some kill particles.
+---@param s table The enemy to be killed.
+function killEnemy(s)
+    local ke = enemiesOnField[s]
     local offsets = {
-        ["basic"] = 10,
-        ["tank"] = 16,
-        ["swift"] = 8,
-        ["sentry"] = 22,
-        ["centurion"] = 30,
+        basic = 10,
+        tank = 16,
+        swift = 8,
+        sentry = 22,
+        centurion = 30,
         }
-    for i=1,particles or 0 do
-        createKillParticle(x + offsets[type], y + offsets[type], type)
+    local copper = {
+        basic = 1,
+        tank = 4,
+        swift = 4,
+        sentry = 25,
+        centurion = 80
+        }
+
+    local silver = {
+        basic = 0,
+        tank = 1,
+        swift = 1,
+        sentry = 10,
+        centurion = 50
+        }
+        
+    local gold = {
+        basic = 0,
+        tank = 0,
+        swift = 0,
+        sentry = 1,
+        centurion = 15
+        }
+
+    local particleAmount = {
+        basic = 8,
+        tank = 12,
+        swift = 12,
+        sentry = 24,
+        centurion = 32
+        }
+    for i=1,particleAmount[ke.type] * settings_particleMultipliers[player.settings.particleMultiplier] or 0 do
+        createKillParticle(ke.x + offsets[ke.type], ke.y + offsets[ke.type], ke.type)
     end
 
     local oldCopperAmount = player.currencies.currentCopper
-    misc.copperBuffer = misc.copperBuffer + (player.tower.copperBonus % 1) * copperDrop
-    player.currencies.currentCopper = player.currencies.currentCopper + math.floor(player.tower.copperBonus) * copperDrop
+    misc.copperBuffer = misc.copperBuffer + (player.tower.copperBonus % 1) * copper[ke.type]
+    player.currencies.currentCopper = player.currencies.currentCopper + math.floor(player.tower.copperBonus) * copper[ke.type]
     if misc.copperBuffer >= 1 then
         player.currencies.currentCopper = player.currencies.currentCopper + math.floor(misc.copperBuffer)
         misc.copperBuffer = misc.copperBuffer - math.floor(misc.copperBuffer)
@@ -637,8 +734,8 @@ function killEnemy(x, y, type, copperDrop, silverDrop, goldDrop, particles)
     player.stats.battle.copperEarned = player.stats.battle.copperEarned + copperEarned
 
     local oldSilverAmount = player.currencies.currentSilver
-    misc.silverBuffer = misc.silverBuffer + (player.tower.silverBonus % 1) * silverDrop
-    player.currencies.currentSilver = player.currencies.currentSilver + math.floor(player.tower.silverBonus) * silverDrop
+    misc.silverBuffer = misc.silverBuffer + (player.tower.silverBonus % 1) * silver[ke.type]
+    player.currencies.currentSilver = player.currencies.currentSilver + math.floor(player.tower.silverBonus) * silver[ke.type]
     if misc.silverBuffer >= 1 then
         player.currencies.currentSilver = player.currencies.currentSilver + math.floor(misc.silverBuffer)
         misc.silverBuffer = misc.silverBuffer - math.floor(misc.silverBuffer)
@@ -647,18 +744,52 @@ function killEnemy(x, y, type, copperDrop, silverDrop, goldDrop, particles)
     local silverEarned = newSilverAmount - oldSilverAmount
     player.stats.battle.silverEarned = player.stats.battle.silverEarned + silverEarned
 
-    player.currencies.currentGold = player.currencies.currentGold + goldDrop
-    player.stats.battle.goldEarned = player.stats.battle.goldEarned + goldDrop
-    if type == "sentry" then
+    player.currencies.currentGold = player.currencies.currentGold + gold[ke.type]
+    player.stats.battle.goldEarned = player.stats.battle.goldEarned + gold[ke.type]
+    if ke.type == "sentry" then
         sentryAlive = false
-    elseif type == "centurion" then
+        local s = audio_enemy_kill_sentry:clone()
+        s:setVolume(1 * player.settings.volume^2)
+        s:play()
+    elseif ke.type == "centurion" then
         centurionAlive = false
+        local c = audio_enemy_kill_centurion:clone()
+        c:setVolume(1 * player.settings.volume^2)
+        c:play()
+    else
+        local m = audio_enemy_kill:clone()
+        m:setVolume(1 * player.settings.volume^2)
+        m:play()
     end
     player.stats.wave.enemiesKilled = player.stats.wave.enemiesKilled + 1
     player.stats.battle.enemiesKilled = player.stats.battle.enemiesKilled + 1
     player.stats.save.enemiesKilled = player.stats.save.enemiesKilled + 1
+    table.remove(enemiesOnField, s)
 end
 
+--- Damage an enemy and create a Hit text particle.
+---@param s table The enemy to be damaged.
+---@param damage number Amount of damage to deal to the enemy.
+---@param crit boolean Whether this hit is a Critical one or not.
+function damageEnemy(s, damage, crit)
+    local de = enemiesOnField[s]
+    createHitTextParticle(de.x, de.y, notations.convertToLetterNotation(math.min(de.currentHP, damage), "precise"), de.type, crit)
+    player.stats.battle.damageDealt = player.stats.battle.damageDealt + math.min(damage, de.currentHP)
+    player.stats.save.damageDealt = player.stats.save.damageDealt + math.min(damage, de.currentHP)
+    de.currentHP = de.currentHP - damage
+    if de.type == "sentry" then
+        sentryCurrentHP = de.currentHP
+    elseif type == "centurion" then
+        centurionCurrentHP = de.currentHP
+    end
+    if de.currentHP <= 0 then
+        killEnemy(s, de.x, de.y, de.type)
+    end
+end
+
+--- Update enemy spawn rate, spawn cap, attack damage, spawn chances, health and speed, together with the wave cooldown.
+---@param difficulty number The difficulty which the enemy stats update to.
+---@param wave number The wave which the enemy stats update to.
 function updateEnemyStats(difficulty, wave)
     local waveCooldowns = {6, 5, 4, 3.5}
     enemyAttributes = {}
@@ -722,30 +853,68 @@ function love.draw()
             love.graphics.draw(img_background_stellar, 0, 0)
         elseif background == "eclipse" then
             love.graphics.draw(img_background_eclipse, 0, 0)
+        elseif background == "nova" then
+            love.graphics.draw(img_background_nova, 0, 0)
         end
         love.graphics.setLineWidth(2)
         love.graphics.setLineStyle("smooth")
         love.graphics.setColor(1, 1, 1, 0.5)
         love.graphics.ellipse("line", 960, 540, player.tower.range, player.tower.range)
-        --[[love.graphics.setColor(1, 1, 0, 0.4)
-        love.graphics.setLineWidth(2)
-        love.graphics.ellipse("line", 960, 540, 96, 96)]]--
         love.graphics.setColor(1, 1, 1, 1)
+        if rainforestActive then
+            love.graphics.draw(img_rainforest, 960 - player.tower.range + 1, 540 - player.tower.range + 1, 0, (player.tower.range * 2 + 36) / 1080)
+        end
+        love.graphics.setColor(1, 1, 0, 0.4)
+        love.graphics.setLineWidth(1.5)
+        love.graphics.ellipse("line", 960, 540, TOWER_SIZE, TOWER_SIZE)
         love.graphics.setLineStyle("rough")
         love.graphics.setFont(font_Vera16)
-        towers.eclipse2(false)
+        towers.eclipse2()
+        for i,v in ipairs(spikedCrystals) do
+            if v.state == "alive" then
+                love.graphics.draw(img_crystal_multilayered_l1, v.x + 11, v.y + 11, v.timer_lifespan / 5.75, 1, 1, 11, 11)
+                love.graphics.draw(img_crystal_multilayered_l2, v.x + 11, v.y + 11, v.timer_lifespan / 5.75, 1, 1, 11, 11)
+                love.graphics.draw(img_crystal_multilayered_l3, v.x + 11, v.y + 11, v.timer_lifespan / 5.75, 1, 1, 11, 11)
+            else
+                local cs = math.min(1 + v.timer_explosion * 7.5, 2)
+                love.graphics.setColor(1, 1, 1, 1 - v.timer_explosion / 0.2)
+                love.graphics.draw(img_crystal_aoe, v.x + 11 - 16 * cs, v.y + 11 - 16 * cs, 0, cs / 2, cs / 2)
+                love.graphics.setColor(1, 1, 1, 1)
+                love.graphics.setColor(1, 1, 1, 1 - v.timer_explosion / v.timer_explosionDuration)
+                love.graphics.draw(img_crystal_multilayered_l1, v.x + 11, v.y + 11, v.timer_explosion * 8, cs, 1, 11, 11)
+                love.graphics.draw(img_crystal_multilayered_l2, v.x + 11, v.y + 11, v.timer_explosion * 12, cs, 1, 11, 11)
+                love.graphics.draw(img_crystal_multilayered_l3, v.x + 11, v.y + 11, v.timer_explosion * 18, cs, 1, 11, 11)
+                love.graphics.setColor(1, 1, 1, 1)
+            end
+        end
+        for i,v in ipairs(magmaPools) do
+            love.graphics.draw(img_magmaTouch_pool, v.x, v.y)
+        end
+        particles.render.burn()
+        love.graphics.setColor(1, 1, 1, 1)
         --[[ Different enemy types have different appearances ingame ]]--
         for i,v in ipairs(enemiesOnField) do
-            if v.type == "basic" then
-                love.graphics.draw(img_enemy_basic, v.x, v.y)
-            elseif v.type == "tank" then
-                love.graphics.draw(img_enemy_tank, v.x, v.y)
-            elseif v.type == "swift" then
-                love.graphics.draw(img_enemy_swift, v.x, v.y)
-            elseif v.type == "sentry" then
-                love.graphics.draw(img_enemy_sentry, v.x, v.y)
-            elseif v.type == "centurion" then
-                love.graphics.draw(img_enemy_centurion, v.x, v.y)
+            local x = math.floor(v.x * 4) / 4
+            local y = math.floor(v.y * 4) / 4
+            local enemyAssets = {
+                basic = img_enemy_basic,
+                tank = img_enemy_tank,
+                swift = img_enemy_swift,
+                sentry = img_enemy_sentry,
+                centurion = img_enemy_centurion,
+            }
+            love.graphics.draw(enemyAssets[v.type], x, y)
+            local offsets = {
+                basic = 10,
+                tank = 16,
+                swift = 8,
+                sentry = 22,
+                centurion = 30,
+                }
+            if rainforestActive and math.dist(v.x + offsets[v.type] + 2, v.y + offsets[v.type] + 2, 960, 540) <= player.tower.range then
+                love.graphics.setColor(0.4, 0.65, 0.1, 0.5)
+                love.graphics.ellipse("line", x + offsets[v.type] + 2, y + offsets[v.type] + 2, 14, 14)
+                love.graphics.setColor(1, 1, 1, 1)
             end
         end
         --[[ Print currency balances for Copper, Silver and Gold ]]--
@@ -786,6 +955,9 @@ function love.draw()
         love.graphics.draw(img_button_pause, 1870, 10)
         love.graphics.setLineWidth(2)
         love.graphics.rectangle("line", 1870, 10, 40, 40, 2, 2)
+        if #collapseParticles == 0 and player.tower.currentHealth <= 0 then
+            menu_display_gameOver()
+        end
         if player.menu.gameplayInfo then
             love.graphics.setLineWidth(1)
             love.graphics.setColor(0, 0, 0, 0.5)
@@ -831,6 +1003,7 @@ function love.draw()
         end
         if player.menu.battleStats then
             love.graphics.setLineWidth(1)
+            love.graphics.setLineStyle("smooth")
             love.graphics.setColor(0, 0, 0, 0.5)
             love.graphics.rectangle("fill", 0, 0, 1920, 1080)
             love.graphics.setColor(0.2, 0, 0.35, 1)
@@ -942,8 +1115,17 @@ function love.draw()
                     love.graphics.draw(img_button_arrowRight, 1076, 572)
                 end
 
+                love.graphics.setFont(font_AfacadBold24)
+                love.graphics.printf("Volume", 710, 620, 500, "center")
+                love.graphics.setFont(font_Afacad20)
+                love.graphics.printf(math.floor(player.settings.volume * 100) .. "%", 710, 650, 500, "center")
+                love.graphics.setColor(1, 0, 0, 1)
+                love.graphics.rectangle("fill", 835, 680, 250, 12)
+                love.graphics.setColor(0, 1, 0, 1)
+                love.graphics.rectangle("fill", 835, 680, 250 * (math.floor(player.settings.volume * 100) / 100), 12)
+
                 love.graphics.setColor(0.1, 0.15, 0.5, 1)
-                love.graphics.rectangle("fill", 910, 780, 100, 40)
+                love.graphics.rectangle("fill", 910, 780, 100, 40, 2, 2)
                 love.graphics.setColor(0.3, 0.75, 0.85, 1)
                 love.graphics.setLineWidth(2)
                 love.graphics.rectangle("line", 910, 780, 100, 40, 2, 2)
@@ -952,9 +1134,6 @@ function love.draw()
                 love.graphics.printf("Back", 910, 782, 100, "center")
             end
         end
-        if #collapseParticles == 0 and player.tower.currentHealth <= 0 then
-            menu_display_gameOver()
-        end
     elseif player.location == "hub" then
         inHub_visual()
         if hubSection == "Science" then
@@ -962,6 +1141,7 @@ function love.draw()
         end
         if player.menu.saveStats then
             love.graphics.setLineWidth(1)
+            love.graphics.setLineStyle("smooth")
             love.graphics.setColor(0, 0, 0, 0.5)
             love.graphics.rectangle("fill", 0, 0, 1920, 1080)
             love.graphics.setColor(0.2, 0, 0.35, 1)
@@ -982,6 +1162,8 @@ function love.draw()
         end
     end
     love.graphics.setColor(1, 1, 1, 1)
+    love.graphics.setFont(font_Afacad16)
+    love.graphics.printf("v" .. gameVersionSemantic .. " - " .. love.timer.getFPS() .. "fps", 1743, 0, 120, "right")
 end
 
 function love.update(dt)
@@ -992,16 +1174,39 @@ function love.update(dt)
                 towers.eclipse2(true, dt)
             end
             if timers.projectile < 1 / player.tower.attackSpeed then
-                timers.projectile = timers.projectile + dt * gameSpeed
+                timers.projectile = timers.projectile + dt * gameplay.gameSpeed
             else
                 if closestEnemies[1] ~= nil then
                     timers.projectile = 0
-                    createProjectile(957, 537, 500)
+                    local scatterFireChance = love.math.random(0, 10000) / 100
+                    local burstFireChance = love.math.random(0, 10000) / 100
+                    createProjectile(957, 537, 500, false, false)
+                    local tf = audio_tower_fire:clone()
+                    tf:setVolume(1 * player.settings.volume^2)
+                    tf:play()
+                    if scatterFireChance <= levelingInfo[2].frequency[player.abilities.scatterFire.level + 1] and player.abilities.scatterFire.unlocked and player.abilities.scatterFire.equipped then
+                        local sx = love.math.random(50, 1870)
+                        local sy = love.math.random(50, 1030)
+                        local sf = audio_tower_scatterFire__burstFire:clone()
+                        sf:setVolume(1 * player.settings.volume^2)
+                        sf:play()
+                        for i=1,levelingInfo[2].quantity[player.abilities.scatterFire.level + 1] do
+                            createProjectile(sx, sy, 500, true, false)
+                        end
+                    end
+                    if burstFireChance <= levelingInfo[3].frequency[player.abilities.burstFire.level + 1] and player.abilities.burstFire.unlocked and player.abilities.burstFire.equipped then
+                        local bf = audio_tower_scatterFire__burstFire:clone()
+                        bf:setVolume(1 * player.settings.volume^2)
+                        bf:play()
+                        for i=1,levelingInfo[3].quantity[player.abilities.burstFire.level + 1] do
+                            createProjectile(957, 537, 500, false, true)
+                        end
+                    end
                 end
             end
             --[[ Spawn an enemy once the enemy spawn timer goes off ]]--
             if timers.enemy < 1 / enemyAttributes.spawnRate then
-                timers.enemy = timers.enemy + dt * gameSpeed
+                timers.enemy = timers.enemy + dt * gameplay.gameSpeed
             else
                 timers.enemy = 0
                 if enemyAttributes.pendingEnemies > 0 then
@@ -1013,74 +1218,27 @@ function love.update(dt)
         end
         --[[ Move projectiles depending on their angle ]]--
         for i,v in ipairs(projectilesOnField) do
-            v.x = v.x + math.cos(v.angle) * v.speed * dt * gameSpeed
-            v.y = v.y + math.sin(v.angle) * v.speed * dt * gameSpeed
-            if math.dist(960, 540, v.x + 3, v.y + 3) > player.tower.range then
+            v.x = v.x + math.cos(v.angle) * v.speed * dt * gameplay.gameSpeed
+            v.y = v.y + math.sin(v.angle) * v.speed * dt * gameplay.gameSpeed
+            if math.dist(960, 540, v.x + 3, v.y + 3) > player.tower.range and not v.scatterFire then
+                table.remove(projectilesOnField, i)
+            elseif v.x + 3 < -10 and v.x + 3 > 1930 and v.y + 3 < -10 and v.y + 3 > 1090 and v.scatterFire then
                 table.remove(projectilesOnField, i)
             end
             for j,w in ipairs(enemiesOnField) do
                 local size = {
-                    ["basic"] = 22,
-                    ["tank"] = 34,
-                    ["swift"] = 16,
-                    ["sentry"] = 46,
-                    ["centurion"] = 62,
+                    basic = 22,
+                    tank = 34,
+                    swift = 16,
+                    sentry = 46,
+                    centurion = 62,
                     }
                 if v.x > w.x + 2 and v.x < w.x + size[w.type] and v.y > w.y + 2 and v.y < w.y + size[w.type] then
-                    --[[ Detect collision of any projectile with any enemy, remove a part of enemy health if true, add 1 Copper if enemy is killed ]]--
                     table.remove(projectilesOnField, i)
                     --[[ If the projectile deals crit damage, deal more damage based on Critical Factor ]]--
-
                     local critFactor = v.isCrit and player.tower.critFactor or 1
                     local damage = player.tower.attackDamage * critFactor
-                    createHitTextParticle(w.x, w.y, notations.convertToLetterNotation(math.min(w.currentHP, damage), "precise"), w.type, v.isCrit)
-                    player.stats.battle.damageDealt = player.stats.battle.damageDealt + math.min(damage, w.currentHP)
-                    player.stats.save.damageDealt = player.stats.save.damageDealt + math.min(damage, w.currentHP)
-                    w.currentHP = w.currentHP - damage
-
-                    if w.type == "sentry" then
-                        sentryCurrentHP = w.currentHP
-                    elseif w.type == "centurion" then
-                        centurionCurrentHP = w.currentHP
-                    end
-
-                    --[[ If enemy health is less or equal to 0, kill it by removing it from the field and adding its drop to player's resources ]]--
-                    if w.currentHP <= 0 then
-                        local copper = {
-                            ["basic"] = 1,
-                            ["tank"] = 4,
-                            ["swift"] = 4,
-                            ["sentry"] = 25,
-                            ["centurion"] = 80
-                            }
-
-                        local silver = {
-                            ["basic"] = 0,
-                            ["tank"] = 1,
-                            ["swift"] = 1,
-                            ["sentry"] = 10,
-                            ["centurion"] = 50
-                            }
-                            
-                        local gold = {
-                            ["basic"] = 0,
-                            ["tank"] = 0,
-                            ["swift"] = 0,
-                            ["sentry"] = 1,
-                            ["centurion"] = 15
-                            }
-
-                        local particleAmount = {
-                            ["basic"] = 8,
-                            ["tank"] = 12,
-                            ["swift"] = 12,
-                            ["sentry"] = 24,
-                            ["centurion"] = 32
-                            }
-
-                        killEnemy(w.x, w.y, w.type, copper[w.type], silver[w.type] * difficultyMultipliers[player.difficulty.difficulty], gold[w.type], math.floor(particleAmount[w.type] * settings_particleMultipliers[player.settings.particleMultiplier]))
-                        table.remove(enemiesOnField, j)
-                    end
+                    damageEnemy(j, damage, v.isCrit)
                     closestEnemies = {}
                     break
                 end
@@ -1089,37 +1247,51 @@ function love.update(dt)
 
         for i,v in ipairs(enemiesOnField) do
             local offsets = {
-                ["basic"] = 10,
-                ["tank"] = 16,
-                ["swift"] = 8,
-                ["sentry"] = 22,
-                ["centurion"] = 30,
+                basic = 10,
+                tank = 16,
+                swift = 8,
+                sentry = 22,
+                centurion = 30,
                 }
 
             local stopDistance = {
-                ["basic"] = 42,
-                ["tank"] = 48,
-                ["swift"] = 38,
-                ["sentry"] = 58,
-                ["centurion"] = 67
+                basic = TOWER_SIZE + 10,
+                tank = TOWER_SIZE + 16,
+                swift = TOWER_SIZE + 8,
+                sentry = TOWER_SIZE + 22,
+                centurion = TOWER_SIZE + 30
                 }
-            if v.timer_untilAttack < 1 / v.attackSpeed then
-                v.timer_untilAttack = v.timer_untilAttack + dt * gameSpeed
+            local rainforestMultiplier = rainforestActive and 1 - levelingInfo[4].density[player.abilities.rainforest.level + 1] / 100 or 1
+            if v.burningTime > 0 and gameplay.gameSpeed > 0 then
+                for i=1,love.math.random(-4, 1) * settings_particleMultipliers[player.settings.particleMultiplier] do
+                    createBurnParticle(v.x + 2, v.y + 2)
+                end
+            end
+            if v.timer_untilAttack < (1 / v.attackSpeed) / rainforestMultiplier then
+                v.timer_untilAttack = v.timer_untilAttack + dt * gameplay.gameSpeed
             else
-                --[[ If a Basic is close enough, start attacking the tower ]]--
+                --[[ If an enemy is close enough, start attacking the tower ]]--
                 if math.dist(v.x + offsets[v.type] + 2, v.y + offsets[v.type] + 2, 960, 540) < stopDistance[v.type] + 1 and player.tower.currentHealth > 0 then
                     v.timer_untilAttack = 0
                     local damageReduction = not v.resistanceIgnore and 1 - player.tower.resistance / 100 or 1
+                    local da = audio_tower_damageAbsorbed:clone()
+                    local dk = audio_tower_damageTaken:clone()
                     if not v.shieldIgnore then
                         if not shieldActive then
                             player.tower.currentHealth = player.tower.currentHealth - v.attackDamage * damageReduction
                             player.stats.battle.damageTaken = player.stats.battle.damageTaken + v.attackDamage * damageReduction
+                            dk:setVolume(1 * player.settings.volume^2)
+                            dk:play()
                         else
                             player.stats.battle.shieldDamageAbsorb = player.stats.battle.shieldDamageAbsorb + v.attackDamage * damageReduction
+                            da:setVolume(1 * player.settings.volume^2)
+                            da:play()
                         end
                     else
                         player.tower.currentHealth = player.tower.currentHealth - v.attackDamage * damageReduction
                         player.stats.battle.damageTaken = player.stats.battle.damageTaken + v.attackDamage * damageReduction
+                        dk:setVolume(1 * player.settings.volume^2)
+                        dk:play()
                     end
                 end
             end
@@ -1127,70 +1299,123 @@ function love.update(dt)
 
             if math.dist(v.x + offsets[v.type] + 2, v.y + offsets[v.type] + 2, 960, 540) > stopDistance[v.type] then
                 local hyperloopMultiplier = math.dist(v.x + offsets[v.type] + 2, v.y + offsets[v.type] + 2, 960, 540) > player.tower.range and 1 + player.modifiers.hyperloop.value / 100 or 1
+                local rainforestMultiplier = (rainforestActive and math.dist(v.x + offsets[v.type] + 2, v.y + offsets[v.type] + 2, 960, 540) <= player.tower.range) and 1 - levelingInfo[4].density[player.abilities.rainforest.level + 1] / 100 or 1
                 v.angle = math.atan2(540 - v.y - 2 - offsets[v.type], 960 - v.x - 2 - offsets[v.type])
-                v.x = v.x + math.cos(v.angle) * v.speed * dt * gameSpeed * hyperloopMultiplier
-                v.y = v.y + math.sin(v.angle) * v.speed * dt * gameSpeed * hyperloopMultiplier
+                v.x = v.x + math.cos(v.angle) * v.speed * dt * gameplay.gameSpeed * hyperloopMultiplier * rainforestMultiplier
+                v.y = v.y + math.sin(v.angle) * v.speed * dt * gameplay.gameSpeed * hyperloopMultiplier * rainforestMultiplier
             end
             --[[ Regenerate 1% of Centurion health per second ]]
             if v.type == "centurion" and player.tower.currentHealth > 0 then
                 if v.currentHP < v.maxHP then
-                    v.currentHP = math.min(v.currentHP + v.maxHP * (0.01 * dt * gameSpeed), v.maxHP)
+                    v.currentHP = math.min(v.currentHP + v.maxHP * (0.01 * dt * gameplay.gameSpeed), v.maxHP)
                     centurionCurrentHP = v.currentHP
+                end
+            end
+            if player.abilities.magmaTouch.unlocked and player.abilities.magmaTouch.equipped then
+                if v.burningTime > 0 then
+                    v.burningTime = v.burningTime - dt * gameplay.gameSpeed
+                    v.burningUntilDamage = v.burningUntilDamage - dt * gameplay.gameSpeed
+                end
+                if v.burningUntilDamage < 0 then
+                    damageEnemy(i, player.tower.attackDamage * (levelingInfo[5].damage[player.abilities.magmaTouch.level + 1] / 100))
+                    v.burningUntilDamage = 1
                 end
             end
         end
 
         for i,v in ipairs(meteors) do
             --[[ Orbit Meteors around the tower ]]--
-            v.angle = v.angle + (player.tower.meteorRPM * (2 * math.pi)) / 60 * dt * gameSpeed
+            local potentialParticlePos = {
+                {960 + (player.tower.range + 40 + love.math.random(-14, 14)) * math.cos(v.angle - 0.024 * math.pi), 540 + (player.tower.range + 40 + love.math.random(-14, 14)) * math.sin(v.angle - 0.024 * math.pi)},
+                {960 + (player.tower.range + 40 + love.math.random(-14, 14)) * math.cos(v.angle - 0.018 * math.pi), 540 + (player.tower.range + 40 + love.math.random(-14, 14)) * math.sin(v.angle - 0.018 * math.pi)}
+            }
+            v.angle = v.angle + (player.tower.meteorRPM * (2 * math.pi)) / 60 * dt * gameplay.gameSpeed
             v.x = 960 + (player.tower.range + 40) * math.cos(v.angle)
             v.y = 540 + (player.tower.range + 40) * math.sin(v.angle)
+            if v.timer_particle < v.particleFreq then
+                v.timer_particle = v.timer_particle + dt * gameplay.gameSpeed
+            else
+                for i=1,love.math.random(1, 2) * settings_particleMultipliers[player.settings.particleMultiplier] do
+                    createMeteorParticle(love.math.random(potentialParticlePos[1][1], potentialParticlePos[2][1]), love.math.random(potentialParticlePos[1][2], potentialParticlePos[2][2]))
+                end
+                v.timer_particle = 0
+            end
             local size = {
-                ["basic"] = 22,
-                ["tank"] = 34,
-                ["swift"] = 16,
-                ["sentry"] = 46,
-                ["centurion"] = 62,
+                basic = 22,
+                tank = 34,
+                swift = 16,
+                sentry = 46,
+                centurion = 62,
                 }
             for j,w in ipairs(enemiesOnField) do
                 if v.x + 13 > w.x + 2 and v.x - 13 < w.x + size[w.type] and v.y + 13 > w.y + 2 and v.y - 13 < w.y + size[w.type] and player.tower.currentHealth > 0 then
                     if w.type == "basic" or w.type == "tank" or w.type == "swift" then
-                        local copper = {
-                            ["basic"] = 1,
-                            ["tank"] = 2,
-                            ["swift"] = 2,
-                            ["sentry"] = 25,
-                            ["centurion"] = 80
-                            }
-
-                        local silver = {
-                            ["basic"] = 0,
-                            ["tank"] = 1,
-                            ["swift"] = 1,
-                            ["sentry"] = 10,
-                            ["centurion"] = 50
-                            }
-                            
-                        local gold = {
-                            ["basic"] = 0,
-                            ["tank"] = 0,
-                            ["swift"] = 0,
-                            ["sentry"] = 1,
-                            ["centurion"] = 15
-                            }
-
-                        local particleAmount = {
-                            ["basic"] = 8,
-                            ["tank"] = 12,
-                            ["swift"] = 12,
-                            ["sentry"] = 24,
-                            ["centurion"] = 32
-                            }
-
-                        killEnemy(w.x, w.y, w.type, copper[w.type], silver[w.type] * difficultyMultipliers[gameplay.difficulty], gold[w.type], math.floor(particleAmount[w.type] * settings_particleMultipliers[player.settings.particleMultiplier]))
-                        table.remove(enemiesOnField, j)
+                        killEnemy(j)
                         closestEnemies[1] = nil
                     end
+                end
+            end
+        end
+
+        for i,v in ipairs(spikedCrystals) do
+            local size = {
+                basic = 22,
+                tank = 34,
+                swift = 16,
+                sentry = 46,
+                centurion = 62,
+            }
+
+            local offsets = {
+                basic = 10,
+                tank = 16,
+                swift = 8,
+                sentry = 22,
+                centurion = 30,
+            }
+            v.timer_lifespan = v.timer_lifespan + dt * gameplay.gameSpeed
+            if v.state == "exploding" then
+                audio_crystal_explosion:setVolume(1 * player.settings.volume^2)
+                audio_crystal_explosion:play()
+                if v.timer_explosion < v.timer_explosionDuration then
+                    v.timer_explosion = v.timer_explosion + dt * gameplay.gameSpeed
+                else
+                    for i=1,8*settings_particleMultipliers[player.settings.particleMultiplier] do
+                        createCrystalExplosionParticle(v.x + 11, v.y + 11)
+                    end
+                    table.remove(spikedCrystals, i)
+                end
+            end
+            for j,w in ipairs(enemiesOnField) do
+                if v.x + 20 > w.x + 2 and v.x + 2 < w.x + size[w.type] and v.y + 20 > w.y + 2 and v.y + 2 < w.y + size[w.type] and player.tower.currentHealth > 0 and v.state == "alive" and math.dist(v.x + 11, v.y + 11, w.x + offsets[w.type], w.y + offsets[w.type]) < 64 then
+                    local damage = player.tower.attackDamage * (levelingInfo[1].damage[player.abilities.spikedCrystals.level + 1] / 100)
+                    damageEnemy(j, damage)
+                    v.state = "exploding"
+                end
+            end
+        end
+
+        for i,v in ipairs(magmaPools) do
+            local size = {
+                basic = 22,
+                tank = 34,
+                swift = 16,
+                sentry = 46,
+                centurion = 62,
+            }
+
+            local offsets = {
+                basic = 10,
+                tank = 16,
+                swift = 8,
+                sentry = 22,
+                centurion = 30,
+            }
+            for j,w in ipairs(enemiesOnField) do
+                if math.dist(v.x + 18, v.y + 18, w.x + size[w.type] / 2, w.y + size[w.type] / 2) < 16 + size[w.type] / 2 then
+                    table.remove(magmaPools, i)
+                    damageEnemy(j, player.tower.attackDamage * (levelingInfo[5].damage[player.abilities.magmaTouch.level + 1] / 100))
+                    w.burningTime = 4.025
                 end
             end
         end
@@ -1199,7 +1424,7 @@ function love.update(dt)
         if player.tower.currentHealth > 0 then
             if #enemiesOnField == 0 and enemyAttributes.pendingEnemies <= 0 then
                 if timers.nextWave < gameplay.waveCooldown then
-                    timers.nextWave = timers.nextWave + dt * gameSpeed
+                    timers.nextWave = timers.nextWave + dt * gameplay.gameSpeed
                 else
                     wavesSkipped = 0
                     timers.nextWave = 0
@@ -1245,7 +1470,7 @@ function love.update(dt)
 
         --[[ Regenerate health every frame, cap at max health if regeneration overflows ]]--
         if player.tower.currentHealth < player.tower.maxHealth and player.tower.currentHealth > 0 then
-            player.tower.currentHealth = math.min(player.tower.currentHealth + player.tower.regeneration * dt * gameSpeed, player.tower.maxHealth)
+            player.tower.currentHealth = math.min(player.tower.currentHealth + player.tower.regeneration * dt * gameplay.gameSpeed, player.tower.maxHealth)
         end
 
         if player.settings.waveSkipMessages and waveSkipMessage then
@@ -1261,14 +1486,14 @@ function love.update(dt)
             --[[ Count time until Shield activation, activate Shield for a specified time when cooldown ends (only if Shield upgrades are unlocked) ]]--
             if not shieldActive then
                 if timers.shieldActivation < player.tower.shieldCooldown then
-                    timers.shieldActivation = timers.shieldActivation + dt * gameSpeed
+                    timers.shieldActivation = timers.shieldActivation + dt * gameplay.gameSpeed
                 else
                     timers.shieldActivation = 0
                     shieldActive = true
                 end
             elseif shieldActive then
                 if timers.shieldActive < player.tower.shieldDuration then
-                    timers.shieldActive = timers.shieldActive + dt * gameSpeed
+                    timers.shieldActive = timers.shieldActive + dt * gameplay.gameSpeed
                 else
                     timers.shieldActive = 0
                     shieldActive = false
@@ -1278,26 +1503,77 @@ function love.update(dt)
 
         checkIfTowerCollapsed()
         updateParticles(dt)
-        player.stats.battle.time = player.stats.battle.time + dt * gameSpeed
+        player.stats.battle.time = player.stats.battle.time + dt * gameplay.gameSpeed
+
+        if player.abilities.spikedCrystals.unlocked and player.abilities.spikedCrystals.equipped then
+            if timers.crystal < levelingInfo[1].frequency[player.abilities.spikedCrystals.level + 1] then
+                timers.crystal = timers.crystal + dt * gameplay.gameSpeed
+            else
+                timers.crystal = 0
+                for i=1,math.max(levelingInfo[1].quantity[player.abilities.spikedCrystals.level + 1] - #spikedCrystals, 0) do
+                    spawnCrystal()
+                end
+            end
+        end
+
+        if player.abilities.rainforest.unlocked and player.abilities.rainforest.equipped then
+            if gameplay.wave >= 20 then
+                rainforestActive = (gameplay.wave % 10 <= 4) and true or false
+            end
+        end
+
+        if player.abilities.magmaTouch.unlocked and player.abilities.magmaTouch.equipped then
+            if timers.magmaPool < levelingInfo[5].frequency[player.abilities.magmaTouch.level + 1] then
+                timers.magmaPool = timers.magmaPool + dt * gameplay.gameSpeed
+            else
+                if #magmaPools < 20 then
+                    timers.magmaPool = 0
+                    spawnMagmaPool()
+                end
+            end
+        end
+
+        if love.mouse.isDown(1) then
+            local mcx, mcy = love.mouse.getPosition()
+            if player.menu.settings then
+                if mcx >= 835 and mcx <= 1085 and mcy >= 680 and mcy <= 692 then
+                    player.settings.volume = (mcx - 835) / 250
+                end
+            end
+        end
 
     elseif player.location == "hub" then
-        --[[ Set a timer for alloying Electrum, add 1 Electrum when the timer runs out ]]--
-        if not player.canClaim.electrum then
-            if player.timers.electrum < player.cooldowns.electrum then
-                player.timers.electrum = player.timers.electrum + dt * gameSpeed
-            else
-                player.timers.electrum = 0
-                player.canClaim.electrum = true
-                player.currencies.currentElectrum = player.currencies.currentElectrum + 1
+        player.abilities.equipped = 0
+        for i=1,#internalAbilities do
+            if internalAbilities[i].equipped then
+                player.abilities.equipped = player.abilities.equipped + 1
             end
+        end
+    end
+    --[[ Set a timer for alloying Electrum, add 1 Electrum when the timer runs out ]]--
+    if not player.canClaim.electrum then
+        if player.timers.electrum < player.cooldowns.electrum then
+            player.timers.electrum = player.timers.electrum + dt * gameplay.gameSpeed
+        else
+            player.timers.electrum = 0
+            player.canClaim.electrum = true
+            player.currencies.currentElectrum = player.currencies.currentElectrum + 1
         end
     end
     if not player.canClaim.tokens then
         if player.timers.tokens < player.cooldowns.tokens then
-            player.timers.tokens = player.timers.tokens + dt * gameSpeed
+            player.timers.tokens = player.timers.tokens + dt * gameplay.gameSpeed
         else
             player.timers.tokens = 0
             player.canClaim.tokens = true
+        end
+    end
+    if not player.canClaim.ability and player.misc.abilityAssembling then
+        if player.timers.abilityAssembly < player.cooldowns.abilityAssembly_current then
+            player.timers.abilityAssembly = player.timers.abilityAssembly + dt * gameplay.gameSpeed
+        else
+            player.timers.abilityAssembly = player.cooldowns.abilityAssembly_current
+            player.canClaim.ability = true
         end
     end
 end
@@ -1315,15 +1591,15 @@ function love.mousepressed(x, y)
         end
 
         if x >= 1870 and x <= 1910 and y >= 10 and y <= 50 and not player.menu.paused and not player.menu.gameplayInfo and not player.menu.battleStats then
-            gameSpeed = 0
+            gameplay.gameSpeed = 0
             player.menu.paused = true
         end
 
         if x >= 810 and x <= 950 and y >= 610 and y <= 670 and player.menu.paused and not player.menu.settings and not player.menu.gameplayInfo and not player.menu.battleStats then
-            gameSpeed = 1
+            gameplay.gameSpeed = player.maxGameSpeed
             player.menu.paused = false
         elseif x >= 970 and x <= 1110 and y >= 610 and y <= 670 and player.menu.paused and not player.menu.settings and not player.menu.gameplayInfo and not player.menu.battleStats then
-            gameSpeed = 1
+            gameplay.gameSpeed = player.maxGameSpeed
             player.menu.paused = false
             player.tower.currentHealth = 0
         elseif x >= 890 and x <= 1150 and y >= 530 and y <= 570 and player.menu.paused and not player.menu.settings and not player.menu.gameplayInfo and not player.menu.battleStats then
@@ -1382,11 +1658,11 @@ function love.mousepressed(x, y)
     end
 
     --[[ If the "To Hub" button is pressed at the end screen, go to Hub ]]--
-    if gameOver and #collapseParticles == 0 and player.location == "round" then
+    if gameOver and #collapseParticles == 0 and player.location == "round" and not player.menu.gameplayInfo and not player.menu.battleStats then
         if x >= 870 and x <= 1050 and y >= 760 and y <= 820 then
             player.menu.upgrades = false
             player.location = "hub"
-            gameSpeed = 1
+            gameplay.gameSpeed = player.maxGameSpeed
             player.menu.paused = false
             hubSection = "Main"
             resetRoundValues()
@@ -1402,21 +1678,33 @@ function love.keypressed(key)
         saveGame()
         love.event.quit()
     end
-    if key == "tab" and not player.menu.paused and player.tower.currentHealth > 0 then
+    if key == "tab" and not player.menu.paused then
         if player.location == "round" then
             if not player.menu.battleStats then
                 player.menu.gameplayInfo = not player.menu.gameplayInfo
-                gameSpeed = player.menu.gameplayInfo and 0 or 1
+                gameplay.gameSpeed = player.menu.gameplayInfo and 0 or player.maxGameSpeed
             else
                 player.menu.gameplayInfo = false
                 player.menu.battleStats = false
-                gameSpeed = player.menu.gameplayInfo and 0 or 1
+                gameplay.gameSpeed = player.menu.gameplayInfo and 0 or player.maxGameSpeed
             end
         elseif player.location == "hub" then
             player.menu.saveStats = not player.menu.saveStats
         end
     end
+    if player.location == "round" and key == "g" then
+        spawnMagmaPool()
+    end
 end
+
+--[[function love.wheelmoved(x, y)
+    local mcx, mcy = love.mouse.getPosition()
+    if player.menu.settings then
+        if mcx >= 835 and mcx <= 1085 and mcy >= 670 and mcy <= 698 then
+            player.settings.volume = y > 0 and math.min(player.settings.volume + 0.05, 1) or math.max(player.settings.volume - 0.05, 0)
+        end
+    end
+end]]-- old function for volume control
 
 function love.quit()
     saveGame()

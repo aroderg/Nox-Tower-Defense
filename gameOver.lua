@@ -1,3 +1,4 @@
+--- Check if the tower had collapsed.
 function checkIfTowerCollapsed()
     if player.tower.currentHealth <= 0 then
         player.tower.currentHealth = 0
@@ -5,8 +6,8 @@ function checkIfTowerCollapsed()
     end
 end
 
+--- Draw the game over menu if the tower collapse process has ended.
 function menu_display_gameOver()
-    --[[ Draw the game over menu if the tower collapsed ]]--
     love.graphics.setColor(0, 0, 0, 0.5)
     love.graphics.rectangle("fill", 0, 0, 1920, 1080)
     love.graphics.setColor(0.2, 0, 0.35, 1)
@@ -34,8 +35,12 @@ function menu_display_gameOver()
     love.graphics.printf("To Hub", 780, 770, 360, "center")
 end
 
+--- If the tower's health reaches 0, it collapses after a while a Game Over screen pops up.
 function gameEnd()
     if not gameOver then
+        local tc = audio_tower_collapse:clone()
+        tc:setVolume(1 * player.settings.volume^2)
+        tc:play()
         for i=1, 100 do
             createCollapseParticle()
         end
@@ -61,8 +66,9 @@ function gameEnd()
         if player.bestWaves.d3 > 150 then
             player.difficulty.unlocks.d4 = true
         end
+        abilityFunctions.updateSlotCount()
     end
     if #collapseParticles == 0 then
-        gameSpeed = 0
+        gameplay.gameSpeed = 0
     end
 end

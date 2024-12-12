@@ -1,3 +1,4 @@
+--- Draw the tower and enemy stats and misc. info while in a battle.
 function towerInfo_visual()
     if not player.menu.upgrades then
         --[[ Print out tower info ]]--
@@ -5,6 +6,8 @@ function towerInfo_visual()
             love.graphics.setColor(0.106, 0.11, 0.22, 1)
         elseif background == "eclipse" then
             love.graphics.setColor(0.13, 0.05, 0, 1)
+        elseif background == "nova" then
+            love.graphics.setColor(0, 0.004, 0.1)
         end
         love.graphics.rectangle("fill", 10, 950, 200, 70)
         love.graphics.setColor(1, 1, 1, 1)
@@ -30,6 +33,8 @@ function towerInfo_visual()
             love.graphics.setColor(0.106, 0.11, 0.22, 1)
         elseif background == "eclipse" then
             love.graphics.setColor(0.13, 0.05, 0, 1)
+        elseif background == "nova" then
+            love.graphics.setColor(0, 0.004, 0.1)
         end
         love.graphics.rectangle("fill", 1690, 950, 220, 70)
         love.graphics.setColor(1, 1, 1, 1)
@@ -41,13 +46,7 @@ function towerInfo_visual()
 
         --[[ Print out gameplay info ]]--
         love.graphics.setFont(font_Afacad20)
-        if gameplay.difficulty == 1 then
-            love.graphics.printf(string.format("Wave %d", gameplay.wave), 1755, 952, 150, "right")
-        else
-            love.graphics.printf(string.format("Wave %d", gameplay.wave), 1740, 952, 150, "right")
-            love.graphics.setFont(font_ViraSansBold20)
-            love.graphics.printf(string.format("%s", levelNames[gameplay.difficulty]), 1854, 953, 50, "right")
-        end
+        love.graphics.printf(string.format("Wave %d (D%d)", gameplay.wave, gameplay.difficulty), 1755, 952, 150, "right")
         love.graphics.setLineStyle("smooth")
         love.graphics.setColor(0.2, 0.2, 0.2, 1)
         love.graphics.ellipse("line", 1875, 996, 20, 20)
@@ -67,6 +66,8 @@ function towerInfo_visual()
             love.graphics.setColor(0.106, 0.11, 0.22, 1)
         elseif background == "eclipse" then
             love.graphics.setColor(0.13, 0.05, 0, 1)
+        elseif background == "nova" then
+            love.graphics.setColor(0, 0.004, 0.1)
         end
         love.graphics.setLineWidth(10)
         love.graphics.ellipse("line", 1875, 996, 5, 5)
@@ -77,6 +78,8 @@ function towerInfo_visual()
             love.graphics.setColor(0.106, 0.11, 0.22, 1)
         elseif background == "eclipse" then
             love.graphics.setColor(0.13, 0.05, 0, 1)
+        elseif background == "nova" then
+            love.graphics.setColor(0, 0.004, 0.1)
         end
         love.graphics.rectangle("fill", 10, 720, 200, 70)
         love.graphics.setColor(1, 1, 1, 1)
@@ -102,6 +105,8 @@ function towerInfo_visual()
             love.graphics.setColor(0.106, 0.11, 0.22, 1)
         elseif background == "eclipse" then
             love.graphics.setColor(0.13, 0.05, 0, 1)
+        elseif background == "nova" then
+            love.graphics.setColor(0, 0.004, 0.1)
         end
         love.graphics.rectangle("fill", 1690, 720, 220, 70)
         love.graphics.setColor(1, 1, 1, 1)
@@ -111,14 +116,8 @@ function towerInfo_visual()
         love.graphics.draw(img_icon_enemy_attack, 1695, 761)
         love.graphics.printf(string.format("%s", notations.convertToLetterNotation(enemyAttributes.attackDamage, "precise")), 1722, 758, 200, "left")
 
-        --[[ Print out gameplay info ]]--
-        if gameplay.difficulty == 1 then
-            love.graphics.printf(string.format("Wave %d", gameplay.wave), 1755, 722, 150, "right")
-        else
-            love.graphics.printf(string.format("Wave %d", gameplay.wave), 1740, 722, 150, "right")
-            love.graphics.setFont(font_ViraSansBold20)
-            love.graphics.printf(string.format("%s", levelNames[gameplay.difficulty]), 1854, 723, 50, "right")
-        end
+        --[[ Print out gameplay info ]]--]
+        love.graphics.printf(string.format("Wave %d (D%d)", gameplay.wave, gameplay.difficulty), 1755, 722, 150, "right")
         love.graphics.setLineStyle("smooth")
         love.graphics.setColor(0.2, 0.2, 0.2, 1)
         love.graphics.ellipse("line", 1875, 766, 20, 20)
@@ -138,6 +137,8 @@ function towerInfo_visual()
             love.graphics.setColor(0.106, 0.11, 0.22, 1)
         elseif background == "eclipse" then
             love.graphics.setColor(0.13, 0.05, 0, 1)
+        elseif background == "nova" then
+            love.graphics.setColor(0, 0.004, 0.1)
         end
         love.graphics.setLineWidth(10)
         love.graphics.ellipse("line", 1875, 766, 5, 5)

@@ -1,3 +1,4 @@
+--- Save all settings, upgrades, unlocks, Abilities, cooldowns and timers in the save file.
 function saveGame()
     data = {}
     data.player = {
@@ -45,7 +46,11 @@ function saveGame()
 
         timers = {
             tokens = player.timers.tokens,
-            electrum = player.timers.electrum
+            electrum = player.timers.electrum,
+            abilityAssembly = player.timers.abilityAssembly
+        },
+        cooldowns = {
+            abilityAssembly = player.cooldowns.abilityAssembly_current
         },
 
         modifiers = {
@@ -79,13 +84,53 @@ function saveGame()
                 nexus = player.stats.save.upgradesAcquired.nexus
             },
             wavesBeaten = player.stats.save.wavesBeaten
+        },
+
+        abilities = {
+            equipped = player.abilities.equipped;
+            maxEquipped = player.abilities.maxEquipped,
+            spikedCrystals = {
+                unlocked = player.abilities.spikedCrystals.unlocked,
+                level = player.abilities.spikedCrystals.level,
+                equipped = player.abilities.spikedCrystals.equipped,
+                amount = player.abilities.spikedCrystals.amount
+            },
+            scatterFire = {
+                unlocked = player.abilities.scatterFire.unlocked,
+                level = player.abilities.scatterFire.level,
+                equipped = player.abilities.scatterFire.equipped,
+                amount = player.abilities.scatterFire.amount
+            },
+            burstFire = {
+                unlocked = player.abilities.burstFire.unlocked,
+                level = player.abilities.burstFire.level,
+                equipped = player.abilities.burstFire.equipped,
+                amount = player.abilities.burstFire.amount
+            },
+            rainforest = {
+                unlocked = player.abilities.rainforest.unlocked,
+                level = player.abilities.rainforest.level,
+                equipped = player.abilities.rainforest.equipped,
+                amount = player.abilities.rainforest.amount
+            },
+            magmaTouch = {
+                unlocked = player.abilities.magmaTouch.unlocked,
+                level = player.abilities.magmaTouch.level,
+                equipped = player.abilities.magmaTouch.equipped,
+                amount = player.abilities.magmaTouch.amount
+            }
+        },
+
+        misc = {
+            abilityAssembling = player.misc.abilityAssembling
         }
     }
     data.settings = {
         particleMultiplierIndex = player.settings.particleMultiplier,
         waveSkipMessages = player.settings.waveSkipMessages,
         notation = player.settings.notation,
-        tooltips = player.settings.tooltips
+        tooltips = player.settings.tooltips,
+        volume = player.settings.volume
     }
 
     serialized = lume.serialize(data)

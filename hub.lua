@@ -1,4 +1,11 @@
-function inHub_visual()
+local hubSections = {"Main", "Science", "Nexus", "Abilities"}
+local rolledClass
+local rolledInternalAbility
+local rolledAbility
+local abilitiesFromRolledClass = {}
+
+--- Draws all of the Hub visuals.
+function inHub_visual()    
     if player.location == "hub" then
         love.graphics.setLineWidth(1)
         love.graphics.setFont(font_Afacad24)
@@ -6,32 +13,17 @@ function inHub_visual()
         love.graphics.setColor(0, 0, 0.2, 1)
         love.graphics.rectangle("fill", 0, 0, 1920, 1080)
 
-        love.graphics.setColor(0.65, 0.5, 0)
-        love.graphics.rectangle("fill", 0, 0, 50, 360)
-        love.graphics.setColor(1, 1, 1, 1)
-        if hubSection == "Main" then
-            love.graphics.setColor(1, 0, 0, 1)
+        local hubColors = {{0.65, 0.5, 0}, {0, 0.65, 0.3}, {0.5, 0, 0.6}, {0.8, 0.2, 0.2}}
+        for i=1,#hubSections do
+            love.graphics.setColor(hubColors[i])
+            love.graphics.rectangle("fill", 0, (1080 / #hubSections) * (i - 1), 50, 1080 / #hubSections)
+            love.graphics.setColor(1, 1, 1, 1)
+            if hubSection == hubSections[i] then
+                love.graphics.setColor(1, 0, 0, 1)
+            end
+            love.graphics.rectangle("line", 51, (1080 / #hubSections) * (i - 1) + 1, 100, 40, 2, 2)
+            love.graphics.printf(hubSections[i], 50, (1080 / #hubSections) * (i - 1) + 3, 100, "center")
         end
-        love.graphics.rectangle("line", 51, 1, 100, 40, 2, 2)
-        love.graphics.printf("Main", 50, 3, 100, "center")
-
-        love.graphics.setColor(0, 0.65, 0.3)
-        love.graphics.rectangle("fill", 0, 360, 50, 360)
-        love.graphics.setColor(1, 1, 1, 1)
-        if hubSection == "Science" then
-            love.graphics.setColor(1, 0, 0, 1)
-        end
-        love.graphics.rectangle("line", 51, 361, 100, 40, 2, 2)
-        love.graphics.printf("Science", 50, 363, 100, "center")
-
-        love.graphics.setColor(0.5, 0, 0.6)
-        love.graphics.rectangle("fill", 0, 720, 50, 360)
-        love.graphics.setColor(1, 1, 1, 1)
-        if hubSection == "Nexus" then
-            love.graphics.setColor(1, 0, 0, 1)
-        end
-        love.graphics.rectangle("line", 51, 721, 100, 40, 2, 2)
-        love.graphics.printf("Nexus", 50, 723, 100, "center")
 
         love.graphics.setColor(1, 1, 1, 1)
         love.graphics.setLineWidth(2)
@@ -50,27 +42,23 @@ function inHub_visual()
         love.graphics.setLineStyle("smooth")
         love.graphics.setLineWidth(1)
 
+        local hubLore = {
+            "View and analyze your tower's initial properties and other statistics.",
+            "Upgrade your tower's initial properties and unlock new upgrades to push your limits even further.",
+            "Unlock unique modifiers and get powerful stat buffs.",
+            "Get passive and active abilities to use in battles and other challenges."
+        }
+        for i=1,#hubSections do
+            if hubSection == hubSections[i] then
+                love.graphics.setFont(font_AfacadBold48)
+                love.graphics.printf(hubSections[i], 810, 50, 300, "center")
+                love.graphics.setFont(font_Afacad20)
+                love.graphics.printf(hubLore[i], 760, 120, 400, "center")
+            end
+        end
         if hubSection == "Main" then
-
-            love.graphics.setFont(font_AfacadBold48)
-            love.graphics.printf("The Hub", 810, 50, 300, "center")
-            love.graphics.printf("YOUR TOWER", 810, 250, 300, "center")
-            love.graphics.setFont(font_Afacad20)
-            love.graphics.printf("View and analyze your tower's initial properties and other statistics.", 760, 120, 400, "center")
-            love.graphics.setFont(font_Afacad24)
-            love.graphics.printf(string.format("Attack Damage: %s", notations.convertToLetterNotation(player.tower.attackDamage, "precise")), 810, 320, 300, "center")
-            love.graphics.printf(string.format("Attack Speed: %.2f", player.tower.attackSpeed), 810, 350, 300, "center")
-            love.graphics.printf(string.format("Critical Chance: %.1f%%", player.tower.critChance), 810, 380, 300, "center")
-            love.graphics.printf(string.format("Critical Factor: x%.2f", player.tower.critFactor), 810, 410, 300, "center")
-            love.graphics.printf(string.format("Range: %.1f", player.tower.range / 20), 810, 440, 300, "center")
-
-            love.graphics.printf(string.format("Health: %s", notations.convertToLetterNotation(player.tower.maxHealth, "precise")), 810, 500, 300, "center")
-            love.graphics.printf(string.format("Regeneration: %s/s", notations.convertToLetterNotation(player.tower.regeneration, "precise2")), 810, 530, 300, "center")
-            love.graphics.printf(string.format("Damage Resistance: %.2f%%", player.tower.resistance), 810, 560, 300, "center")
-            love.graphics.printf(string.format("Shield Cooldown: %.1fs", player.tower.shieldCooldown), 810, 590, 300, "center")
-            love.graphics.printf(string.format("Shield Duration: %.2fs", player.tower.shieldDuration), 810, 620, 300, "center")
-            love.graphics.setFont(font_ViraSansBold28)
-            love.graphics.printf(string.format("Level %s", levelNames[player.difficulty.difficulty]), 810, 740, 300, "center")
+            love.graphics.setFont(font_AfacadSemiBold28)
+            love.graphics.printf(string.format("Difficulty %d", player.difficulty.difficulty), 810, 738, 300, "center")
             local bestWaves = {player.bestWaves.d1, player.bestWaves.d2, player.bestWaves.d3, player.bestWaves.d4}
             local highestDiffUnlocked = player.difficulty.unlocks.d4 and 4 or player.difficulty.unlocks.d3 and 3 or player.difficulty.unlocks.d2 and 2 or 1
             love.graphics.setFont(font_Afacad24)
@@ -93,13 +81,7 @@ function inHub_visual()
             
         elseif hubSection == "Science" then
 
-            --[[ Title and description ]]--
             love.graphics.setLineStyle("rough")
-            love.graphics.setFont(font_AfacadBold48)
-            love.graphics.printf("Science", 810, 50, 300, "center")
-            love.graphics.setFont(font_Afacad20)
-            love.graphics.printf("Upgrade your tower's initial properties and unlock new upgrades to push your limits even further.", 760, 120, 400, "center")
-
             processUpgradeModule.reload()
 
             local sectionTable = {"ATK", "VIT", "UTL"}
@@ -118,13 +100,8 @@ function inHub_visual()
 
         elseif hubSection == "Nexus" then
 
-            --[[ Title and description ]]--
             love.graphics.setLineStyle("smooth")
             love.graphics.setLineWidth(2)
-            love.graphics.setFont(font_AfacadBold48)
-            love.graphics.printf("Nexus", 810, 50, 300, "center")
-            love.graphics.setFont(font_Afacad20)
-            love.graphics.printf("Unlock unique modifiers and get powerful stat buffs.", 760, 120, 400, "center")
 
             --[[ Electrum sub-menu ]]--
             love.graphics.rectangle("line", 1650, 100, 150, 200, 4, 4)
@@ -172,93 +149,44 @@ function inHub_visual()
             end
 
             --[[ Buff sub-menu ]]--
-            love.graphics.setColor(1, 1, 1, 1)
-            love.graphics.rectangle("line", 650, 250, 150, 200, 4, 4)
-            love.graphics.printf("Attack Damage", 650, 250, 150, "center")
-            love.graphics.printf(string.format("x%.2f", player.upgrades.nexus.attackDamage.value), 650, 280, 150, "center")
-            love.graphics.setColor(0.6, 0.45, 0.25, 1)
-            love.graphics.rectangle("fill", 655, 405, 140, 40)
-            love.graphics.setColor(1, 1, 1, 1)
-            love.graphics.setLineStyle("rough")
-            love.graphics.setLineWidth(1)
-            love.graphics.rectangle("line", 655, 405, 140, 40)
-            love.graphics.setFont(font_Afacad24)
-            if player.upgrades.nexus.attackDamage.level < 41 then
-                love.graphics.draw(img_currency_token, 660, 410)
-                love.graphics.print(player.upgrades.nexus.attackDamage.cost, 692, 409)
-            else
-                love.graphics.printf("Max", 655, 409, 140, "center")
-            end
-
-            love.graphics.setFont(font_Afacad20)
-            love.graphics.setLineStyle("smooth")
-            love.graphics.setLineWidth(2)
-            love.graphics.rectangle("line", 810, 250, 150, 200, 4, 4)
-            love.graphics.printf("Attack Speed", 810, 250, 150, "center")
-            love.graphics.printf(string.format("x%.2f", player.upgrades.nexus.attackSpeed.value), 810, 280, 150, "center")
-            love.graphics.setColor(0.6, 0.45, 0.25, 1)
-            love.graphics.rectangle("fill", 815, 405, 140, 40)
-            love.graphics.setColor(1, 1, 1, 1)
-            love.graphics.setLineStyle("rough")
-            love.graphics.setLineWidth(1)
-            love.graphics.rectangle("line", 815, 405, 140, 40)
-            love.graphics.setFont(font_Afacad24)
-            if player.upgrades.nexus.attackSpeed.level < 26 then
-                love.graphics.draw(img_currency_token, 820, 410)
-                love.graphics.print(player.upgrades.nexus.attackSpeed.cost, 852, 409)
-            else
-                love.graphics.printf("Max", 815, 409, 140, "center")
-            end
-
-            love.graphics.setFont(font_Afacad20)
-            love.graphics.setLineStyle("smooth")
-            love.graphics.setLineWidth(2)
-            love.graphics.rectangle("line", 970, 250, 150, 200, 4, 4)
-            love.graphics.printf("Health", 970, 250, 150, "center")
-            love.graphics.printf(string.format("x%.2f", player.upgrades.nexus.health.value), 970, 280, 150, "center")
-            love.graphics.setColor(0.6, 0.45, 0.25, 1)
-            love.graphics.rectangle("fill", 975, 405, 140, 40)
-            love.graphics.setColor(1, 1, 1, 1)
-            love.graphics.setLineStyle("rough")
-            love.graphics.setLineWidth(1)
-            love.graphics.rectangle("line", 975, 405, 140, 40)
-            love.graphics.setFont(font_Afacad24)
-            if player.upgrades.nexus.health.level < 41 then
-                love.graphics.draw(img_currency_token, 980, 410)
-                love.graphics.print(player.upgrades.nexus.health.cost, 1012, 409)
-            else
-                love.graphics.printf("Max", 975, 409, 140, "center")
-            end
-
-            love.graphics.setFont(font_Afacad20)
-            love.graphics.setLineStyle("smooth")
-            love.graphics.setLineWidth(2)
-            love.graphics.rectangle("line", 1130, 250, 150, 200, 4, 4)
-            love.graphics.printf("Regeneration", 1130, 250, 150, "center")
-            love.graphics.printf(string.format("x%.2f", player.upgrades.nexus.regeneration.value), 1130, 280, 150, "center")
-            love.graphics.setColor(0.6, 0.45, 0.25, 1)
-            love.graphics.rectangle("fill", 1135, 405, 140, 40)
-            love.graphics.setColor(1, 1, 1, 1)
-            love.graphics.setLineStyle("rough")
-            love.graphics.setLineWidth(1)
-            love.graphics.rectangle("line", 1135, 405, 140, 40)
-            love.graphics.setFont(font_Afacad24)
-            if player.upgrades.nexus.regeneration.level < 41 then
-                love.graphics.draw(img_currency_token, 1140, 410)
-                love.graphics.print(player.upgrades.nexus.regeneration.cost, 1172, 409)
-            else
-                love.graphics.printf("Max", 1135, 409, 140, "center")
+            local nexusBuffs = {
+                {name = "Attack Damage", maxLevel = 41, currentLevel = player.upgrades.nexus.attackDamage.level, cost = player.upgrades.nexus.attackDamage.cost, value = player.upgrades.nexus.attackDamage.value},
+                {name = "Attack Speed", maxLevel = 26, currentLevel = player.upgrades.nexus.attackSpeed.level, cost = player.upgrades.nexus.attackSpeed.cost, value = player.upgrades.nexus.attackSpeed.value},
+                {name = "Health", maxLevel = 41, currentLevel = player.upgrades.nexus.health.level, cost = player.upgrades.nexus.health.cost, value = player.upgrades.nexus.health.value},
+                {name = "Regeneration", maxLevel = 41, currentLevel = player.upgrades.nexus.regeneration.level, cost = player.upgrades.nexus.regeneration.cost, value = player.upgrades.nexus.regeneration.value}
+            }
+            for i,v in pairs(nexusBuffs) do
+                love.graphics.setColor(1, 1, 1, 1)
+                love.graphics.setLineStyle("smooth")
+                love.graphics.setLineWidth(2)
+                love.graphics.setFont(font_Afacad20)
+                love.graphics.rectangle("line", 650 + (i - 1) * 160, 250, 150, 200, 4, 4)
+                love.graphics.printf(v.name, 650 + (i - 1) * 160, 250, 150, "center")
+                love.graphics.printf(string.format("x%.2f", v.value), 650 + (i - 1) * 160, 280, 150, "center")
+                love.graphics.setColor(0.6, 0.45, 0.25, 1)
+                love.graphics.rectangle("fill", 655 + (i - 1) * 160, 405, 140, 40)
+                love.graphics.setColor(1, 1, 1, 1)
+                love.graphics.setLineStyle("rough")
+                love.graphics.setLineWidth(1)
+                love.graphics.rectangle("line", 655 + (i - 1) * 160, 405, 140, 40)
+                love.graphics.setFont(font_Afacad24)
+                if v.currentLevel < v.maxLevel then
+                    love.graphics.draw(img_currency_token, 660 + (i - 1) * 160, 410)
+                    love.graphics.print(v.cost, 692 + (i - 1) * 160, 409)
+                else
+                    love.graphics.printf("Max", 655 + (i - 1) * 160, 409, 140, "center")
+                end
             end
 
             love.graphics.setFont(font_AfacadBold32)
             love.graphics.printf("Gameplay modifiers", 810, 500, 300, "center")
 
             local gameplayModifiers = {
-                {name = "Wave Skip", unlockCost = 10, value = player.modifiers.waveSkip.value, cost = player.modifiers.waveSkip.cost, maxLevel = 10, text = {{1, 1, 1, 1}, "There is a ", {0, 1, 0.7, 1}, string.format("%d%%", player.modifiers.waveSkip.value), {1, 1, 1, 1}, " chance of skipping a wave and immediately advancing to the next wave."}, upgradeText = "Chance", unlock = player.modifiers.waveSkip.unlocked, level = player.modifiers.waveSkip.level},
-                {name = "Hyperloop", unlockCost = 15, value = player.modifiers.hyperloop.value, cost = player.modifiers.hyperloop.cost, maxLevel = 11, text = {{1, 1, 1, 1}, "All enemies outside of the tower range are ", {1, 0.5, 0.3, 1}, string.format("%d%%", player.modifiers.hyperloop.value), {1, 1, 1, 1}, " faster."}, upgradeText = "Speed", unlock = player.modifiers.hyperloop.unlocked, level = player.modifiers.hyperloop.level},
+                {name = "Wave Skip", unlockCost = 10, value = player.modifiers.waveSkip.value, cost = player.modifiers.waveSkip.cost, maxLevel = 10, text = {{1, 1, 1, 1}, "There is a ", {0, 1, 0.7, 1}, string.format("%d%%", player.modifiers.waveSkip.value), {1, 1, 1, 1}, " chance of skipping a wave and immediately advancing to the next wave."}, upgradeText = "Chance", unlocked = player.modifiers.waveSkip.unlocked, level = player.modifiers.waveSkip.level},
+                {name = "Hyperloop", unlockCost = 15, value = player.modifiers.hyperloop.value, cost = player.modifiers.hyperloop.cost, maxLevel = 11, text = {{1, 1, 1, 1}, "All enemies outside of the tower range are ", {1, 0.5, 0.3, 1}, string.format("%d%%", player.modifiers.hyperloop.value), {1, 1, 1, 1}, " faster."}, upgradeText = "Speed", unlocked = player.modifiers.hyperloop.unlocked, level = player.modifiers.hyperloop.level},
             }
 
-            for i=1,2 do
+            for i,v in pairs(gameplayModifiers) do
                 love.graphics.setFont(font_Afacad20)
                 love.graphics.setLineStyle("smooth")
                 love.graphics.setLineWidth(2)
@@ -267,8 +195,8 @@ function inHub_visual()
                 love.graphics.setLineWidth(1)
                 love.graphics.line(650, 585 + 140 * (i - 1), 1280, 585 + 140 * (i - 1))
                 love.graphics.setFont(font_AfacadBold24)
-                love.graphics.printf(gameplayModifiers[i].name, 650, 550 + 140 * (i - 1), 630, "center")
-                if player.currencies.currentElectrum >= gameplayModifiers[i].cost and gameplayModifiers[i].level < gameplayModifiers[i].maxLevel then
+                love.graphics.printf(v.name, 650, 550 + 140 * (i - 1), 630, "center")
+                if player.currencies.currentElectrum >= v.cost and v.level < v.maxLevel then
                     love.graphics.setColor(0.6, 0.45, 0.25, 1)
                 else
                     love.graphics.setColor(0.35, 0.25, 0.15, 1)
@@ -283,13 +211,13 @@ function inHub_visual()
                 love.graphics.setColor(1, 1, 1, 1)
                 love.graphics.rectangle("line", 1155, 590 + 140 * (i - 1), 120, 25)
                 love.graphics.setFont(font_Afacad20)
-                if gameplayModifiers[i].unlock then
+                if v.unlocked then
                     love.graphics.setFont(font_Afacad20)
-                    love.graphics.printf(gameplayModifiers[i].upgradeText, 1155, 589 + 140 * (i - 1), 120, "center")
-                    if gameplayModifiers[i].level < gameplayModifiers[i].maxLevel then
+                    love.graphics.printf(v.upgradeText, 1155, 589 + 140 * (i - 1), 120, "center")
+                    if v.level < v.maxLevel then
                         love.graphics.draw(img_currency_electrum, 1160, 630 + 140 * (i - 1), 0, 20/32)
                         love.graphics.setFont(font_Afacad20)
-                        love.graphics.print(notations.convertToLetterNotation(gameplayModifiers[i].cost, "brief"), 1180, 626 + 140 * (i - 1))
+                        love.graphics.print(notations.convertToLetterNotation(v.cost, "brief"), 1180, 626 + 140 * (i - 1))
                     else
                         love.graphics.setFont(font_Afacad20)
                         love.graphics.printf("Max", 1155, 626 + 140 * (i - 1), 120, "center")
@@ -297,27 +225,260 @@ function inHub_visual()
                 else
                     love.graphics.printf("Unlock", 1155, 589 + 140 * (i - 1), 120, "center")
                     love.graphics.draw(img_currency_electrum, 1160, 630 + 140 * (i - 1), 0, 20/32)
-                    love.graphics.print(notations.convertToLetterNotation(gameplayModifiers[i].cost, "brief"), 1180, 626 + 140 * (i - 1))
+                    love.graphics.print(notations.convertToLetterNotation(v.cost, "brief"), 1180, 626 + 140 * (i - 1))
                 end
                 love.graphics.setFont(font_Afacad20)
-                love.graphics.printf(gameplayModifiers[i].text, 660, 585 + 140 * (i - 1), 350, "left")
+                love.graphics.printf(v.text, 660, 585 + 140 * (i - 1), 350, "left")
+            end
+
+        elseif hubSection == "Abilities" then
+            love.graphics.setFont(font_AfacadBold24)
+            love.graphics.printf(string.format("Equipped: %d/%d", player.abilities.equipped, player.abilities.maxEquipped), 860, 200, 200, "center")
+            love.graphics.draw(img_button_questionMark, 1040, 205)
+            love.graphics.setColor(0.2, 0, 0.3, 1)
+            love.graphics.rectangle("fill", 810, 250, 300, 60)
+            love.graphics.setColor(1, 1, 1, 1)
+            love.graphics.setLineStyle("rough")
+            love.graphics.setLineWidth(1)
+            love.graphics.setFont(font_Afacad20)
+            love.graphics.print("Assemble an Ability", 815, 265)
+            love.graphics.rectangle("line", 810, 250, 300, 60)
+            if not player.misc.abilityAssembling then
+                love.graphics.setColor(0.3, 0, 0.45, 1)
+            else
+                love.graphics.setColor(0.15, 0, 0.25, 1)
+            end
+            love.graphics.rectangle("fill", 1017, 253, 90, 54)
+            love.graphics.setColor(1, 1, 1, 1)
+            love.graphics.rectangle("line", 1017, 253, 90, 54)
+            if not player.misc.abilityAssembling then
+                love.graphics.draw(img_currency_token, 1021, 268, 0, 24/32)
+                love.graphics.print("60", 1045, 266)
+            elseif player.misc.abilityAssembling and player.timers.abilityAssembly < player.cooldowns.abilityAssembly_current then
+                love.graphics.setFont(font_Afacad16)
+                love.graphics.printf("Assembling...", 1017, 268, 90, "center")
+                love.graphics.setFont(font_Afacad20)
+            else
+                love.graphics.setFont(font_Afacad20)
+                love.graphics.printf("Ready!", 1017, 266, 90, "center")
+            end
+            love.graphics.draw(img_button_questionMark, 1110, 268)
+            if player.misc.abilityAssembling and player.timers.abilityAssembly < player.cooldowns.abilityAssembly_current then
+                love.graphics.setColor(1, 0, 0, 1)
+                love.graphics.rectangle("fill", 810, 320, 300, 8)
+                love.graphics.setColor(0, 1, 0, 1)
+                love.graphics.rectangle("fill", 810, 320, (player.timers.abilityAssembly / player.cooldowns.abilityAssembly_current) * 300, 8)
+                love.graphics.setColor(1, 1, 1, 1)
+                love.graphics.printf(string.format("%dm %ds", (player.cooldowns.abilityAssembly_current - player.timers.abilityAssembly) / 60, (player.cooldowns.abilityAssembly_current - player.timers.abilityAssembly) % 60), 860, 325, 200, "center")
+            end
+                if not abilityFunctions.checkMenuDisplay() and not player.menu.rolledAbilityDisplay then
+                tooltips.displayAbilityInfo()
+            end
+            local alignmentOffset = (1920 - ((#internalAbilities * 150) + ((#internalAbilities - 1) * 30))) / 2
+            for i,v in pairs(internalAbilities) do
+                love.graphics.setLineStyle("rough")
+                love.graphics.setColor(1, 1, 1, 0.25 + 0.75 * (v.unlocked and 1 or 0))
+                love.graphics.draw(v.preview, abilityFunctions.calculateOffset(i), 430 + math.floor((i - 1) / 5) * 230)
+                love.graphics.setColor(1, 1, 1, 0.5)
+                love.graphics.setLineWidth(1)
+                love.graphics.rectangle("line", abilityFunctions.calculateOffset(i), 430 + math.floor((i - 1) / 5) * 230, 150, 100)
+                love.graphics.setColor(1, 1, 1, 1)
+                love.graphics.setLineWidth(2)
+                love.graphics.setLineStyle("smooth")
+                local borderColor = v.level < #v.levelRequirements - 1 and {1, 1, 1, 1} or {1, 0.5, 0, 1}
+                love.graphics.setColor(borderColor)
+                love.graphics.rectangle("line", abilityFunctions.calculateOffset(i), 400 + math.floor((i - 1) / 5) * 230, 150, 200, 2, 2)
+                love.graphics.setColor(1, 1, 1, 1)
+                love.graphics.setFont(font_AfacadBold20)
+                love.graphics.printf(v.name, abilityFunctions.calculateOffset(i), 400 + math.floor((i - 1) / 5) * 230, 150, "center")
+                love.graphics.setFont(font_Afacad20)
+                love.graphics.printf("Level " .. v.level, abilityFunctions.calculateOffset(i), 535 + math.floor((i - 1) / 5) * 230, 150, "center")
+                love.graphics.setLineWidth(1)
+                love.graphics.setLineStyle("rough")
+                love.graphics.setFont(font_Afacad16)
+                love.graphics.rectangle("line", abilityFunctions.calculateOffset(i) + 5, 570 + math.floor((i - 1) / 5) * 230, 70, 25)
+                love.graphics.printf("Info", abilityFunctions.calculateOffset(i) + 5, 571 + math.floor((i - 1) / 5) * 230, 70, "center")
+                love.graphics.rectangle("line", abilityFunctions.calculateOffset(i) + 76, 570 + math.floor((i - 1) / 5) * 230, 70, 25)
+                love.graphics.printf(not v.equipped and "Equip" or "Unequip", abilityFunctions.calculateOffset(i) + 76, 571 + math.floor((i - 1) / 5) * 230, 70, "center")
+            end
+            for i,v in pairs(internalAbilities) do
+                abilityFunctions.showInfo.draw(v)
+            end
+            if player.menu.rolledAbilityDisplay then
+                love.graphics.setColor(0, 0, 0, 0.5)
+                love.graphics.rectangle("fill", 0, 0, 1920, 1080)
+                love.graphics.setColor(0.15, 0, 0.3, 1)
+                love.graphics.rectangle("fill", 660, 390, 600, 300, 2, 2)
+                love.graphics.setColor(1, 1, 1, 1)
+                love.graphics.setLineStyle("smooth")
+                love.graphics.setLineWidth(1)
+                love.graphics.draw(abilitiesFromRolledClass[rolledAbility].preview, 675, 405)
+                love.graphics.rectangle("line", 675, 405, 150, 100, 2, 2)
+                love.graphics.rectangle("line", 660, 390, 600, 300, 2, 2)
+                love.graphics.setFont(font_AfacadSemiBold24)
+                love.graphics.printf({{1, 1, 1, 1}, "Assembled: ", {0.75, 0.55, 1, 1}, abilitiesFromRolledClass[rolledAbility].name}, 825, 398, 435, "center")
+                love.graphics.setFont(font_Afacad20)
+                love.graphics.printf(abilitiesFromRolledClass[rolledAbility].effect, 845, 435, 400, "left")
+                local classColor =
+                    abilitiesFromRolledClass[rolledAbility].class == "D" and {0.6, 0.5, 0.3, 1} or
+                    abilitiesFromRolledClass[rolledAbility].class == "C" and {0.45, 0.66, 0.75, 1} or
+                    abilitiesFromRolledClass[rolledAbility].class == "B" and {0.35, 0.8, 0.75, 1} or
+                    abilitiesFromRolledClass[rolledAbility].class == "A" and {0.25, 0.9, 0.75, 1} or
+                    {1, 1, 1, 1}
+                local amountColor =
+                    abilitiesFromRolledClass[rolledAbility].amount < abilitiesFromRolledClass[rolledAbility].nextLevelRequirement and {1, 0.4, 0.35, 1} or
+                    {0.35, 1, 0.5, 1}
+                love.graphics.printf({{1, 1, 1, 1}, "Class: ", classColor, abilitiesFromRolledClass[rolledAbility].class}, 675, 515, 150, "center")
+                love.graphics.printf({{1, 1, 1, 1}, "Amount: ", amountColor, abilitiesFromRolledClass[rolledAbility].amount, {1, 1, 1, 1}, "/", {0.35, 1, 0.5, 1}, abilitiesFromRolledClass[rolledAbility].nextLevelRequirement}, 675, 535, 150, "center")
+                love.graphics.setColor(0.1, 0.15, 0.5, 1)
+                love.graphics.rectangle("fill", 920, 645, 80, 35, 2, 2)
+                love.graphics.setColor(0.3, 0.75, 0.85, 1)
+                love.graphics.setLineWidth(2)
+                love.graphics.rectangle("line", 920, 645, 80, 35, 2, 2)
+                love.graphics.setColor(1, 1, 1, 1)
+                love.graphics.setFont(font_Afacad24)
+                love.graphics.printf("Back", 920, 646, 80, "center")
             end
         end
     end
 end
 
+abilityFunctions = {
+    showInfo = {}
+}
+
+--- Calculates an offset that is used to center all the Abilities while in the "Ability" Hub section.
+---@param n number The number of the Ability.
+function abilityFunctions.calculateOffset(n)
+    local alignmentOffset = (1920 - ((#internalAbilities * 150) + ((#internalAbilities - 1) * 30))) / 2
+    return alignmentOffset + (n % 6 - 1) * 180
+end
+
+--- Draw the brief ("Card") appearance of the Ability.
+---@param ability table The Ability to draw.
+function abilityFunctions.showInfo.draw(ability)
+    if ability.menu then
+        love.graphics.setColor(0, 0, 0, 0.5)
+        love.graphics.rectangle("fill", 0, 0, 1920, 1080)
+        love.graphics.setColor(0.15, 0, 0.3, 1)
+        love.graphics.rectangle("fill", 660, 340, 600, 400, 2, 2)
+        love.graphics.setColor(1, 1, 1, 1)
+        love.graphics.setLineStyle("smooth")
+        love.graphics.setLineWidth(1)
+        love.graphics.setFont(font_Afacad24)
+        love.graphics.setColor(1, 1, 1, 0.25 + 0.75 * (ability.unlocked and 1 or 0))
+        love.graphics.draw(ability.preview, 885, 360)
+        love.graphics.setFont(font_AfacadBold24)
+        love.graphics.printf(ability.name, 810, 470, 300, "center")
+        love.graphics.setFont(font_Afacad24)
+        if ability.level < #ability.levelRequirements - 1 then
+            love.graphics.printf("Level " .. ability.level .. string.format(" (%d/%d)", ability.amount, ability.nextLevelRequirement), 670, 355, 216, "center")
+        else
+            love.graphics.printf("Level " .. ability.level .. string.format(" (%d)", ability.amount), 670, 355, 216, "center")
+        end
+        love.graphics.setFont(font_Afacad20)
+        love.graphics.setLineWidth(1)
+        if ability.level < #ability.levelRequirements - 1 then
+            love.graphics.setColor(1, 0, 0, 1)
+            love.graphics.rectangle("fill", 708, 390, 140, 8)
+            love.graphics.setColor(0, 1, 0, 1)
+            love.graphics.rectangle("fill", 708, 390, math.min(ability.amount / ability.levelRequirements[ability.level + 1], 1) * 140, 8)
+        end
+        love.graphics.setLineStyle("rough")
+        love.graphics.setColor(0.25, 0, 0.4, 1)
+        love.graphics.rectangle("fill", 700, 418, 156, 40)
+        love.graphics.setColor(1, 1, 1, 1)
+        love.graphics.rectangle("line", 700, 418, 156, 40)
+        if ability.level < #ability.levelRequirements - 1 then
+            love.graphics.printf(string.format("Enhance (lvl %d)", ability.level + 1), 700, 424, 156, "center")
+        else
+            love.graphics.printf("Max level!", 700, 424, 156, "center")
+        end
+        local classColor =
+            ability.class == "D" and {0.6, 0.5, 0.3, 1} or
+            ability.class == "C" and {0.45, 0.66, 0.75, 1} or
+            ability.class == "B" and {0.35, 0.8, 0.75, 1} or
+            ability.class == "A" and {0.25, 0.9, 0.75, 1} or
+            {1, 1, 1, 1}
+        love.graphics.printf({{1, 1, 1, 1}, "Class: ", classColor, ability.class}, 1035, 355, 224, "center")
+        love.graphics.printf("Event: " .. ability.event, 1035, 385, 224, "center")
+        love.graphics.printf({{1, 1, 1, 1}, "Frequency: ", {0.35, 0.95, 0.7, 1}, not ability.guaranteed and ability.frequency or string.format("1/%d", ability.frequency), {1, 1, 1, 1}, ability.guaranteed and "(G)" or "", {1, 1, 1, 1}, ability.event == "Time" and "s" or not ability.guaranteed and "%" or ""}, 1035, 415, 224, "center")
+        love.graphics.setLineStyle("smooth")
+        love.graphics.printf(ability.effect, 680, 510, 560, "left")
+        love.graphics.rectangle("line", 885, 360, 150, 100, 2, 2)
+        love.graphics.rectangle("line", 660, 340, 600, 400, 2, 2)
+        love.graphics.setColor(0.1, 0.15, 0.5, 1)
+        love.graphics.rectangle("fill", 910, 680, 100, 40, 2, 2)
+        love.graphics.setColor(0.3, 0.75, 0.85, 1)
+        love.graphics.setLineWidth(2)
+        love.graphics.rectangle("line", 910, 680, 100, 40, 2, 2)
+        love.graphics.setFont(font_Afacad24)
+        love.graphics.setColor(1, 1, 1, 1)
+        love.graphics.printf("Back", 910, 682, 100, "center")
+    end
+end
+
+--- Equip or unequip the given Ability.
+---@param x number Mouse cursor position (horizontal).
+---@param y number Mouse cursor position (vertical).
+---@param ax number The horizontal position of the Ability.
+---@param ay number The vertical position of the Ability.
+---@param ability table The Ability to equip or unequip.
+function abilityFunctions.changeEquipState(x, y, ax, ay, ability)
+    if x >= ax and x <= ax + 70 and y >= ay and y <= ay + 25 then
+        if ability.unlocked and (ability.equipped and (player.abilities.equipped <= player.abilities.maxEquipped) or (player.abilities.equipped < player.abilities.maxEquipped)) and not ability.menu and not player.menu.rolledAbilityDisplay then
+            return not ability.equipped
+        else
+            return ability.equipped
+        end
+    else
+        return ability.equipped
+    end
+end
+
+--- Returns true if any Ability info menu is shown, used for checking if a click on any other button is valid.
+function abilityFunctions.checkMenuDisplay()
+    local abilityMenuShown = false
+
+    for i=1,#internalAbilities do
+        if internalAbilities[i].menu == true then
+            abilityMenuShown = true
+        end
+    end
+    return abilityMenuShown
+end
+
+--- Process if the Info button is pressed and open the Ability info menu if so. Additionally, processes the Back button press if the menu is opened.
+---@param x number Mouse cursor position (horizontal).
+---@param y number Mouse cursor position (vertical).
+---@param ax number The horizontal position of the Ability.
+---@param ay number The horizontal position of the Ability.
+---@param ability table The Ability which menu is influenced.
+function abilityFunctions.showInfo.process(x, y, ax, ay, ability)
+    if ability.unlocked then
+        if x >= ax and x <= ax + 70 and y >= ay and y <= ay + 25 and not ability.menu and not abilityFunctions.checkMenuDisplay() then
+            return true
+        end
+        if x >= 910 and x <= 1010 and y >= 680 and y <= 720 and ability.menu and abilityFunctions.checkMenuDisplay() then
+            return false
+        elseif ability.menu then
+            return true
+        end
+    end
+end
+
+--- Process all the mouse and button clicks while in Hub.
+---@param x number Mouse cursor position (horizontal).
+---@param y number Mouse cursor position (vertical).
 function inHub_mouse(x, y)
     if player.location == "hub" and not player.menu.saveStats then
         
         --[[ Process mouse clicks on sidebar, go to different sections based on the button pressed ]]--
-        if x >= 0 and x <= 50 and y >= 0 and y <= 360 then
-            hubSection = "Main"
-        end
-        if x >= 0 and x <= 50 and y >= 360 and y <= 720 then
-            hubSection = "Science"
-        end
-        if x >= 0 and x <= 50 and y >= 720 and y <= 1080 then
-            hubSection = "Nexus"
+
+        for i=1,#hubSections do
+            if x >= 0 and x <= 50 and y >= (1080 / #hubSections) * (i - 1) and y <= (1080 / #hubSections) * i and not abilityFunctions.checkMenuDisplay() and not player.menu.rolledAbilityDisplay then
+                hubSection = hubSections[i]
+            end
         end
         
         --[[ Exit Hub and go to battle ]]--
@@ -329,7 +490,7 @@ function inHub_mouse(x, y)
                 towers.reload()
                 gameOver = false
                 player.menu.paused = false
-                gameSpeed = 1
+                gameplay.gameSpeed = player.maxGameSpeed
             end
             local levelUnlocks = {player.difficulty.unlocks.d2, player.difficulty.unlocks.d3, player.difficulty.unlocks.d4}
             if x >= 840 and x <= 864 and y >= 746 and y <= 770 and player.difficulty.difficulty > 1 and levelUnlocks[player.difficulty.difficulty - 1] then
@@ -469,6 +630,52 @@ function inHub_mouse(x, y)
                     end
                 end
             end
+        elseif hubSection == "Abilities" then
+            if x >= 1017 and x <= 1107 and y >= 253 and y <= 307 and not abilityFunctions.checkMenuDisplay() and not player.menu.rolledAbilityDisplay then
+                if player.currencies.currentTokens >= 60 then
+                    if player.canClaim.ability == true and player.timers.abilityAssembly == player.cooldowns.abilityAssembly_current and player.misc.abilityAssembling then
+                        abilitiesFromRolledClass = {}
+                        local rolledPercent = love.math.random(0, 100000) / 1000
+                        local chanceClassRange = {0, 0}
+                        for i=1,#abilityClasses do
+                            chanceClassRange[1] = chanceClassRange[2]
+                            chanceClassRange[2] = chanceClassRange[2] + abilityClassProbabilities[abilityClasses[i]]
+                            if rolledPercent >= chanceClassRange[1] and rolledPercent <= chanceClassRange[2] then
+                                rolledClass = abilityClasses[i]
+                                break
+                            end
+                        end
+                        for i=1,#internalAbilities do
+                            if internalAbilities[i].class == rolledClass then
+                                table.insert(abilitiesFromRolledClass, internalAbilities[i])
+                            end
+                        end
+                        rolledAbility = love.math.random(1, #abilitiesFromRolledClass)
+                        rolledInternalAbility = abilitiesFromRolledClass[rolledAbility].internalName
+                        player.abilities[rolledInternalAbility].amount = player.abilities[rolledInternalAbility].amount + 1
+                        player.menu.rolledAbilityDisplay = true
+                        player.timers.abilityAssembly = 0
+                        player.misc.abilityAssembling = false
+                        player.canClaim.ability = false
+                        abilityFunctions.updateInternals()
+                    elseif player.timers.abilityAssembly == 0 and not player.misc.abilityAssembling then
+                        player.currencies.currentTokens = player.currencies.currentTokens - 60
+                        player.cooldowns.abilityAssembly_current = love.math.random(player.cooldowns.abilityAssembly_min, player.cooldowns.abilityAssembly_max)
+                        player.timers.abilityAssembly = 0
+                        player.misc.abilityAssembling = true
+                        player.canClaim.ability = false
+                    end
+                end
+            end
+            if x >= 920 and x <= 1000 and y >= 645 and y <= 680 and player.menu.rolledAbilityDisplay then
+                player.menu.rolledAbilityDisplay = false
+            end
+            for i,v in pairs(internalAbilities) do
+                player.abilities[v.internalName].equipped = abilityFunctions.changeEquipState(x, y, abilityFunctions.calculateOffset(i) + 76, 570, v)
+                player.menu.abilities[v.internalName] = abilityFunctions.showInfo.process(x, y, abilityFunctions.calculateOffset(i) + 5, 570, v)
+                player.abilities[v.internalName].level, player.abilities[v.internalName].amount = abilityFunctions.upgrade(x, y, v)
+            end
+            abilityFunctions.updateInternals()
         end
     end
 end

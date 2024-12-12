@@ -1,3 +1,15 @@
+# NoxTD 1.0 Nova
+### Dec 12, 2024
+- Added 5 Abilities: Spiked Crystals, Scatter Fire, Burst Fire, Rainforest and Magma Touch.
+    - Spiked Crystals spawn explosive crystals which deal high AoE damage.
+    - Scatter Fire simultaneously shoots a number of projectiles in a random position on the screen.
+    - Burst Fire simultaneously shoots a number of projectiles from the tower.
+    - Rainforest slows enemy movement and attack speed if they are in range.
+    - Magma Touch spawns a magma pool which deals burning damage.
+- Added sounds for most battle events, such as tower firing, enemy kills, crystal explosions, tower collapsing, taking/absorbing damage.
+- Resistance upgrades go up to 75% (90% before), Crit Chance upgrades go up to 15% (50% before) and Crit Factor upgrades go up to x10.
+- Added particles as a trail for Meteors, hit text particles don't show up when the Particles setting is set to None (x0.00).
+
 ## NoxTD: Update Eclipse **B**
 ### Nov 10, 2024
 - Added the Gameplay Info, Battle Stats and Savefile Stats menus.
