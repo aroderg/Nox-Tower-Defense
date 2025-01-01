@@ -1,5 +1,13 @@
+abilityObjects = {
+    spikedCrystal = {},
+    magmaPool = {},
+    lightningOrb = {},
+    lightningOrb_laser = {},
+    JerelosBlessing = {}
+}
+
 --- Spawn a Spiked Crystal somewhere in the tower's range.
-function spawnCrystal()
+function abilityObjects.spikedCrystal.spawn()
     crystal = {}
     local cx = 0
     local cy = 0
@@ -19,8 +27,80 @@ function spawnCrystal()
     table.insert(spikedCrystals, crystal)
 end
 
+--- Draw all Spiked Crystals depending on their state.
+function abilityObjects.spikedCrystal.draw()
+    for i,v in ipairs(spikedCrystals) do
+        if v.state == "alive" then
+            love.graphics.draw(img_crystal_multilayered_l1, v.x + 11, v.y + 11, v.timer_lifespan / 5.75, 1, 1, 11, 11)
+            love.graphics.draw(img_crystal_multilayered_l2, v.x + 11, v.y + 11, v.timer_lifespan / 5.75, 1, 1, 11, 11)
+            love.graphics.draw(img_crystal_multilayered_l3, v.x + 11, v.y + 11, v.timer_lifespan / 5.75, 1, 1, 11, 11)
+        else
+            local cs = math.min(1 + v.timer_explosion * 7.5, 2)
+            love.graphics.setColor(1, 1, 1, 1 - v.timer_explosion / 0.2)
+            love.graphics.draw(img_crystal_aoe, v.x + 11 - 16 * cs, v.y + 11 - 16 * cs, 0, cs / 2, cs / 2)
+            love.graphics.setColor(1, 1, 1, 1)
+            love.graphics.setColor(1, 1, 1, 1 - v.timer_explosion / v.timer_explosionDuration)
+            love.graphics.draw(img_crystal_multilayered_l1, v.x + 11, v.y + 11, v.timer_explosion * 8, cs, 1, 11, 11)
+            love.graphics.draw(img_crystal_multilayered_l2, v.x + 11, v.y + 11, v.timer_explosion * 12, cs, 1, 11, 11)
+            love.graphics.draw(img_crystal_multilayered_l3, v.x + 11, v.y + 11, v.timer_explosion * 18, cs, 1, 11, 11)
+            love.graphics.setColor(1, 1, 1, 1)
+        end
+    end
+end
+
+--- Process all Spiked Crystals and their collisions with any enemy.
+function abilityObjects.spikedCrystal.process(dt)
+    if player.abilities.spikedCrystals.unlocked and player.abilities.spikedCrystals.equipped then
+        if timers.crystal < levelingInfo[1].frequency[player.abilities.spikedCrystals.level + 1] then
+            timers.crystal = timers.crystal + dt * gameplay.gameSpeed
+        else
+            timers.crystal = 0
+            for i=1,math.max(levelingInfo[1].quantity[player.abilities.spikedCrystals.level + 1] - #spikedCrystals, 0) do
+                abilityObjects.spikedCrystal.spawn()
+            end
+        end
+    end
+    for i,v in ipairs(spikedCrystals) do
+        local size = {
+            basic = 22,
+            tank = 34,
+            swift = 16,
+            sentry = 46,
+            centurion = 62,
+        }
+
+        local offsets = {
+            basic = 10,
+            tank = 16,
+            swift = 8,
+            sentry = 22,
+            centurion = 30,
+        }
+        v.timer_lifespan = v.timer_lifespan + dt * gameplay.gameSpeed
+        if v.state == "exploding" then
+            audio_crystal_explosion:setVolume(1 * player.settings.volume^2)
+            audio_crystal_explosion:play()
+            if v.timer_explosion < v.timer_explosionDuration then
+                v.timer_explosion = v.timer_explosion + dt * gameplay.gameSpeed
+            else
+                for i=1,8*settings_particleMultipliers[player.settings.particleMultiplier] do
+                    createCrystalExplosionParticle(v.x + 11, v.y + 11)
+                end
+                table.remove(spikedCrystals, i)
+            end
+        end
+        for j,w in ipairs(enemiesOnField) do
+            if v.x + 20 > w.x + 2 and v.x + 2 < w.x + size[w.type] and v.y + 20 > w.y + 2 and v.y + 2 < w.y + size[w.type] and player.tower.currentHealth > 0 and v.state == "alive" and math.dist(v.x + 11, v.y + 11, w.x + offsets[w.type], w.y + offsets[w.type]) < 64 then
+                local damage = player.tower.attackDamage * (levelingInfo[1].damage[player.abilities.spikedCrystals.level + 1] / 100)
+                damageEnemy(j, damage)
+                v.state = "exploding"
+            end
+        end
+    end
+end
+
 --- Spawn a Magma Pool somewhere on the screen.
-function spawnMagmaPool()
+function abilityObjects.magmaPool.spawn()
     magmaPool = {}
     local mx = love.math.random(0, 1884)
     local my = love.math.random(0, 1044)
@@ -36,4 +116,157 @@ function spawnMagmaPool()
         end
     end
     table.insert(magmaPools, magmaPool)
+end
+
+--- Draw all Magma Pools spawned from the Magma Touch ability.
+function abilityObjects.magmaPool.draw()
+    for i,v in ipairs(magmaPools) do
+        love.graphics.draw(img_magmaTouch_pool, v.x, v.y)
+    end
+end
+
+--- Process all Magma Pools and their collisions with enemies, apply the burning effects to the enemy it collides with.
+function abilityObjects.magmaPool.process(dt)
+    for i,v in ipairs(magmaPools) do
+        local size = {
+            basic = 22,
+            tank = 34,
+            swift = 16,
+            sentry = 46,
+            centurion = 62,
+        }
+
+        local offsets = {
+            basic = 10,
+            tank = 16,
+            swift = 8,
+            sentry = 22,
+            centurion = 30,
+        }
+        for j,w in ipairs(enemiesOnField) do
+            if math.dist(v.x + 18, v.y + 18, w.x + size[w.type] / 2, w.y + size[w.type] / 2) < 16 + size[w.type] / 2 then
+                table.remove(magmaPools, i)
+                damageEnemy(j, player.tower.attackDamage * (levelingInfo[5].damage[player.abilities.magmaTouch.level + 1] / 100))
+                w.burningTime = 4.025
+            end
+        end
+    end
+end
+
+--- Spawn a Lightning Orb at the center of the screen.
+function abilityObjects.lightningOrb.spawn()
+    lightningOrb = {}
+    lightningOrb.x = 942
+    lightningOrb.y = 522
+    lightningOrb.speed = 60
+    lightningOrb.angle = love.math.random(0, 2 * math.pi * 10000) / 10000
+    lightningOrb.range = levelingInfo[6].range[player.abilities.lightningOrb.level + 1]
+    table.insert(lightningOrbs, lightningOrb)
+end
+
+--- Draw all Lightning Orbs, their shadows and their ranges.
+function abilityObjects.lightningOrb.draw()
+    for i,v in ipairs(lightningOrbs) do
+        love.graphics.draw(img_lightningOrb_shadow, v.x - 16 * math.cos(v.angle), v.y - 16 * math.sin(v.angle))
+        love.graphics.draw(img_lightningOrb, v.x, v.y)
+        love.graphics.setColor(0, 0.7, 0.45, 0.6)
+        love.graphics.setLineStyle("smooth")
+        love.graphics.setLineWidth(1)
+        love.graphics.ellipse("line", v.x + 18, v.y + 18, v.range * 20, v.range * 20)
+        love.graphics.setColor(1, 1, 1, 1)
+    end
+end
+
+--- Process all Lightning Orbs and move them depending on their angle.
+function abilityObjects.lightningOrb.process(dt)
+    for i,v in ipairs(lightningOrbs) do
+        v.x = v.x + math.cos(v.angle) * v.speed * dt * gameplay.gameSpeed
+        v.y = v.y + math.sin(v.angle) * v.speed * dt * gameplay.gameSpeed
+        local farthestEnemy = findClosestEnemyInRange(v.x, v.y, v.range * 20)[#findClosestEnemyInRange(v.x, v.y, v.range * 20)]
+        local offsets = {
+            basic = 10,
+            tank = 16,
+            swift = 8,
+            sentry = 22,
+            centurion = 30,
+            }
+        if farthestEnemy and #lightningOrb_lasers < #lightningOrbs then
+            abilityObjects.lightningOrb_laser.spawn(v.x + 18, v.y + 18, math.dist(v.x + 18, v.y + 18, farthestEnemy.x + offsets[farthestEnemy.type] - 2, farthestEnemy.y + offsets[farthestEnemy.type] - 2), math.atan2(farthestEnemy.y - offsets[farthestEnemy.type] / 2 - v.y, farthestEnemy.x - offsets[farthestEnemy.type] / 2 - v.x))
+        elseif not farthestEnemy then
+            table.remove(lightningOrb_lasers, i)
+        end
+        if (v.x <= -200 or v.x >= 2120) and (v.y <= -200 or v.y >= 1280) then
+            table.remove(lightningOrbs, i)
+        end
+    end
+end
+
+--- Spawn a Lightning Orb Laser at the Lightning Orb's position, aiming at the farthest enemy in range.
+function abilityObjects.lightningOrb_laser.spawn(x, y, dist, angle)
+    lightningOrb_laser = {}
+    lightningOrb_laser.x = x
+    lightningOrb_laser.y = y
+    lightningOrb_laser.dist = dist
+    lightningOrb_laser.var = love.math.random(1, 3)
+    lightningOrb_laser.angle = angle
+    lightningOrb_laser.color = {love.math.random(0, 10000) / 10000, love.math.random(0, 10000) / 10000, love.math.random(0, 10000) / 10000, 1}
+    table.insert(lightningOrb_lasers, lightningOrb_laser)
+end
+
+--- Draw all Lightning Orb Lasers and their variations.
+function abilityObjects.lightningOrb_laser.draw()
+    local lightningOrb_laser_variations = {
+        img_lightningOrb_laser_var1,
+        img_lightningOrb_laser_var2,
+        img_lightningOrb_laser_var3
+    }
+    local offsets = {
+        basic = 10,
+        tank = 16,
+        swift = 8,
+        sentry = 22,
+        centurion = 30,
+        }
+    for i,v in ipairs(lightningOrb_lasers) do
+        love.graphics.setColor(v.color)
+        love.graphics.draw(lightningOrb_laser_variations[v.var], v.x, v.y, v.angle, v.dist / 300, 1, 0, 8)
+        table.remove(lightningOrb_lasers, i)
+    end
+end
+
+--- Process all Lightning Orb Lasers and damage to the farthest enemy in range.
+function abilityObjects.lightningOrb_laser.process(dt)
+    local damagedEnemyIndex = 1
+    for i,v in ipairs(lightningOrbs) do
+        local farthestEnemy = findClosestEnemyInRange(v.x, v.y, v.range * 20)[#findClosestEnemyInRange(v.x, v.y, v.range * 20)]
+        if farthestEnemy then
+            for j,w in ipairs(enemiesOnField) do
+                if w == farthestEnemy then
+                    damagedEnemyIndex = j
+                    break
+                end
+            end
+            damageEnemy(damagedEnemyIndex, (levelingInfo[6].damage[player.abilities.lightningOrb.level + 1] / 100) * player.tower.attackDamage * dt * gameplay.gameSpeed, false)--damageEnemy(farthestEnemy, levelingInfo[6].damage[player.abilities.lightningOrb.level + 1] * 100 * dt * player.tower.attackDamage, false)
+        end
+    end
+end
+
+--- Draw the visuals of the Jerelo's Blessing ability.
+function abilityObjects.JerelosBlessing.draw()
+    local waves = {
+        img_JerelosBlessing_waves_var1,
+        img_JerelosBlessing_waves_var2,
+        img_JerelosBlessing_waves_var3,
+        img_JerelosBlessing_waves_var4
+    }
+    local vines = {
+        img_JerelosBlessing_vines_var1,
+        img_JerelosBlessing_vines_var2,
+        img_JerelosBlessing_vines_var3,
+        img_JerelosBlessing_vines_var4
+    }
+    love.graphics.setColor(1, 1, 1, 1)
+    love.graphics.draw(img_JerelosBlessing_water, 928, 508)
+    love.graphics.draw(waves[misc.JerelosBlessingVisuals.waves], 928, 508)
+    love.graphics.draw(vines[misc.JerelosBlessingVisuals.vines], 924, 504)
 end

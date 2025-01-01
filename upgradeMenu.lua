@@ -113,7 +113,7 @@ function upgradeMenu_mouse(x, y)
             if roundUpgradeSection == upgradeSectionNames[i] then
                 for j=1,#upgradeNames[roundUpgradeSection] do
                     if i == 2 and j == 1 then
-                        round[upgradeNames[roundUpgradeSection][j]].level, round[upgradeNames[roundUpgradeSection][j]].cost, player.tower.maxHealth = processUpgradeModule.upgrade(x, y, upgradeModules["round"][roundUpgradeSection][j], reloadFormulae(upgradeModules["science"][roundUpgradeSection][j][8], upgradeModules["round"][roundUpgradeSection][j][8] + 1)["round"][roundUpgradeSection][j][1], reloadFormulae(upgradeModules["science"][roundUpgradeSection][j][8], upgradeModules["round"][roundUpgradeSection][j][8] + 1)["round"][roundUpgradeSection][j][2])
+                        round[upgradeNames[roundUpgradeSection][j]].level, round[upgradeNames[roundUpgradeSection][j]].cost, player.tower.maxHealth = processUpgradeModule.upgrade(x, y, upgradeModules["round"][roundUpgradeSection][j], reloadFormulae(upgradeModules["science"][roundUpgradeSection][j][8], upgradeModules["round"][roundUpgradeSection][j][8] + 1)["round"][roundUpgradeSection][j][1], reloadFormulae(upgradeModules["science"][roundUpgradeSection][j][8], upgradeModules["round"][roundUpgradeSection][j][8] + 1)["round"][roundUpgradeSection][j][2] * (player.abilities.JerelosBlessing.equipped and levelingInfo[7].healthIncrease[player.abilities.JerelosBlessing.level + 1] or 1))
                     else
                         round[upgradeNames[roundUpgradeSection][j]].level, round[upgradeNames[roundUpgradeSection][j]].cost, player.tower[upgradeNames[roundUpgradeSection][j]] = processUpgradeModule.upgrade(x, y, upgradeModules["round"][roundUpgradeSection][j], reloadFormulae(upgradeModules["science"][roundUpgradeSection][j][8], upgradeModules["round"][roundUpgradeSection][j][8] + 1)["round"][roundUpgradeSection][j][1], reloadFormulae(upgradeModules["science"][roundUpgradeSection][j][8], upgradeModules["round"][roundUpgradeSection][j][8] + 1)["round"][roundUpgradeSection][j][2])
                     end
@@ -121,6 +121,7 @@ function upgradeMenu_mouse(x, y)
             end
         end
 
+        -- Process upgrade section buttons and go to respective sections
         if x >= 1890 and x <= 1920 and y >= 800 and y <= 893 then
             roundUpgradeSection = "ATK"
         elseif x >= 1890 and x <= 1920 and y >= 893 and y <= 986 then

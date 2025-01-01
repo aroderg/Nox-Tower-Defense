@@ -1,3 +1,9 @@
+## NoxTD 1.0.1 Nova
+### Jan 1, 2025
+- Added the Lightning Orb and Jerelo's Blessing abilities.
+- Fixed some Abilities crashing the game upon enhancing from level 0.
+- Added the Nova tower appearance.
+
 # NoxTD 1.0 Nova
 ### Dec 12, 2024
 - Added 5 Abilities: Spiked Crystals, Scatter Fire, Burst Fire, Rainforest and Magma Touch.

@@ -117,5 +117,28 @@ function tooltips.general()
                 end
             end
         end
+
+        function tooltips.displayAbilityTags()
+            for i,v in pairs(internalAbilities) do
+                if v.menu and tooltips.hoverCheck(1180, 414, 24, 24) then
+                    local totalTags = ""
+                    local totalIncompatibilities = "{"
+                    for j,w in pairs(v.tags) do
+                        if j == "frequency" or j == "cooldown" or j == "chance" then
+                            local addedSuffix = (j == "frequency") and " (guaranteed)" or (j == "cooldown") and "s" or "%"
+                            totalTags = totalTags .. j .. ": " .. ((j == "frequency") and "1/" or "") .. w .. addedSuffix .. "\n"
+                        elseif j ~= "incompatibilities" then
+                            totalTags = totalTags .. j .. ": " .. tostring(w) .. "\n"
+                        else
+                            for k,x in pairs(w) do
+                                totalIncompatibilities = totalIncompatibilities .. x .. (k == #w and "}" or ", ")
+                            end
+                            totalTags = totalTags .. "Incompatible with: " .. totalIncompatibilities .. "\n"
+                        end
+                    end
+                    tooltips.appearance(250, font_Vera12:getHeight(totalTags) * table.len(v.tags) + 4, totalTags)
+                end
+            end
+        end
     end
 end

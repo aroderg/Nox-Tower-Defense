@@ -118,6 +118,18 @@ function saveGame()
                 level = player.abilities.magmaTouch.level,
                 equipped = player.abilities.magmaTouch.equipped,
                 amount = player.abilities.magmaTouch.amount
+            },
+            lightningOrb = {
+                unlocked = player.abilities.lightningOrb.unlocked,
+                level = player.abilities.lightningOrb.level,
+                equipped = player.abilities.lightningOrb.equipped,
+                amount = player.abilities.lightningOrb.amount
+            },
+            JerelosBlessing = {
+                unlocked = player.abilities.JerelosBlessing.unlocked,
+                level = player.abilities.JerelosBlessing.level,
+                equipped = player.abilities.JerelosBlessing.equipped,
+                amount = player.abilities.JerelosBlessing.amount
             }
         },
 

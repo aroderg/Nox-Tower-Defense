@@ -274,8 +274,8 @@ function inHub_visual()
                 if not abilityFunctions.checkMenuDisplay() and not player.menu.rolledAbilityDisplay then
                 tooltips.displayAbilityInfo()
             end
-            local alignmentOffset = (1920 - ((#internalAbilities * 150) + ((#internalAbilities - 1) * 30))) / 2
             for i,v in pairs(internalAbilities) do
+                --Draw the brief ("Card") appearance of the Ability.
                 love.graphics.setLineStyle("rough")
                 love.graphics.setColor(1, 1, 1, 0.25 + 0.75 * (v.unlocked and 1 or 0))
                 love.graphics.draw(v.preview, abilityFunctions.calculateOffset(i), 430 + math.floor((i - 1) / 5) * 230)
@@ -350,11 +350,17 @@ abilityFunctions = {
 --- Calculates an offset that is used to center all the Abilities while in the "Ability" Hub section.
 ---@param n number The number of the Ability.
 function abilityFunctions.calculateOffset(n)
-    local alignmentOffset = (1920 - ((#internalAbilities * 150) + ((#internalAbilities - 1) * 30))) / 2
-    return alignmentOffset + (n % 6 - 1) * 180
+    local alignmentOffset = 0
+    if n <= 5 then
+        alignmentOffset = (1920 - ((math.min(#internalAbilities, 6) * 150) + ((math.min(#internalAbilities - 1, 5)) * 30))) / 2
+        return alignmentOffset + (n % 6 - 0.5) * 180
+    else
+        alignmentOffset = 1920 - (((n + 1) * 150) + ((n - 0.5) * 30))
+        return alignmentOffset + (n % 6 - 0.5) * 360
+    end
 end
 
---- Draw the brief ("Card") appearance of the Ability.
+--- Draw the detailed ("Panel") appearance of the Ability.
 ---@param ability table The Ability to draw.
 function abilityFunctions.showInfo.draw(ability)
     if ability.menu then
@@ -400,9 +406,12 @@ function abilityFunctions.showInfo.draw(ability)
             ability.class == "B" and {0.35, 0.8, 0.75, 1} or
             ability.class == "A" and {0.25, 0.9, 0.75, 1} or
             {1, 1, 1, 1}
-        love.graphics.printf({{1, 1, 1, 1}, "Class: ", classColor, ability.class}, 1035, 355, 224, "center")
-        love.graphics.printf("Event: " .. ability.event, 1035, 385, 224, "center")
-        love.graphics.printf({{1, 1, 1, 1}, "Frequency: ", {0.35, 0.95, 0.7, 1}, not ability.guaranteed and ability.frequency or string.format("1/%d", ability.frequency), {1, 1, 1, 1}, ability.guaranteed and "(G)" or "", {1, 1, 1, 1}, ability.event == "Time" and "s" or not ability.guaranteed and "%" or ""}, 1035, 415, 224, "center")
+        love.graphics.printf({{1, 1, 1, 1}, "Class: ", classColor, ability.class}, 1035, 381, 224, "center")
+        love.graphics.printf({{1, 0.75, 0.5, 1}, table.len(ability.tags), {1, 1, 1, 1}, " tags"}, 1035, 411, 224, "center")
+        love.graphics.draw(img_button_questionMark, 1180, 414)
+        --love.graphics.printf("Event: " .. ability.event, 1035, 385, 224, "center")
+        --love.graphics.printf({{1, 1, 1, 1}, "Frequency: ", {0.35, 0.95, 0.7, 1}, not ability.guaranteed and ability.frequency or string.format("1/%d", ability.frequency), {1, 1, 1, 1}, ability.guaranteed and "(G)" or "", {1, 1, 1, 1}, ability.event == "Time" and "s" or not ability.guaranteed and "%" or ""}, 1035, 415, 224, "center")
+        love.graphics.setLineWidth(1)
         love.graphics.setLineStyle("smooth")
         love.graphics.printf(ability.effect, 680, 510, 560, "left")
         love.graphics.rectangle("line", 885, 360, 150, 100, 2, 2)
@@ -415,6 +424,7 @@ function abilityFunctions.showInfo.draw(ability)
         love.graphics.setFont(font_Afacad24)
         love.graphics.setColor(1, 1, 1, 1)
         love.graphics.printf("Back", 910, 682, 100, "center")
+        tooltips.displayAbilityTags()
     end
 end
 
@@ -426,7 +436,7 @@ end
 ---@param ability table The Ability to equip or unequip.
 function abilityFunctions.changeEquipState(x, y, ax, ay, ability)
     if x >= ax and x <= ax + 70 and y >= ay and y <= ay + 25 then
-        if ability.unlocked and (ability.equipped and (player.abilities.equipped <= player.abilities.maxEquipped) or (player.abilities.equipped < player.abilities.maxEquipped)) and not ability.menu and not player.menu.rolledAbilityDisplay then
+        if ability.unlocked and (ability.equipped and (player.abilities.equipped <= player.abilities.maxEquipped) or (player.abilities.equipped < player.abilities.maxEquipped)) and not ability.menu and not player.menu.rolledAbilityDisplay and abilityFunctions.checkForCompatibility(ability) then
             return not ability.equipped
         else
             return ability.equipped
@@ -434,6 +444,18 @@ function abilityFunctions.changeEquipState(x, y, ax, ay, ability)
     else
         return ability.equipped
     end
+end
+
+function abilityFunctions.checkForCompatibility(ability)
+    local compatible = true
+    if ability.tags.incompatibilities then
+        for i,v in pairs(ability.tags.incompatibilities) do
+            if player.abilities[v].equipped then
+                compatible = false
+            end
+        end
+    end
+    return compatible
 end
 
 --- Returns true if any Ability info menu is shown, used for checking if a click on any other button is valid.
@@ -502,24 +524,23 @@ function inHub_mouse(x, y)
 
         elseif hubSection == "Science" then
 
-            player.upgrades.science.attackDamage.level, player.upgrades.science.attackDamage.cost, player.tower.attackDamage = processUpgradeModule.upgrade(x, y, upgradeModules["science"]["ATK"][1], reloadFormulae(upgradeModules["science"]["ATK"][1][8] + 1)["science"]["ATK"][1][1], reloadFormulae(upgradeModules["science"]["ATK"][1][8] + 1)["science"]["ATK"][1][2])
-            player.upgrades.science.attackSpeed.level, player.upgrades.science.attackSpeed.cost, player.tower.attackSpeed = processUpgradeModule.upgrade(x, y, upgradeModules["science"]["ATK"][2], reloadFormulae(upgradeModules["science"]["ATK"][2][8] + 1)["science"]["ATK"][2][1], reloadFormulae(upgradeModules["science"]["ATK"][2][8] + 1)["science"]["ATK"][2][2])
-            player.upgrades.science.critChance.level, player.upgrades.science.critChance.cost, player.tower.critChance = processUpgradeModule.upgrade(x, y, upgradeModules["science"]["ATK"][3], reloadFormulae(upgradeModules["science"]["ATK"][3][8] + 1)["science"]["ATK"][3][1], reloadFormulae(upgradeModules["science"]["ATK"][3][8] + 1)["science"]["ATK"][3][2])
-            player.upgrades.science.critFactor.level, player.upgrades.science.critFactor.cost, player.tower.critFactor = processUpgradeModule.upgrade(x, y, upgradeModules["science"]["ATK"][4], reloadFormulae(upgradeModules["science"]["ATK"][4][8] + 1)["science"]["ATK"][4][1], reloadFormulae(upgradeModules["science"]["ATK"][4][8] + 1)["science"]["ATK"][4][2])
-            player.upgrades.science.range.level, player.upgrades.science.range.cost, player.tower.range = processUpgradeModule.upgrade(x, y, upgradeModules["science"]["ATK"][5], reloadFormulae(upgradeModules["science"]["ATK"][5][8] + 1)["science"]["ATK"][5][1], reloadFormulae(upgradeModules["science"]["ATK"][5][8] + 1)["science"]["ATK"][5][2])
-
-            player.upgrades.science.health.level, player.upgrades.science.health.cost, player.tower.maxHealth = processUpgradeModule.upgrade(x, y, upgradeModules["science"]["VIT"][1], reloadFormulae(upgradeModules["science"]["VIT"][1][8] + 1)["science"]["VIT"][1][1], reloadFormulae(upgradeModules["science"]["VIT"][1][8] + 1)["science"]["VIT"][1][2])
-            player.upgrades.science.regeneration.level, player.upgrades.science.regeneration.cost, player.tower.regeneration = processUpgradeModule.upgrade(x, y, upgradeModules["science"]["VIT"][2], reloadFormulae(upgradeModules["science"]["VIT"][2][8] + 1)["science"]["VIT"][2][1], reloadFormulae(upgradeModules["science"]["VIT"][2][8] + 1)["science"]["VIT"][2][2])
-            player.upgrades.science.resistance.level, player.upgrades.science.resistance.cost, player.tower.resistance = processUpgradeModule.upgrade(x, y, upgradeModules["science"]["VIT"][3], reloadFormulae(upgradeModules["science"]["VIT"][3][8] + 1)["science"]["VIT"][3][1], reloadFormulae(upgradeModules["science"]["VIT"][3][8] + 1)["science"]["VIT"][3][2])
-            player.upgrades.science.shieldCooldown.level, player.upgrades.science.shieldCooldown.cost, player.tower.shieldCooldown = processUpgradeModule.upgrade(x, y, upgradeModules["science"]["VIT"][4], reloadFormulae(upgradeModules["science"]["VIT"][4][8] + 1)["science"]["VIT"][4][1], reloadFormulae(upgradeModules["science"]["VIT"][4][8] + 1)["science"]["VIT"][4][2])
-            player.upgrades.science.shieldDuration.level, player.upgrades.science.shieldDuration.cost, player.tower.shieldDuration = processUpgradeModule.upgrade(x, y, upgradeModules["science"]["VIT"][5], reloadFormulae(upgradeModules["science"]["VIT"][5][8] + 1)["science"]["VIT"][5][1], reloadFormulae(upgradeModules["science"]["VIT"][5][8] + 1)["science"]["VIT"][5][2])
-            player.upgrades.science.meteorAmount.level, player.upgrades.science.meteorAmount.cost, player.tower.meteorAmount = processUpgradeModule.upgrade(x, y, upgradeModules["science"]["VIT"][6], reloadFormulae(upgradeModules["science"]["VIT"][6][8] + 1)["science"]["VIT"][6][1], reloadFormulae(upgradeModules["science"]["VIT"][6][8] + 1)["science"]["VIT"][6][2])
-            player.upgrades.science.meteorRPM.level, player.upgrades.science.meteorRPM.cost, player.tower.meteorRPM = processUpgradeModule.upgrade(x, y, upgradeModules["science"]["VIT"][7], reloadFormulae(upgradeModules["science"]["VIT"][7][8] + 1)["science"]["VIT"][7][1], reloadFormulae(upgradeModules["science"]["VIT"][7][8] + 1)["science"]["VIT"][7][2])
-
-            player.upgrades.science.copperPerWave.level, player.upgrades.science.copperPerWave.cost, player.tower.copperPerWave = processUpgradeModule.upgrade(x, y, upgradeModules["science"]["UTL"][1], reloadFormulae(upgradeModules["science"]["UTL"][1][8] + 1)["science"]["UTL"][1][1], reloadFormulae(upgradeModules["science"]["UTL"][1][8] + 1)["science"]["UTL"][1][2])
-            player.upgrades.science.silverPerWave.level, player.upgrades.science.silverPerWave.cost, player.tower.silverPerWave = processUpgradeModule.upgrade(x, y, upgradeModules["science"]["UTL"][2], reloadFormulae(upgradeModules["science"]["UTL"][2][8] + 1)["science"]["UTL"][2][1], reloadFormulae(upgradeModules["science"]["UTL"][2][8] + 1)["science"]["UTL"][2][2])
-            player.upgrades.science.copperBonus.level, player.upgrades.science.copperBonus.cost, player.tower.copperBonus = processUpgradeModule.upgrade(x, y, upgradeModules["science"]["UTL"][3], reloadFormulae(upgradeModules["science"]["UTL"][3][8] + 1)["science"]["UTL"][3][1], reloadFormulae(upgradeModules["science"]["UTL"][3][8] + 1)["science"]["UTL"][3][2])
-            player.upgrades.science.silverBonus.level, player.upgrades.science.silverBonus.cost, player.tower.silverBonus = processUpgradeModule.upgrade(x, y, upgradeModules["science"]["UTL"][4], reloadFormulae(upgradeModules["science"]["UTL"][4][8] + 1)["science"]["UTL"][4][1], reloadFormulae(upgradeModules["science"]["UTL"][4][8] + 1)["science"]["UTL"][4][2])
+            local science = player.upgrades.science
+            local upgradeNames = {
+                ATK = {"attackDamage", "attackSpeed", "critChance", "critFactor", "range"},
+                VIT = {"health", "regeneration", "resistance", "shieldCooldown", "shieldDuration", "meteorAmount", "meteorRPM"},
+                UTL = {"copperPerWave", "silverPerWave", "copperBonus", "silverBonus"}
+            }
+            local upgradeSectionNames = {"ATK", "VIT", "UTL"}
+            for i=1,#upgradeSectionNames do
+                local currentProcessedSection = upgradeSectionNames[i]
+                for j=1,#upgradeNames[currentProcessedSection] do
+                    if i == 2 and j == 1 then
+                        player.upgrades.science.health.level, player.upgrades.science.health.cost, player.tower.maxHealth = processUpgradeModule.upgrade(x, y, upgradeModules["science"][currentProcessedSection][1], reloadFormulae(upgradeModules["science"][currentProcessedSection][1][8] + 1)["science"][upgradeSectionNames[i]][1][1], reloadFormulae(upgradeModules["science"][currentProcessedSection][1][8] + 1)["science"][currentProcessedSection][1][2] * (player.abilities.JerelosBlessing.equipped and levelingInfo[7].healthIncrease[player.abilities.JerelosBlessing.level + 1] or 1))
+                    else
+                        player.upgrades.science[upgradeNames[currentProcessedSection][j]].level, player.upgrades.science[upgradeNames[currentProcessedSection][j]].cost, player.tower[upgradeNames[currentProcessedSection][j]] = processUpgradeModule.upgrade(x, y, upgradeModules["science"][currentProcessedSection][j], reloadFormulae(upgradeModules["science"][currentProcessedSection][j][8] + 1)["science"][currentProcessedSection][j][1], reloadFormulae(upgradeModules["science"][currentProcessedSection][j][8] + 1)["science"][currentProcessedSection][j][2])
+                    end
+                end
+            end
 
             unlockPanelsPressed = 0
             player.upgrades.unlocks.crit = processUnlockPanel.clickCheck(x, y, unlockPanels["crit"])
@@ -671,9 +692,14 @@ function inHub_mouse(x, y)
                 player.menu.rolledAbilityDisplay = false
             end
             for i,v in pairs(internalAbilities) do
-                player.abilities[v.internalName].equipped = abilityFunctions.changeEquipState(x, y, abilityFunctions.calculateOffset(i) + 76, 570, v)
-                player.menu.abilities[v.internalName] = abilityFunctions.showInfo.process(x, y, abilityFunctions.calculateOffset(i) + 5, 570, v)
+                player.abilities[v.internalName].equipped = abilityFunctions.changeEquipState(x, y, abilityFunctions.calculateOffset(i) + 76, 570 + math.floor((i - 1) / 5) * 230, v)
+                player.menu.abilities[v.internalName] = abilityFunctions.showInfo.process(x, y, abilityFunctions.calculateOffset(i) + 5, 570 + math.floor((i - 1) / 5) * 230, v)
                 player.abilities[v.internalName].level, player.abilities[v.internalName].amount = abilityFunctions.upgrade(x, y, v)
+                if v.internalName == "JerelosBlessing" then
+                    player.tower.maxHealth = reloadFormulae(player.upgrades.round.health.level)["science"]["VIT"][1][2] * (player.abilities.JerelosBlessing.equipped and levelingInfo[7].healthIncrease[v.level + 1] or 1)
+                    player.tower.currentHealth = player.tower.maxHealth
+                    processUpgradeModule.reload()
+                end
             end
             abilityFunctions.updateInternals()
         end

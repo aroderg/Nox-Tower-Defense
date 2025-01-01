@@ -1,5 +1,6 @@
 function love.load()
     lume = require "lume"
+    require "technical"
     require "loadGame"
     require "saveGame"
     require "towers"
@@ -16,16 +17,21 @@ function love.load()
     background = "nova"
     --- Reloads all images.
     function assetReload()
+        --Backgrounds
         img_background = love.graphics.newImage("assets/background.png")
         img_background_stellar = love.graphics.newImage("assets/background_stellar.png")
         img_background_eclipse = love.graphics.newImage("assets/background_eclipse.png")
         img_background_nova = love.graphics.newImage("assets/background_nova.png")
+
+        --Currencies
         img_currency_copper = love.graphics.newImage("assets/currency_copper.png")
         img_currency_silver = love.graphics.newImage("assets/currency_silver.png")
         img_currency_gold = love.graphics.newImage("assets/currency_gold.png")
         img_currency_electrum = love.graphics.newImage("assets/currency_electrum.png")
         img_currency_token = love.graphics.newImage("assets/currency_token.png")
         img_currency_token_big = love.graphics.newImage("assets/currency_token_big.png")
+
+        --Tower objects
         img_tower_main = love.graphics.newImage("assets/tower_main.png")
         img_tower_main_shielded = love.graphics.newImage("assets/tower_main_shielded.png")
         img_tower_eclipse_sun = love.graphics.newImage("assets/tower_eclipse_sun.png")
@@ -33,15 +39,24 @@ function love.load()
         img_tower_eclipse_sun2_shielded = love.graphics.newImage("assets/tower_eclipse_sun2_shielded.png")
         img_tower_eclipse_moon = love.graphics.newImage("assets/tower_eclipse_moon.png")
         img_tower_eclipse_moon2 = love.graphics.newImage("assets/tower_eclipse_moon2.png")
+        img_tower_nova_static = love.graphics.newImage("assets/tower_nova_static.png")
+        img_tower_nova_outerLines = love.graphics.newImage("assets/tower_nova_outerLines.png")
+        img_tower_nova_branches = love.graphics.newImage("assets/tower_nova_branches.png")
         img_tower_projectile = love.graphics.newImage("assets/tower_projectile.png")
+
+        --Enemies
         img_enemy_basic = love.graphics.newImage("assets/enemy_basic.png")
         img_enemy_tank = love.graphics.newImage("assets/enemy_tank.png")
         img_enemy_swift = love.graphics.newImage("assets/enemy_swift.png")
         img_enemy_sentry = love.graphics.newImage("assets/enemy_sentry.png")
         img_enemy_centurion = love.graphics.newImage("assets/enemy_centurion.png")
+
+        --Icons
         img_icon_enemy_health = love.graphics.newImage("assets/icon_enemy_health.png")
         img_icon_enemy_attack = love.graphics.newImage("assets/icon_enemy_attack.png")
         img_icon_player_attack = love.graphics.newImage("assets/icon_player_attack.png")
+
+        --Particles
         img_particle_collapse = love.graphics.newImage("assets/particle_collapse.png")
         img_particle_kill_enemy_basic = love.graphics.newImage("assets/particle_kill_enemy_basic.png")
         img_particle_kill_enemy_tank = love.graphics.newImage("assets/particle_kill_enemy_tank.png")
@@ -50,14 +65,19 @@ function love.load()
         img_particle_kill_enemy_centurion = love.graphics.newImage("assets/particle_kill_enemy_centurion.png")
         img_particle_crystalExplosion = love.graphics.newImage("assets/particle_crystalExplosion.png")
         img_particle_burn = love.graphics.newImage("assets/particle_burn.png")
+        img_particle_meteor = love.graphics.newImage("assets/particle_meteor.png")
+
+        --Buttons
         img_button_pause = love.graphics.newImage("assets/button_pause.png")
         img_button_arrowLeft = love.graphics.newImage("assets/button_arrowLeft.png")
         img_button_arrowRight = love.graphics.newImage("assets/button_arrowRight.png")
         img_button_arrowLeft_big = love.graphics.newImage("assets/button_arrowLeft_big.png")
         img_button_arrowRight_big = love.graphics.newImage("assets/button_arrowRight_big.png")
         img_button_questionMark = love.graphics.newImage("assets/button_questionMark.png")
+
         img_meteor = love.graphics.newImage("assets/meteor.png")
-        img_particle_meteor = love.graphics.newImage("assets/particle_meteor.png")
+
+        --Ability objects
         img_crystal = love.graphics.newImage("assets/crystal.png")
         img_crystal_multilayered_l1 = love.graphics.newImage("assets/crystal_multilayered_l1.png")
         img_crystal_multilayered_l2 = love.graphics.newImage("assets/crystal_multilayered_l2.png")
@@ -65,12 +85,31 @@ function love.load()
         img_crystal_aoe = love.graphics.newImage("assets/crystal_aoe.png")
         img_rainforest = love.graphics.newImage("assets/rainforest.png")
         img_magmaTouch_pool = love.graphics.newImage("assets/magmaTouch_pool.png")
+        img_lightningOrb = love.graphics.newImage("assets/lightningOrb.png")
+        img_lightningOrb_shadow = love.graphics.newImage("assets/lightningOrb_shadow.png")
+        img_lightningOrb_laser_var1 = love.graphics.newImage("assets/lightningOrb_laser_var1.png")
+        img_lightningOrb_laser_var2 = love.graphics.newImage("assets/lightningOrb_laser_var2.png")
+        img_lightningOrb_laser_var3 = love.graphics.newImage("assets/lightningOrb_laser_var3.png")
+        img_JerelosBlessing_vines_var1 = love.graphics.newImage("assets/JerelosBlessing_vines_var1.png")
+        img_JerelosBlessing_vines_var2 = love.graphics.newImage("assets/JerelosBlessing_vines_var2.png")
+        img_JerelosBlessing_vines_var3 = love.graphics.newImage("assets/JerelosBlessing_vines_var3.png")
+        img_JerelosBlessing_vines_var4 = love.graphics.newImage("assets/JerelosBlessing_vines_var4.png")
+        img_JerelosBlessing_water = love.graphics.newImage("assets/JerelosBlessing_water.png")
+        img_JerelosBlessing_waves_var1 = love.graphics.newImage("assets/JerelosBlessing_waves_var1.png")
+        img_JerelosBlessing_waves_var2 = love.graphics.newImage("assets/JerelosBlessing_waves_var2.png")
+        img_JerelosBlessing_waves_var3 = love.graphics.newImage("assets/JerelosBlessing_waves_var3.png")
+        img_JerelosBlessing_waves_var4 = love.graphics.newImage("assets/JerelosBlessing_waves_var4.png")
+
+        --Ability previews
         img_ability_preview_spikedCrystals = love.graphics.newImage("assets/ability_preview_spikedCrystals.png")
         img_ability_preview_scatterFire = love.graphics.newImage("assets/ability_preview_scatterFire.png")
         img_ability_preview_burstFire = love.graphics.newImage("assets/ability_preview_burstFire.png")
         img_ability_preview_rainforest = love.graphics.newImage("assets/ability_preview_rainforest.png")
         img_ability_preview_magmaTouch = love.graphics.newImage("assets/ability_preview_magmaTouch.png")
+        img_ability_preview_lightningOrb = love.graphics.newImage("assets/ability_preview_lightningOrb.png")
+        img_ability_preview_JerelosBlessing = love.graphics.newImage("assets/ability_preview_JerelosBlessing.png")
 
+        --Audio
         audio_enemy_kill = love.audio.newSource("assets/audio/enemy_kill.wav", "static")
         audio_enemy_kill_centurion = love.audio.newSource("assets/audio/enemy_kill_centurion.wav", "static")
         audio_enemy_kill_sentry = love.audio.newSource("assets/audio/enemy_kill_sentry.wav", "static")
@@ -82,7 +121,7 @@ function love.load()
         audio_tower_fire = love.audio.newSource("assets/audio/tower_fire.wav", "static")
         audio_rainforest_activation = love.audio.newSource("assets/audio/rainforest_activation.wav", "static")
     end
-    --- Reloads all fonts.
+    ---Reloads all fonts.
     function fontReload()
         font_Vera12 = love.graphics.newFont("assets/fonts/Vera/Vera.ttf", 12)
         font_Vera16 = love.graphics.newFont("assets/fonts/Vera/Vera.ttf", 16)
@@ -280,7 +319,7 @@ function processUpgradeModule.draw(module)
         love.graphics.setFont(font_Afacad20)
         local buttonXY = {attributes.width - 90 - 3, 3}
         if module == upgradeModules["round"]["ATK"][5] or module == upgradeModules["science"]["ATK"][5] then
-            love.graphics.print(string.format("%s: %s%s%s", attributes.name or "Upgrade Name", attributes.prefix or "", notations.convertToLetterNotation(attributes.value / 20, attributes.precision), attributes.suffix or ""), attributes.ux + 5, attributes.uy + ((attributes.height - buttonXY[2] * 2) / 2) - 11)
+            love.graphics.print(string.format("%s: %s%s%s", attributes.name or "Upgrade Name", attributes.prefix or "", notations.convertToLetterNotation(attributes.value / 20, attributes.precision), "u", attributes.suffix or ""), attributes.ux + 5, attributes.uy + ((attributes.height - buttonXY[2] * 2) / 2) - 11)
         else
             love.graphics.print(string.format("%s: %s%s%s", attributes.name or "Upgrade Name", attributes.prefix or "", notations.convertToLetterNotation(attributes.value, attributes.precision), attributes.suffix or ""), attributes.ux + 5, attributes.uy + ((attributes.height - buttonXY[2] * 2) / 2) - 11)
         end
@@ -456,7 +495,7 @@ function createProjectile(x, y, speed, scatterFire, burstFire)
         projectile.angle = love.math.random(0, 2 * math.pi * 10000) / 10000
         projectilesCreated = projectilesCreated + 1
     else
-        findClosestEnemyInRange()
+        findClosestEnemyInRange(960, 540, player.tower.range)
         local offsets = {
             basic = 10,
             tank = 16,
@@ -464,7 +503,7 @@ function createProjectile(x, y, speed, scatterFire, burstFire)
             sentry = 22,
             centurion = 30,
             }
-        projectile.angle = math.atan2(closestEnemies[1].y - 540 + offsets[closestEnemies[1].type], closestEnemies[1].x - 960 + offsets[closestEnemies[1].type])
+        projectile.angle = math.atan2(findClosestEnemyInRange(960, 540, player.tower.range)[1].y - 540 + offsets[findClosestEnemyInRange(960, 540, player.tower.range)[1].type], findClosestEnemyInRange(960, 540, player.tower.range)[1].x - 960 + offsets[findClosestEnemyInRange(960, 540, player.tower.range)[1].type])
         projectilesCreated = projectilesCreated + 1
     end
     table.insert(projectilesOnField, projectile)
@@ -578,8 +617,8 @@ function createEnemy(hp, speed, attackSpeed, attackDamage)
     table.insert(enemiesOnField, enemy)
 end
 
---- Find the closest enemy within the tower range, returns nil if no enemies are within the tower range.
-function findClosestEnemyInRange()
+--- Find the closest enemy within the specified range, returns nil if no enemies are within.
+function findClosestEnemyInRange(x, y, range)
     local offsets = {
         basic = 12,
         tank = 18,
@@ -589,16 +628,16 @@ function findClosestEnemyInRange()
         }
 
     table.sort(enemiesOnField, function(a, b)
-        return math.dist(960, 540, a.x + offsets[a.type], a.y + offsets[a.type]) < math.dist(960, 540, b.x + offsets[b.type], b.y + offsets[b.type])
+        return math.dist(x, y, a.x + offsets[a.type], a.y + offsets[a.type]) < math.dist(x, y, b.x + offsets[b.type], b.y + offsets[b.type])
     end)
     local enemiesSorted = {}
     for i,v in ipairs(enemiesOnField) do
-        if math.dist(960, 540, v.x + offsets[v.type], v.y + offsets[v.type]) < player.tower.range then
+        if math.dist(x, y, v.x + offsets[v.type], v.y + offsets[v.type]) < range then
             table.insert(enemiesSorted, v)
         end
     end
     closestEnemies = enemiesSorted
-    return closestEnemies
+    return enemiesSorted
 end
 
 --- Draw the Sentry boss bar if the Sentry is alive.
@@ -671,13 +710,19 @@ function skipWave(wavesSkipped)
     if wavesSkipped > 0 then
         waveSkipMessage = true
     end
+
+    local JerelosBlessingRegen = love.math.random(0, 10000) / 100
+    if JerelosBlessingRegen <= levelingInfo[7].regenChance[player.abilities.JerelosBlessing.level + 1] then
+        player.tower.currentHealth = player.tower.maxHealth
+    end
+
     player.stats.battle.wavesSkipped = player.stats.battle.wavesSkipped + wavesSkipped
     player.stats.save.wavesSkipped = player.stats.save.wavesSkipped + wavesSkipped
     timers.waveSkip = 0
 end
 
 --- Kill the specified enemy by adding its drops to the player's resources, removing the enemy from the game field and creating some kill particles.
----@param s table The enemy to be killed.
+---@param s number The enemy to be killed.
 function killEnemy(s)
     local ke = enemiesOnField[s]
     local offsets = {
@@ -768,7 +813,7 @@ function killEnemy(s)
 end
 
 --- Damage an enemy and create a Hit text particle.
----@param s table The enemy to be damaged.
+---@param s number The enemy to be damaged.
 ---@param damage number Amount of damage to deal to the enemy.
 ---@param crit boolean Whether this hit is a Critical one or not.
 function damageEnemy(s, damage, crit)
@@ -869,27 +914,10 @@ function love.draw()
         love.graphics.ellipse("line", 960, 540, TOWER_SIZE, TOWER_SIZE)
         love.graphics.setLineStyle("rough")
         love.graphics.setFont(font_Vera16)
-        towers.eclipse2()
-        for i,v in ipairs(spikedCrystals) do
-            if v.state == "alive" then
-                love.graphics.draw(img_crystal_multilayered_l1, v.x + 11, v.y + 11, v.timer_lifespan / 5.75, 1, 1, 11, 11)
-                love.graphics.draw(img_crystal_multilayered_l2, v.x + 11, v.y + 11, v.timer_lifespan / 5.75, 1, 1, 11, 11)
-                love.graphics.draw(img_crystal_multilayered_l3, v.x + 11, v.y + 11, v.timer_lifespan / 5.75, 1, 1, 11, 11)
-            else
-                local cs = math.min(1 + v.timer_explosion * 7.5, 2)
-                love.graphics.setColor(1, 1, 1, 1 - v.timer_explosion / 0.2)
-                love.graphics.draw(img_crystal_aoe, v.x + 11 - 16 * cs, v.y + 11 - 16 * cs, 0, cs / 2, cs / 2)
-                love.graphics.setColor(1, 1, 1, 1)
-                love.graphics.setColor(1, 1, 1, 1 - v.timer_explosion / v.timer_explosionDuration)
-                love.graphics.draw(img_crystal_multilayered_l1, v.x + 11, v.y + 11, v.timer_explosion * 8, cs, 1, 11, 11)
-                love.graphics.draw(img_crystal_multilayered_l2, v.x + 11, v.y + 11, v.timer_explosion * 12, cs, 1, 11, 11)
-                love.graphics.draw(img_crystal_multilayered_l3, v.x + 11, v.y + 11, v.timer_explosion * 18, cs, 1, 11, 11)
-                love.graphics.setColor(1, 1, 1, 1)
-            end
+        if player.abilities.JerelosBlessing.equipped then
+            abilityObjects.JerelosBlessing.draw()
         end
-        for i,v in ipairs(magmaPools) do
-            love.graphics.draw(img_magmaTouch_pool, v.x, v.y)
-        end
+        towers.nova()
         particles.render.burn()
         love.graphics.setColor(1, 1, 1, 1)
         --[[ Different enemy types have different appearances ingame ]]--
@@ -933,6 +961,10 @@ function love.draw()
         for i,v in ipairs(meteors) do
             love.graphics.draw(img_meteor, v.x - 14, v.y - 14)
         end
+        abilityObjects.spikedCrystal.draw()
+        abilityObjects.magmaPool.draw()
+        abilityObjects.lightningOrb_laser.draw()
+        abilityObjects.lightningOrb.draw()
         renderParticles()
         drawUpgradeMenu()
         towerInfo_visual()
@@ -988,10 +1020,13 @@ function love.draw()
                 love.graphics.draw(enemyStats[2][i], columnCenters[1] - 13, rowCenters[i+1], 0, 24 / enemySize[i])
             end
             love.graphics.setFont(font_Afacad20)
-            for i=1,3 do
+            for i=1,2 do
                 for j=1,#enemyStats[2] do
                     love.graphics.printf(notations.convertToLetterNotation(enemyStats[i+2][j], "precise"), columnCenters[i+1] - wrapWidth / 2, rowCenters[j+1] - 2, wrapWidth, "center")
                 end
+            end
+            for i=1,#enemyStats[5] do
+                love.graphics.printf(string.format("%.1fu", enemyStats[5][i]), columnCenters[4] - wrapWidth / 2, rowCenters[i+1] - 2, wrapWidth, "center")
             end
             for i=1,#enemyStats[2] do
                 love.graphics.printf(string.format("%.1f%%", enemyStats[6][i]), columnCenters[5] - wrapWidth / 2, rowCenters[i+1] - 2, wrapWidth, "center")
@@ -1171,12 +1206,12 @@ function love.update(dt)
         --[[ Automatically shoot the closest enemy in range ]]--
         if player.tower.currentHealth > 0 then
             if not player.menu.paused then
-                towers.eclipse2(true, dt)
+                towers.nova(true, dt)
             end
             if timers.projectile < 1 / player.tower.attackSpeed then
                 timers.projectile = timers.projectile + dt * gameplay.gameSpeed
             else
-                if closestEnemies[1] ~= nil then
+                if findClosestEnemyInRange(960, 540, player.tower.range)[1] ~= nil then
                     timers.projectile = 0
                     local scatterFireChance = love.math.random(0, 10000) / 100
                     local burstFireChance = love.math.random(0, 10000) / 100
@@ -1214,7 +1249,7 @@ function love.update(dt)
                     enemyAttributes.pendingEnemies = enemyAttributes.pendingEnemies - 1
                 end
             end
-            findClosestEnemyInRange()
+            findClosestEnemyInRange(960, 540, player.tower.range)
         end
         --[[ Move projectiles depending on their angle ]]--
         for i,v in ipairs(projectilesOnField) do
@@ -1239,7 +1274,6 @@ function love.update(dt)
                     local critFactor = v.isCrit and player.tower.critFactor or 1
                     local damage = player.tower.attackDamage * critFactor
                     damageEnemy(j, damage, v.isCrit)
-                    closestEnemies = {}
                     break
                 end
             end
@@ -1351,74 +1385,14 @@ function love.update(dt)
                 if v.x + 13 > w.x + 2 and v.x - 13 < w.x + size[w.type] and v.y + 13 > w.y + 2 and v.y - 13 < w.y + size[w.type] and player.tower.currentHealth > 0 then
                     if w.type == "basic" or w.type == "tank" or w.type == "swift" then
                         killEnemy(j)
-                        closestEnemies[1] = nil
                     end
                 end
             end
         end
-
-        for i,v in ipairs(spikedCrystals) do
-            local size = {
-                basic = 22,
-                tank = 34,
-                swift = 16,
-                sentry = 46,
-                centurion = 62,
-            }
-
-            local offsets = {
-                basic = 10,
-                tank = 16,
-                swift = 8,
-                sentry = 22,
-                centurion = 30,
-            }
-            v.timer_lifespan = v.timer_lifespan + dt * gameplay.gameSpeed
-            if v.state == "exploding" then
-                audio_crystal_explosion:setVolume(1 * player.settings.volume^2)
-                audio_crystal_explosion:play()
-                if v.timer_explosion < v.timer_explosionDuration then
-                    v.timer_explosion = v.timer_explosion + dt * gameplay.gameSpeed
-                else
-                    for i=1,8*settings_particleMultipliers[player.settings.particleMultiplier] do
-                        createCrystalExplosionParticle(v.x + 11, v.y + 11)
-                    end
-                    table.remove(spikedCrystals, i)
-                end
-            end
-            for j,w in ipairs(enemiesOnField) do
-                if v.x + 20 > w.x + 2 and v.x + 2 < w.x + size[w.type] and v.y + 20 > w.y + 2 and v.y + 2 < w.y + size[w.type] and player.tower.currentHealth > 0 and v.state == "alive" and math.dist(v.x + 11, v.y + 11, w.x + offsets[w.type], w.y + offsets[w.type]) < 64 then
-                    local damage = player.tower.attackDamage * (levelingInfo[1].damage[player.abilities.spikedCrystals.level + 1] / 100)
-                    damageEnemy(j, damage)
-                    v.state = "exploding"
-                end
-            end
-        end
-
-        for i,v in ipairs(magmaPools) do
-            local size = {
-                basic = 22,
-                tank = 34,
-                swift = 16,
-                sentry = 46,
-                centurion = 62,
-            }
-
-            local offsets = {
-                basic = 10,
-                tank = 16,
-                swift = 8,
-                sentry = 22,
-                centurion = 30,
-            }
-            for j,w in ipairs(enemiesOnField) do
-                if math.dist(v.x + 18, v.y + 18, w.x + size[w.type] / 2, w.y + size[w.type] / 2) < 16 + size[w.type] / 2 then
-                    table.remove(magmaPools, i)
-                    damageEnemy(j, player.tower.attackDamage * (levelingInfo[5].damage[player.abilities.magmaTouch.level + 1] / 100))
-                    w.burningTime = 4.025
-                end
-            end
-        end
+        abilityObjects.spikedCrystal.process(dt)
+        abilityObjects.magmaPool.process(dt)
+        abilityObjects.lightningOrb.process(dt)
+        abilityObjects.lightningOrb_laser.process(dt)
 
         --[[ If no enemies on field are present and the wave enemy cap is reached, wait a few seconds before advancing to the next wave ]]--
         if player.tower.currentHealth > 0 then
@@ -1461,6 +1435,10 @@ function love.update(dt)
                         if waveSkip > player.modifiers.waveSkip.value then
                             break
                         end
+                    end
+                    local JerelosBlessingRegen = love.math.random(0, 10000) / 100
+                    if JerelosBlessingRegen <= levelingInfo[7].regenChance[player.abilities.JerelosBlessing.level + 1] then
+                        player.tower.currentHealth = player.tower.maxHealth
                     end
                     skipWave(wavesSkipped)
                     updateEnemyStats(gameplay.difficulty, gameplay.wave)
@@ -1505,17 +1483,6 @@ function love.update(dt)
         updateParticles(dt)
         player.stats.battle.time = player.stats.battle.time + dt * gameplay.gameSpeed
 
-        if player.abilities.spikedCrystals.unlocked and player.abilities.spikedCrystals.equipped then
-            if timers.crystal < levelingInfo[1].frequency[player.abilities.spikedCrystals.level + 1] then
-                timers.crystal = timers.crystal + dt * gameplay.gameSpeed
-            else
-                timers.crystal = 0
-                for i=1,math.max(levelingInfo[1].quantity[player.abilities.spikedCrystals.level + 1] - #spikedCrystals, 0) do
-                    spawnCrystal()
-                end
-            end
-        end
-
         if player.abilities.rainforest.unlocked and player.abilities.rainforest.equipped then
             if gameplay.wave >= 20 then
                 rainforestActive = (gameplay.wave % 10 <= 4) and true or false
@@ -1528,8 +1495,17 @@ function love.update(dt)
             else
                 if #magmaPools < 20 then
                     timers.magmaPool = 0
-                    spawnMagmaPool()
+                    abilityObjects.magmaPool.spawn()
                 end
+            end
+        end
+
+        if player.abilities.lightningOrb.unlocked and player.abilities.lightningOrb.equipped then
+            if timers.lightningOrb < levelingInfo[6].frequency[player.abilities.lightningOrb.level + 1] then
+                timers.lightningOrb = timers.lightningOrb + dt * gameplay.gameSpeed
+            else
+                timers.lightningOrb = 0
+                abilityObjects.lightningOrb.spawn()
             end
         end
 

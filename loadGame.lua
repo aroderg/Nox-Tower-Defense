@@ -250,6 +250,18 @@ function loadGame()
                 equipped = data.player.abilities.magmaTouch.equipped,
                 amount = data.player.abilities.magmaTouch.amount
             },
+            lightningOrb = {
+                unlocked = data.player.abilities.lightningOrb.unlocked,
+                level = data.player.abilities.lightningOrb.level,
+                equipped = data.player.abilities.lightningOrb.equipped,
+                amount = data.player.abilities.lightningOrb.amount
+            },
+            JerelosBlessing = {
+                unlocked = data.player.abilities.JerelosBlessing.unlocked,
+                level = data.player.abilities.JerelosBlessing.level,
+                equipped = data.player.abilities.JerelosBlessing.equipped,
+                amount = data.player.abilities.JerelosBlessing.amount
+            },
         }
 
         player.misc = {}
@@ -482,6 +494,18 @@ function loadGame()
                 level = 0,
                 equipped = false,
                 amount = 0
+            },
+            lightningOrb = {
+                unlocked = false,
+                level = 0,
+                equipped = false,
+                amount = 0
+            },
+            JerelosBlessing = {
+                unlocked = false,
+                level = 0,
+                equipped = false,
+                amount = 0
             }
         }
 
@@ -531,7 +555,8 @@ function loadGame()
             scatterFire = false,
             burstFire = false,
             rainforest = false,
-            magmaTouch = false
+            magmaTouch = false,
+            lightningOrb = false
         }
     }
     player.menu.saveStats = false
@@ -544,32 +569,45 @@ function loadGame()
                 --| SPIKED CRYSTALS - LEVELS FROM 0 to 11 |--
                 quantity =          {4,   4,   5,   5,   6,    6,    7,   7,   8,   8,   9,   10},
                 damage =            {250, 275, 300, 325, 350,  375,  400, 450, 500, 550, 600, 600}, -- %
-                frequency =         {16,  15,  14,  13,  12.2, 11.6, 10,  9.5, 9,   8.6, 8.2, 8},
+                frequency =         {16,  15,  14,  13,  12.2, 11.6, 10,  9.5, 9,   8.6, 8.2, 8}, -- seconds
                 levelRequirements = {2,   2,   2,   3,   3,    4,    5,   6,   8,   10,  12,  15}
             },
             {
                 --| SCATTER FIRE - LEVELS FROM 0 to 11 |--
                 quantity =          {4, 4,   4, 6, 6,   6, 8,  8,   10,  10, 12, 16},
-                frequency =         {1, 1.5, 2, 2, 2.5, 3, 3,  3.5, 3.5, 4,  4,  4}, -- %
+                frequency =         {1, 1.5, 2, 2, 2.5, 3, 3,  3.5, 3.5, 4,  4,  4}, -- % (chance)
                 levelRequirements = {2, 2,   3, 3, 4,   4, 5,  6,   7,   8,  10, 15}
             },
             {
                 --| BURST FIRE - LEVELS FROM 0 to 8 |--
                 quantity =          {4,   4, 4,   6,   6, 8, 8,   12,   12, 12},
-                frequency =         {1.5, 2, 2.5, 2.5, 3, 3, 3.5, 3.5,  4,  5}, -- %
+                frequency =         {1.5, 2, 2.5, 2.5, 3, 3, 3.5, 3.5,  4,  5}, -- % (chance)
                 levelRequirements = {2,   3, 4,   5,   6, 8, 10,  15,   15, 18}
             },
             {
                 --| RAINFOREST - LEVELS FROM 0 to 10 |--
-                density =           {10, 12, 14, 16, 18, 20, 22.5, 25, 27.5, 30, 32.5},
+                density =           {10, 12, 14, 16, 18, 20, 22.5, 25, 27.5, 30, 32.5}, -- % (slowdown)
                 frequency =         10, -- waves
                 levelRequirements = {1,  1,  2,  2,  3,  3,  4,    5,  6,    7,  8}
             },
             {
                 --| MAGMA TOUCH - LEVELS FROM 0 to 9 |--
-                frequency =         {20,  18.5, 16, 14.5, 13.5, 12.5, 11.5, 11,   10.5, 10},
+                frequency =         {20,  18.5, 16, 14.5, 13.5, 12.5, 11.5, 11,   10.5, 10}, -- seconds
                 damage =            {7.5, 8.5,  10, 12,   14,   16,   18,   20,   23.5, 27.5}, -- %
                 levelRequirements = {3,   3,    4,  4,    5,    7,    9,    12,   16,   20}
+            },
+            {
+                --| LIGHTNING ORB - LEVELS FROM 0 to 8 |--
+                frequency =         {40, 37,   34,  32,  30,  28,  27,  26,  25}, -- seconds
+                damage =            {60, 65,   75,  85,  100, 115, 130, 145, 160}, -- %
+                range =             {4,  4.25, 4.5, 4.8, 5.1, 5.5, 5.9, 6.4, 7}, -- units
+                levelRequirements = {2,  2,    3,   3,   4,   5,   6,   7,   9}
+            },
+            {
+                --| JERELO'S BLESSING - LEVELS FROM 0 to 12 |--
+                regenChance =       {0.1, 0.2,  0.3,  0.4,  0.6,  0.8,  1,    1.2,  1.4,  1.6,  1.8,  2,    2.25}, -- %
+                healthIncrease =    {1.1, 1.15, 1.21, 1.28, 1.36, 1.45, 1.55, 1.66, 1.78, 1.91, 2.05, 2.25, 2.5}, -- multiplier (1 = 100%)
+                levelRequirements = {1,   1,    1,    2,    2,    3,    3,    4,    4,    6,    8,    10,   12}
             }
         }
 
@@ -578,7 +616,13 @@ function loadGame()
                 name = "Spiked Crystals",
                 internalName = "spikedCrystals",
                 effect = {{1, 1, 1, 1}, "Spawn up to ", {1, 0.5, 0.4, 1}, levelingInfo[1].quantity[player.abilities.spikedCrystals.level + 1], {1, 1, 1, 1}, " crystals inside the tower's range. Upon getting touched by an enemy, the crystal explodes and deals ", {1, 0.4, 0.8, 1}, levelingInfo[1].damage[player.abilities.spikedCrystals.level + 1], {1, 1, 1, 1}, "% damage to nearby enemies."},
-                event = "Time",
+                tags = {
+                    condition = "Time",
+                    cooldown = levelingInfo[1].frequency[player.abilities.spikedCrystals.level + 1],
+                    role = "Active",
+                    AoE = true,
+                    category = "VIT"
+                },
                 frequency = levelingInfo[1].frequency[player.abilities.spikedCrystals.level + 1],
                 level = player.abilities.spikedCrystals.level,
                 preview = img_ability_preview_spikedCrystals,
@@ -594,7 +638,13 @@ function loadGame()
                 name = "Scatter Fire",
                 internalName = "scatterFire",
                 effect = {{1, 1, 1, 1}, "Shoot out ", {0.5, 0.9, 0.8, 1}, levelingInfo[2].quantity[player.abilities.scatterFire.level + 1], {1, 1, 1, 1}, " projectiles going from a random point on the screen."},
-                event = "Projectile",
+                tags = {
+                    condition = "Projectile Fired",
+                    chance = levelingInfo[2].frequency[player.abilities.scatterFire.level + 1],
+                    role = "Link",
+                    AoE = false,
+                    category = "ATK"
+                },
                 frequency = levelingInfo[2].frequency[player.abilities.scatterFire.level + 1],
                 level = player.abilities.scatterFire.level,
                 preview = img_ability_preview_scatterFire,
@@ -610,7 +660,13 @@ function loadGame()
                 name = "Burst Fire",
                 internalName = "burstFire",
                 effect = {{1, 1, 1, 1}, "Shoot out ", {0.75, 0.75, 0.75, 1}, levelingInfo[3].quantity[player.abilities.burstFire.level + 1], {1, 1, 1, 1}, " projectiles going from the center of the tower."},
-                event = "Projectile",
+                tags = {
+                    condition = "Projectile Fired",
+                    chance = levelingInfo[3].frequency[player.abilities.burstFire.level + 1],
+                    role = "Link",
+                    AoE = false,
+                    category = "ATK"
+                },
                 frequency = levelingInfo[3].frequency[player.abilities.burstFire.level + 1],
                 level = player.abilities.burstFire.level,
                 preview = img_ability_preview_burstFire,
@@ -626,8 +682,13 @@ function loadGame()
                 name = "Rainforest",
                 internalName = "rainforest",
                 effect = {{1, 1, 1, 1}, "Cover the tower's range in a dense rainforest for 5 waves, slowing all enemies' move and attack speed by ", {0.5, 0.85, 1, 1}, levelingInfo[4].density[player.abilities.rainforest.level + 1], {1, 1, 1, 1}, "%.\nFirst covering happens at wave 20."},
-                event = "Wave",
-                guaranteed = true,
+                tags = {
+                    condition = "Wave Start",
+                    frequency = levelingInfo[4].frequency,
+                    role = "Passive",
+                    AoE = true,
+                    category = "VIT"
+                },
                 frequency = levelingInfo[4].frequency,
                 level = player.abilities.rainforest.level,
                 preview = img_ability_preview_rainforest,
@@ -642,8 +703,15 @@ function loadGame()
             {
                 name = "Magma Touch",
                 internalName = "magmaTouch",
-                effect = {{1, 1, 1, 1}, "Summon a magma pool in a random position on the screen. Applies a burning effect on any enemy touching it, dealing ", {1, 0.6, 0.15, 1}, levelingInfo[5].damage[player.abilities.magmaTouch.level], {1, 1, 1, 1}, "% damage each second for 4 seconds before disappearing. Maximum of 20 magma pools."},
-                event = "Time",
+                effect = {{1, 1, 1, 1}, "Summon a magma pool in a random position on the screen. Applies a burning effect on any enemy touching it, dealing ", {1, 0.6, 0.15, 1}, levelingInfo[5].damage[player.abilities.magmaTouch.level + 1], {1, 1, 1, 1}, "% damage each second for 4 seconds before disappearing. Maximum of 20 magma pools."},
+                tags = {
+                    condition = "Time",
+                    cooldown = levelingInfo[5].frequency[player.abilities.magmaTouch.level + 1],
+                    role = "Active",
+                    AoE = true,
+                    category = "VIT",
+                    incompatibilities = {"JerelosBlessing"}
+                },
                 frequency = levelingInfo[5].frequency[player.abilities.magmaTouch.level + 1],
                 level = player.abilities.magmaTouch.level,
                 preview = img_ability_preview_magmaTouch,
@@ -654,6 +722,50 @@ function loadGame()
                 class = "D",
                 nextLevelRequirement = levelingInfo[5].levelRequirements[player.abilities.magmaTouch.level + 1],
                 levelRequirements = levelingInfo[5].levelRequirements
+            },
+            {
+                name = "Lightning Orb",
+                internalName = "lightningOrb",
+                effect = {{1, 1, 1, 1}, "The tower shoots a flying lightning orb, shooting a laser to the farthest enemy within ", {1, 0.95, 0.55, 1}, levelingInfo[6].range[player.abilities.lightningOrb.level + 1], {1, 1, 1, 1}, "u, continuously dealing damage equal to ", {0.65, 0.45, 0.9, 1}, levelingInfo[6].damage[player.abilities.lightningOrb.level + 1], {1, 1, 1, 1}, "% damage per second."},
+                tags = {
+                    condition = "Time",
+                    cooldown = levelingInfo[6].frequency[player.abilities.lightningOrb.level + 1],
+                    role = "Active",
+                    AoE = false,
+                    category = "ATK"
+                },
+                frequency = levelingInfo[6].frequency[player.abilities.lightningOrb.level + 1],
+                level = player.abilities.lightningOrb.level,
+                preview = img_ability_preview_lightningOrb,
+                equipped = player.abilities.lightningOrb.equipped,
+                unlocked = player.abilities.lightningOrb.unlocked,
+                menu = player.menu.abilities.lightningOrb,
+                amount = player.abilities.lightningOrb.amount,
+                class = "B",
+                nextLevelRequirement = levelingInfo[6].levelRequirements[player.abilities.lightningOrb.level + 1],
+                levelRequirements = levelingInfo[6].levelRequirements
+            },
+            {
+                name = "Jerelo's Blessing",
+                internalName = "JerelosBlessing",
+                effect = {{1, 1, 1, 1}, "The tower gathers energy from Jerelo, the Nature elemental, which provides it with a x", {0.4, 0.8, 1, 1}, levelingInfo[7].healthIncrease[player.abilities.JerelosBlessing.level + 1], {1, 1, 1, 1}, " increase of the tower's maximum health and a ", {0.1, 0.75, 0.65, 1}, levelingInfo[7].regenChance[player.abilities.JerelosBlessing.level + 1], {1, 1, 1, 1}, "% chance to restore all health at the end of a wave."},
+                tags = {
+                    condition = "None",
+                    role = "Passive",
+                    AoE = false,
+                    category = "VIT",
+                    incompatibilities = {"magmaTouch"}
+                },
+                frequency = 1,
+                level = player.abilities.JerelosBlessing.level,
+                preview = img_ability_preview_JerelosBlessing,
+                equipped = player.abilities.JerelosBlessing.equipped,
+                unlocked = player.abilities.JerelosBlessing.unlocked,
+                menu = player.menu.abilities.JerelosBlessing,
+                amount = player.abilities.JerelosBlessing.amount,
+                class = "A",
+                nextLevelRequirement = levelingInfo[7].levelRequirements[player.abilities.JerelosBlessing.level + 1],
+                levelRequirements = levelingInfo[7].levelRequirements
             }
         }
 
@@ -688,8 +800,8 @@ function loadGame()
 
     function abilityFunctions.upgrade(x, y, ability)
         if x >= 700 and x <= 856 and y >= 418 and y <= 458 then
-            if ability.menu and ability.unlocked and ability.amount >= ability.levelRequirements[ability.level] and ability.level < #ability.levelRequirements - 1 then
-                ability.amount = ability.amount - ability.levelRequirements[ability.level]
+            if ability.menu and ability.unlocked and ability.amount >= ability.levelRequirements[ability.level + 1] and ability.level < #ability.levelRequirements - 1 then
+                ability.amount = ability.amount - ability.levelRequirements[ability.level + 1]
                 ability.level = ability.level + 1
             end
         end
@@ -699,8 +811,16 @@ function loadGame()
     abilityFunctions.updateInternals()
     abilityFunctions.updateSlotCount()
 
-    player.maxGameSpeed = 1
+    if player.abilities.equipped > player.abilities.maxEquipped then
+        for i,v in pairs(internalAbilities) do
+            if v.equipped then
+                player.abilities[v.internalName].equipped = false
+            end
+        end
+    end
 
+    player.maxGameSpeed = 1
+    
     --saveGame()
 end
 
@@ -803,7 +923,7 @@ function resetRoundValues()
         },
     }
 
-    local maxHealth = reloadFormulae(player.upgrades.round.health.level)["science"]["VIT"][1][2]
+    local maxHealth = reloadFormulae(player.upgrades.round.health.level)["science"]["VIT"][1][2] * (player.abilities.JerelosBlessing.equipped and levelingInfo[7].healthIncrease[player.abilities.JerelosBlessing.level + 1] or 1)
     --[[ Tower properties ]]--
     player.tower = {
         attackDamage = reloadFormulae(player.upgrades.round.attackDamage.level)["science"]["ATK"][1][2],
@@ -811,7 +931,7 @@ function resetRoundValues()
         critChance = reloadFormulae(player.upgrades.round.critChance.level)["science"]["ATK"][3][2],
         critFactor = reloadFormulae(player.upgrades.round.critFactor.level)["science"]["ATK"][4][2],
         range = reloadFormulae(player.upgrades.round.range.level)["science"]["ATK"][5][2],
-        maxHealth = reloadFormulae(player.upgrades.round.health.level)["science"]["VIT"][1][2],
+        maxHealth = reloadFormulae(player.upgrades.round.health.level)["science"]["VIT"][1][2] * (player.abilities.JerelosBlessing.equipped and levelingInfo[7].healthIncrease[player.abilities.JerelosBlessing.level + 1] or 1),
         currentHealth = maxHealth,
         regeneration = reloadFormulae(player.upgrades.round.regeneration.level)["science"]["VIT"][2][2],
         resistance = reloadFormulae(player.upgrades.round.resistance.level)["science"]["VIT"][3][2],
@@ -836,7 +956,12 @@ function resetRoundValues()
         copperBuffer = 0,
         silverBuffer = 0,
         copperAtStart = player.currencies.currentCopper,
-        silverAtStart = player.currencies.currentSilver
+        silverAtStart = player.currencies.currentSilver,
+        goldAtStart = player.currencies.currentGold,
+        JerelosBlessingVisuals = {
+            vines = love.math.random(1, 4),
+            waves = love.math.random(1, 4)
+        }
     }
     player.stats.battle = {
         time = 0,
@@ -868,7 +993,8 @@ function resetRoundValues()
         shieldActive = 0,
         waveSkip = 3,
         crystal = 0,
-        magmaPool = 0
+        magmaPool = 0,
+        lightningOrb = 0
     }
 
     --[[ Misc ]]--
@@ -887,6 +1013,8 @@ function resetRoundValues()
     end
     spikedCrystals = {}
     magmaPools = {}
+    lightningOrbs = {}
+    lightningOrb_lasers = {}
     sentryAlive = false
     centurionAlive = false
 end
