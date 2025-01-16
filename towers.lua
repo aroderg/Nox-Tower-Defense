@@ -1,10 +1,10 @@
 towers = {}
----Reloads all towers.
+--- Reloads all towers.
 function towers.reload()
     local frameExact = 0
     local frame = 0
     local startDelayTimer = 0
-    ---Main tower display.
+    --- Main tower display.
     function towers.main()
         if player.tower.currentHealth > 0 then
             if not shieldActive then
@@ -14,7 +14,7 @@ function towers.reload()
             end
         end
     end
-    ---Eclipse tower display & processing.
+    --- Eclipse tower display & processing.
     --- @param i boolean The "mode" of the tower, true for processing, false for rendering.
     function towers.eclipse(i, dt)
         local maxFrames = 120
@@ -41,7 +41,7 @@ function towers.reload()
         end
     end
 
-    ---Eclipse2 tower display & processing.
+    --- Eclipse2 tower display & processing.
     --- @param i boolean The "mode" of the tower, true for processing, false for rendering.
     function towers.eclipse2(i, dt)
         love.graphics.setColor(1, 1, 1, 1)
@@ -79,7 +79,7 @@ function towers.reload()
         end
     end
 
-    ---Nova tower display & processing.
+    --- Nova tower display & processing.
     --- @param i boolean The "mode" of the tower, true for processing, false for rendering.
     function towers.nova(i, dt)
         local maxFrames = 2880
@@ -97,6 +97,7 @@ function towers.reload()
                     frameExact = frameExact + dt * changeRate
                     frame = math.floor(frameExact)
                 else
+                    love.graphics.setColor(1, 1, 1, 1)
                     love.graphics.draw(img_tower_nova_branches, 960, 540, -(frame*0.5/maxFrames) * 2 * math.pi, 1, 1, 32, 32)
                     love.graphics.draw(img_tower_nova_outerLines, 960, 540, (frame/maxFrames) * 2 * math.pi, 1, 1, 32, 32)
                     love.graphics.draw(img_tower_nova_static, 928, 508)

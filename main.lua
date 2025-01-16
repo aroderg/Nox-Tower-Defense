@@ -1,3 +1,6 @@
+local statTextScrollState = 0
+local velx, vely = 0, 0 -- The scroll velocity
+
 function love.load()
     lume = require "lume"
     require "technical"
@@ -120,28 +123,41 @@ function love.load()
         audio_tower_collapse = love.audio.newSource("assets/audio/tower_collapse.wav", "static")
         audio_tower_fire = love.audio.newSource("assets/audio/tower_fire.wav", "static")
         audio_rainforest_activation = love.audio.newSource("assets/audio/rainforest_activation.wav", "static")
+        audio_lightningOrb_launch = love.audio.newSource("assets/audio/lightningOrb_launch.wav", "static")
     end
-    ---Reloads all fonts.
+
+    --- Reloads all fonts.
     function fontReload()
+        --Vera Sans Font (regular)
         font_Vera12 = love.graphics.newFont("assets/fonts/Vera/Vera.ttf", 12)
         font_Vera16 = love.graphics.newFont("assets/fonts/Vera/Vera.ttf", 16)
+
+        --Vera Sans Font (bold)
         font_VeraBold16 = love.graphics.newFont("assets/fonts/Vera/VeraBd.ttf", 16)
         font_VeraBold18 = love.graphics.newFont("assets/fonts/Vera/VeraBd.ttf", 18)
         font_VeraBold24 = love.graphics.newFont("assets/fonts/Vera/VeraBd.ttf", 24)
 
+        --Afacad Flux Font (regular)
         font_Afacad12 = love.graphics.newFont("assets/fonts/Afacad Flux/AfacadFlux-Regular.ttf", 12)
         font_Afacad16 = love.graphics.newFont("assets/fonts/Afacad Flux/AfacadFlux-Regular.ttf", 16)
+        font_Afacad18 = love.graphics.newFont("assets/fonts/Afacad Flux/AfacadFlux-Regular.ttf", 18)
         font_Afacad20 = love.graphics.newFont("assets/fonts/Afacad Flux/AfacadFlux-Regular.ttf", 20)
         font_Afacad24 = love.graphics.newFont("assets/fonts/Afacad Flux/AfacadFlux-Regular.ttf", 24)
         font_Afacad28 = love.graphics.newFont("assets/fonts/Afacad Flux/AfacadFlux-Regular.ttf", 28)
+
+        --Afacad Flux Font (bold)
+        font_AfacadBold18 = love.graphics.newFont("assets/fonts/Afacad Flux/AfacadFlux-Bold.ttf", 18)
         font_AfacadBold20 = love.graphics.newFont("assets/fonts/Afacad Flux/AfacadFlux-Bold.ttf", 20)
         font_AfacadBold24 = love.graphics.newFont("assets/fonts/Afacad Flux/AfacadFlux-Bold.ttf", 24)
         font_AfacadBold28 = love.graphics.newFont("assets/fonts/Afacad Flux/AfacadFlux-Bold.ttf", 28)
         font_AfacadBold32 = love.graphics.newFont("assets/fonts/Afacad Flux/AfacadFlux-Bold.ttf", 32)
         font_AfacadBold48 = love.graphics.newFont("assets/fonts/Afacad Flux/AfacadFlux-Bold.ttf", 48)
+
+        --Afacad Flux Font (semi-bold)
         font_AfacadSemiBold24 = love.graphics.newFont("assets/fonts/Afacad Flux/AfacadFlux-SemiBold.ttf", 24)
         font_AfacadSemiBold28 = love.graphics.newFont("assets/fonts/Afacad Flux/AfacadFlux-SemiBold.ttf", 28)
     end
+    --What range melee enemies can attack from at maximum
     TOWER_SIZE = 56
     love.graphics.setLineStyle("rough")
     settings_particleMultiplierNames = {"None", "Minimal", "Reduced", "Normal", "Rich", "Fancy", "Fabulous", "Stormful"}
@@ -291,7 +307,7 @@ function reloadFormulae(x, z)
     return upgradeModuleFormulae
 end
 
----Draw an upgrade module, work for both Battle and Science upgrades.
+--- Draw an upgrade module, work for both Battle and Science upgrades.
 ---@param module table Upgrade module to draw.
 function processUpgradeModule.draw(module)
     local attributes = {
@@ -357,7 +373,7 @@ function processUpgradeModule.draw(module)
     end
 end
 
----Levels up an upgrade if the player has enough currency.
+--- Levels up an upgrade if the player has enough currency.
 ---@param x number Mouse cursor position (horizontal).
 ---@param y number Mouse cursor position (vertical).
 ---@param module table Upgrade module to upgrade.
@@ -1048,18 +1064,92 @@ function love.draw()
             love.graphics.setFont(font_AfacadBold24)
             love.graphics.printf("Player Stats - Battle", 710, 243, 500, "center")
             love.graphics.draw(img_button_arrowLeft_big, 674, 522)
-            local rowCenters = {290, 320, 350, 380, 410, 440, 470, 500, 530, 560}
-            local statNames = {"Battle Time", "Enemies Killed", "Damage Taken", "Damage Dealt", "Copper Earned", "Silver Earned", "Damage Absorbed", "Waves Skipped", "Projectiles Fired", "Upgrades Acquired"}
-            local statVars = {player.stats.battle.time, {player.stats.battle.enemiesKilled, "brief"}, {player.stats.battle.damageTaken, "precise"}, {player.stats.battle.damageDealt, "precise"}, {player.stats.battle.copperEarned, "brief"}, {player.stats.battle.silverEarned, "brief"}, {player.stats.battle.shieldDamageAbsorb, "precise"}, {player.stats.battle.wavesSkipped, "brief"}, {player.stats.battle.projectilesFired, "brief"}, {player.stats.battle.upgradesAcquired, "brief"}}
-            for i=1,#statNames do
-                love.graphics.setFont(font_Afacad20)
-                love.graphics.printf(statNames[i], 810, rowCenters[i], 200, "left")
-                love.graphics.setFont(font_AfacadBold20)
-                if i ~= 1 then
-                    love.graphics.printf({{0, 1 - i / 50, 0.8 + i / 250, 1}, string.format("%s", notations.convertToLetterNotation(statVars[i][1], statVars[i][2]))}, 910, rowCenters[i], 200, "right")    
+            local statNames = {
+                "Battle Time (in-game)",
+                "Battle Time (real)",
+                "Enemies Killed",
+                "Damage Taken",
+                "Damage Dealt",
+                "Copper Earned",
+                "Silver Earned",
+                "Damage Absorbed",
+                "Waves Skipped",
+                "Projectiles Fired",
+                "Upgrades Acquired",
+                "Spiked Crystals - Enemies Killed",
+                "Spiked Crystals - Damage Dealt",
+                "Spiked Crystals - Crytals Spawned",
+                "Scatter Fire - Damage Dealt",
+                "Scatter Fire - Triggered",
+                "Burst Fire - Damage Dealt",
+                "Burst Fire - Triggered",
+                "Rainforest - Triggered",
+                "Magma Touch - Enemies Killed",
+                "Magma Touch - Damage Dealt",
+                "Magma Touch - Pools Spawned",
+                "Lightning Orb - Enemies Killed",
+                "Lightning Orb - Damage Dealt",
+                "Lightning Orb - Orbs Spawned",
+                "Jerelo's Blessing - Triggered",
+                "Jerelo's Blessing - Health Regenerated",
+            }
+            local statVars = {
+                player.stats.battle.gameTime,
+                player.stats.battle.realTime,
+                {player.stats.battle.enemiesKilled, "brief"},
+                {player.stats.battle.damageTaken, "precise"},
+                {player.stats.battle.damageDealt, "precise"},
+                {player.stats.battle.copperEarned, "brief"},
+                {player.stats.battle.silverEarned, "brief"},
+                {player.stats.battle.shieldDamageAbsorb, "precise"},
+                {player.stats.battle.wavesSkipped, "brief"},
+                {player.stats.battle.projectilesFired, "brief"},
+                {player.stats.battle.upgradesAcquired, "brief"},
+                
+                {player.stats.battle.spikedCrystals.enemiesKilled, "brief"},
+                {player.stats.battle.spikedCrystals.damageDealt, "precise"},
+                {player.stats.battle.spikedCrystals.spawned, "brief"},
+
+                {player.stats.battle.scatterFire.damageDealt, "precise"},
+                {player.stats.battle.scatterFire.triggered, "brief"},
+
+                {player.stats.battle.burstFire.damageDealt, "precise"},
+                {player.stats.battle.burstFire.triggered, "brief"},
+
+                {player.stats.battle.rainforest.triggered, "brief"},
+
+                {player.stats.battle.magmaTouch.enemiesKilled, "brief"},
+                {player.stats.battle.magmaTouch.damageDealt, "precise"},
+                {player.stats.battle.magmaTouch.spawned, "brief"},
+
+                {player.stats.battle.lightningOrb.enemiesKilled, "brief"},
+                {player.stats.battle.lightningOrb.damageDealt, "precise"},
+                {player.stats.battle.lightningOrb.spawned, "brief"},
+
+                {player.stats.battle.JerelosBlessing.triggered, "brief"},
+                {player.stats.battle.JerelosBlessing.healthRegenerated, "precise"},
+            }
+            for i=1,math.min(#statNames, #statVars) do
+                love.graphics.setScissor(710, 280, 500, 540)
+                local rowCenter = (255 + i * 25) + math.floor(statTextScrollState)
+                local color = {0, 1 - i / 50, 0.8 + i / 250}
+                love.graphics.setFont(font_Afacad18)
+                love.graphics.printf(statNames[i], 760, rowCenter, 300, "left")
+                love.graphics.setFont(font_AfacadBold18)
+                if i ~= 1 and i ~= 2 then
+                    love.graphics.printf({color, string.format("%s", notations.convertToLetterNotation(statVars[i][1], statVars[i][2]))}, 860, rowCenter, 300, "right")    
                 else
-                    love.graphics.printf({{0, 1 - i / 50, 0.8 + i / 250, 1}, string.format("%dm %ds", statVars[i] / 60, statVars[i] % 60)}, 910, rowCenters[i], 200, "right")    
+                    love.graphics.printf({color, string.format("%dm %ds", statVars[i] / 60, statVars[i] % 60)}, 860, rowCenter, 300, "right") 
                 end
+                love.graphics.setScissor()
+            end
+            for i=2,math.min(#statNames, #statVars) do
+                love.graphics.setScissor(710, 280, 500, 540)
+                local rowCenter = (255 + i * 25) + math.floor(statTextScrollState)
+                local color = {1, 0.5 + i / 80, 0.2 - i / 250}
+                love.graphics.setColor(color[1], color[2], color[3], 0.4)
+                love.graphics.line(760, rowCenter + 1, 1160, rowCenter + 1)
+                love.graphics.setScissor()
             end
         end
         if player.menu.paused then
@@ -1185,14 +1275,83 @@ function love.draw()
             love.graphics.rectangle("line", 710, 240, 500, 600, 2, 2)
             love.graphics.setFont(font_AfacadBold24)
             love.graphics.printf("Player Stats - Savefile", 710, 243, 500, "center")
-            local rowCenters = {290, 320, 350, 380, 410, 440, 470, 500}
-            local statNames = {"Enemies Killed", "Damage Dealt", "Silver Earned", "Waves Skipped", "Projectiles Fired", "Science Upgrades", "Nexus Upgrades", "Waves Defeated"}
-            local statVars = {{player.stats.save.enemiesKilled, "brief"}, {player.stats.save.damageDealt, "precise"}, {player.stats.save.silverEarned, "brief"}, {player.stats.save.wavesSkipped, "brief"}, {player.stats.save.projectilesFired, "brief"}, {player.stats.save.upgradesAcquired.science, "brief"}, {player.stats.save.upgradesAcquired.nexus, "brief"}, {player.stats.save.wavesBeaten, "brief"}}
-            for i=1,#statNames do
-                love.graphics.setFont(font_Afacad20)
-                love.graphics.printf(statNames[i], 810, rowCenters[i], 200, "left")
-                love.graphics.setFont(font_AfacadBold20)
-                love.graphics.printf({{0.8 + i / 250, 0.5 - i / 50, 0.1, 1}, string.format("%s", notations.convertToLetterNotation(statVars[i][1], statVars[i][2]))}, 910, rowCenters[i], 200, "right")    
+            local statNames = {
+                "Enemies Killed",
+                "Damage Dealt",
+                "Silver Earned",
+                "Waves Skipped",
+                "Projectiles Fired",
+                "Science Upgrades",
+                "Nexus Upgrades",
+                "Waves Defeated",
+                "Spiked Crystals - Enemies Killed",
+                "Spiked Crystals - Damage Dealt",
+                "Spiked Crystals - Crytals Spawned",
+                "Scatter Fire - Damage Dealt",
+                "Scatter Fire - Triggered",
+                "Burst Fire - Damage Dealt",
+                "Burst Fire - Triggered",
+                "Rainforest - Triggered",
+                "Magma Touch - Enemies Killed",
+                "Magma Touch - Damage Dealt",
+                "Magma Touch - Pools Spawned",
+                "Lightning Orb - Enemies Killed",
+                "Lightning Orb - Damage Dealt",
+                "Lightning Orb - Orbs Spawned",
+                "Jerelo's Blessing - Triggered",
+                "Jerelo's Blessing - Health Regenerated",
+            }
+            local statVars = {
+                {player.stats.save.enemiesKilled, "brief"},
+                {player.stats.save.damageDealt, "precise"},
+                {player.stats.save.silverEarned, "brief"},
+                {player.stats.save.wavesSkipped, "brief"},
+                {player.stats.save.projectilesFired, "brief"},
+                {player.stats.save.upgradesAcquired.science, "brief"},
+                {player.stats.save.upgradesAcquired.nexus, "brief"},
+                {player.stats.save.wavesBeaten, "brief"},
+                
+                {player.stats.save.spikedCrystals.enemiesKilled, "brief"},
+                {player.stats.save.spikedCrystals.damageDealt, "precise"},
+                {player.stats.save.spikedCrystals.spawned, "brief"},
+
+                {player.stats.save.scatterFire.damageDealt, "precise"},
+                {player.stats.save.scatterFire.triggered, "brief"},
+
+                {player.stats.save.burstFire.damageDealt, "precise"},
+                {player.stats.save.burstFire.triggered, "brief"},
+
+                {player.stats.save.rainforest.triggered, "brief"},
+
+                {player.stats.save.magmaTouch.enemiesKilled, "brief"},
+                {player.stats.save.magmaTouch.damageDealt, "precise"},
+                {player.stats.save.magmaTouch.spawned, "brief"},
+
+                {player.stats.save.lightningOrb.enemiesKilled, "brief"},
+                {player.stats.save.lightningOrb.damageDealt, "precise"},
+                {player.stats.save.lightningOrb.spawned, "brief"},
+
+                {player.stats.save.JerelosBlessing.triggered, "brief"},
+                {player.stats.save.JerelosBlessing.healthRegenerated, "precise"},
+            }
+            for i=1,math.min(#statNames, #statVars) do
+                love.graphics.setScissor(710, 280, 500, 540)
+                local rowCenter = (255 + i * 25) + math.floor(statTextScrollState)
+                local color = {0, 1 - i / 50, 0.8 + i / 250}
+                love.graphics.setFont(font_Afacad18)
+                love.graphics.printf(statNames[i], 760, rowCenter, 300, "left")
+                love.graphics.setFont(font_AfacadBold18)
+                love.graphics.printf({color, string.format("%s", notations.convertToLetterNotation(statVars[i][1], statVars[i][2]))}, 860, rowCenter, 300, "right")
+                love.graphics.setScissor()
+            end
+            for i=2,math.min(#statNames, #statVars) do
+                love.graphics.setScissor(710, 280, 500, 540)
+                local rowCenter = (255 + i * 25) + math.floor(statTextScrollState)
+                local color = {1, 0.5 + i / 80, 0.2 - i / 250}
+                local color = {0.25 + i / 64, 0.8, 0.4}
+                love.graphics.setColor(color[1], color[2], color[3], 0.4)
+                love.graphics.line(760, rowCenter + 1, 1160, rowCenter + 1)
+                love.graphics.setScissor()
             end
         end
     end
@@ -1481,7 +1640,9 @@ function love.update(dt)
 
         checkIfTowerCollapsed()
         updateParticles(dt)
-        player.stats.battle.time = player.stats.battle.time + dt * gameplay.gameSpeed
+
+        player.stats.battle.gameTime = player.stats.battle.gameTime + dt * gameplay.gameSpeed
+        player.stats.battle.realTime = player.stats.battle.realTime + dt * (gameplay.gameSpeed ~= 0 and 1 or 0)
 
         if player.abilities.rainforest.unlocked and player.abilities.rainforest.equipped then
             if gameplay.wave >= 20 then
@@ -1518,12 +1679,29 @@ function love.update(dt)
             end
         end
 
+        if player.menu.battleStats then
+            statTextScrollState = math.max(math.min(statTextScrollState + velx * dt, 0), -110)
+            statTextScrollState = math.max(math.min(statTextScrollState + vely * dt, 0), -110)
+
+            -- Gradually reduce the velocity to create smooth scrolling effect.
+            velx = velx - velx * math.min(dt * 7, 1)
+            vely = vely - vely * math.min(dt * 7, 1)
+        end
+
     elseif player.location == "hub" then
         player.abilities.equipped = 0
         for i=1,#internalAbilities do
             if internalAbilities[i].equipped then
                 player.abilities.equipped = player.abilities.equipped + 1
             end
+        end
+        if player.menu.saveStats then
+            statTextScrollState = math.max(math.min(statTextScrollState + velx * dt, 0), -60)
+            statTextScrollState = math.max(math.min(statTextScrollState + vely * dt, 0), -60)
+
+            -- Gradually reduce the velocity to create smooth scrolling effect.
+            velx = velx - velx * math.min(dt * 7, 1)
+            vely = vely - vely * math.min(dt * 7, 1)
         end
     end
     --[[ Set a timer for alloying Electrum, add 1 Electrum when the timer runs out ]]--
@@ -1663,8 +1841,14 @@ function love.keypressed(key)
                 player.menu.gameplayInfo = false
                 player.menu.battleStats = false
                 gameplay.gameSpeed = player.menu.gameplayInfo and 0 or player.maxGameSpeed
+                statTextScrollState = 0
+                velx, vely = 0, 0
             end
         elseif player.location == "hub" then
+            if player.menu.saveStats then
+                statTextScrollState = 0
+                velx, vely = 0, 0
+            end
             player.menu.saveStats = not player.menu.saveStats
         end
     end
@@ -1681,6 +1865,11 @@ end
         end
     end
 end]]-- old function for volume control
+
+function love.wheelmoved(dx, dy)
+    velx = velx + dx * 480
+    vely = vely + dy * 480
+end
 
 function love.quit()
     saveGame()

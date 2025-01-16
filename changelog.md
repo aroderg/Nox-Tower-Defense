@@ -1,3 +1,8 @@
+## NoxTD 1.0.2 Nova
+### Jan 16, 2025
+- Added various Ability-related stats to both the Battle Stats and Savefile Stats menus.
+- Added a sound for the Lightning Orb launch.
+
 ## NoxTD 1.0.1 Nova
 ### Jan 1, 2025
 - Added the Lightning Orb and Jerelo's Blessing abilities.

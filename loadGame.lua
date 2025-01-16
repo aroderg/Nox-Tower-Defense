@@ -173,6 +173,7 @@ function loadGame()
                 level = data.player.modifiers.hyperloop.level,
             }
         }
+
         if not data.player.modifiers.unlocks.waveSkip then
             player.modifiers.waveSkip.cost = 10
             player.modifiers.waveSkip.value = 0
@@ -214,7 +215,37 @@ function loadGame()
                 science = data.player.stats.upgradesAcquired.science,
                 nexus = data.player.stats.upgradesAcquired.nexus
             },
-            wavesBeaten = data.player.stats.wavesBeaten
+            wavesBeaten = data.player.stats.wavesBeaten,
+            spikedCrystals = {
+                enemiesKilled = data.player.stats.spikedCrystals.enemiesKilled,
+                damageDealt = data.player.stats.spikedCrystals.damageDealt,
+                spawned = data.player.stats.spikedCrystals.spawned
+            },
+            scatterFire = {
+                damageDealt = data.player.stats.scatterFire.damageDealt,
+                triggered = data.player.stats.scatterFire.triggered
+            },
+            burstFire = {
+                damageDealt = data.player.stats.burstFire.damageDealt,
+                triggered = data.player.stats.burstFire.triggered
+            },
+            rainforest = {
+                triggered = data.player.stats.rainforest.triggered
+            },
+            magmaTouch = {
+                enemiesKilled = data.player.stats.magmaTouch.enemiesKilled,
+                damageDealt = data.player.stats.magmaTouch.damageDealt,
+                spawned = data.player.stats.magmaTouch.spawned
+            },
+            lightningOrb = {
+                enemiesKilled = data.player.stats.lightningOrb.enemiesKilled,
+                damageDealt = data.player.stats.lightningOrb.damageDealt,
+                spawned = data.player.stats.lightningOrb.spawned
+            },
+            JerelosBlessing = {
+                triggered = data.player.stats.JerelosBlessing.triggered,
+                healthRegenerated = data.player.stats.JerelosBlessing.healthRegenerated
+            }
         }
 
         player.abilities = {
@@ -459,7 +490,37 @@ function loadGame()
                 science = 0,
                 nexus = 0
             },
-            wavesBeaten = 0
+            wavesBeaten = 0,
+            spikedCrystals = {
+                enemiesKilled = 0,
+                damageDealt = 0,
+                spawned = 0
+            },
+            scatterFire = {
+                damageDealt = 0,
+                triggered = 0
+            },
+            burstFire = {
+                damageDealt = 0,
+                triggered = 0
+            },
+            rainforest = {
+                triggered = 0
+            },
+            magmaTouch = {
+                enemiesKilled = 0,
+                damageDealt = 0,
+                spawned = 0
+            },
+            lightningOrb = {
+                enemiesKilled = 0,
+                damageDealt = 0,
+                spawned = 0
+            },
+            JerelosBlessing = {
+                triggered = 0,
+                healthRegenerated = 0
+            }
         }
 
         player.abilities = {
@@ -598,7 +659,7 @@ function loadGame()
             },
             {
                 --| LIGHTNING ORB - LEVELS FROM 0 to 8 |--
-                frequency =         {40, 37,   34,  32,  30,  28,  27,  26,  25}, -- seconds
+                frequency =         {40, 37,   34,  5,  30,  28,  27,  26,  25}, -- seconds
                 damage =            {60, 65,   75,  85,  100, 115, 130, 145, 160}, -- %
                 range =             {4,  4.25, 4.5, 4.8, 5.1, 5.5, 5.9, 6.4, 7}, -- units
                 levelRequirements = {2,  2,    3,   3,   4,   5,   6,   7,   9}
@@ -964,7 +1025,8 @@ function resetRoundValues()
         }
     }
     player.stats.battle = {
-        time = 0,
+        gameTime = 0,
+        realTime = 0,
         enemiesKilled = 0,
         damageTaken = 0,
         damageDealt = 0,
@@ -974,7 +1036,37 @@ function resetRoundValues()
         wavesSkipped = 0,
         projectilesFired = 0,
         upgradesAcquired = 0,
-        goldEarned = 0
+        goldEarned = 0,
+        spikedCrystals = {
+            enemiesKilled = 0,
+            damageDealt = 0,
+            spawned = 0
+        },
+        scatterFire = {
+            damageDealt = 0,
+            triggered = 0
+        },
+        burstFire = {
+            damageDealt = 0,
+            triggered = 0
+        },
+        rainforest = {
+            triggered = 0
+        },
+        magmaTouch = {
+            enemiesKilled = 0,
+            damageDealt = 0,
+            spawned = 0
+        },
+        lightningOrb = {
+            enemiesKilled = 0,
+            damageDealt = 0,
+            spawned = 0
+        },
+        JerelosBlessing = {
+            triggered = 0,
+            healthRegenerated = 0
+        }
     }
     player.stats.wave = {
         enemiesKilled = 0

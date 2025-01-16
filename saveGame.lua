@@ -83,7 +83,37 @@ function saveGame()
                 science = player.stats.save.upgradesAcquired.science,
                 nexus = player.stats.save.upgradesAcquired.nexus
             },
-            wavesBeaten = player.stats.save.wavesBeaten
+            wavesBeaten = player.stats.save.wavesBeaten,
+            spikedCrystals = {
+                enemiesKilled = player.stats.save.spikedCrystals.enemiesKilled,
+                damageDealt = player.stats.save.spikedCrystals.damageDealt,
+                spawned = player.stats.save.spikedCrystals.spawned
+            },
+            scatterFire = {
+                damageDealt = player.stats.save.scatterFire.damageDealt,
+                triggered = player.stats.save.scatterFire.triggered
+            },
+            burstFire = {
+                damageDealt = player.stats.save.burstFire.damageDealt,
+                triggered = player.stats.save.burstFire.triggered
+            },
+            rainforest = {
+                triggered = player.stats.save.rainforest.triggered
+            },
+            magmaTouch = {
+                enemiesKilled = player.stats.save.magmaTouch.enemiesKilled,
+                damageDealt = player.stats.save.magmaTouch.damageDealt,
+                spawned = player.stats.save.magmaTouch.spawned
+            },
+            lightningOrb = {
+                enemiesKilled = player.stats.save.lightningOrb.enemiesKilled,
+                damageDealt = player.stats.save.lightningOrb.damageDealt,
+                spawned = player.stats.save.lightningOrb.spawned
+            },
+            JerelosBlessing = {
+                triggered = player.stats.save.JerelosBlessing.triggered,
+                healthRegenerated = player.stats.save.JerelosBlessing.healthRegenerated
+            }
         },
 
         abilities = {

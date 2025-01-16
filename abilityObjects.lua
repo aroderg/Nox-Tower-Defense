@@ -161,6 +161,9 @@ function abilityObjects.lightningOrb.spawn()
     lightningOrb.speed = 60
     lightningOrb.angle = love.math.random(0, 2 * math.pi * 10000) / 10000
     lightningOrb.range = levelingInfo[6].range[player.abilities.lightningOrb.level + 1]
+    local lo = audio_lightningOrb_launch:clone()
+    lo:setVolume(1 * player.settings.volume^2)
+    lo:play()
     table.insert(lightningOrbs, lightningOrb)
 end
 
@@ -209,7 +212,6 @@ function abilityObjects.lightningOrb_laser.spawn(x, y, dist, angle)
     lightningOrb_laser.dist = dist
     lightningOrb_laser.var = love.math.random(1, 3)
     lightningOrb_laser.angle = angle
-    lightningOrb_laser.color = {love.math.random(0, 10000) / 10000, love.math.random(0, 10000) / 10000, love.math.random(0, 10000) / 10000, 1}
     table.insert(lightningOrb_lasers, lightningOrb_laser)
 end
 
@@ -228,7 +230,6 @@ function abilityObjects.lightningOrb_laser.draw()
         centurion = 30,
         }
     for i,v in ipairs(lightningOrb_lasers) do
-        love.graphics.setColor(v.color)
         love.graphics.draw(lightningOrb_laser_variations[v.var], v.x, v.y, v.angle, v.dist / 300, 1, 0, 8)
         table.remove(lightningOrb_lasers, i)
     end
@@ -246,7 +247,9 @@ function abilityObjects.lightningOrb_laser.process(dt)
                     break
                 end
             end
-            damageEnemy(damagedEnemyIndex, (levelingInfo[6].damage[player.abilities.lightningOrb.level + 1] / 100) * player.tower.attackDamage * dt * gameplay.gameSpeed, false)--damageEnemy(farthestEnemy, levelingInfo[6].damage[player.abilities.lightningOrb.level + 1] * 100 * dt * player.tower.attackDamage, false)
+            if player.tower.currentHealth > 0 and gameplay.gameSpeed > 0 then
+                damageEnemy(damagedEnemyIndex, (levelingInfo[6].damage[player.abilities.lightningOrb.level + 1] / 100) * player.tower.attackDamage * dt * gameplay.gameSpeed, false)--damageEnemy(farthestEnemy, levelingInfo[6].damage[player.abilities.lightningOrb.level + 1] * 100 * dt * player.tower.attackDamage, false)
+            end
         end
     end
 end
