@@ -406,11 +406,16 @@ function abilityFunctions.showInfo.draw(ability)
             ability.class == "B" and {0.35, 0.8, 0.75, 1} or
             ability.class == "A" and {0.25, 0.9, 0.75, 1} or
             {1, 1, 1, 1}
-        love.graphics.printf({{1, 1, 1, 1}, "Class: ", classColor, ability.class}, 1035, 381, 224, "center")
-        love.graphics.printf({{1, 0.75, 0.5, 1}, table.len(ability.tags), {1, 1, 1, 1}, " tags"}, 1035, 411, 224, "center")
-        love.graphics.draw(img_button_questionMark, 1180, 414)
+        local freqSuffix = ability.tags.condition == "Time" and "s" or (ability.tags.condition == "Projectile Fired" or ability.tags.condition == "Wave Start") and "%" or ""
+        local rowOffset = freqSuffix ~= "" and -16 or 0
+        love.graphics.printf({{1, 1, 1, 1}, "Class: ", classColor, ability.class}, 1035, 381 + rowOffset, 224, "center")
+        love.graphics.printf({{1, 0.75, 0.5, 1}, table.len(ability.tags), {1, 1, 1, 1}, " tags"}, 1035, 411 + rowOffset, 224, "center")
+        love.graphics.draw(img_button_questionMark, 1180, 414 + rowOffset)
         --love.graphics.printf("Event: " .. ability.event, 1035, 385, 224, "center")
         --love.graphics.printf({{1, 1, 1, 1}, "Frequency: ", {0.35, 0.95, 0.7, 1}, not ability.guaranteed and ability.frequency or string.format("1/%d", ability.frequency), {1, 1, 1, 1}, ability.guaranteed and "(G)" or "", {1, 1, 1, 1}, ability.event == "Time" and "s" or not ability.guaranteed and "%" or ""}, 1035, 415, 224, "center")
+        if freqSuffix ~= "" then
+            love.graphics.printf("Frequency: " .. ability.frequency .. freqSuffix, 1035, 441 + rowOffset, 224, "center")
+        end
         love.graphics.setLineWidth(1)
         love.graphics.setLineStyle("smooth")
         love.graphics.printf(ability.effect, 680, 510, 560, "left")

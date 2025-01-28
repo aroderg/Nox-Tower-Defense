@@ -1,3 +1,8 @@
+### NoxTD 1.0.2a Nova
+### Jan 28, 2025
+- Fixed a bug with Lightning Orb cooldown.
+- Ability Frequencies have been moved to the Abilities' general info.
+
 ## NoxTD 1.0.2 Nova
 ### Jan 16, 2025
 - Added various Ability-related stats to both the Battle Stats and Savefile Stats menus.

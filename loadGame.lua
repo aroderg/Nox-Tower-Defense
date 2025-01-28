@@ -659,7 +659,7 @@ function loadGame()
             },
             {
                 --| LIGHTNING ORB - LEVELS FROM 0 to 8 |--
-                frequency =         {40, 37,   34,  5,  30,  28,  27,  26,  25}, -- seconds
+                frequency =         {40, 37,   34,  32,  30,  28,  27,  26,  25}, -- seconds
                 damage =            {60, 65,   75,  85,  100, 115, 130, 145, 160}, -- %
                 range =             {4,  4.25, 4.5, 4.8, 5.1, 5.5, 5.9, 6.4, 7}, -- units
                 levelRequirements = {2,  2,    3,   3,   4,   5,   6,   7,   9}
@@ -679,7 +679,6 @@ function loadGame()
                 effect = {{1, 1, 1, 1}, "Spawn up to ", {1, 0.5, 0.4, 1}, levelingInfo[1].quantity[player.abilities.spikedCrystals.level + 1], {1, 1, 1, 1}, " crystals inside the tower's range. Upon getting touched by an enemy, the crystal explodes and deals ", {1, 0.4, 0.8, 1}, levelingInfo[1].damage[player.abilities.spikedCrystals.level + 1], {1, 1, 1, 1}, "% damage to nearby enemies."},
                 tags = {
                     condition = "Time",
-                    cooldown = levelingInfo[1].frequency[player.abilities.spikedCrystals.level + 1],
                     role = "Active",
                     AoE = true,
                     category = "VIT"
@@ -701,7 +700,6 @@ function loadGame()
                 effect = {{1, 1, 1, 1}, "Shoot out ", {0.5, 0.9, 0.8, 1}, levelingInfo[2].quantity[player.abilities.scatterFire.level + 1], {1, 1, 1, 1}, " projectiles going from a random point on the screen."},
                 tags = {
                     condition = "Projectile Fired",
-                    chance = levelingInfo[2].frequency[player.abilities.scatterFire.level + 1],
                     role = "Link",
                     AoE = false,
                     category = "ATK"
@@ -723,7 +721,6 @@ function loadGame()
                 effect = {{1, 1, 1, 1}, "Shoot out ", {0.75, 0.75, 0.75, 1}, levelingInfo[3].quantity[player.abilities.burstFire.level + 1], {1, 1, 1, 1}, " projectiles going from the center of the tower."},
                 tags = {
                     condition = "Projectile Fired",
-                    chance = levelingInfo[3].frequency[player.abilities.burstFire.level + 1],
                     role = "Link",
                     AoE = false,
                     category = "ATK"
@@ -745,7 +742,6 @@ function loadGame()
                 effect = {{1, 1, 1, 1}, "Cover the tower's range in a dense rainforest for 5 waves, slowing all enemies' move and attack speed by ", {0.5, 0.85, 1, 1}, levelingInfo[4].density[player.abilities.rainforest.level + 1], {1, 1, 1, 1}, "%.\nFirst covering happens at wave 20."},
                 tags = {
                     condition = "Wave Start",
-                    frequency = levelingInfo[4].frequency,
                     role = "Passive",
                     AoE = true,
                     category = "VIT"
@@ -767,7 +763,6 @@ function loadGame()
                 effect = {{1, 1, 1, 1}, "Summon a magma pool in a random position on the screen. Applies a burning effect on any enemy touching it, dealing ", {1, 0.6, 0.15, 1}, levelingInfo[5].damage[player.abilities.magmaTouch.level + 1], {1, 1, 1, 1}, "% damage each second for 4 seconds before disappearing. Maximum of 20 magma pools."},
                 tags = {
                     condition = "Time",
-                    cooldown = levelingInfo[5].frequency[player.abilities.magmaTouch.level + 1],
                     role = "Active",
                     AoE = true,
                     category = "VIT",
@@ -790,7 +785,6 @@ function loadGame()
                 effect = {{1, 1, 1, 1}, "The tower shoots a flying lightning orb, shooting a laser to the farthest enemy within ", {1, 0.95, 0.55, 1}, levelingInfo[6].range[player.abilities.lightningOrb.level + 1], {1, 1, 1, 1}, "u, continuously dealing damage equal to ", {0.65, 0.45, 0.9, 1}, levelingInfo[6].damage[player.abilities.lightningOrb.level + 1], {1, 1, 1, 1}, "% damage per second."},
                 tags = {
                     condition = "Time",
-                    cooldown = levelingInfo[6].frequency[player.abilities.lightningOrb.level + 1],
                     role = "Active",
                     AoE = false,
                     category = "ATK"
