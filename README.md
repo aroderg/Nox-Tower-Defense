@@ -5,4 +5,4 @@ A tower defense-que game but with a twist: The player only has one tower and the
 🤍 Made using LÖVE2d.
 
 ## ⚠️ NOTICE
-### **⏳ NOX TOWER DEFENSE HAS BEEN DISCONTINUED AS OF 21.08.2025 AND WILL SOON BE REWORKED. HOLD ON TIGHT...**
+### **⏳ NOXTD DEVELOPMENT HAS BEEN SLOWED DOWN TO A HALT FOR A WHILE DUE TO REAL LIFE REASONS. HOLD ON TIGHT...**
