@@ -113,10 +113,53 @@ function upgradeMenu_mouse(x, y)
             if roundUpgradeSection == upgradeSectionNames[i] then
                 for j=1,#upgradeNames[roundUpgradeSection] do
                     if i == 2 and j == 1 then
-                        round[upgradeNames[roundUpgradeSection][j]].level, round[upgradeNames[roundUpgradeSection][j]].cost, player.tower.maxHealth = processUpgradeModule.upgrade(x, y, upgradeModules["round"][roundUpgradeSection][j], reloadFormulae(upgradeModules["science"][roundUpgradeSection][j][8], upgradeModules["round"][roundUpgradeSection][j][8] + 1)["round"][roundUpgradeSection][j][1], reloadFormulae(upgradeModules["science"][roundUpgradeSection][j][8], upgradeModules["round"][roundUpgradeSection][j][8] + 1)["round"][roundUpgradeSection][j][2] * (player.abilities.JerelosBlessing.equipped and levelingInfo[7].healthIncrease[player.abilities.JerelosBlessing.level + 1] or 1))
+                        round[upgradeNames[roundUpgradeSection][j]].level, round[upgradeNames[roundUpgradeSection][j]].cost, player.tower.health = processUpgradeModule.upgrade(x, y, upgradeModules["round"][roundUpgradeSection][j], reloadFormulae(upgradeModules["science"][roundUpgradeSection][j][8], upgradeModules["round"][roundUpgradeSection][j][8] + 1)["round"][roundUpgradeSection][j][1], reloadFormulae(upgradeModules["science"][roundUpgradeSection][j][8], upgradeModules["round"][roundUpgradeSection][j][8] + 1)["round"][roundUpgradeSection][j][2] * (player.abilities.JerelosBlessing.equipped and levelingInfo[7].healthIncrease[player.abilities.JerelosBlessing.level + 1] or 1))
                     else
                         round[upgradeNames[roundUpgradeSection][j]].level, round[upgradeNames[roundUpgradeSection][j]].cost, player.tower[upgradeNames[roundUpgradeSection][j]] = processUpgradeModule.upgrade(x, y, upgradeModules["round"][roundUpgradeSection][j], reloadFormulae(upgradeModules["science"][roundUpgradeSection][j][8], upgradeModules["round"][roundUpgradeSection][j][8] + 1)["round"][roundUpgradeSection][j][1], reloadFormulae(upgradeModules["science"][roundUpgradeSection][j][8], upgradeModules["round"][roundUpgradeSection][j][8] + 1)["round"][roundUpgradeSection][j][2])
                     end
+                end
+            end
+        end
+
+        -- Process upgrade section buttons and go to respective sections
+        if x >= 1890 and x <= 1920 and y >= 800 and y <= 893 then
+            roundUpgradeSection = "ATK"
+        elseif x >= 1890 and x <= 1920 and y >= 893 and y <= 986 then
+            roundUpgradeSection = "VIT"
+        elseif x >= 1890 and x <= 1920 and y >= 986 and y <= 1079 then
+            roundUpgradeSection = "UTL"
+        end
+    end
+end
+
+--- Process all button clicks while the Upgrade menu is opened in battle.
+---@param x number Mouse cursor position (horizontal).
+---@param y number Mouse cursor position (vertical).
+function upgradeMenu_mouse_new(x, y)
+    if player.menu.upgrades and not player.menu.paused and player.tower.currentHealth > 0 and not player.menu.gameplayInfo and not player.menu.battleStats then
+
+        local round = player.upgrades.round
+        local upgradeNames = {
+            ATK = {"attackDamage", "attackSpeed", "critChance", "critFactor", "range"},
+            VIT = {"health", "regeneration", "resistance", "shieldCooldown", "shieldDuration", "meteorAmount", "meteorRPM"},
+            UTL = {"copperPerWave", "silverPerWave", "copperBonus", "silverBonus"}
+        }
+        local upgradeBonuses = {
+            ATK = {
+                attackDamage = (player.abilities.berserkerKit.equipped and 1 + levelingInfo[8].attackDamageIncrease[player.abilities.berserkerKit.level + 1] / 100 or 1),
+                attackSpeed = (player.abilities.berserkerKit.equipped and 1 + levelingInfo[8].attackSpeedIncrease[player.abilities.berserkerKit.level + 1] / 100 or 1)
+            },
+            VIT = {
+                health = (player.abilities.berserkerKit.equipped and 1 - levelingInfo[8].healthDecrease / 100 or 1) * (player.abilities.JerelosBlessing.equipped and levelingInfo[7].healthIncrease[player.abilities.JerelosBlessing.level + 1] or 1),
+                resistance = (player.abilities.berserkerKit.equipped and 1 - levelingInfo[8].resistanceDecrease / 100 or 1)
+            },
+            UTL = {}
+        }
+        local upgradeSectionNames = {"ATK", "VIT", "UTL"}
+        for i=1,#upgradeSectionNames do
+            if roundUpgradeSection == upgradeSectionNames[i] then
+                for j,w in pairs(upgradeNames[roundUpgradeSection]) do
+                    round[upgradeNames[roundUpgradeSection][j]].level, round[upgradeNames[roundUpgradeSection][j]].cost, player.tower[upgradeNames[roundUpgradeSection][j]] = processUpgradeModule.upgrade(x, y, upgradeModules["round"][roundUpgradeSection][j], reloadFormulae(upgradeModules["science"][roundUpgradeSection][j][8], upgradeModules["round"][roundUpgradeSection][j][8] + 1)["round"][roundUpgradeSection][j][1], reloadFormulae(upgradeModules["science"][roundUpgradeSection][j][8], upgradeModules["round"][roundUpgradeSection][j][8] + 1)["round"][roundUpgradeSection][j][2] * (upgradeBonuses[roundUpgradeSection][w] or 1))
                 end
             end
         end

@@ -4,7 +4,7 @@ function createCollapseParticle()
     collapseParticle.y = 540
     collapseParticle.angle = love.math.random(0, 2 * math.pi * 10000) / 10000
     collapseParticle.speed = love.math.random(10, 50)
-    collapseParticle.fadeTime = 2.5
+    collapseParticle.fadeTime = love.math.random(2, 3)
     collapseParticle.timer_fade = 0
     table.insert(collapseParticles, collapseParticle)
 end
@@ -94,7 +94,8 @@ function renderParticles()
         love.graphics.draw(killParticleAppearances[v.origin][1], v.x - killParticleAppearances[v.origin][2], v.y - killParticleAppearances[v.origin][2])
     end
     for i,v in ipairs(collapseParticles) do
-        love.graphics.setColor(1, 1, 1, 1-v.timer_fade/v.fadeTime)
+        local particleAlpha = player.settings.particleMultiplier == 1 and 0 or 1-v.timer_fade/v.fadeTime
+        love.graphics.setColor(1, 1, 1, particleAlpha)
         love.graphics.draw(img_particle_collapse, v.x - 6, v.y - 6)
     end
     love.graphics.setFont(font_Afacad16)

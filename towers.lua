@@ -14,6 +14,7 @@ function towers.reload()
             end
         end
     end
+
     --- Eclipse tower display & processing.
     --- @param i boolean The "mode" of the tower, true for processing, false for rendering.
     function towers.eclipse(i, dt)
@@ -101,6 +102,9 @@ function towers.reload()
                     love.graphics.draw(img_tower_nova_branches, 960, 540, -(frame*0.5/maxFrames) * 2 * math.pi, 1, 1, 32, 32)
                     love.graphics.draw(img_tower_nova_outerLines, 960, 540, (frame/maxFrames) * 2 * math.pi, 1, 1, 32, 32)
                     love.graphics.draw(img_tower_nova_static, 928, 508)
+                    if shieldActive then
+                        love.graphics.draw(img_tower_nova_shield, 960, 540, (frame*0.28/maxFrames) * 2 * math.pi, 1, 1, 32, 32)
+                    end
                 end
             end
         end

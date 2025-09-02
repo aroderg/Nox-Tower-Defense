@@ -1,6 +1,3 @@
-local statTextScrollState = 0
-local velx, vely = 0, 0 -- The scroll velocity
-
 function love.load()
     lume = require "lume"
     require "technical"
@@ -12,9 +9,12 @@ function love.load()
     require "particles"
     require "tooltips"
     require "gameOver"
-    require "hub"
     require "notations"
     require "abilityObjects"
+    require "abilityFunctions"
+    loadGame()
+    require "hub"
+    require "stats"
     hubSection = "Main"
     roundUpgradeSection = "ATK"
     background = "nova"
@@ -45,6 +45,7 @@ function love.load()
         img_tower_nova_static = love.graphics.newImage("assets/tower_nova_static.png")
         img_tower_nova_outerLines = love.graphics.newImage("assets/tower_nova_outerLines.png")
         img_tower_nova_branches = love.graphics.newImage("assets/tower_nova_branches.png")
+        img_tower_nova_shield = love.graphics.newImage("assets/tower_nova_shield.png")
         img_tower_projectile = love.graphics.newImage("assets/tower_projectile.png")
 
         --Enemies
@@ -111,6 +112,7 @@ function love.load()
         img_ability_preview_magmaTouch = love.graphics.newImage("assets/ability_preview_magmaTouch.png")
         img_ability_preview_lightningOrb = love.graphics.newImage("assets/ability_preview_lightningOrb.png")
         img_ability_preview_JerelosBlessing = love.graphics.newImage("assets/ability_preview_JerelosBlessing.png")
+        img_ability_preview_berserkerKit = love.graphics.newImage("assets/ability_preview_berserkerKit.png")
 
         --Audio
         audio_enemy_kill = love.audio.newSource("assets/audio/enemy_kill.wav", "static")
@@ -124,6 +126,7 @@ function love.load()
         audio_tower_fire = love.audio.newSource("assets/audio/tower_fire.wav", "static")
         audio_rainforest_activation = love.audio.newSource("assets/audio/rainforest_activation.wav", "static")
         audio_lightningOrb_launch = love.audio.newSource("assets/audio/lightningOrb_launch.wav", "static")
+        audio_upgrade_bought = love.audio.newSource("assets/audio/upgrade_bought.wav", "static")
     end
 
     --- Reloads all fonts.
@@ -145,6 +148,13 @@ function love.load()
         font_Afacad24 = love.graphics.newFont("assets/fonts/Afacad Flux/AfacadFlux-Regular.ttf", 24)
         font_Afacad28 = love.graphics.newFont("assets/fonts/Afacad Flux/AfacadFlux-Regular.ttf", 28)
 
+        --Afacad Flux Font (medium)
+        font_AfacadMedium24 = love.graphics.newFont("assets/fonts/Afacad Flux/AfacadFlux-Medium.ttf", 24)
+
+        --Afacad Flux Font (semi-bold)
+        font_AfacadSemiBold24 = love.graphics.newFont("assets/fonts/Afacad Flux/AfacadFlux-SemiBold.ttf", 24)
+        font_AfacadSemiBold28 = love.graphics.newFont("assets/fonts/Afacad Flux/AfacadFlux-SemiBold.ttf", 28)
+
         --Afacad Flux Font (bold)
         font_AfacadBold18 = love.graphics.newFont("assets/fonts/Afacad Flux/AfacadFlux-Bold.ttf", 18)
         font_AfacadBold20 = love.graphics.newFont("assets/fonts/Afacad Flux/AfacadFlux-Bold.ttf", 20)
@@ -152,13 +162,9 @@ function love.load()
         font_AfacadBold28 = love.graphics.newFont("assets/fonts/Afacad Flux/AfacadFlux-Bold.ttf", 28)
         font_AfacadBold32 = love.graphics.newFont("assets/fonts/Afacad Flux/AfacadFlux-Bold.ttf", 32)
         font_AfacadBold48 = love.graphics.newFont("assets/fonts/Afacad Flux/AfacadFlux-Bold.ttf", 48)
-
-        --Afacad Flux Font (semi-bold)
-        font_AfacadSemiBold24 = love.graphics.newFont("assets/fonts/Afacad Flux/AfacadFlux-SemiBold.ttf", 24)
-        font_AfacadSemiBold28 = love.graphics.newFont("assets/fonts/Afacad Flux/AfacadFlux-SemiBold.ttf", 28)
     end
     --What range melee enemies can attack from at maximum
-    TOWER_SIZE = 56
+    TOWER_SIZE = 42
     love.graphics.setLineStyle("rough")
     settings_particleMultiplierNames = {"None", "Minimal", "Reduced", "Normal", "Rich", "Fancy", "Fabulous", "Stormful"}
     settings_notationNames = {"kmbt", "e", "alphabet"}
@@ -166,7 +172,6 @@ function love.load()
     difficultyMultipliers = {1, 1.75, 2.5, 3.75}
     assetReload()
     fontReload()
-    loadGame()
     resetRoundValues()
     towers.reload()
     processUpgradeModule.reload()
@@ -183,13 +188,13 @@ function processUpgradeModule.reload()
             ["ATK"] = {
                 {"Damage", 10, 850, 350, 60, player.tower.attackDamage, player.upgrades.round.attackDamage.cost, player.upgrades.round.attackDamage.level, "round", math.huge, "precise", nil, nil, ["precedingUpgrade"] = 0}, --Attack Damage Science upgrade
                 {"Attack Speed", 10, 920, 350, 60, player.tower.attackSpeed, player.upgrades.round.attackSpeed.cost, player.upgrades.round.attackSpeed.level, "round", 106, "precise2", nil, nil, ["precedingUpgrade"] = 0}, --Attack Speed Science upgrade
-                {"Critical Chance", 10, 990, 350, 60, player.tower.critChance, player.upgrades.round.critChance.cost, player.upgrades.round.critChance.level, "round", 101, "precise", nil, "%", ["precedingUpgrade"] = player.upgrades.unlocks.crit}, --Critical Chance Science upgrade
+                {"Critical Chance", 10, 990, 350, 60, player.tower.critChance, player.upgrades.round.critChance.cost, player.upgrades.round.critChance.level, "round", 51, "precise", nil, "%", ["precedingUpgrade"] = player.upgrades.unlocks.crit}, --Critical Chance Science upgrade
                 {"Critical Factor", 370, 850, 350, 60, player.tower.critFactor, player.upgrades.round.critFactor.cost, player.upgrades.round.critFactor.level, "round", math.huge, "precise2", "x", nil, ["precedingUpgrade"] = player.upgrades.unlocks.crit}, --Critical Factor Science upgrade
                 {"Range", 370, 920, 350, 60, player.tower.range, player.upgrades.round.range.cost, player.upgrades.round.range.level, "round", 81, "precise", nil, nil, ["precedingUpgrade"] = player.upgrades.unlocks.range}, --Attack Damage Science upgrade
             },
 
             ["VIT"] = {
-                {"Health", 10, 850, 350, 60, player.tower.maxHealth, player.upgrades.round.health.cost, player.upgrades.round.health.level, "round", math.huge, "precise", nil, nil, ["precedingUpgrade"] = 0}, --Health Science Upgrade
+                {"Health", 10, 850, 350, 60, player.tower.health, player.upgrades.round.health.cost, player.upgrades.round.health.level, "round", math.huge, "precise", nil, nil, ["precedingUpgrade"] = 0}, --Health Science Upgrade
                 {"Regeneration", 10, 920, 350, 60, player.tower.regeneration, player.upgrades.round.regeneration.cost, player.upgrades.round.regeneration.level, "round", math.huge, "precise2", nil, "/s", ["precedingUpgrade"] = 0}, --Regeneration Science Upgrade
                 {"Resistance", 10, 990, 350, 60, player.tower.resistance, player.upgrades.round.resistance.cost, player.upgrades.round.resistance.level, "round", 101, "precise2", nil, "%", ["precedingUpgrade"] = player.upgrades.unlocks.resistance}, --Resistance Science Upgrade
                 {"Shield Cooldown", 370, 850, 350, 60, player.tower.shieldCooldown, player.upgrades.round.shieldCooldown.cost, player.upgrades.round.shieldCooldown.level, "round", 126, "precise", nil, "s", ["precedingUpgrade"] = player.upgrades.unlocks.shield}, --Shield Cooldown Science Upgrade
@@ -209,13 +214,13 @@ function processUpgradeModule.reload()
             ["ATK"] = {
                 {"Damage", 245, 240, 350, 60, player.tower.attackDamage, player.upgrades.science.attackDamage.cost, player.upgrades.science.attackDamage.level, "science", math.huge, "precise", nil, nil, ["precedingUpgrade"] = 0}, --Attack Damage Science upgrade
                 {"Attack Speed", 605, 240, 350, 60, player.tower.attackSpeed, player.upgrades.science.attackSpeed.cost, player.upgrades.science.attackSpeed.level, "science", 106, "precise2", nil, nil, ["precedingUpgrade"] = 0}, --Attack Speed Science upgrade
-                {"Critical Chance", 965, 240, 350, 60, player.tower.critChance, player.upgrades.science.critChance.cost, player.upgrades.science.critChance.level, "science", 101, "precise", nil, "%", ["precedingUpgrade"] = player.upgrades.unlocks.crit, "crit"}, --Critical Chance Science upgrade
+                {"Critical Chance", 965, 240, 350, 60, player.tower.critChance, player.upgrades.science.critChance.cost, player.upgrades.science.critChance.level, "science", 51, "precise", nil, "%", ["precedingUpgrade"] = player.upgrades.unlocks.crit, "crit"}, --Critical Chance Science upgrade
                 {"Critical Factor", 1325, 240, 350, 60, player.tower.critFactor, player.upgrades.science.critFactor.cost, player.upgrades.science.critFactor.level, "science", math.huge, "precise2", "x", nil, ["precedingUpgrade"] = player.upgrades.unlocks.crit, "crit"}, --Critical Factor Science upgrade
                 {"Range", 245, 310, 350, 60, player.tower.range, player.upgrades.science.range.cost, player.upgrades.science.range.level, "science", 61, "precise", nil, nil, ["precedingUpgrade"] = player.upgrades.unlocks.range, "range"}, --Attack Damage Science upgrade
             },
 
             ["VIT"] = {
-                {"Health", 245, 540, 350, 60, player.tower.maxHealth, player.upgrades.science.health.cost, player.upgrades.science.health.level, "science", math.huge, "precise", nil, nil, ["precedingUpgrade"] = 0}, --Health Science Upgrade
+                {"Health", 245, 540, 350, 60, player.tower.health, player.upgrades.science.health.cost, player.upgrades.science.health.level, "science", math.huge, "precise", nil, nil, ["precedingUpgrade"] = 0}, --Health Science Upgrade
                 {"Regeneration", 605, 540, 350, 60, player.tower.regeneration, player.upgrades.science.regeneration.cost, player.upgrades.science.regeneration.level, "science", math.huge, "precise2", nil, "/s", ["precedingUpgrade"] = 0}, --Regeneration Science Upgrade
                 {"Resistance", 965, 540, 350, 60, player.tower.resistance, player.upgrades.science.resistance.cost, player.upgrades.science.resistance.level, "science", 101, "precise2", nil, "%", ["precedingUpgrade"] = player.upgrades.unlocks.resistance, "resistance"}, --Resistance Science Upgrade
                 {"Shield Cooldown", 1325, 540, 350, 60, player.tower.shieldCooldown, player.upgrades.science.shieldCooldown.cost, player.upgrades.science.shieldCooldown.level, "science", 126, "precise", nil, "s", ["precedingUpgrade"] = player.upgrades.unlocks.shield, "shield"}, --Shield Cooldown Science Upgrade
@@ -247,26 +252,85 @@ end
 ---@param x number Battle upgrade level.
 ---@param z number Science upgrade level.
 function reloadFormulae(x, z)
+    local levelingInfo = {
+        {
+            --| SPIKED CRYSTALS - LEVELS FROM 0 to 11 |--
+            quantity =          {4,   4,   5,   5,   6,    6,    7,   7,   8,   8,   9,   10},
+            damage =            {250, 275, 300, 325, 350,  375,  400, 450, 500, 550, 600, 600}, -- %
+            frequency =         {16,  15,  14,  13,  12.2, 11.6, 10,  9.5, 9,   8.6, 8.2, 8}, -- seconds
+            levelRequirements = {2,   2,   2,   3,   3,    4,    5,   6,   8,   10,  12,  15}
+        },
+        {
+            --| SCATTER FIRE - LEVELS FROM 0 to 11 |--
+            quantity =          {4, 4,   4, 6, 6,   6, 8,  8,   10,  10, 12, 16},
+            frequency =         {1, 1.5, 2, 2, 2.5, 3, 3,  3.5, 3.5, 4,  4,  4}, -- % (chance)
+            levelRequirements = {2, 2,   3, 3, 4,   4, 5,  6,   7,   8,  10, 15}
+        },
+        {
+            --| BURST FIRE - LEVELS FROM 0 to 8 |--
+            quantity =          {4,   4, 4,   6,   6, 8, 8,   12,   12, 12},
+            frequency =         {1.5, 2, 2.5, 2.5, 3, 3, 3.5, 3.5,  4,  5}, -- % (chance)
+            levelRequirements = {2,   3, 4,   5,   6, 8, 10,  15,   15, 18}
+        },
+        {
+            --| RAINFOREST - LEVELS FROM 0 to 10 |--
+            density =           {10, 12, 14, 16, 18, 20, 22.5, 25, 27.5, 30, 32.5}, -- % (slowdown)
+            frequency =         10, -- waves
+            levelRequirements = {1,  1,  2,  2,  3,  3,  4,    5,  6,    7,  8}
+        },
+        {
+            --| MAGMA TOUCH - LEVELS FROM 0 to 9 |--
+            frequency =         {20,  18.5, 16, 14.5, 13.5, 12.5, 11.5, 11,   10.5, 10}, -- seconds
+            damage =            {7.5, 8.5,  10, 12,   14,   16,   18,   20,   23.5, 27.5}, -- %
+            levelRequirements = {3,   3,    4,  4,    5,    7,    9,    12,   16,   20}
+        },
+        {
+            --| LIGHTNING ORB - LEVELS FROM 0 to 8 |--
+            frequency =         {30, 27,   24,  22,  20,  18,  17,  16,  15}, -- seconds
+            damage =            {60, 65,   75,  85,  100, 115, 130, 145, 160}, -- %/s, constant damage
+            range =             {4,  4.25, 4.5, 4.8, 5.1, 5.5, 5.9, 6.4, 7}, -- units
+            levelRequirements = {2,  2,    3,   3,   4,   5,   6,   7,   9}
+        },
+        {
+            --| JERELO'S BLESSING - LEVELS FROM 0 to 12 |--
+            regenChance =       {0.1, 0.2,  0.3,  0.4,  0.6,  0.8,  1,    1.2,  1.4,  1.6,  1.8,  2,    2.25}, -- %
+            healthIncrease =    {1.1, 1.15, 1.21, 1.28, 1.36, 1.45, 1.55, 1.66, 1.78, 1.91, 2.05, 2.25, 2.5}, -- multiplier (1 = 100%)
+            levelRequirements = {1,   1,    1,    2,    2,    3,    3,    4,    4,    6,    8,    10,   12}
+        },
+        {
+            --| BERSERKER'S KIT - LEVELS FROM 0 to 6 |--
+            healthDecrease =       25, -- %
+            resistanceDecrease =   25, -- %
+            attackDamageIncrease = {15,  20,   25,   30,   35,   40,   50}, -- %
+            attackSpeedIncrease =  {10,  12.5, 15,   17.5, 20,   22.5, 27.5}, -- %
+            levelRequirements =    {4,   4,    5,    6,    7,    8,    11}
+        }
+    }
+    
     z = z or 1
+    local BKAttackDamage = (player.abilities.berserkerKit.equipped and 1 + levelingInfo[8].attackDamageIncrease[player.abilities.berserkerKit.level + 1] / 100 or 1)
+    local BKAttackSpeed = (player.abilities.berserkerKit.equipped and 1 + levelingInfo[8].attackSpeedIncrease[player.abilities.berserkerKit.level + 1] / 100 or 1)
+    local BKHealth = (player.abilities.berserkerKit.equipped and 1 - levelingInfo[8].healthDecrease / 100 or 1)
+    local BKResistance = (player.abilities.berserkerKit.equipped and 1 - levelingInfo[8].resistanceDecrease / 100 or 1)
+    local JBHealth = (player.abilities.JerelosBlessing.equipped and levelingInfo[7].healthIncrease[player.abilities.JerelosBlessing.level + 1] or 1)
     local upgradeModuleFormulae = {
         round = {
             ATK = {
-                {(0.2 * ((z - x + 1)^2) + 0.4 * (z - x + 1) + 0.4) / ((z - x + 1)^0.2) + 1, ((0.25 * z - 0.25)^3 + 4 + z) * player.upgrades.nexus.attackDamage.value}, --Attack Damage Round upgrade
-                {5 * ((z - x + 1)^math.log(((z - x + 1) + 10) / 10)), (math.min(0.8 + 0.04 * (z - 1), 5)) * player.upgrades.nexus.attackSpeed.value}, --Attack Speed Round upgrade
+                {(0.2 * ((z - x + 1)^2) + 0.4 * (z - x + 1) + 0.4) / ((z - x + 1)^0.2) + 1, ((0.25 * z - 0.25)^3 + 4 + z) * player.upgrades.nexus.attackDamage.value * BKAttackDamage}, --Attack Damage Round upgrade
+                {5 * ((z - x + 1)^math.log(((z - x + 1) + 10) / 10)), (math.min(0.8 + 0.04 * (z - 1), 5)) * player.upgrades.nexus.attackSpeed.value * BKAttackSpeed}, --Attack Speed Round upgrade
                 {((z - x) / 2)^2 + 5.75, math.min(0.3 * (z - 1), 15)}, --Critical Chance Round upgrade
                 {0.1 * ((z - x)^2) + (z - x) + 0.9, math.min(1 + 0.05 * (z - 1), 10)}, --Critical Factor Round upgrade
                 {((z - x)^2 + 5 * (z - x)) / 6 + 2 * (z - x) + 5/3, math.min(240 + 2 * (z - 1), 400)}, --Range Round upgrade
             },
 
             VIT = {
-                {(0.2 * ((z - x + 1)^2) + 0.4 * (z - x + 1) + 0.4) / ((z - x + 1)^(1/6)) + 1.95, ((0.3 * z - 0.3)^3.75 + 14.6 + 0.4 * z) * player.upgrades.nexus.health.value}, --Health Round upgrade
+                {(0.2 * ((z - x + 1)^2) + 0.4 * (z - x + 1) + 0.4) / ((z - x + 1)^(1/6)) + 1.95, ((0.3 * z - 0.3)^3.75 + 14.6 + 0.4 * z) * player.upgrades.nexus.health.value * BKHealth * JBHealth}, --Health Round upgrade
                 {(z - x + 1)^1.5 + 3, (((0.8 * z - 0.8)^2.5) / 50) * player.upgrades.nexus.regeneration.value}, --Regeneration Round upgrade
-                {(z - x) * math.sqrt(z - x) + 4, math.min(0.75 * (z - 1), 75)}, --Resistance Round upgrade
+                {(z - x) * math.sqrt(z - x) + 4, math.min(0.75 * (z - 1), 75) * BKResistance}, --Resistance Round upgrade
                 {(z - x)^(math.log(z - x, 10) / 1.2) + 3, math.max(120 - 0.6 * (z - 1), 45)}, --Shield Cooldown Round upgrade
                 {(z - x)^(math.log(z - x) / 2.5) + 2, math.min(0.05 * (z - 1) + 0.5, 6)}, --Shield Duration upgrade
                 {(12 * (z - x + 1))^2 + 56, math.min(z - 1, 5)}, --Meteor Amount Round upgrade
                 {4 * ((z - x + 1)^2) + 16, math.min(0.15 * z + 0.25, 6.25)}, --Meteor RPM Round upgrade
-
             },
 
             UTL = {
@@ -278,17 +342,17 @@ function reloadFormulae(x, z)
         },
         science = {
             ATK = {
-                {0.4 * x^2 + 2.6, ((0.25 * x - 0.25)^3 + 4 + x) * player.upgrades.nexus.attackDamage.value}, --Attack Damage Science upgrade
-                {8^((x - 1) / 20) + 3 * x + 4, (math.min(0.8 + 0.04 * (x - 1), 5)) * player.upgrades.nexus.attackSpeed.value}, --Attack Speed Science upgrade
+                {0.4 * x^2 + 2.6, ((0.25 * x - 0.25)^3 + 4 + x) * player.upgrades.nexus.attackDamage.value * BKAttackDamage}, --Attack Damage Science upgrade
+                {8^((x - 1) / 20) + 3 * x + 4, (math.min(0.8 + 0.04 * (x - 1), 5)) * player.upgrades.nexus.attackSpeed.value * BKAttackSpeed}, --Attack Speed Science upgrade
                 {(x / 2)^2 + 4 * x + 1.75, math.min(0.3 * (x - 1), 15)}, --Critical Chance Science Upgrade
                 {0.2 * (x^2) + 1.8, math.min(1 + 0.05 * (x - 1), 10)}, --Critical Factor Science upgrade
                 {(x^2 + 5 * x) / 3 + 2 * x + 4, math.min(240 + 2 * (x - 1), 400)}, --Range Science upgrade
             },
 
             VIT = {
-                {0.6 * x^2 + 3.4, ((0.3 * x - 0.3)^3.75 + 14.6 + 0.4 * x) * player.upgrades.nexus.health.value}, --Health Science upgrade
+                {0.6 * x^2 + 3.4, ((0.3 * x - 0.3)^3.75 + 14.6 + 0.4 * x) * player.upgrades.nexus.health.value * BKHealth * JBHealth}, --Health Science upgrade
                 {x^1.75 + 2 * x + 3, (((0.8 * x - 0.8)^2.5) / 50) * player.upgrades.nexus.regeneration.value}, --Regeneration Science upgrade
-                {x * math.sqrt(2 * x) + 3 - math.sqrt(2), math.min(0.75 * (x - 1), 75)}, --Resistance Science Upgrade
+                {x * math.sqrt(2 * x) + 3 - math.sqrt(2), math.min(0.75 * (x - 1), 75) * BKResistance}, --Resistance Science Upgrade
                 {x^(math.log(x, 10)) + 3, math.max(120 - 0.6 * (x - 1), 42)}, --Shield Cooldown Science upgrade
                 {(x)^(math.log(x) / 2) + 3, math.min(0.05 * (x - 1) + 0.5, 6)}, --Shield Duration upgrade
                 {(16 * x)^2 + 144, math.min(x - 1, 5)}, --Meteor Amount Science upgrade
@@ -396,13 +460,16 @@ function processUpgradeModule.upgrade(x, y, module, costFormula, valueFormula)
     if x >= attributes.ux + buttonXY[1] and x <= attributes.ux + attributes.width - 3 and y >= attributes.uy + buttonXY[2] and y <= attributes.uy + attributes.height - 3 and attributes.level < attributes.maxLevel and attributes.precedingUpgrade ~= false then
         if attributes.type == "round" then
             if player.currencies.currentCopper >= math.floor(attributes.cost) then
+                local ub = audio_upgrade_bought:clone()
+                ub:setVolume(1 * player.settings.volume^2)
+                ub:play()
                 player.currencies.currentCopper = player.currencies.currentCopper - math.floor(attributes.cost)
                 attributes.level = attributes.level + 1
                 attributes.cost = math.floor(costFormula)
                 attributes.value = valueFormula
                 player.stats.battle.upgradesAcquired = player.stats.battle.upgradesAcquired + 1
                 if module == upgradeModules["round"]["VIT"][1] then
-                    local hpPercentage = player.tower.currentHealth / player.tower.maxHealth
+                    local hpPercentage = player.tower.currentHealth / player.tower.health
                     player.tower.currentHealth = attributes.value * hpPercentage
                 elseif module == upgradeModules["round"]["VIT"][6] then
                     local offset = 0
@@ -418,6 +485,9 @@ function processUpgradeModule.upgrade(x, y, module, costFormula, valueFormula)
 
         elseif attributes.type == "science" then
             if player.currencies.currentSilver >= math.floor(attributes.cost) then
+                local ub = audio_upgrade_bought:clone()
+                ub:setVolume(1 * player.settings.volume^2)
+                ub:play()
                 player.currencies.currentSilver = player.currencies.currentSilver - math.floor(attributes.cost)
                 attributes.level = attributes.level + 1
                 attributes.cost = math.floor(costFormula)
@@ -451,11 +521,20 @@ function processUnlockPanel.draw(unlockPanel)
     love.graphics.setColor(1, 1, 1, 1)
     local buttonXY = {attributes.width - 90 - 3, 3}
     love.graphics.printf("Unlock " .. attributes.name .. " upgrades", attributes.ux, attributes.uy + ((attributes.height - buttonXY[2] * 2) / 2) - 11, attributes.width - buttonXY[2], "center")
-    love.graphics.setColor(0.05, 0.35, 0.45, 1)
+    if player.currencies.currentElectrum >= attributes.cost then
+        love.graphics.setColor(0.05, 0.35, 0.45, 1)
+    else
+        love.graphics.setColor(0.03, 0.2, 0.25, 1)
+    end
     love.graphics.rectangle("fill", attributes.ux + buttonXY[1], attributes.uy + buttonXY[2], attributes.width - buttonXY[1] - 3, attributes.height - buttonXY[2] * 2)
     love.graphics.setColor(1, 1, 1, 1)
     love.graphics.rectangle("line", attributes.ux + buttonXY[1], attributes.uy + buttonXY[2], attributes.width - buttonXY[1] - 3, attributes.height - buttonXY[2] * 2)
     love.graphics.draw(img_currency_electrum, attributes.ux + buttonXY[1] + 4, attributes.uy + (attributes.height - buttonXY[2] * 2 - 15) / 2, 0, 20/32)
+    if player.currencies.currentElectrum >= attributes.cost then
+        love.graphics.setColor(1, 1, 1, 1)
+    else
+        love.graphics.setColor(1, 0.5, 0.5, 1)
+    end
     love.graphics.print(attributes.cost, attributes.ux + buttonXY[1] + 24, attributes.uy + ((attributes.height - buttonXY[2] * 2) / 2) - 11)
 end
 
@@ -729,7 +808,7 @@ function skipWave(wavesSkipped)
 
     local JerelosBlessingRegen = love.math.random(0, 10000) / 100
     if JerelosBlessingRegen <= levelingInfo[7].regenChance[player.abilities.JerelosBlessing.level + 1] then
-        player.tower.currentHealth = player.tower.maxHealth
+        player.tower.currentHealth = player.tower.health
     end
 
     player.stats.battle.wavesSkipped = player.stats.battle.wavesSkipped + wavesSkipped
@@ -739,7 +818,7 @@ end
 
 --- Kill the specified enemy by adding its drops to the player's resources, removing the enemy from the game field and creating some kill particles.
 ---@param s number The enemy to be killed.
-function killEnemy(s)
+function killEnemy(s, damageSource)
     local ke = enemiesOnField[s]
     local offsets = {
         basic = 10,
@@ -825,6 +904,16 @@ function killEnemy(s)
     player.stats.wave.enemiesKilled = player.stats.wave.enemiesKilled + 1
     player.stats.battle.enemiesKilled = player.stats.battle.enemiesKilled + 1
     player.stats.save.enemiesKilled = player.stats.save.enemiesKilled + 1
+    if damageSource == "spikedCrystal" then
+        player.stats.battle.spikedCrystals.enemiesKilled = player.stats.battle.spikedCrystals.enemiesKilled + 1
+        player.stats.save.spikedCrystals.enemiesKilled = player.stats.save.spikedCrystals.enemiesKilled + 1
+    elseif damageSource == "magmaPool" then
+        player.stats.battle.magmaTouch.enemiesKilled = player.stats.battle.magmaTouch.enemiesKilled + 1
+        player.stats.save.magmaTouch.enemiesKilled = player.stats.save.magmaTouch.enemiesKilled + 1
+    elseif damageSource == "lightningOrb" then
+        player.stats.battle.lightningOrb.enemiesKilled = player.stats.battle.lightningOrb.enemiesKilled + 1
+        player.stats.save.lightningOrb.enemiesKilled = player.stats.save.lightningOrb.enemiesKilled + 1
+    end
     table.remove(enemiesOnField, s)
 end
 
@@ -832,11 +921,21 @@ end
 ---@param s number The enemy to be damaged.
 ---@param damage number Amount of damage to deal to the enemy.
 ---@param crit boolean Whether this hit is a Critical one or not.
-function damageEnemy(s, damage, crit)
+function damageEnemy(s, damage, crit, damageSource)
     local de = enemiesOnField[s]
     createHitTextParticle(de.x, de.y, notations.convertToLetterNotation(math.min(de.currentHP, damage), "precise"), de.type, crit)
     player.stats.battle.damageDealt = player.stats.battle.damageDealt + math.min(damage, de.currentHP)
     player.stats.save.damageDealt = player.stats.save.damageDealt + math.min(damage, de.currentHP)
+    if damageSource == "spikedCrystal" then
+        player.stats.battle.spikedCrystals.damageDealt = player.stats.battle.spikedCrystals.damageDealt + math.min(damage, de.currentHP)
+        player.stats.save.spikedCrystals.damageDealt = player.stats.save.spikedCrystals.damageDealt + math.min(damage, de.currentHP)
+    elseif damageSource == "magmaPool" then
+        player.stats.battle.magmaTouch.damageDealt = player.stats.battle.magmaTouch.damageDealt + math.min(damage, de.currentHP)
+        player.stats.save.magmaTouch.damageDealt = player.stats.save.magmaTouch.damageDealt + math.min(damage, de.currentHP)
+    elseif damageSource == "lightningOrb" then
+        player.stats.battle.lightningOrb.damageDealt = player.stats.battle.lightningOrb.damageDealt + math.min(damage, de.currentHP)
+        player.stats.save.lightningOrb.damageDealt = player.stats.save.lightningOrb.damageDealt + math.min(damage, de.currentHP)
+    end
     de.currentHP = de.currentHP - damage
     if de.type == "sentry" then
         sentryCurrentHP = de.currentHP
@@ -844,7 +943,7 @@ function damageEnemy(s, damage, crit)
         centurionCurrentHP = de.currentHP
     end
     if de.currentHP <= 0 then
-        killEnemy(s, de.x, de.y, de.type)
+        killEnemy(s, damageSource)
     end
 end
 
@@ -933,6 +1032,7 @@ function love.draw()
         if player.abilities.JerelosBlessing.equipped then
             abilityObjects.JerelosBlessing.draw()
         end
+        love.graphics.setColor(1, 1, 1, 1)
         towers.nova()
         particles.render.burn()
         love.graphics.setColor(1, 1, 1, 1)
@@ -955,12 +1055,16 @@ function love.draw()
                 sentry = 22,
                 centurion = 30,
                 }
-            if rainforestActive and math.dist(v.x + offsets[v.type] + 2, v.y + offsets[v.type] + 2, 960, 540) <= player.tower.range then
+            if rainforestActive and math.dist(v.x + offsets[v.type], v.y + offsets[v.type], 960, 540) <= player.tower.range then
                 love.graphics.setColor(0.4, 0.65, 0.1, 0.5)
-                love.graphics.ellipse("line", x + offsets[v.type] + 2, y + offsets[v.type] + 2, 14, 14)
+                love.graphics.ellipse("line", x + offsets[v.type], y + offsets[v.type], 14, 14)
                 love.graphics.setColor(1, 1, 1, 1)
             end
         end
+        abilityObjects.spikedCrystal.draw()
+        abilityObjects.magmaPool.draw()
+        abilityObjects.lightningOrb_laser.draw()
+        abilityObjects.lightningOrb.draw()
         --[[ Print currency balances for Copper, Silver and Gold ]]--
         love.graphics.draw(img_currency_copper, 16, 16)
         love.graphics.printf(string.format("%s", notations.convertToLetterNotation(player.currencies.currentCopper, "brief")), 50, 23, 100, "left")
@@ -977,10 +1081,6 @@ function love.draw()
         for i,v in ipairs(meteors) do
             love.graphics.draw(img_meteor, v.x - 14, v.y - 14)
         end
-        abilityObjects.spikedCrystal.draw()
-        abilityObjects.magmaPool.draw()
-        abilityObjects.lightningOrb_laser.draw()
-        abilityObjects.lightningOrb.draw()
         renderParticles()
         drawUpgradeMenu()
         towerInfo_visual()
@@ -1017,10 +1117,16 @@ function love.draw()
             love.graphics.setFont(font_AfacadBold24)
             love.graphics.printf(string.format("Gameplay Info - Wave %d", gameplay.wave), 710, 243, 500, "center")
             love.graphics.setFont(font_AfacadBold20)
-            local columnCenters = {760, 860, 960, 1060, 1160}
-            local rowCenters = {290, 340, 390, 440, 490, 540}
+            local columnCenters = {}
+            for i=1,5 do
+                table.insert(columnCenters, 760 + (i - 1) * 100)
+            end
+            local rowCenters = {}
+            for i=1,6 do
+                table.insert(rowCenters, 290 + (i - 1) * 40)
+            end
             local wrapWidth = 200
-            local enemySize = {24, 36, 20, 48, 64}
+            local enemySize = {20, 32, 16, 44, 60}
             local enemyStats = {
                 {"Enemy", "Health", "Damage", "Speed", "Chance"},
                 {img_enemy_basic, img_enemy_tank, img_enemy_swift, img_enemy_sentry, img_enemy_centurion},
@@ -1033,7 +1139,7 @@ function love.draw()
                 love.graphics.printf(enemyStats[1][i], columnCenters[i] - wrapWidth / 2, rowCenters[1], wrapWidth, "center")
             end
             for i=1,#enemyStats[2] do
-                love.graphics.draw(enemyStats[2][i], columnCenters[1] - 13, rowCenters[i+1], 0, 24 / enemySize[i])
+                love.graphics.draw(enemyStats[2][i], columnCenters[1] - 11, rowCenters[i+1], 0, 20 / enemySize[i])
             end
             love.graphics.setFont(font_Afacad20)
             for i=1,2 do
@@ -1048,109 +1154,12 @@ function love.draw()
                 love.graphics.printf(string.format("%.1f%%", enemyStats[6][i]), columnCenters[5] - wrapWidth / 2, rowCenters[i+1] - 2, wrapWidth, "center")
             end
             love.graphics.printf({{1, 1, 1, 1}, "Enemy spawn cap: ", {1, 0.8, 0.5, 1}, string.format("%d", enemyAttributes.waveCap)}, 710, 760, 500, "center")
-            love.graphics.printf({{1, 1, 1, 1}, "Enemy spawn rate: ", {1, 0.8, 0.5, 1}, string.format("%.1f", enemyAttributes.spawnRate)}, 710, 800, 500, "center")
+            love.graphics.printf({{1, 1, 1, 1}, "Enemy spawn rate: ", {1, 0.8, 0.5, 1}, string.format("%.1f", enemyAttributes.spawnRate), {1, 1, 1, 1}, "/s"}, 710, 800, 500, "center")
             love.graphics.draw(img_button_arrowRight_big, 1210, 522)
             tooltips.displayGameplayInfo()
         end
         if player.menu.battleStats then
-            love.graphics.setLineWidth(1)
-            love.graphics.setLineStyle("smooth")
-            love.graphics.setColor(0, 0, 0, 0.5)
-            love.graphics.rectangle("fill", 0, 0, 1920, 1080)
-            love.graphics.setColor(0.2, 0, 0.35, 1)
-            love.graphics.rectangle("fill", 710, 240, 500, 600, 2, 2)
-            love.graphics.setColor(1, 1, 1, 1)
-            love.graphics.rectangle("line", 710, 240, 500, 600, 2, 2)
-            love.graphics.setFont(font_AfacadBold24)
-            love.graphics.printf("Player Stats - Battle", 710, 243, 500, "center")
-            love.graphics.draw(img_button_arrowLeft_big, 674, 522)
-            local statNames = {
-                "Battle Time (in-game)",
-                "Battle Time (real)",
-                "Enemies Killed",
-                "Damage Taken",
-                "Damage Dealt",
-                "Copper Earned",
-                "Silver Earned",
-                "Damage Absorbed",
-                "Waves Skipped",
-                "Projectiles Fired",
-                "Upgrades Acquired",
-                "Spiked Crystals - Enemies Killed",
-                "Spiked Crystals - Damage Dealt",
-                "Spiked Crystals - Crytals Spawned",
-                "Scatter Fire - Damage Dealt",
-                "Scatter Fire - Triggered",
-                "Burst Fire - Damage Dealt",
-                "Burst Fire - Triggered",
-                "Rainforest - Triggered",
-                "Magma Touch - Enemies Killed",
-                "Magma Touch - Damage Dealt",
-                "Magma Touch - Pools Spawned",
-                "Lightning Orb - Enemies Killed",
-                "Lightning Orb - Damage Dealt",
-                "Lightning Orb - Orbs Spawned",
-                "Jerelo's Blessing - Triggered",
-                "Jerelo's Blessing - Health Regenerated",
-            }
-            local statVars = {
-                player.stats.battle.gameTime,
-                player.stats.battle.realTime,
-                {player.stats.battle.enemiesKilled, "brief"},
-                {player.stats.battle.damageTaken, "precise"},
-                {player.stats.battle.damageDealt, "precise"},
-                {player.stats.battle.copperEarned, "brief"},
-                {player.stats.battle.silverEarned, "brief"},
-                {player.stats.battle.shieldDamageAbsorb, "precise"},
-                {player.stats.battle.wavesSkipped, "brief"},
-                {player.stats.battle.projectilesFired, "brief"},
-                {player.stats.battle.upgradesAcquired, "brief"},
-                
-                {player.stats.battle.spikedCrystals.enemiesKilled, "brief"},
-                {player.stats.battle.spikedCrystals.damageDealt, "precise"},
-                {player.stats.battle.spikedCrystals.spawned, "brief"},
-
-                {player.stats.battle.scatterFire.damageDealt, "precise"},
-                {player.stats.battle.scatterFire.triggered, "brief"},
-
-                {player.stats.battle.burstFire.damageDealt, "precise"},
-                {player.stats.battle.burstFire.triggered, "brief"},
-
-                {player.stats.battle.rainforest.triggered, "brief"},
-
-                {player.stats.battle.magmaTouch.enemiesKilled, "brief"},
-                {player.stats.battle.magmaTouch.damageDealt, "precise"},
-                {player.stats.battle.magmaTouch.spawned, "brief"},
-
-                {player.stats.battle.lightningOrb.enemiesKilled, "brief"},
-                {player.stats.battle.lightningOrb.damageDealt, "precise"},
-                {player.stats.battle.lightningOrb.spawned, "brief"},
-
-                {player.stats.battle.JerelosBlessing.triggered, "brief"},
-                {player.stats.battle.JerelosBlessing.healthRegenerated, "precise"},
-            }
-            for i=1,math.min(#statNames, #statVars) do
-                love.graphics.setScissor(710, 280, 500, 540)
-                local rowCenter = (255 + i * 25) + math.floor(statTextScrollState)
-                local color = {0, 1 - i / 50, 0.8 + i / 250}
-                love.graphics.setFont(font_Afacad18)
-                love.graphics.printf(statNames[i], 760, rowCenter, 300, "left")
-                love.graphics.setFont(font_AfacadBold18)
-                if i ~= 1 and i ~= 2 then
-                    love.graphics.printf({color, string.format("%s", notations.convertToLetterNotation(statVars[i][1], statVars[i][2]))}, 860, rowCenter, 300, "right")    
-                else
-                    love.graphics.printf({color, string.format("%dm %ds", statVars[i] / 60, statVars[i] % 60)}, 860, rowCenter, 300, "right") 
-                end
-                love.graphics.setScissor()
-            end
-            for i=2,math.min(#statNames, #statVars) do
-                love.graphics.setScissor(710, 280, 500, 540)
-                local rowCenter = (255 + i * 25) + math.floor(statTextScrollState)
-                local color = {1, 0.5 + i / 80, 0.2 - i / 250}
-                love.graphics.setColor(color[1], color[2], color[3], 0.4)
-                love.graphics.line(760, rowCenter + 1, 1160, rowCenter + 1)
-                love.graphics.setScissor()
-            end
+            statsMenus.battle.draw()
         end
         if player.menu.paused then
             love.graphics.setColor(0, 0, 0, 0.5)
@@ -1158,17 +1167,19 @@ function love.draw()
             love.graphics.setColor(0.2, 0, 0.35, 1)
             love.graphics.rectangle("fill", 710, 390, 500, 300)
             love.graphics.setColor(1, 1, 1, 1)
+            love.graphics.setLineWidth(1)
+            love.graphics.rectangle("line", 710, 390, 500, 300, 3, 3)
             love.graphics.setFont(font_AfacadBold32)
             love.graphics.printf("Paused", 860, 400, 200, "center")
 
             love.graphics.setColor(0.1, 0.15, 0.5, 1)
-            love.graphics.rectangle("fill", 890, 530, 140, 40)
+            love.graphics.rectangle("fill", 890, 560, 140, 40)
             love.graphics.setColor(0.3, 0.75, 0.85, 1)
             love.graphics.setLineWidth(2)
-            love.graphics.rectangle("line", 890, 530, 140, 40, 2, 2)
+            love.graphics.rectangle("line", 890, 560, 140, 40, 2, 2)
             love.graphics.setFont(font_Afacad24)
             love.graphics.setColor(1, 1, 1, 1)
-            love.graphics.printf("Settings", 870, 532, 180, "center")
+            love.graphics.printf("Settings", 870, 562, 180, "center")
 
             love.graphics.setColor(0.1, 0.15, 0.5, 1)
             love.graphics.rectangle("fill", 810, 610, 140, 60)
@@ -1188,172 +1199,88 @@ function love.draw()
             love.graphics.setColor(1, 1, 1, 1)
             love.graphics.setColor(1, 0.2, 0.25, 1)
             love.graphics.printf("End Battle", 970, 622, 140, "center")
-
-            if player.menu.settings then
-                love.graphics.setColor(0, 0, 0, 0.5)
-                love.graphics.rectangle("fill", 0, 0, 1920, 1080)
-                love.graphics.setColor(0.2, 0, 0.35, 1)
-                love.graphics.rectangle("fill", 710, 240, 500, 600)
-                love.graphics.setColor(1, 1, 1, 1)
-                love.graphics.setFont(font_AfacadBold32)
-                love.graphics.printf("Settings", 860, 250, 200, "center")
-
-                love.graphics.setFont(font_AfacadBold24)
-                love.graphics.printf("Particles", 710, 300, 500, "center")
-                love.graphics.setFont(font_Afacad20)
-                love.graphics.printf(string.format("%s (x%.2f)", settings_particleMultiplierNames[player.settings.particleMultiplier], settings_particleMultipliers[player.settings.particleMultiplier]), 710, 330, 500, "center")
-                if player.settings.particleMultiplier > 1 then
-                    love.graphics.draw(img_button_arrowLeft, 820, 332)
-                end
-                if player.settings.particleMultiplier < 8 then
-                    love.graphics.draw(img_button_arrowRight, 1076, 332)
-                end
-
-                love.graphics.setFont(font_AfacadBold24)
-                love.graphics.printf("Wave Skip Messages", 710, 380, 500, "center")
-                love.graphics.setFont(font_Afacad20)
-                love.graphics.printf(string.format("%s", not player.settings.waveSkipMessages and "Off" or player.settings.waveSkipMessages and "On"), 710, 410, 500, "center")
-                if player.settings.waveSkipMessages then
-                    love.graphics.draw(img_button_arrowLeft, 820, 412)
-                elseif not player.settings.waveSkipMessages then
-                    love.graphics.draw(img_button_arrowRight, 1076, 412)
-                end
-
-                love.graphics.setFont(font_AfacadBold24)
-                love.graphics.printf("Notation", 710, 460, 500, "center")
-                love.graphics.setFont(font_Afacad20)
-                love.graphics.printf(string.format("%s", player.settings.notation == settings_notationNames[1] and "KMBT" or player.settings.notation == settings_notationNames[2] and "Scientific" or "Alphabet"), 710, 490, 500, "center")
-                if player.settings.notation ~= settings_notationNames[1] then
-                    love.graphics.draw(img_button_arrowLeft, 820, 492)
-                end
-                if player.settings.notation ~= settings_notationNames[3] then
-                    love.graphics.draw(img_button_arrowRight, 1076, 492)
-                end
-
-                love.graphics.setFont(font_AfacadBold24)
-                love.graphics.printf("Tooltips", 710, 540, 500, "center")
-                love.graphics.setFont(font_Afacad20)
-                love.graphics.printf(string.format("%s", not player.settings.tooltips and "Off" or player.settings.tooltips and "On"), 710, 570, 500, "center")
-                if player.settings.tooltips then
-                    love.graphics.draw(img_button_arrowLeft, 820, 572)
-                elseif not player.settings.tooltips then
-                    love.graphics.draw(img_button_arrowRight, 1076, 572)
-                end
-
-                love.graphics.setFont(font_AfacadBold24)
-                love.graphics.printf("Volume", 710, 620, 500, "center")
-                love.graphics.setFont(font_Afacad20)
-                love.graphics.printf(math.floor(player.settings.volume * 100) .. "%", 710, 650, 500, "center")
-                love.graphics.setColor(1, 0, 0, 1)
-                love.graphics.rectangle("fill", 835, 680, 250, 12)
-                love.graphics.setColor(0, 1, 0, 1)
-                love.graphics.rectangle("fill", 835, 680, 250 * (math.floor(player.settings.volume * 100) / 100), 12)
-
-                love.graphics.setColor(0.1, 0.15, 0.5, 1)
-                love.graphics.rectangle("fill", 910, 780, 100, 40, 2, 2)
-                love.graphics.setColor(0.3, 0.75, 0.85, 1)
-                love.graphics.setLineWidth(2)
-                love.graphics.rectangle("line", 910, 780, 100, 40, 2, 2)
-                love.graphics.setFont(font_Afacad24)
-                love.graphics.setColor(1, 1, 1, 1)
-                love.graphics.printf("Back", 910, 782, 100, "center")
-            end
         end
     elseif player.location == "hub" then
         inHub_visual()
-        if hubSection == "Science" then
+        if hubSection == "Science" and not player.menu.saveStats and not player.menu.settings then
             tooltips.displayHub()
         end
         if player.menu.saveStats then
-            love.graphics.setLineWidth(1)
-            love.graphics.setLineStyle("smooth")
-            love.graphics.setColor(0, 0, 0, 0.5)
-            love.graphics.rectangle("fill", 0, 0, 1920, 1080)
-            love.graphics.setColor(0.2, 0, 0.35, 1)
-            love.graphics.rectangle("fill", 710, 240, 500, 600, 2, 2)
-            love.graphics.setColor(1, 1, 1, 1)
-            love.graphics.rectangle("line", 710, 240, 500, 600, 2, 2)
-            love.graphics.setFont(font_AfacadBold24)
-            love.graphics.printf("Player Stats - Savefile", 710, 243, 500, "center")
-            local statNames = {
-                "Enemies Killed",
-                "Damage Dealt",
-                "Silver Earned",
-                "Waves Skipped",
-                "Projectiles Fired",
-                "Science Upgrades",
-                "Nexus Upgrades",
-                "Waves Defeated",
-                "Spiked Crystals - Enemies Killed",
-                "Spiked Crystals - Damage Dealt",
-                "Spiked Crystals - Crytals Spawned",
-                "Scatter Fire - Damage Dealt",
-                "Scatter Fire - Triggered",
-                "Burst Fire - Damage Dealt",
-                "Burst Fire - Triggered",
-                "Rainforest - Triggered",
-                "Magma Touch - Enemies Killed",
-                "Magma Touch - Damage Dealt",
-                "Magma Touch - Pools Spawned",
-                "Lightning Orb - Enemies Killed",
-                "Lightning Orb - Damage Dealt",
-                "Lightning Orb - Orbs Spawned",
-                "Jerelo's Blessing - Triggered",
-                "Jerelo's Blessing - Health Regenerated",
-            }
-            local statVars = {
-                {player.stats.save.enemiesKilled, "brief"},
-                {player.stats.save.damageDealt, "precise"},
-                {player.stats.save.silverEarned, "brief"},
-                {player.stats.save.wavesSkipped, "brief"},
-                {player.stats.save.projectilesFired, "brief"},
-                {player.stats.save.upgradesAcquired.science, "brief"},
-                {player.stats.save.upgradesAcquired.nexus, "brief"},
-                {player.stats.save.wavesBeaten, "brief"},
-                
-                {player.stats.save.spikedCrystals.enemiesKilled, "brief"},
-                {player.stats.save.spikedCrystals.damageDealt, "precise"},
-                {player.stats.save.spikedCrystals.spawned, "brief"},
-
-                {player.stats.save.scatterFire.damageDealt, "precise"},
-                {player.stats.save.scatterFire.triggered, "brief"},
-
-                {player.stats.save.burstFire.damageDealt, "precise"},
-                {player.stats.save.burstFire.triggered, "brief"},
-
-                {player.stats.save.rainforest.triggered, "brief"},
-
-                {player.stats.save.magmaTouch.enemiesKilled, "brief"},
-                {player.stats.save.magmaTouch.damageDealt, "precise"},
-                {player.stats.save.magmaTouch.spawned, "brief"},
-
-                {player.stats.save.lightningOrb.enemiesKilled, "brief"},
-                {player.stats.save.lightningOrb.damageDealt, "precise"},
-                {player.stats.save.lightningOrb.spawned, "brief"},
-
-                {player.stats.save.JerelosBlessing.triggered, "brief"},
-                {player.stats.save.JerelosBlessing.healthRegenerated, "precise"},
-            }
-            for i=1,math.min(#statNames, #statVars) do
-                love.graphics.setScissor(710, 280, 500, 540)
-                local rowCenter = (255 + i * 25) + math.floor(statTextScrollState)
-                local color = {0, 1 - i / 50, 0.8 + i / 250}
-                love.graphics.setFont(font_Afacad18)
-                love.graphics.printf(statNames[i], 760, rowCenter, 300, "left")
-                love.graphics.setFont(font_AfacadBold18)
-                love.graphics.printf({color, string.format("%s", notations.convertToLetterNotation(statVars[i][1], statVars[i][2]))}, 860, rowCenter, 300, "right")
-                love.graphics.setScissor()
-            end
-            for i=2,math.min(#statNames, #statVars) do
-                love.graphics.setScissor(710, 280, 500, 540)
-                local rowCenter = (255 + i * 25) + math.floor(statTextScrollState)
-                local color = {1, 0.5 + i / 80, 0.2 - i / 250}
-                local color = {0.25 + i / 64, 0.8, 0.4}
-                love.graphics.setColor(color[1], color[2], color[3], 0.4)
-                love.graphics.line(760, rowCenter + 1, 1160, rowCenter + 1)
-                love.graphics.setScissor()
-            end
+            statsMenus.savefile.draw()
         end
+    end
+
+    if player.menu.settings then
+        love.graphics.setColor(0, 0, 0, 0.5)
+        love.graphics.rectangle("fill", 0, 0, 1920, 1080)
+        love.graphics.setColor(0.2, 0, 0.35, 1)
+        love.graphics.rectangle("fill", 710, 240, 500, 600)
+        love.graphics.setColor(1, 1, 1, 1)
+        love.graphics.setLineWidth(1)
+        love.graphics.rectangle("line", 710, 240, 500, 600, 3, 3)
+        love.graphics.setColor(1, 1, 1, 1)
+        love.graphics.setFont(font_AfacadBold32)
+        love.graphics.printf("Settings", 860, 250, 200, "center")
+
+        love.graphics.setFont(font_AfacadBold24)
+        love.graphics.printf("Particles", 710, 300, 500, "center")
+        love.graphics.setFont(font_Afacad20)
+        love.graphics.printf(string.format("%s (x%.2f)", settings_particleMultiplierNames[player.settings.particleMultiplier], settings_particleMultipliers[player.settings.particleMultiplier]), 710, 330, 500, "center")
+        if player.settings.particleMultiplier > 1 then
+            love.graphics.draw(img_button_arrowLeft, 820, 332)
+        end
+        if player.settings.particleMultiplier < 8 then
+            love.graphics.draw(img_button_arrowRight, 1076, 332)
+        end
+
+        love.graphics.setFont(font_AfacadBold24)
+        love.graphics.printf("Wave Skip Messages", 710, 380, 500, "center")
+        love.graphics.setFont(font_Afacad20)
+        love.graphics.printf(string.format("%s", not player.settings.waveSkipMessages and "Off" or player.settings.waveSkipMessages and "On"), 710, 410, 500, "center")
+        if player.settings.waveSkipMessages then
+            love.graphics.draw(img_button_arrowLeft, 820, 412)
+        elseif not player.settings.waveSkipMessages then
+            love.graphics.draw(img_button_arrowRight, 1076, 412)
+        end
+
+        love.graphics.setFont(font_AfacadBold24)
+        love.graphics.printf("Notation", 710, 460, 500, "center")
+        love.graphics.setFont(font_Afacad20)
+        love.graphics.printf(string.format("%s", player.settings.notation == settings_notationNames[1] and "KMBT" or player.settings.notation == settings_notationNames[2] and "Scientific" or "Alphabet"), 710, 490, 500, "center")
+        if player.settings.notation ~= settings_notationNames[1] then
+            love.graphics.draw(img_button_arrowLeft, 820, 492)
+        end
+        if player.settings.notation ~= settings_notationNames[3] then
+            love.graphics.draw(img_button_arrowRight, 1076, 492)
+        end
+
+        love.graphics.setFont(font_AfacadBold24)
+        love.graphics.printf("Tooltips", 710, 540, 500, "center")
+        love.graphics.setFont(font_Afacad20)
+        love.graphics.printf(string.format("%s", not player.settings.tooltips and "Off" or player.settings.tooltips and "On"), 710, 570, 500, "center")
+        if player.settings.tooltips then
+            love.graphics.draw(img_button_arrowLeft, 820, 572)
+        elseif not player.settings.tooltips then
+            love.graphics.draw(img_button_arrowRight, 1076, 572)
+        end
+
+        love.graphics.setFont(font_AfacadBold24)
+        love.graphics.printf("Volume", 710, 620, 500, "center")
+        love.graphics.setFont(font_Afacad20)
+        love.graphics.printf(math.floor(player.settings.volume * 100) .. "%", 710, 650, 500, "center")
+        love.graphics.setColor(1, 0, 0, 1)
+        love.graphics.rectangle("fill", 835, 680, 250, 12)
+        love.graphics.setColor(0, 1, 0, 1)
+        love.graphics.rectangle("fill", 835, 680, 250 * (math.floor(player.settings.volume * 100) / 100), 12)
+
+        love.graphics.setColor(0.1, 0.15, 0.5, 1)
+        love.graphics.rectangle("fill", 910, 780, 100, 40, 2, 2)
+        love.graphics.setColor(0.3, 0.75, 0.85, 1)
+        love.graphics.setLineWidth(2)
+        love.graphics.rectangle("line", 910, 780, 100, 40, 2, 2)
+        love.graphics.setFont(font_Afacad24)
+        love.graphics.setColor(1, 1, 1, 1)
+        love.graphics.printf("Back", 910, 782, 100, "center")
     end
     love.graphics.setColor(1, 1, 1, 1)
     love.graphics.setFont(font_Afacad16)
@@ -1387,6 +1314,8 @@ function love.update(dt)
                         for i=1,levelingInfo[2].quantity[player.abilities.scatterFire.level + 1] do
                             createProjectile(sx, sy, 500, true, false)
                         end
+                        player.stats.battle.scatterFire.triggered = player.stats.battle.scatterFire.triggered + 1
+                        player.stats.save.scatterFire.triggered = player.stats.save.scatterFire.triggered + 1
                     end
                     if burstFireChance <= levelingInfo[3].frequency[player.abilities.burstFire.level + 1] and player.abilities.burstFire.unlocked and player.abilities.burstFire.equipped then
                         local bf = audio_tower_scatterFire__burstFire:clone()
@@ -1395,6 +1324,8 @@ function love.update(dt)
                         for i=1,levelingInfo[3].quantity[player.abilities.burstFire.level + 1] do
                             createProjectile(957, 537, 500, false, true)
                         end
+                        player.stats.battle.burstFire.triggered = player.stats.battle.burstFire.triggered + 1
+                        player.stats.save.burstFire.triggered = player.stats.save.burstFire.triggered + 1
                     end
                 end
             end
@@ -1421,17 +1352,25 @@ function love.update(dt)
             end
             for j,w in ipairs(enemiesOnField) do
                 local size = {
-                    basic = 22,
-                    tank = 34,
-                    swift = 16,
-                    sentry = 46,
-                    centurion = 62,
-                    }
-                if v.x > w.x + 2 and v.x < w.x + size[w.type] and v.y > w.y + 2 and v.y < w.y + size[w.type] then
+                basic = 20,
+                tank = 32,
+                swift = 16,
+                sentry = 44,
+                centurion = 60,
+            }
+                if v.x > w.x and v.x < w.x + size[w.type] and v.y > w.y and v.y < w.y + size[w.type] then
                     table.remove(projectilesOnField, i)
                     --[[ If the projectile deals crit damage, deal more damage based on Critical Factor ]]--
                     local critFactor = v.isCrit and player.tower.critFactor or 1
                     local damage = player.tower.attackDamage * critFactor
+                    if v.scatterFire then
+                        player.stats.battle.scatterFire.damageDealt = player.stats.battle.scatterFire.damageDealt + math.min(damage, w.currentHP)
+                        player.stats.save.scatterFire.damageDealt = player.stats.save.scatterFire.damageDealt + math.min(damage, w.currentHP)
+                    end
+                    if v.burstFire then
+                        player.stats.battle.burstFire.damageDealt = player.stats.battle.burstFire.damageDealt + math.min(damage, w.currentHP)
+                        player.stats.save.burstFire.damageDealt = player.stats.save.burstFire.damageDealt + math.min(damage, w.currentHP)
+                    end
                     damageEnemy(j, damage, v.isCrit)
                     break
                 end
@@ -1457,14 +1396,14 @@ function love.update(dt)
             local rainforestMultiplier = rainforestActive and 1 - levelingInfo[4].density[player.abilities.rainforest.level + 1] / 100 or 1
             if v.burningTime > 0 and gameplay.gameSpeed > 0 then
                 for i=1,love.math.random(-4, 1) * settings_particleMultipliers[player.settings.particleMultiplier] do
-                    createBurnParticle(v.x + 2, v.y + 2)
+                    createBurnParticle(v.x, v.y)
                 end
             end
             if v.timer_untilAttack < (1 / v.attackSpeed) / rainforestMultiplier then
                 v.timer_untilAttack = v.timer_untilAttack + dt * gameplay.gameSpeed
             else
                 --[[ If an enemy is close enough, start attacking the tower ]]--
-                if math.dist(v.x + offsets[v.type] + 2, v.y + offsets[v.type] + 2, 960, 540) < stopDistance[v.type] + 1 and player.tower.currentHealth > 0 then
+                if math.dist(v.x + offsets[v.type], v.y + offsets[v.type], 960, 540) < stopDistance[v.type] + 1 and player.tower.currentHealth > 0 then
                     v.timer_untilAttack = 0
                     local damageReduction = not v.resistanceIgnore and 1 - player.tower.resistance / 100 or 1
                     local da = audio_tower_damageAbsorbed:clone()
@@ -1489,10 +1428,9 @@ function love.update(dt)
                 end
             end
             --[[ Move each enemy towards the central tower if it is further than the specified distance ]]--
-
-            if math.dist(v.x + offsets[v.type] + 2, v.y + offsets[v.type] + 2, 960, 540) > stopDistance[v.type] then
-                local hyperloopMultiplier = math.dist(v.x + offsets[v.type] + 2, v.y + offsets[v.type] + 2, 960, 540) > player.tower.range and 1 + player.modifiers.hyperloop.value / 100 or 1
-                local rainforestMultiplier = (rainforestActive and math.dist(v.x + offsets[v.type] + 2, v.y + offsets[v.type] + 2, 960, 540) <= player.tower.range) and 1 - levelingInfo[4].density[player.abilities.rainforest.level + 1] / 100 or 1
+            if math.dist(v.x + offsets[v.type], v.y + offsets[v.type], 960, 540) > stopDistance[v.type] then
+                local hyperloopMultiplier = math.dist(v.x + offsets[v.type], v.y + offsets[v.type], 960, 540) > player.tower.range and 1 + player.modifiers.hyperloop.value / 100 or 1
+                local rainforestMultiplier = (rainforestActive and math.dist(v.x + offsets[v.type], v.y + offsets[v.type], 960, 540) <= player.tower.range) and 1 - levelingInfo[4].density[player.abilities.rainforest.level + 1] / 100 or 1
                 v.angle = math.atan2(540 - v.y - 2 - offsets[v.type], 960 - v.x - 2 - offsets[v.type])
                 v.x = v.x + math.cos(v.angle) * v.speed * dt * gameplay.gameSpeed * hyperloopMultiplier * rainforestMultiplier
                 v.y = v.y + math.sin(v.angle) * v.speed * dt * gameplay.gameSpeed * hyperloopMultiplier * rainforestMultiplier
@@ -1510,7 +1448,7 @@ function love.update(dt)
                     v.burningUntilDamage = v.burningUntilDamage - dt * gameplay.gameSpeed
                 end
                 if v.burningUntilDamage < 0 then
-                    damageEnemy(i, player.tower.attackDamage * (levelingInfo[5].damage[player.abilities.magmaTouch.level + 1] / 100))
+                    damageEnemy(i, player.tower.attackDamage * (levelingInfo[5].damage[player.abilities.magmaTouch.level + 1] / 100), false, "magmaPool")
                     v.burningUntilDamage = 1
                 end
             end
@@ -1534,14 +1472,14 @@ function love.update(dt)
                 v.timer_particle = 0
             end
             local size = {
-                basic = 22,
-                tank = 34,
+                basic = 20,
+                tank = 32,
                 swift = 16,
-                sentry = 46,
-                centurion = 62,
-                }
+                sentry = 44,
+                centurion = 60,
+            }
             for j,w in ipairs(enemiesOnField) do
-                if v.x + 13 > w.x + 2 and v.x - 13 < w.x + size[w.type] and v.y + 13 > w.y + 2 and v.y - 13 < w.y + size[w.type] and player.tower.currentHealth > 0 then
+                if v.x + 13 > w.x and v.x - 13 < w.x + size[w.type] and v.y + 13 > w.y and v.y - 13 < w.y + size[w.type] and player.tower.currentHealth > 0 then
                     if w.type == "basic" or w.type == "tank" or w.type == "swift" then
                         killEnemy(j)
                     end
@@ -1597,7 +1535,12 @@ function love.update(dt)
                     end
                     local JerelosBlessingRegen = love.math.random(0, 10000) / 100
                     if JerelosBlessingRegen <= levelingInfo[7].regenChance[player.abilities.JerelosBlessing.level + 1] then
-                        player.tower.currentHealth = player.tower.maxHealth
+                        local healthGap = player.tower.health - player.tower.currentHealth
+                        player.tower.currentHealth = player.tower.health
+                        player.stats.battle.JerelosBlessing.triggered = player.stats.battle.JerelosBlessing.triggered + 1
+                        player.stats.save.JerelosBlessing.triggered = player.stats.save.JerelosBlessing.triggered + 1
+                        player.stats.battle.JerelosBlessing.healthRegenerated = player.stats.battle.JerelosBlessing.healthRegenerated + healthGap
+                        player.stats.save.JerelosBlessing.healthRegenerated = player.stats.save.JerelosBlessing.healthRegenerated + healthGap
                     end
                     skipWave(wavesSkipped)
                     updateEnemyStats(gameplay.difficulty, gameplay.wave)
@@ -1606,8 +1549,8 @@ function love.update(dt)
         end
 
         --[[ Regenerate health every frame, cap at max health if regeneration overflows ]]--
-        if player.tower.currentHealth < player.tower.maxHealth and player.tower.currentHealth > 0 then
-            player.tower.currentHealth = math.min(player.tower.currentHealth + player.tower.regeneration * dt * gameplay.gameSpeed, player.tower.maxHealth)
+        if player.tower.currentHealth < player.tower.health and player.tower.currentHealth > 0 then
+            player.tower.currentHealth = math.min(player.tower.currentHealth + player.tower.regeneration * dt * gameplay.gameSpeed, player.tower.health)
         end
 
         if player.settings.waveSkipMessages and waveSkipMessage then
@@ -1646,7 +1589,12 @@ function love.update(dt)
 
         if player.abilities.rainforest.unlocked and player.abilities.rainforest.equipped then
             if gameplay.wave >= 20 then
-                rainforestActive = (gameplay.wave % 10 <= 4) and true or false
+                rainforestActive = (gameplay.wave % 10 <= 4)
+                local lastTriggeredWaves = {}
+                table.insert(lastTriggeredWaves, 1, gameplay.wave)
+                if lastTriggeredWaves[1] and lastTriggeredWaves[2] and lastTriggeredWaves[1] - lastTriggeredWaves[2] >= 5 and math.fmod(lastTriggeredWaves[1], 10) - math.fmod(lastTriggeredWaves[2], 10) >= 1 then
+                    table.remove(lastTriggeredWaves, 2)
+                end
             end
         end
 
@@ -1667,25 +1615,13 @@ function love.update(dt)
             else
                 timers.lightningOrb = 0
                 abilityObjects.lightningOrb.spawn()
-            end
-        end
-
-        if love.mouse.isDown(1) then
-            local mcx, mcy = love.mouse.getPosition()
-            if player.menu.settings then
-                if mcx >= 835 and mcx <= 1085 and mcy >= 680 and mcy <= 692 then
-                    player.settings.volume = (mcx - 835) / 250
-                end
+                player.stats.battle.lightningOrb.spawned = player.stats.battle.lightningOrb.spawned + 1
+                player.stats.save.lightningOrb.spawned = player.stats.save.lightningOrb.spawned + 1
             end
         end
 
         if player.menu.battleStats then
-            statTextScrollState = math.max(math.min(statTextScrollState + velx * dt, 0), -110)
-            statTextScrollState = math.max(math.min(statTextScrollState + vely * dt, 0), -110)
-
-            -- Gradually reduce the velocity to create smooth scrolling effect.
-            velx = velx - velx * math.min(dt * 7, 1)
-            vely = vely - vely * math.min(dt * 7, 1)
+            statsMenus.battle.process(dt)
         end
 
     elseif player.location == "hub" then
@@ -1696,12 +1632,15 @@ function love.update(dt)
             end
         end
         if player.menu.saveStats then
-            statTextScrollState = math.max(math.min(statTextScrollState + velx * dt, 0), -60)
-            statTextScrollState = math.max(math.min(statTextScrollState + vely * dt, 0), -60)
-
-            -- Gradually reduce the velocity to create smooth scrolling effect.
-            velx = velx - velx * math.min(dt * 7, 1)
-            vely = vely - vely * math.min(dt * 7, 1)
+            statsMenus.savefile.process(dt)
+        end
+    end
+    if love.mouse.isDown(1) then
+        local mcx, mcy = love.mouse.getPosition()
+        if player.menu.settings then
+            if mcx >= 835 and mcx <= 1085 and mcy >= 680 and mcy <= 692 then
+                player.settings.volume = (mcx - 835) / 250
+            end
         end
     end
     --[[ Set a timer for alloying Electrum, add 1 Electrum when the timer runs out ]]--
@@ -1728,13 +1667,14 @@ function love.update(dt)
         else
             player.timers.abilityAssembly = player.cooldowns.abilityAssembly_current
             player.canClaim.ability = true
+            player.misc.abilityAssembling = false
         end
     end
 end
 
 function love.mousepressed(x, y)
 
-    upgradeMenu_mouse(x, y)
+    upgradeMenu_mouse_new(x, y)
 
     if player.tower.currentHealth > 0 then
         --[[ Open/close upgrade menu ]]--
@@ -1756,7 +1696,7 @@ function love.mousepressed(x, y)
             gameplay.gameSpeed = player.maxGameSpeed
             player.menu.paused = false
             player.tower.currentHealth = 0
-        elseif x >= 890 and x <= 1150 and y >= 530 and y <= 570 and player.menu.paused and not player.menu.settings and not player.menu.gameplayInfo and not player.menu.battleStats then
+        elseif x >= 890 and x <= 1030 and y >= 560 and y <= 600 and player.menu.paused and not player.menu.settings and not player.menu.gameplayInfo and not player.menu.battleStats then
             player.menu.settings = true
         end
     end
@@ -1804,7 +1744,7 @@ function love.mousepressed(x, y)
             player.menu.gameplayInfo = false
             player.menu.battleStats = true
         end
-    elseif player.menu.battleStats then
+    elseif player.menu.battleStats and player.tower.currentHealth > 0 then
         if x >= 674 and x <= 710 and y >= 522 and y <= 558 then
             player.menu.gameplayInfo = true
             player.menu.battleStats = false
@@ -1813,7 +1753,9 @@ function love.mousepressed(x, y)
 
     --[[ If the "To Hub" button is pressed at the end screen, go to Hub ]]--
     if gameOver and #collapseParticles == 0 and player.location == "round" and not player.menu.gameplayInfo and not player.menu.battleStats then
-        if x >= 870 and x <= 1050 and y >= 760 and y <= 820 then
+        if x >= 890 and x <= 1030 and y >= 570 and y <= 610 then
+            player.menu.battleStats = true
+        elseif x >= 870 and x <= 1050 and y >= 620 and y <= 680 then
             player.menu.upgrades = false
             player.location = "hub"
             gameplay.gameSpeed = player.maxGameSpeed
@@ -1821,6 +1763,15 @@ function love.mousepressed(x, y)
             hubSection = "Main"
             resetRoundValues()
             processUpgradeModule.reload()
+        end
+    end
+
+    if player.menu.battleStats then
+        if x >= 910 and x <= 1010 and y >= 780 and y <= 820 then
+            player.menu.gameplayInfo = false
+            player.menu.battleStats = false
+            gameplay.gameSpeed = player.menu.gameplayInfo and 0 or player.maxGameSpeed
+            statsMenus.resetScroll()
         end
     end
 
@@ -1841,13 +1792,11 @@ function love.keypressed(key)
                 player.menu.gameplayInfo = false
                 player.menu.battleStats = false
                 gameplay.gameSpeed = player.menu.gameplayInfo and 0 or player.maxGameSpeed
-                statTextScrollState = 0
-                velx, vely = 0, 0
+                statsMenus.resetScroll()
             end
-        elseif player.location == "hub" then
+        elseif player.location == "hub" and not player.menu.settings and not abilityFunctions.checkMenuDisplay() then
             if player.menu.saveStats then
-                statTextScrollState = 0
-                velx, vely = 0, 0
+                statsMenus.resetScroll()
             end
             player.menu.saveStats = not player.menu.saveStats
         end
@@ -1866,11 +1815,9 @@ end
     end
 end]]-- old function for volume control
 
-function love.wheelmoved(dx, dy)
-    velx = velx + dx * 480
-    vely = vely + dy * 480
-end
-
 function love.quit()
+    if not player.canClaim.ability and player.misc.abilityAssembling then
+        player.currencies.currentTokens = player.currencies.currentTokens + 60
+    end
     saveGame()
 end

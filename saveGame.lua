@@ -1,7 +1,6 @@
 --- Save all settings, upgrades, unlocks, Abilities, cooldowns and timers in the save file.
 function saveGame()
-    data = {}
-    data.player = {
+    toSave = {
         currentSilver = player.currencies.currentSilver,
         currentGold = player.currencies.currentGold,
         currentElectrum = player.currencies.currentElectrum,
@@ -54,14 +53,12 @@ function saveGame()
         },
 
         modifiers = {
-            unlocks = {
-                waveSkip = player.modifiers.waveSkip.unlocked,
-                hyperloop = player.modifiers.hyperloop.unlocked
-            },
             waveSkip = {
+                unlocked = player.modifiers.waveSkip.unlocked,
                 level = player.modifiers.waveSkip.level
             },
             hyperloop = {
+                unlocked = player.modifiers.hyperloop.unlocked,
                 level = player.modifiers.hyperloop.level
             }
         },
@@ -160,21 +157,27 @@ function saveGame()
                 level = player.abilities.JerelosBlessing.level,
                 equipped = player.abilities.JerelosBlessing.equipped,
                 amount = player.abilities.JerelosBlessing.amount
+            },
+            berserkerKit = {
+                unlocked = player.abilities.berserkerKit.unlocked,
+                level = player.abilities.berserkerKit.level,
+                equipped = player.abilities.berserkerKit.equipped,
+                amount = player.abilities.berserkerKit.amount
             }
         },
 
         misc = {
-            abilityAssembling = player.misc.abilityAssembling
+            abilityAssembling = true
+        },
+        settings = {
+            particleMultiplierIndex = player.settings.particleMultiplier,
+            waveSkipMessages = player.settings.waveSkipMessages,
+            notation = player.settings.notation,
+            tooltips = player.settings.tooltips,
+            volume = player.settings.volume
         }
     }
-    data.settings = {
-        particleMultiplierIndex = player.settings.particleMultiplier,
-        waveSkipMessages = player.settings.waveSkipMessages,
-        notation = player.settings.notation,
-        tooltips = player.settings.tooltips,
-        volume = player.settings.volume
-    }
 
-    serialized = lume.serialize(data)
+    serialized = lume.serialize(toSave)
     love.filesystem.write("SAVEFILE.sav", serialized)
 end

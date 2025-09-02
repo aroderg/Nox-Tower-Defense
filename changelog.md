@@ -1,3 +1,18 @@
+## NoxTD 1.0.3 Nova
+### Sep 2, 2025
+- Added the Berserker Kit ability - it increases your Attack Damage and Attack Speed while decreasing Health and Resistance.
+- Added basic internal savefile protection.
+- Added 25 randomized Orbitals.
+- Abilities incompatible with currently equipped ones have their Equip button glow red.
+- Abilities can't be equipped when any Ability Menu is open.
+- Fixed the hovering position for viewing Abilities' tags.
+- Fixed uneven offsets for Lightning Orb detection.
+- Fixed inconsistent upgrade text for the Hyperloop modifier.
+- Tower collapse particle amount is affected by Particle Multiplier setting.
+- Settings and Statistics can be opened from the Hub and the Pause menu while in battle.
+- Added an outline to some menus that didn't have it previously.
+- Nova tower has a visible shield while it is active.
+
 ### NoxTD 1.0.2a Nova
 ### Jan 28, 2025
 - Fixed a bug with Lightning Orb cooldown.
@@ -24,7 +39,7 @@
     - Magma Touch spawns a magma pool which deals burning damage.
 - Added sounds for most battle events, such as tower firing, enemy kills, crystal explosions, tower collapsing, taking/absorbing damage.
 - Resistance upgrades go up to 75% (90% before), Crit Chance upgrades go up to 15% (50% before) and Crit Factor upgrades go up to x10.
-- Added particles as a trail for Meteors, hit text particles don't show up when the Particles setting is set to None (x0.00).
+- Added particles as a trail for Meteors.
 
 ## NoxTD: Update Eclipse **B**
 ### Nov 10, 2024

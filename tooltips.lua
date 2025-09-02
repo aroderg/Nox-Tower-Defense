@@ -89,11 +89,11 @@ function tooltips.general()
         end
 
         local gameplayInfoTooltips = {
-            {748, 340, 22, 22, 40, 19, "Basic"},
-            {748, 390, 22, 22, 38, 19, "Tank"},
-            {748, 440, 22, 22, 40, 19, "Swift"},
-            {748, 490, 22, 22, 50, 19, "Sentry"},
-            {748, 540, 22, 22, 68, 19, "Centurion"}
+            {748, 330, 20, 20, 40, 19, "Basic"},
+            {748, 370, 20, 20, 38, 19, "Tank"},
+            {748, 410, 20, 20, 40, 19, "Swift"},
+            {748, 450, 20, 20, 50, 19, "Sentry"},
+            {748, 490, 20, 20, 68, 19, "Centurion"}
         }
 
         function tooltips.displayGameplayInfo()
@@ -120,7 +120,9 @@ function tooltips.general()
 
         function tooltips.displayAbilityTags()
             for i,v in pairs(internalAbilities) do
-                if v.menu and tooltips.hoverCheck(1180, 414, 24, 24) then
+                local freqSuffix = v.tags.condition == "Time" and "s" or (v.tags.condition == "Projectile Fired" or v.tags.condition == "Wave Start") and "%" or ""
+                local rowOffset = freqSuffix ~= "" and -16 or 0
+                if v.menu and tooltips.hoverCheck(1180, 414 + rowOffset, 24, 24) then
                     local totalTags = ""
                     local totalIncompatibilities = "{"
                     for j,w in pairs(v.tags) do

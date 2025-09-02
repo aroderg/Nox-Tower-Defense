@@ -24,6 +24,8 @@ function abilityObjects.spikedCrystal.spawn()
     crystal.timer_explosionDuration = 0.25
     crystal.timer_explosion = 0
     crystal.state = "alive"
+    player.stats.battle.spikedCrystals.spawned = player.stats.battle.spikedCrystals.spawned + 1
+    player.stats.save.spikedCrystals.spawned = player.stats.save.spikedCrystals.spawned + 1
     table.insert(spikedCrystals, crystal)
 end
 
@@ -62,11 +64,11 @@ function abilityObjects.spikedCrystal.process(dt)
     end
     for i,v in ipairs(spikedCrystals) do
         local size = {
-            basic = 22,
-            tank = 34,
+            basic = 20,
+            tank = 32,
             swift = 16,
-            sentry = 46,
-            centurion = 62,
+            sentry = 44,
+            centurion = 60,
         }
 
         local offsets = {
@@ -90,9 +92,9 @@ function abilityObjects.spikedCrystal.process(dt)
             end
         end
         for j,w in ipairs(enemiesOnField) do
-            if v.x + 20 > w.x + 2 and v.x + 2 < w.x + size[w.type] and v.y + 20 > w.y + 2 and v.y + 2 < w.y + size[w.type] and player.tower.currentHealth > 0 and v.state == "alive" and math.dist(v.x + 11, v.y + 11, w.x + offsets[w.type], w.y + offsets[w.type]) < 64 then
+            if v.x + 20 > w.x and v.x < w.x + size[w.type] and v.y + 20 > w.y and v.y < w.y + size[w.type] and player.tower.currentHealth > 0 and v.state == "alive" and math.dist(v.x + 11, v.y + 11, w.x + offsets[w.type], w.y + offsets[w.type]) < 64 then
                 local damage = player.tower.attackDamage * (levelingInfo[1].damage[player.abilities.spikedCrystals.level + 1] / 100)
-                damageEnemy(j, damage)
+                damageEnemy(j, damage, false, "spikedCrystal")
                 v.state = "exploding"
             end
         end
@@ -115,6 +117,8 @@ function abilityObjects.magmaPool.spawn()
             break
         end
     end
+    player.stats.battle.magmaTouch.spawned = player.stats.battle.magmaTouch.spawned + 1
+    player.stats.save.magmaTouch.spawned = player.stats.save.magmaTouch.spawned + 1
     table.insert(magmaPools, magmaPool)
 end
 
@@ -129,11 +133,11 @@ end
 function abilityObjects.magmaPool.process(dt)
     for i,v in ipairs(magmaPools) do
         local size = {
-            basic = 22,
-            tank = 34,
+            basic = 20,
+            tank = 32,
             swift = 16,
-            sentry = 46,
-            centurion = 62,
+            sentry = 44,
+            centurion = 60,
         }
 
         local offsets = {
@@ -146,7 +150,7 @@ function abilityObjects.magmaPool.process(dt)
         for j,w in ipairs(enemiesOnField) do
             if math.dist(v.x + 18, v.y + 18, w.x + size[w.type] / 2, w.y + size[w.type] / 2) < 16 + size[w.type] / 2 then
                 table.remove(magmaPools, i)
-                damageEnemy(j, player.tower.attackDamage * (levelingInfo[5].damage[player.abilities.magmaTouch.level + 1] / 100))
+                damageEnemy(j, player.tower.attackDamage * (levelingInfo[5].damage[player.abilities.magmaTouch.level + 1] / 100), false, "magmaPool")
                 w.burningTime = 4.025
             end
         end
@@ -164,18 +168,20 @@ function abilityObjects.lightningOrb.spawn()
     local lo = audio_lightningOrb_launch:clone()
     lo:setVolume(1 * player.settings.volume^2)
     lo:play()
+    player.stats.battle.lightningOrb.spawned = player.stats.battle.lightningOrb.spawned + 1
+    player.stats.save.lightningOrb.spawned = player.stats.save.lightningOrb.spawned + 1
     table.insert(lightningOrbs, lightningOrb)
 end
 
 --- Draw all Lightning Orbs, their shadows and their ranges.
 function abilityObjects.lightningOrb.draw()
     for i,v in ipairs(lightningOrbs) do
-        love.graphics.draw(img_lightningOrb_shadow, v.x - 16 * math.cos(v.angle), v.y - 16 * math.sin(v.angle))
-        love.graphics.draw(img_lightningOrb, v.x, v.y)
+        love.graphics.draw(img_lightningOrb_shadow, v.x - 24 - 9 * math.cos(v.angle), v.y - 24 - 9 * math.sin(v.angle))
+        love.graphics.draw(img_lightningOrb, v.x - 16, v.y - 16)
         love.graphics.setColor(0, 0.7, 0.45, 0.6)
         love.graphics.setLineStyle("smooth")
         love.graphics.setLineWidth(1)
-        love.graphics.ellipse("line", v.x + 18, v.y + 18, v.range * 20, v.range * 20)
+        love.graphics.ellipse("line", v.x, v.y, v.range * 20, v.range * 20)
         love.graphics.setColor(1, 1, 1, 1)
     end
 end
@@ -185,7 +191,6 @@ function abilityObjects.lightningOrb.process(dt)
     for i,v in ipairs(lightningOrbs) do
         v.x = v.x + math.cos(v.angle) * v.speed * dt * gameplay.gameSpeed
         v.y = v.y + math.sin(v.angle) * v.speed * dt * gameplay.gameSpeed
-        local farthestEnemy = findClosestEnemyInRange(v.x, v.y, v.range * 20)[#findClosestEnemyInRange(v.x, v.y, v.range * 20)]
         local offsets = {
             basic = 10,
             tank = 16,
@@ -193,8 +198,9 @@ function abilityObjects.lightningOrb.process(dt)
             sentry = 22,
             centurion = 30,
             }
+        local farthestEnemy = findClosestEnemyInRange(v.x, v.y, v.range * 20)[#findClosestEnemyInRange(v.x, v.y, v.range * 20)]
         if farthestEnemy and #lightningOrb_lasers < #lightningOrbs then
-            abilityObjects.lightningOrb_laser.spawn(v.x + 18, v.y + 18, math.dist(v.x + 18, v.y + 18, farthestEnemy.x + offsets[farthestEnemy.type] - 2, farthestEnemy.y + offsets[farthestEnemy.type] - 2), math.atan2(farthestEnemy.y - offsets[farthestEnemy.type] / 2 - v.y, farthestEnemy.x - offsets[farthestEnemy.type] / 2 - v.x))
+            abilityObjects.lightningOrb_laser.spawn(v.x + 16, v.y + 16, math.dist(v.x + 16, v.y + 16, farthestEnemy.x + offsets[farthestEnemy.type], farthestEnemy.y + offsets[farthestEnemy.type]), math.atan2(farthestEnemy.y - offsets[farthestEnemy.type] / 2 - v.y, farthestEnemy.x - offsets[farthestEnemy.type] / 2 - v.x))
         elseif not farthestEnemy then
             table.remove(lightningOrb_lasers, i)
         end
@@ -248,7 +254,7 @@ function abilityObjects.lightningOrb_laser.process(dt)
                 end
             end
             if player.tower.currentHealth > 0 and gameplay.gameSpeed > 0 then
-                damageEnemy(damagedEnemyIndex, (levelingInfo[6].damage[player.abilities.lightningOrb.level + 1] / 100) * player.tower.attackDamage * dt * gameplay.gameSpeed, false)--damageEnemy(farthestEnemy, levelingInfo[6].damage[player.abilities.lightningOrb.level + 1] * 100 * dt * player.tower.attackDamage, false)
+                damageEnemy(damagedEnemyIndex, (levelingInfo[6].damage[player.abilities.lightningOrb.level + 1] / 100) * player.tower.attackDamage * dt * gameplay.gameSpeed, false, "lightningOrb")--damageEnemy(farthestEnemy, levelingInfo[6].damage[player.abilities.lightningOrb.level + 1] * 100 * dt * player.tower.attackDamage, false)
             end
         end
     end

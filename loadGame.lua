@@ -1,335 +1,33 @@
+function technical.deepMerge(toAlter, template)
+    for i,v in pairs(template) do
+        if type(template[i]) == "table" and i ~= "menu" then
+            toAlter[i] = {}
+            technical.deepMerge(toAlter[i], template[i])
+        else
+            toAlter[i] = template[i]
+        end
+    end
+end
+
+function technical.safeGet(value, placeholder)
+    if not value then
+        value = placeholder
+    end
+    return value
+end
+
 function loadGame()
-    -- Initialise player
-    player = {}
-    if love.filesystem.getInfo("SAVEFILE.sav") then
-        file = love.filesystem.read("SAVEFILE.sav")
-        data = lume.deserialize(file)
-
-        player.location = "hub"
-        player.cooldowns = {
-            electrum = 24,
-            tokens = 600,
-            abilityAssembly_min = 400,
-            abilityAssembly_max = 800,
-            abilityAssembly_current = data.player.cooldowns.abilityAssembly
-        }
-        player.timers = {
-            electrum = data.player.timers.electrum,
-            tokens = data.player.timers.tokens,
-            abilityAssembly = data.player.timers.abilityAssembly
-        }
-        player.canClaim = {}
-        if data.player.timers.tokens > 0 then
-            player.canClaim.tokens = false
-        else
-            player.canClaim.tokens = true
-        end
-        if data.player.timers.electrum > 0 then
-            player.canClaim.electrum = false
-        else
-            player.canClaim.electrum = true
-        end
-        if data.player.timers.abilityAssembly > 0 then
-            player.canClaim.ability = false
-        else
-            player.canClaim.ability = true
-        end
-
-        player.currencies = {
-            currentSilver = data.player.currentSilver,
-            currentGold = data.player.currentGold,
-            currentElectrum = data.player.currentElectrum,
-            currentTokens = data.player.currentTokens,
-        }
+    -- Initialize default player state
+    player = {
+        paused = false,
+        location = "round",
+        cooldowns = {electrum = 24, tokens = 600, abilityAssembly_min = 400, abilityAssembly_max = 800, abilityAssembly_current = 600},
+        timers = {electrum = 0, tokens = 600, abilityAssembly = 0},
+        canClaim = {tokens = true, electrum = true, ability = true},
+        currencies = {currentSilver = 0, currentGold = 0, currentElectrum = 0, currentTokens = 0},
 
         --[[ Set upgrade unlocks ]]--
-        player.upgrades = {
-            unlocks = {
-                crit = data.player.upgrades.unlocks.crit,
-                range = data.player.upgrades.unlocks.range,
-
-                resistance = data.player.upgrades.unlocks.resistance,
-                shield = data.player.upgrades.unlocks.shield,
-                meteor = data.player.upgrades.unlocks.meteor,
-
-                resourceBonus = data.player.upgrades.unlocks.resourceBonus
-            },
-            science = {
-                attackDamage = {
-                    level = data.player.upgrades.attackDamage,
-                    cost = 1,
-                    value = 1
-                },
-                attackSpeed = {
-                    level = data.player.upgrades.attackSpeed,
-                    cost = 1,
-                    value = 1
-                },
-                critChance = {
-                    level = data.player.upgrades.critChance,
-                    cost = 1,
-                    value = 1
-                },
-                critFactor = {
-                    level = data.player.upgrades.critFactor,
-                    cost = 1,
-                    value = 1
-                },
-                range = {
-                    level = data.player.upgrades.range,
-                    cost = 1,
-                    value = 1
-                },
-
-                health = {
-                    level = data.player.upgrades.health,
-                    cost = 1,
-                    value = 1
-                },
-                regeneration = {
-                    level = data.player.upgrades.regeneration,
-                    cost = 1,
-                    value = 1
-                },
-                resistance = {
-                    level = data.player.upgrades.resistance,
-                    cost = 1,
-                    value = 1
-                },
-                shieldCooldown = {
-                    level = data.player.upgrades.shieldCooldown,
-                    cost = 1,
-                    value = 1
-                },
-                shieldDuration = {
-                    level = data.player.upgrades.shieldDuration,
-                    cost = 1,
-                    value = 1
-                },
-                meteorAmount = {
-                    level = data.player.upgrades.meteorAmount,
-                    cost = 1,
-                    value = 1
-                },
-                meteorRPM = {
-                    level = data.player.upgrades.meteorRPM,
-                    cost = 1,
-                    value = 1
-                },
-                
-                copperPerWave = {
-                    level = data.player.upgrades.copperPerWave,
-                    cost = 1,
-                    value = 1
-                },
-                silverPerWave = {
-                    level = data.player.upgrades.silverPerWave,
-                    cost = 1,
-                    value = 1
-                },
-                copperBonus = {
-                    level = data.player.upgrades.copperBonus,
-                    cost = 1,
-                    value = 1
-                },
-                silverBonus = {
-                    level = data.player.upgrades.silverBonus,
-                    cost = 1,
-                    value = 1
-                },
-            },
-
-            nexus = {
-                attackDamage = {
-                    level = data.player.upgrades.nexus.attackDamage,
-                    cost = 1,
-                    value = math.min(1 + (data.player.upgrades.nexus.attackDamage - 1) * 10/100, 5)
-                },
-                attackSpeed = {
-                    level = data.player.upgrades.nexus.attackSpeed,
-                    cost = 1,
-                    value = math.min(1 + (data.player.upgrades.nexus.attackSpeed - 1) * 4/100, 2)
-                },
-                health = {
-                    level = data.player.upgrades.nexus.health,
-                    cost = 1,
-                    value = math.min(1 + (data.player.upgrades.nexus.health - 1) * 10/100, 5)
-                },
-                regeneration = {
-                    level = data.player.upgrades.nexus.regeneration,
-                    cost = 1,
-                    value = math.min(1 + (data.player.upgrades.nexus.regeneration - 1) * 10/100, 5)
-                },
-            }
-        }
-
-        player.modifiers = {
-            waveSkip = {
-                unlocked = data.player.modifiers.unlocks.waveSkip,
-                level = data.player.modifiers.waveSkip.level
-            },
-            hyperloop = {
-                unlocked = data.player.modifiers.unlocks.hyperloop,
-                level = data.player.modifiers.hyperloop.level,
-            }
-        }
-
-        if not data.player.modifiers.unlocks.waveSkip then
-            player.modifiers.waveSkip.cost = 10
-            player.modifiers.waveSkip.value = 0
-        else
-            player.modifiers.waveSkip.cost = (player.modifiers.waveSkip.level * (player.modifiers.waveSkip.level - 1)) / 2 + 4
-            player.modifiers.waveSkip.value = math.min(4 * player.modifiers.waveSkip.level, 40)
-        end
-        if not data.player.modifiers.unlocks.hyperloop then
-            player.modifiers.hyperloop.cost = 15
-            player.modifiers.hyperloop.value = 0
-        else
-            player.modifiers.hyperloop.cost = player.modifiers.hyperloop.level^2 - 2 * player.modifiers.hyperloop.level + 11
-            player.modifiers.hyperloop.value = math.min(2 + 8 * player.modifiers.hyperloop.level, 90)
-        end
-
-        player.settings = {
-            particleMultiplier = data.settings.particleMultiplierIndex,
-            waveSkipMessages = data.settings.waveSkipMessages,
-            notation = data.settings.notation,
-            tooltips = data.settings.tooltips,
-            volume = data.settings.volume
-        }
-
-        player.bestWaves = {
-            d1 = data.player.pb.d1,
-            d2 = data.player.pb.d2,
-            d3 = data.player.pb.d3,
-            d4 = data.player.pb.d4,
-        }
-
-        player.stats = {}
-        player.stats.save = {
-            enemiesKilled = data.player.stats.enemiesKilled,
-            damageDealt = data.player.stats.damageDealt,
-            silverEarned = data.player.stats.silverEarned,
-            wavesSkipped = data.player.stats.wavesSkipped,
-            projectilesFired = data.player.stats.projectilesFired,
-            upgradesAcquired = {
-                science = data.player.stats.upgradesAcquired.science,
-                nexus = data.player.stats.upgradesAcquired.nexus
-            },
-            wavesBeaten = data.player.stats.wavesBeaten,
-            spikedCrystals = {
-                enemiesKilled = data.player.stats.spikedCrystals.enemiesKilled,
-                damageDealt = data.player.stats.spikedCrystals.damageDealt,
-                spawned = data.player.stats.spikedCrystals.spawned
-            },
-            scatterFire = {
-                damageDealt = data.player.stats.scatterFire.damageDealt,
-                triggered = data.player.stats.scatterFire.triggered
-            },
-            burstFire = {
-                damageDealt = data.player.stats.burstFire.damageDealt,
-                triggered = data.player.stats.burstFire.triggered
-            },
-            rainforest = {
-                triggered = data.player.stats.rainforest.triggered
-            },
-            magmaTouch = {
-                enemiesKilled = data.player.stats.magmaTouch.enemiesKilled,
-                damageDealt = data.player.stats.magmaTouch.damageDealt,
-                spawned = data.player.stats.magmaTouch.spawned
-            },
-            lightningOrb = {
-                enemiesKilled = data.player.stats.lightningOrb.enemiesKilled,
-                damageDealt = data.player.stats.lightningOrb.damageDealt,
-                spawned = data.player.stats.lightningOrb.spawned
-            },
-            JerelosBlessing = {
-                triggered = data.player.stats.JerelosBlessing.triggered,
-                healthRegenerated = data.player.stats.JerelosBlessing.healthRegenerated
-            }
-        }
-
-        player.abilities = {
-            equipped = 0,
-            maxEquipped = 1,
-            spikedCrystals = {
-                unlocked = data.player.abilities.spikedCrystals.unlocked,
-                level = data.player.abilities.spikedCrystals.level,
-                equipped = data.player.abilities.spikedCrystals.equipped,
-                amount = data.player.abilities.spikedCrystals.amount
-            },
-            scatterFire = {
-                unlocked = data.player.abilities.scatterFire.unlocked,
-                level = data.player.abilities.scatterFire.level,
-                equipped = data.player.abilities.scatterFire.equipped,
-                amount = data.player.abilities.scatterFire.amount
-            },
-            burstFire = {
-                unlocked = data.player.abilities.burstFire.unlocked,
-                level = data.player.abilities.burstFire.level,
-                equipped = data.player.abilities.burstFire.equipped,
-                amount = data.player.abilities.burstFire.amount
-            },
-            rainforest = {
-                unlocked = data.player.abilities.rainforest.unlocked,
-                level = data.player.abilities.rainforest.level,
-                equipped = data.player.abilities.rainforest.equipped,
-                amount = data.player.abilities.rainforest.amount
-            },
-            magmaTouch = {
-                unlocked = data.player.abilities.magmaTouch.unlocked,
-                level = data.player.abilities.magmaTouch.level,
-                equipped = data.player.abilities.magmaTouch.equipped,
-                amount = data.player.abilities.magmaTouch.amount
-            },
-            lightningOrb = {
-                unlocked = data.player.abilities.lightningOrb.unlocked,
-                level = data.player.abilities.lightningOrb.level,
-                equipped = data.player.abilities.lightningOrb.equipped,
-                amount = data.player.abilities.lightningOrb.amount
-            },
-            JerelosBlessing = {
-                unlocked = data.player.abilities.JerelosBlessing.unlocked,
-                level = data.player.abilities.JerelosBlessing.level,
-                equipped = data.player.abilities.JerelosBlessing.equipped,
-                amount = data.player.abilities.JerelosBlessing.amount
-            },
-        }
-
-        player.misc = {}
-        player.misc.abilityAssembling = data.player.misc.abilityAssembling
-
-    else
-
-        player.paused = false
-        player.location = "round"
-        player.cooldowns = {
-            electrum = 24,
-            tokens = 600,
-            abilityAssembly_min = 400,
-            abilityAssembly_max = 800,
-            abilityAssembly_current = 600
-        }
-        player.timers = {
-            electrum = 0,
-            tokens = 600,
-            abilityAssembly = 0
-        }
-
-        player.canClaim = {}
-
-        player.canClaim.tokens = true
-        player.canClaim.electrum = true
-        player.canClaim.ability = true
-
-        player.currencies = {
-            currentSilver = 0,
-            currentGold = 0,
-            currentElectrum = 0,
-            currentTokens = 0,
-        }
-
-        --[[ Set upgrade unlocks ]]--
-        player.upgrades = {
+        upgrades = {
             unlocks = {
                 crit = false,
                 range = false,
@@ -341,237 +39,238 @@ function loadGame()
                 resourceBonus = false
             },
             science = {
-                attackDamage = {
-                    level = 1,
-                    cost = 1,
-                    value = 1
-                },
-                attackSpeed = {
-                    level = 1,
-                    cost = 1,
-                    value = 1
-                },
-                critChance = {
-                    level = 1,
-                    cost = 1,
-                    value = 1
-                },
-                critFactor = {
-                    level = 1,
-                    cost = 1,
-                    value = 1
-                },
-                range = {
-                    level = 1,
-                    cost = 1,
-                    value = 1
-                },
+                attackDamage = {level = 1, cost = 1, value = 1},
+                attackSpeed = {level = 1, cost = 1, value = 1},
+                critChance = {level = 1, cost = 1, value = 1},
+                critFactor = {level = 1, cost = 1, value = 1},
+                range = {level = 1, cost = 1, value = 1},
 
-                health = {
-                    level = 1,
-                    cost = 1,
-                    value = 1
-                },
-                regeneration = {
-                    level = 1,
-                    cost = 1,
-                    value = 1
-                },
-                resistance = {
-                    level = 1,
-                    cost = 1,
-                    value = 1
-                },
-                shieldCooldown = {
-                    level = 1,
-                    cost = 1,
-                    value = 1
-                },
-                shieldDuration = {
-                    level = 1,
-                    cost = 1,
-                    value = 1
-                },
-                meteorAmount = {
-                    level = 1,
-                    cost = 1,
-                    value = 1
-                },
-                meteorRPM = {
-                    level = 1,
-                    cost = 1,
-                    value = 1
-                },
+                health = {level = 1, cost = 1, value = 1},
+                regeneration = {level = 1, cost = 1, value = 1},
+                resistance = {level = 1, cost = 1, value = 1},
+                shieldCooldown = {level = 1, cost = 1, value = 1},
+                shieldDuration = {level = 1, cost = 1, value = 1},
+                meteorAmount = {level = 1, cost = 1, value = 1},
+                meteorRPM = {level = 1, cost = 1, value = 1},
                 
-                copperPerWave = {
-                    level = 1,
-                    cost = 1,
-                    value = 1
-                },
-                silverPerWave = {
-                    level = 1,
-                    cost = 1,
-                    value = 1
-                },
-                copperBonus = {
-                    level = 1,
-                    cost = 1,
-                    value = 1
-                },
-                silverBonus = {
-                    level = 1,
-                    cost = 1,
-                    value = 1
-                },
+                copperPerWave = {level = 1, cost = 1, value = 1},
+                silverPerWave = {level = 1, cost = 1, value = 1},
+                copperBonus = {level = 1, cost = 1, value = 1},
+                silverBonus = {level = 1, cost = 1, value = 1},
             },
 
             nexus = {
-                attackDamage = {
-                    level = 1,
-                    cost = 1,
-                    value = 1
-                },
-                attackSpeed = {
-                    level = 1,
-                    cost = 1,
-                    value = 1
-                },
-                health = {
-                    level = 1,
-                    cost = 1,
-                    value = 1
-                },
-                regeneration = {
-                    level = 1,
-                    cost = 1,
-                    value = 1
-                },
+                attackDamage = {level = 1, cost = 1, value = 1},
+                attackSpeed = {level = 1, cost = 1, value = 1},
+                health = {level = 1, cost = 1, value = 1},
+                regeneration = {level = 1, cost = 1, value = 1},
             }
-        }
-
-        player.modifiers = {
-            waveSkip = {
-                unlocked = false,
-                level = 1,
-                cost = 15,
-                value = 0
-            },
-            hyperloop = {
-                unlocked = false,
-                level = 1,
-                cost = 10,
-                value = 0
-            }
-        }
-
-        player.settings = {
-            particleMultiplier = 4,
-            waveSkipMessages = true,
-            notation = "kmbt",
-            tooltips = true,
-            volume = 1
-        }
-
-        player.bestWaves = {
-            d1 = 0,
-            d2 = 0,
-            d3 = 0,
-            d4 = 0,
-        }
-
-        player.stats = {}
-        player.stats.save = {
-            enemiesKilled = 0,
-            damageDealt = 0,
-            silverEarned = 0,
-            wavesSkipped = 0,
-            projectilesFired = 0,
-            upgradesAcquired = {
-                science = 0,
-                nexus = 0
-            },
-            wavesBeaten = 0,
-            spikedCrystals = {
+        },
+        modifiers = {
+            waveSkip = {unlocked = false, level = 1, cost = 15, value = 0},
+            hyperloop = {unlocked = false, level = 1, cost = 10, value = 0}
+        },
+        settings = {particleMultiplier = 4, waveSkipMessages = true, notation = "kmbt", tooltips = true, volume = 1},
+        bestWaves = {d1 = 0, d2 = 0, d3 = 0, d4 = 0},
+        stats = {
+            save = {
                 enemiesKilled = 0,
                 damageDealt = 0,
-                spawned = 0
+                silverEarned = 0,
+                wavesSkipped = 0,
+                projectilesFired = 0,
+                upgradesAcquired = {science = 0, nexus = 0},
+                wavesBeaten = 0,
+                spikedCrystals = {enemiesKilled = 0, damageDealt = 0, spawned = 0},
+                scatterFire = {damageDealt = 0, triggered = 0},
+                burstFire = {damageDealt = 0, triggered = 0},
+                rainforest = {triggered = 0},
+                magmaTouch = {enemiesKilled = 0, damageDealt = 0, spawned = 0},
+                lightningOrb = {enemiesKilled = 0, damageDealt = 0, spawned = 0},
+                JerelosBlessing = {triggered = 0, healthRegenerated = 0}
             },
-            scatterFire = {
-                damageDealt = 0,
-                triggered = 0
-            },
-            burstFire = {
-                damageDealt = 0,
-                triggered = 0
-            },
-            rainforest = {
-                triggered = 0
-            },
-            magmaTouch = {
-                enemiesKilled = 0,
-                damageDealt = 0,
-                spawned = 0
-            },
-            lightningOrb = {
-                enemiesKilled = 0,
-                damageDealt = 0,
-                spawned = 0
-            },
-            JerelosBlessing = {
-                triggered = 0,
-                healthRegenerated = 0
-            }
-        }
-
-        player.abilities = {
+        },
+        abilities = {
             equipped = 0,
             maxEquipped = 1,
-            spikedCrystals = {
-                unlocked = false,
-                level = 0,
-                equipped = false,
-                amount = 0
+            spikedCrystals = {unlocked = false, level = 0, equipped = false, amount = 0},
+            scatterFire = {unlocked = false, level = 0, equipped = false, amount = 0},
+            burstFire = {unlocked = false, level = 0,equipped = false, amount = 0},
+            rainforest = {unlocked = false, level = 0, equipped = false, amount = 0},
+            magmaTouch = {unlocked = false, level = 0, equipped = false, amount = 0},
+            lightningOrb = {unlocked = false, level = 0, equipped = false, amount = 0},
+            JerelosBlessing = {unlocked = false, level = 0, equipped = false, amount = 0},
+            berserkerKit = {unlocked = false, level = 0, equipped = false, amount = 0}
+        },
+        misc = {abilityAssembling = false, tokensRefundable = true}
+    }
+
+    -- Check if SAVEFILE.sav is present in the game dir
+    if love.filesystem.getInfo("SAVEFILE.sav") and love.filesystem.read("SAVEFILE.sav") ~= "nil" then
+        fileContent = love.filesystem.read("SAVEFILE.sav")
+        loadedData = lume.deserialize(fileContent)
+
+        player.location = "hub"
+        player.cooldowns = {
+            electrum = 24,
+            tokens = 600,
+            abilityAssembly_min = 400,
+            abilityAssembly_max = 800,
+            abilityAssembly_current = loadedData.cooldowns.abilityAssembly or player.cooldowns.abilityAssembly_current
+        }
+        player.timers = {
+            electrum = loadedData.timers.electrum or player.timers.electrum,
+            tokens = loadedData.timers.tokens or player.timers.tokens,
+            abilityAssembly = loadedData.timers.abilityAssembly or player.timers.abilityAssembly
+        }
+        player.canClaim = {
+            tokens = (player.timers.tokens <= 0),
+            electrum = (player.timers.electrum <= 0),
+            ability = (player.timers.abilityAssembly >= player.cooldowns.abilityAssembly_current)
+        }
+        player.currencies = {
+            currentSilver = loadedData.currentSilver or player.currencies.currentSilver,
+            currentGold = loadedData.currentGold or player.currencies.currentGold,
+            currentElectrum = loadedData.currentElectrum or player.currencies.currentElectrum,
+            currentTokens = loadedData.currentTokens or player.currencies.currentTokens,
+        }
+    --[[ Set upgrade unlocks ]]--
+        player.upgrades = {
+            unlocks = {
+                crit = loadedData.upgrades.unlocks.crit or player.upgrades.unlocks.crit,
+                range = loadedData.upgrades.unlocks.range or player.upgrades.unlocks.range,
+
+                resistance = loadedData.upgrades.unlocks.resistance or player.upgrades.unlocks.resistance,
+                shield = loadedData.upgrades.unlocks.shield or player.upgrades.unlocks.shield,
+                meteor = loadedData.upgrades.unlocks.meteor or player.upgrades.unlocks.meteor,
+
+                resourceBonus = loadedData.upgrades.unlocks.resourceBonus or player.upgrades.unlocks.resourceBonus
             },
-            scatterFire = {
-                unlocked = false,
-                level = 0,
-                equipped = false,
-                amount = 0
+            science = {
+                attackDamage = {level = loadedData.upgrades.attackDamage or player.upgrades.science.attackDamage.level, cost = 1, value = 1},
+                attackSpeed = {level = loadedData.upgrades.attackSpeed or player.upgrades.science.attackSpeed.level, cost = 1, value = 1},
+                critChance = {level = loadedData.upgrades.critChance or player.upgrades.science.critChance.level, cost = 1, value = 1},
+                critFactor = {level = loadedData.upgrades.critFactor or player.upgrades.science.critFactor.level, cost = 1, value = 1},
+                range = {level = loadedData.upgrades.range or player.upgrades.science.range.level, cost = 1, value = 1},
+
+                health = {level = loadedData.upgrades.health or player.upgrades.science.health.level, cost = 1, value = 1},
+                regeneration = {level = loadedData.upgrades.regeneration or player.upgrades.science.regeneration.level, cost = 1, value = 1},
+                resistance = {level = loadedData.upgrades.resistance or player.upgrades.science.resistance.level, cost = 1, value = 1},
+                shieldCooldown = {level = loadedData.upgrades.shieldCooldown or player.upgrades.science.shieldCooldown.level, cost = 1, value = 1},
+                shieldDuration = {level = loadedData.upgrades.shieldDuration or player.upgrades.science.shieldDuration.level, cost = 1, value = 1},
+                meteorAmount = {level = loadedData.upgrades.meteorAmount or player.upgrades.science.meteorAmount.levelt, cost = 1, value = 1},
+                meteorRPM = {level = loadedData.upgrades.meteorRPM or player.upgrades.science.meteorRPM.level, cost = 1, value = 1},
+
+                copperPerWave = {level = loadedData.upgrades.copperPerWave or player.upgrades.science.copperPerWave.level, cost = 1, value = 1},
+                silverPerWave = {level = loadedData.upgrades.silverPerWave or player.upgrades.science.silverPerWave.level, cost = 1, value = 1},
+                copperBonus = {level = loadedData.upgrades.copperBonus or player.upgrades.science.copperBonus.level, cost = 1, value = 1},
+                silverBonus = {level = loadedData.upgrades.silverBonus or player.upgrades.science.silverBonus.level, cost = 1, value = 1},
             },
-            burstFire = {
-                unlocked = false,
-                level = 0,
-                equipped = false,
-                amount = 0
-            },
-            rainforest = {
-                unlocked = false,
-                level = 0,
-                equipped = false,
-                amount = 0
-            },
-            magmaTouch = {
-                unlocked = false,
-                level = 0,
-                equipped = false,
-                amount = 0
-            },
-            lightningOrb = {
-                unlocked = false,
-                level = 0,
-                equipped = false,
-                amount = 0
-            },
-            JerelosBlessing = {
-                unlocked = false,
-                level = 0,
-                equipped = false,
-                amount = 0
+
+            nexus = {
+                attackDamage = {level = loadedData.upgrades.nexus.attackDamage, cost = 1},
+                attackSpeed = {level = loadedData.upgrades.nexus.attackSpeed, cost = 1},
+                health = {level = loadedData.upgrades.nexus.health, cost = 1},
+                regeneration = {level = loadedData.upgrades.nexus.regeneration, cost = 1},
             }
         }
-
-        player.misc = {}
-        player.misc.abilityAssembling = false
+        player.upgrades.nexus.attackDamage.value = math.min(1 + (player.upgrades.nexus.attackDamage.level - 1) * 10/100, 5)
+        player.upgrades.nexus.attackSpeed.value = math.min(1 + (player.upgrades.nexus.attackSpeed.level - 1) * 4/100, 2)
+        player.upgrades.nexus.health.value = math.min(1 + (player.upgrades.nexus.health.level - 1) * 10/100, 5)
+        player.upgrades.nexus.regeneration.value = math.min(1 + (player.upgrades.nexus.regeneration.level - 1) * 10/100, 5)
+        player.modifiers = {
+            waveSkip = {
+                unlocked = loadedData.modifiers.waveSkip.unlocked,
+                level = loadedData.modifiers.waveSkip.level
+            },
+            hyperloop = {
+                unlocked = loadedData.modifiers.hyperloop.unlocked,
+                level = loadedData.modifiers.hyperloop.level
+            }
+        }
+        player.modifiers.waveSkip.cost = player.modifiers.waveSkip.unlocked and (player.modifiers.waveSkip.level * (player.modifiers.waveSkip.level - 1)) / 2 + 4 or 10
+        player.modifiers.waveSkip.value = player.modifiers.waveSkip.unlocked and math.min(4 * player.modifiers.waveSkip.level, 40) or 0
+        player.modifiers.hyperloop.cost = player.modifiers.hyperloop.unlocked and player.modifiers.hyperloop.level^2 - 2 * player.modifiers.hyperloop.level + 11 or 15
+        player.modifiers.hyperloop.value = player.modifiers.hyperloop.unlocked and math.min(2 + 8 * player.modifiers.hyperloop.level, 90) or 0
+        player.settings = {
+            particleMultiplier = loadedData.settings.particleMultiplierIndex or player.settings.particleMultiplierIndex,
+            waveSkipMessages = loadedData.settings.waveSkipMessages or player.settings.waveSkipMessages,
+            notation = loadedData.settings.notation or player.settings.notation,
+            tooltips = loadedData.settings.tooltips or player.settings.tooltips,
+            volume = loadedData.settings.volume or player.settings.volume
+        }
+        player.bestWaves = {d1 = loadedData.pb.d1 or player.bestWaves.d1, d2 = loadedData.pb.d2 or player.bestWaves.d2, d3 = loadedData.pb.d3 or player.bestWaves.d3, d4 = loadedData.pb.d4 or player.bestWaves.d4}
+        player.stats = {
+            save = {
+                enemiesKilled = loadedData.stats.enemiesKilled or player.stats.save.enemiesKilled,
+                damageDealt = loadedData.stats.damageDealt or player.stats.save.damageDealt,
+                silverEarned = loadedData.stats.silverEarned or player.stats.save.silverEarned,
+                wavesSkipped = loadedData.stats.wavesSkipped or player.stats.save.wavesSkipped,
+                projectilesFired = loadedData.stats.projectilesFired or player.stats.save.projectilesFired,
+                upgradesAcquired = {
+                    science = loadedData.stats.upgradesAcquired.science or player.stats.save.upgradesAcquired.science,
+                    nexus = loadedData.stats.upgradesAcquired.nexus or player.stats.save.upgradesAcquired.nexus
+                },
+                wavesBeaten = loadedData.stats.wavesBeaten or player.stats.save.enemiesKilled,
+                spikedCrystals = {
+                    enemiesKilled = loadedData.stats.spikedCrystals.enemiesKilled or player.stats.save.spikedCrystals.enemiesKilled,
+                    damageDealt = loadedData.stats.spikedCrystals.damageDealt or player.stats.save.spikedCrystals.damageDealt,
+                    spawned = loadedData.stats.spikedCrystals.spawned or player.stats.save.spikedCrystals.spawned
+                },
+                scatterFire = {
+                    damageDealt = loadedData.stats.scatterFire.damageDealt or player.stats.save.scatterFire.damageDealt,
+                    triggered = loadedData.stats.scatterFire.triggered or player.stats.save.scatterFire.triggered
+                },
+                burstFire = {
+                    damageDealt = loadedData.stats.burstFire.damageDealt or player.stats.save.burstFire.damageDealt,
+                    triggered = loadedData.stats.burstFire.triggered or player.stats.save.burstFire.triggered
+                },
+                rainforest = {
+                    triggered = loadedData.stats.rainforest.triggered or player.stats.save.rainforest.triggered
+                },
+                magmaTouch = {
+                    enemiesKilled = loadedData.stats.magmaTouch.enemiesKilled or player.stats.save.magmaTouch.triggered,
+                    damageDealt = loadedData.stats.magmaTouch.damageDealt or player.stats.save.magmaTouch.triggered,
+                    spawned = loadedData.stats.magmaTouch.spawned or player.stats.save.magmaTouch.spawned
+                },
+                lightningOrb = {
+                    enemiesKilled = loadedData.stats.lightningOrb.enemiesKilled or player.stats.save.lightningOrb.enemiesKilled,
+                    damageDealt = loadedData.stats.lightningOrb.damageDealt or player.stats.save.lightningOrb.damageDealt,
+                    spawned = loadedData.stats.lightningOrb.spawned or player.stats.save.lightningOrb.spawned
+                },
+                JerelosBlessing = {
+                    triggered = loadedData.stats.JerelosBlessing.triggered or player.stats.save.JerelosBlessing.triggered,
+                    healthRegenerated = loadedData.stats.JerelosBlessing.healthRegenerated or player.stats.save.JerelosBlessing.healthRegenerated
+                }
+            }
+        }
+        player.abilities = {
+            equipped = 0,
+            maxEquipped = 1
+        }
+        local abilityNames = {"spikedCrystals", "scatterFire", "burstFire", "rainforest", "magmaTouch", "lightningOrb", "JerelosBlessing", "berserkerKit"}
+        for i,v in ipairs(abilityNames) do
+            if not loadedData.abilities[abilityNames[i]] then
+                loadedData.abilities[abilityNames[i]] = {
+                    unlocked = false,
+                    level = 0,
+                    equipped = false,
+                    amount = 0
+                }
+            end
+        end
+        for i,v in ipairs(abilityNames) do
+            if not player.abilities[abilityNames[i]] then
+                player.abilities[abilityNames[i]] = {}
+            end
+            player.abilities[abilityNames[i]] = {
+                unlocked = loadedData.abilities[abilityNames[i]].unlocked,
+                level = loadedData.abilities[abilityNames[i]].level,
+                equipped = loadedData.abilities[abilityNames[i]].equipped,
+                amount = loadedData.abilities[abilityNames[i]].amount
+            }
+        end
+        misc = {abilityAssembling = (loadedData.timers.abilityAssembly <= loadedData.cooldowns.abilityAssembly)}
     end
 
     --[[ Set Science upgrade costs (in Silver) ]]--
@@ -602,266 +301,14 @@ function loadGame()
 
     player.difficulty = {
         difficulty = 1,
-        unlocks = {
-            d1 = true,
-            d2 = player.bestWaves.d1 > 99 and true or false,
-            d3 = player.bestWaves.d2 > 99 and true or false,
-            d4 = player.bestWaves.d3 > 99 and true or false
-        }
+        unlocks = {d1 = true, d2 = player.bestWaves.d1 > 99 and true or false, d3 = player.bestWaves.d2 > 99 and true or false, d4 = player.bestWaves.d3 > 99 and true or false}
     }
 
     player.menu = {
-        abilities = {
-            spikedCrystals = false,
-            scatterFire = false,
-            burstFire = false,
-            rainforest = false,
-            magmaTouch = false,
-            lightningOrb = false
-        }
+        abilities = {spikedCrystals = false, scatterFire = false, burstFire = false, rainforest = false, magmaTouch = false, lightningOrb = false, JerelosBlessing = false, berserkerKit = false},
+        saveStats = false,
+        rolledAbilityDisplay = false
     }
-    player.menu.saveStats = false
-    player.menu.rolledAbilityDisplay = false
-
-    function abilityFunctions.updateInternals() --update the ability levels and leveling info
-
-        levelingInfo = {
-            {
-                --| SPIKED CRYSTALS - LEVELS FROM 0 to 11 |--
-                quantity =          {4,   4,   5,   5,   6,    6,    7,   7,   8,   8,   9,   10},
-                damage =            {250, 275, 300, 325, 350,  375,  400, 450, 500, 550, 600, 600}, -- %
-                frequency =         {16,  15,  14,  13,  12.2, 11.6, 10,  9.5, 9,   8.6, 8.2, 8}, -- seconds
-                levelRequirements = {2,   2,   2,   3,   3,    4,    5,   6,   8,   10,  12,  15}
-            },
-            {
-                --| SCATTER FIRE - LEVELS FROM 0 to 11 |--
-                quantity =          {4, 4,   4, 6, 6,   6, 8,  8,   10,  10, 12, 16},
-                frequency =         {1, 1.5, 2, 2, 2.5, 3, 3,  3.5, 3.5, 4,  4,  4}, -- % (chance)
-                levelRequirements = {2, 2,   3, 3, 4,   4, 5,  6,   7,   8,  10, 15}
-            },
-            {
-                --| BURST FIRE - LEVELS FROM 0 to 8 |--
-                quantity =          {4,   4, 4,   6,   6, 8, 8,   12,   12, 12},
-                frequency =         {1.5, 2, 2.5, 2.5, 3, 3, 3.5, 3.5,  4,  5}, -- % (chance)
-                levelRequirements = {2,   3, 4,   5,   6, 8, 10,  15,   15, 18}
-            },
-            {
-                --| RAINFOREST - LEVELS FROM 0 to 10 |--
-                density =           {10, 12, 14, 16, 18, 20, 22.5, 25, 27.5, 30, 32.5}, -- % (slowdown)
-                frequency =         10, -- waves
-                levelRequirements = {1,  1,  2,  2,  3,  3,  4,    5,  6,    7,  8}
-            },
-            {
-                --| MAGMA TOUCH - LEVELS FROM 0 to 9 |--
-                frequency =         {20,  18.5, 16, 14.5, 13.5, 12.5, 11.5, 11,   10.5, 10}, -- seconds
-                damage =            {7.5, 8.5,  10, 12,   14,   16,   18,   20,   23.5, 27.5}, -- %
-                levelRequirements = {3,   3,    4,  4,    5,    7,    9,    12,   16,   20}
-            },
-            {
-                --| LIGHTNING ORB - LEVELS FROM 0 to 8 |--
-                frequency =         {40, 37,   34,  32,  30,  28,  27,  26,  25}, -- seconds
-                damage =            {60, 65,   75,  85,  100, 115, 130, 145, 160}, -- %
-                range =             {4,  4.25, 4.5, 4.8, 5.1, 5.5, 5.9, 6.4, 7}, -- units
-                levelRequirements = {2,  2,    3,   3,   4,   5,   6,   7,   9}
-            },
-            {
-                --| JERELO'S BLESSING - LEVELS FROM 0 to 12 |--
-                regenChance =       {0.1, 0.2,  0.3,  0.4,  0.6,  0.8,  1,    1.2,  1.4,  1.6,  1.8,  2,    2.25}, -- %
-                healthIncrease =    {1.1, 1.15, 1.21, 1.28, 1.36, 1.45, 1.55, 1.66, 1.78, 1.91, 2.05, 2.25, 2.5}, -- multiplier (1 = 100%)
-                levelRequirements = {1,   1,    1,    2,    2,    3,    3,    4,    4,    6,    8,    10,   12}
-            }
-        }
-
-        internalAbilities = {
-            {
-                name = "Spiked Crystals",
-                internalName = "spikedCrystals",
-                effect = {{1, 1, 1, 1}, "Spawn up to ", {1, 0.5, 0.4, 1}, levelingInfo[1].quantity[player.abilities.spikedCrystals.level + 1], {1, 1, 1, 1}, " crystals inside the tower's range. Upon getting touched by an enemy, the crystal explodes and deals ", {1, 0.4, 0.8, 1}, levelingInfo[1].damage[player.abilities.spikedCrystals.level + 1], {1, 1, 1, 1}, "% damage to nearby enemies."},
-                tags = {
-                    condition = "Time",
-                    role = "Active",
-                    AoE = true,
-                    category = "VIT"
-                },
-                frequency = levelingInfo[1].frequency[player.abilities.spikedCrystals.level + 1],
-                level = player.abilities.spikedCrystals.level,
-                preview = img_ability_preview_spikedCrystals,
-                equipped = player.abilities.spikedCrystals.equipped,
-                unlocked = player.abilities.spikedCrystals.unlocked,
-                menu = player.menu.abilities.spikedCrystals,
-                amount = player.abilities.spikedCrystals.amount,
-                class = "B",
-                nextLevelRequirement = levelingInfo[1].levelRequirements[player.abilities.spikedCrystals.level + 1],
-                levelRequirements = levelingInfo[1].levelRequirements
-            },
-            {
-                name = "Scatter Fire",
-                internalName = "scatterFire",
-                effect = {{1, 1, 1, 1}, "Shoot out ", {0.5, 0.9, 0.8, 1}, levelingInfo[2].quantity[player.abilities.scatterFire.level + 1], {1, 1, 1, 1}, " projectiles going from a random point on the screen."},
-                tags = {
-                    condition = "Projectile Fired",
-                    role = "Link",
-                    AoE = false,
-                    category = "ATK"
-                },
-                frequency = levelingInfo[2].frequency[player.abilities.scatterFire.level + 1],
-                level = player.abilities.scatterFire.level,
-                preview = img_ability_preview_scatterFire,
-                equipped = player.abilities.scatterFire.equipped,
-                unlocked = player.abilities.scatterFire.unlocked,
-                menu = player.menu.abilities.scatterFire,
-                amount = player.abilities.scatterFire.amount,
-                class = "C",
-                nextLevelRequirement = levelingInfo[2].levelRequirements[player.abilities.scatterFire.level + 1],
-                levelRequirements = levelingInfo[2].levelRequirements
-            },
-            {
-                name = "Burst Fire",
-                internalName = "burstFire",
-                effect = {{1, 1, 1, 1}, "Shoot out ", {0.75, 0.75, 0.75, 1}, levelingInfo[3].quantity[player.abilities.burstFire.level + 1], {1, 1, 1, 1}, " projectiles going from the center of the tower."},
-                tags = {
-                    condition = "Projectile Fired",
-                    role = "Link",
-                    AoE = false,
-                    category = "ATK"
-                },
-                frequency = levelingInfo[3].frequency[player.abilities.burstFire.level + 1],
-                level = player.abilities.burstFire.level,
-                preview = img_ability_preview_burstFire,
-                equipped = player.abilities.burstFire.equipped,
-                unlocked = player.abilities.burstFire.unlocked,
-                menu = player.menu.abilities.burstFire,
-                amount = player.abilities.burstFire.amount,
-                class = "C",
-                nextLevelRequirement = levelingInfo[3].levelRequirements[player.abilities.burstFire.level + 1],
-                levelRequirements = levelingInfo[3].levelRequirements
-            },
-            {
-                name = "Rainforest",
-                internalName = "rainforest",
-                effect = {{1, 1, 1, 1}, "Cover the tower's range in a dense rainforest for 5 waves, slowing all enemies' move and attack speed by ", {0.5, 0.85, 1, 1}, levelingInfo[4].density[player.abilities.rainforest.level + 1], {1, 1, 1, 1}, "%.\nFirst covering happens at wave 20."},
-                tags = {
-                    condition = "Wave Start",
-                    role = "Passive",
-                    AoE = true,
-                    category = "VIT"
-                },
-                frequency = levelingInfo[4].frequency,
-                level = player.abilities.rainforest.level,
-                preview = img_ability_preview_rainforest,
-                equipped = player.abilities.rainforest.equipped,
-                unlocked = player.abilities.rainforest.unlocked,
-                menu = player.menu.abilities.rainforest,
-                amount = player.abilities.rainforest.amount,
-                class = "A",
-                nextLevelRequirement = levelingInfo[4].levelRequirements[player.abilities.rainforest.level + 1],
-                levelRequirements = levelingInfo[4].levelRequirements
-            },
-            {
-                name = "Magma Touch",
-                internalName = "magmaTouch",
-                effect = {{1, 1, 1, 1}, "Summon a magma pool in a random position on the screen. Applies a burning effect on any enemy touching it, dealing ", {1, 0.6, 0.15, 1}, levelingInfo[5].damage[player.abilities.magmaTouch.level + 1], {1, 1, 1, 1}, "% damage each second for 4 seconds before disappearing. Maximum of 20 magma pools."},
-                tags = {
-                    condition = "Time",
-                    role = "Active",
-                    AoE = true,
-                    category = "VIT",
-                    incompatibilities = {"JerelosBlessing"}
-                },
-                frequency = levelingInfo[5].frequency[player.abilities.magmaTouch.level + 1],
-                level = player.abilities.magmaTouch.level,
-                preview = img_ability_preview_magmaTouch,
-                equipped = player.abilities.magmaTouch.equipped,
-                unlocked = player.abilities.rainforest.unlocked,
-                menu = player.menu.abilities.magmaTouch,
-                amount = player.abilities.magmaTouch.amount,
-                class = "D",
-                nextLevelRequirement = levelingInfo[5].levelRequirements[player.abilities.magmaTouch.level + 1],
-                levelRequirements = levelingInfo[5].levelRequirements
-            },
-            {
-                name = "Lightning Orb",
-                internalName = "lightningOrb",
-                effect = {{1, 1, 1, 1}, "The tower shoots a flying lightning orb, shooting a laser to the farthest enemy within ", {1, 0.95, 0.55, 1}, levelingInfo[6].range[player.abilities.lightningOrb.level + 1], {1, 1, 1, 1}, "u, continuously dealing damage equal to ", {0.65, 0.45, 0.9, 1}, levelingInfo[6].damage[player.abilities.lightningOrb.level + 1], {1, 1, 1, 1}, "% damage per second."},
-                tags = {
-                    condition = "Time",
-                    role = "Active",
-                    AoE = false,
-                    category = "ATK"
-                },
-                frequency = levelingInfo[6].frequency[player.abilities.lightningOrb.level + 1],
-                level = player.abilities.lightningOrb.level,
-                preview = img_ability_preview_lightningOrb,
-                equipped = player.abilities.lightningOrb.equipped,
-                unlocked = player.abilities.lightningOrb.unlocked,
-                menu = player.menu.abilities.lightningOrb,
-                amount = player.abilities.lightningOrb.amount,
-                class = "B",
-                nextLevelRequirement = levelingInfo[6].levelRequirements[player.abilities.lightningOrb.level + 1],
-                levelRequirements = levelingInfo[6].levelRequirements
-            },
-            {
-                name = "Jerelo's Blessing",
-                internalName = "JerelosBlessing",
-                effect = {{1, 1, 1, 1}, "The tower gathers energy from Jerelo, the Nature elemental, which provides it with a x", {0.4, 0.8, 1, 1}, levelingInfo[7].healthIncrease[player.abilities.JerelosBlessing.level + 1], {1, 1, 1, 1}, " increase of the tower's maximum health and a ", {0.1, 0.75, 0.65, 1}, levelingInfo[7].regenChance[player.abilities.JerelosBlessing.level + 1], {1, 1, 1, 1}, "% chance to restore all health at the end of a wave."},
-                tags = {
-                    condition = "None",
-                    role = "Passive",
-                    AoE = false,
-                    category = "VIT",
-                    incompatibilities = {"magmaTouch"}
-                },
-                frequency = 1,
-                level = player.abilities.JerelosBlessing.level,
-                preview = img_ability_preview_JerelosBlessing,
-                equipped = player.abilities.JerelosBlessing.equipped,
-                unlocked = player.abilities.JerelosBlessing.unlocked,
-                menu = player.menu.abilities.JerelosBlessing,
-                amount = player.abilities.JerelosBlessing.amount,
-                class = "A",
-                nextLevelRequirement = levelingInfo[7].levelRequirements[player.abilities.JerelosBlessing.level + 1],
-                levelRequirements = levelingInfo[7].levelRequirements
-            }
-        }
-
-        abilityClasses = {
-            "D", "C", "B", "A"
-        }
-        abilityClassProbabilities = {
-            D = 60,
-            C = 25,
-            B = 10,
-            A = 5
-        }
-
-        equipSlotRequirements = {
-            {difficulty = 1, wave = 100},
-            {difficulty = 2, wave = 100},
-            {difficulty = 2, wave = 200},
-            {difficulty = 3, wave = 50},
-            {difficulty = 4, wave = 50}
-        }
-        function abilityFunctions.updateSlotCount()
-            player.abilities.maxEquipped = 0
-            for i,v in ipairs(equipSlotRequirements) do
-                if player.bestWaves["d" .. v.difficulty] >= v.wave then
-                    player.abilities.maxEquipped = player.abilities.maxEquipped + 1
-                else
-                    break
-                end
-            end
-        end
-    end
-
-    function abilityFunctions.upgrade(x, y, ability)
-        if x >= 700 and x <= 856 and y >= 418 and y <= 458 then
-            if ability.menu and ability.unlocked and ability.amount >= ability.levelRequirements[ability.level + 1] and ability.level < #ability.levelRequirements - 1 then
-                ability.amount = ability.amount - ability.levelRequirements[ability.level + 1]
-                ability.level = ability.level + 1
-            end
-        end
-        return ability.level, ability.amount
-    end
 
     abilityFunctions.updateInternals()
     abilityFunctions.updateSlotCount()
@@ -875,13 +322,25 @@ function loadGame()
     end
 
     player.maxGameSpeed = 1
+
+    if not player.canClaim.ability and player.misc.abilityAssembling then
+        if player.timers.abilityAssembly < player.cooldowns.abilityAssembly_current then
+            player.timers.abilityAssembly = player.timers.abilityAssembly + dt * gameplay.gameSpeed
+        else
+            player.timers.abilityAssembly = player.cooldowns.abilityAssembly_current
+            player.canClaim.ability = true
+            player.misc.abilityAssembling = false
+        end
+    end
+    if not player.canClaim.ability and not player.misc.abilityAssembling then
+        player.timers.abilityAssembly = 0
+    end
     
     --saveGame()
 end
 
 function resetRoundValues()
     --[[ Reset all properties to initial at the start of the round ]]--
-
     player.menu.paused = false
     player.menu.settings = false
     player.menu.upgrades = false
@@ -894,91 +353,24 @@ function resetRoundValues()
 
     --[[ Set Round upgrade levels to initial Science upgrade levels ]]--
     player.upgrades.round = {
-        attackDamage = {
-            level = player.upgrades.science.attackDamage.level,
-            cost = 2,
-            value = 1
-        },
-        attackSpeed = {
-            level = player.upgrades.science.attackSpeed.level,
-            cost = 5,
-            value = 1
-        },
-        critChance = {
-            level = player.upgrades.science.critChance.level,
-            cost = 6,
-            value = 1
-        },
-        critFactor = {
-            level = player.upgrades.science.critFactor.level,
-            cost = 2,
-            value = 1
-        },
-        range = {
-            level = player.upgrades.science.range.level,
-            cost = 2,
-            value = 1
-        },
-
-        health = {
-            level = player.upgrades.science.health.level,
-            cost = 3,
-            value = 1
-        },
-        regeneration = {
-            level = player.upgrades.science.regeneration.level,
-            cost = 5,
-            value = 1
-        },
-        resistance = {
-            level = player.upgrades.science.resistance.level,
-            cost = 4,
-            value = 1
-        },
-        shieldCooldown = {
-            level = player.upgrades.science.shieldCooldown.level,
-            cost = 4,
-            value = 1
-        },
-        shieldDuration = {
-            level = player.upgrades.science.shieldDuration.level,
-            cost = 3,
-            value = 1
-        },
-        meteorAmount = {
-            level = player.upgrades.science.meteorAmount.level,
-            cost = 200,
-            value = 1
-        },
-        meteorRPM = {
-            level = player.upgrades.science.meteorRPM.level,
-            cost = 20,
-            value = 1
-        },
-        
-        copperPerWave = {
-            level = player.upgrades.science.copperPerWave.level,
-            cost = 10,
-            value = 1
-        },
-        silverPerWave = {
-            level = player.upgrades.science.silverPerWave.level,
-            cost = 10,
-            value = 1
-        },
-        copperBonus = {
-            level = player.upgrades.science.copperBonus.level,
-            cost = 4,
-            value = 1
-        },
-        silverBonus = {
-            level = player.upgrades.science.silverBonus.level,
-            cost = 7,
-            value = 1
-        },
+        attackDamage = {level = player.upgrades.science.attackDamage.level, cost = 2, value = 1},
+        attackSpeed = {level = player.upgrades.science.attackSpeed.level, cost = 5, value = 1},
+        critChance = {level = player.upgrades.science.critChance.level, cost = 6, value = 1},
+        critFactor = {level = player.upgrades.science.critFactor.level, cost = 2, value = 1},
+        range = {level = player.upgrades.science.range.level, cost = 2, value = 1},
+        health = {level = player.upgrades.science.health.level, cost = 3, value = 1},
+        regeneration = {level = player.upgrades.science.regeneration.level, cost = 5, value = 1},
+        resistance = {level = player.upgrades.science.resistance.level, cost = 4, value = 1},
+        shieldCooldown = {level = player.upgrades.science.shieldCooldown.level, cost = 4, value = 1},
+        shieldDuration = {level = player.upgrades.science.shieldDuration.level, cost = 3, value = 1},
+        meteorAmount = {level = player.upgrades.science.meteorAmount.level, cost = 200, value = 1},
+        meteorRPM = {level = player.upgrades.science.meteorRPM.level, cost = 20, value = 1},
+        copperPerWave = {level = player.upgrades.science.copperPerWave.level, cost = 10, value = 1},
+        silverPerWave = {level = player.upgrades.science.silverPerWave.level, cost = 10, value = 1},
+        copperBonus = {level = player.upgrades.science.copperBonus.level, cost = 4, value = 1},
+        silverBonus = {level = player.upgrades.science.silverBonus.level, cost = 7, value = 1},
     }
 
-    local maxHealth = reloadFormulae(player.upgrades.round.health.level)["science"]["VIT"][1][2] * (player.abilities.JerelosBlessing.equipped and levelingInfo[7].healthIncrease[player.abilities.JerelosBlessing.level + 1] or 1)
     --[[ Tower properties ]]--
     player.tower = {
         attackDamage = reloadFormulae(player.upgrades.round.attackDamage.level)["science"]["ATK"][1][2],
@@ -986,8 +378,8 @@ function resetRoundValues()
         critChance = reloadFormulae(player.upgrades.round.critChance.level)["science"]["ATK"][3][2],
         critFactor = reloadFormulae(player.upgrades.round.critFactor.level)["science"]["ATK"][4][2],
         range = reloadFormulae(player.upgrades.round.range.level)["science"]["ATK"][5][2],
-        maxHealth = reloadFormulae(player.upgrades.round.health.level)["science"]["VIT"][1][2] * (player.abilities.JerelosBlessing.equipped and levelingInfo[7].healthIncrease[player.abilities.JerelosBlessing.level + 1] or 1),
-        currentHealth = maxHealth,
+        health = reloadFormulae(player.upgrades.round.health.level)["science"]["VIT"][1][2],
+        currentHealth = reloadFormulae(player.upgrades.round.health.level)["science"]["VIT"][1][2],
         regeneration = reloadFormulae(player.upgrades.round.regeneration.level)["science"]["VIT"][2][2],
         resistance = reloadFormulae(player.upgrades.round.resistance.level)["science"]["VIT"][3][2],
         shieldCooldown = reloadFormulae(player.upgrades.round.shieldCooldown.level)["science"]["VIT"][4][2],
@@ -1002,21 +394,14 @@ function resetRoundValues()
     }
 
     --[[ Gameplay properties ]]--
-    gameplay = {
-        difficulty = player.difficulty.difficulty,
-        wave = 1,
-        gameSpeed = player.maxGameSpeed
-    }
+    gameplay = {difficulty = player.difficulty.difficulty, wave = 1, gameSpeed = player.maxGameSpeed}
     misc = {
         copperBuffer = 0,
         silverBuffer = 0,
         copperAtStart = player.currencies.currentCopper,
         silverAtStart = player.currencies.currentSilver,
         goldAtStart = player.currencies.currentGold,
-        JerelosBlessingVisuals = {
-            vines = love.math.random(1, 4),
-            waves = love.math.random(1, 4)
-        }
+        JerelosBlessingVisuals = {vines = love.math.random(1, 4), waves = love.math.random(1, 4)}
     }
     player.stats.battle = {
         gameTime = 0,
@@ -1031,57 +416,22 @@ function resetRoundValues()
         projectilesFired = 0,
         upgradesAcquired = 0,
         goldEarned = 0,
-        spikedCrystals = {
-            enemiesKilled = 0,
-            damageDealt = 0,
-            spawned = 0
-        },
-        scatterFire = {
-            damageDealt = 0,
-            triggered = 0
-        },
-        burstFire = {
-            damageDealt = 0,
-            triggered = 0
-        },
-        rainforest = {
-            triggered = 0
-        },
-        magmaTouch = {
-            enemiesKilled = 0,
-            damageDealt = 0,
-            spawned = 0
-        },
-        lightningOrb = {
-            enemiesKilled = 0,
-            damageDealt = 0,
-            spawned = 0
-        },
-        JerelosBlessing = {
-            triggered = 0,
-            healthRegenerated = 0
-        }
+        spikedCrystals = {enemiesKilled = 0, damageDealt = 0, spawned = 0},
+        scatterFire = {damageDealt = 0, triggered = 0},
+        burstFire = {damageDealt = 0, triggered = 0},
+        rainforest = {triggered = 0},
+        magmaTouch = {enemiesKilled = 0, damageDealt = 0, spawned = 0},
+        lightningOrb = {enemiesKilled = 0, damageDealt = 0, spawned = 0},
+        JerelosBlessing = {triggered = 0, healthRegenerated = 0}
     }
-    player.stats.wave = {
-        enemiesKilled = 0
-    }
+    player.stats.wave = {enemiesKilled = 0}
     enemyAttributes = {}
     --[[ Enemy properties ]]--
 
     updateEnemyStats(gameplay.difficulty, gameplay.wave)
 
     --[[ Timers ]]--
-    timers = {
-        projectile = 0,
-        enemy = 0,
-        nextWave = 0,
-        shieldActivation = 0,
-        shieldActive = 0,
-        waveSkip = 3,
-        crystal = 0,
-        magmaPool = 0,
-        lightningOrb = 0
-    }
+    timers = {projectile = 0, enemy = 0, nextWave = 0, shieldActivation = 0, shieldActive = 0, waveSkip = 3, crystal = 0, magmaPool = 0, lightningOrb = 0}
 
     --[[ Misc ]]--
     waveSkipMessage = false
