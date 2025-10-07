@@ -2,7 +2,7 @@ function createCollapseParticle()
     collapseParticle = {}
     collapseParticle.x = 960
     collapseParticle.y = 540
-    collapseParticle.angle = love.math.random(0, 2 * math.pi * 10000) / 10000
+    collapseParticle.angle = love.math.random() * 2 * math.pi
     collapseParticle.speed = love.math.random(10, 50)
     collapseParticle.fadeTime = love.math.random(2, 3)
     collapseParticle.timer_fade = 0
@@ -13,29 +13,31 @@ function createKillParticle(x, y, origin)
     killParticle = {}
     killParticle.x = x
     killParticle.y = y
-    killParticle.angle = love.math.random(0, 2 * math.pi * 10000) / 10000
+    killParticle.angle = love.math.random() * 2 * math.pi
     killParticle.origin = origin
     local particleSpeed = {
-        ["basic"] = {5, 30},
-        ["tank"] = {6, 36},
-        ["swift"] = {4, 24},
-        ["sentry"] = {8, 48},
-        ["centurion"] = {11, 66}
-        }
+        basic = {5, 30},
+        tank = {6, 36},
+        swift = {4, 24},
+        sentry = {8, 48},
+        centurion = {11, 66},
+        exploder = {5, 32}
+    }
     local fadeTimes = {
-        ["basic"] = 0.6,
-        ["tank"] = 0.8,
-        ["swift"] = 0.5,
-        ["sentry"] = 1.5,
-        ["centurion"] = 2.5
-        }
+        basic = 0.6,
+        tank = 0.8,
+        swift = 0.5,
+        sentry = 1.5,
+        centurion = 2.5,
+        exploder = 0.6
+    }
     killParticle.speed = math.random(particleSpeed[origin][1], particleSpeed[origin][2])
     killParticle.fadeTime = fadeTimes[origin]
     killParticle.timer_fade = 0
     table.insert(killParticles, killParticle)
 end
 
-function createHitTextParticle(x, y, damage, origin, isCrit)
+function createHitTextParticle(x, y, damage, origin, isCrit, isSupercrit)
     hitTextParticle = {}
     hitTextParticle.x = x
     hitTextParticle.y = y
@@ -43,6 +45,7 @@ function createHitTextParticle(x, y, damage, origin, isCrit)
     hitTextParticle.fadeTime = 0.25
     hitTextParticle.origin = origin
     hitTextParticle.isCrit = isCrit
+    hitTextParticle.isSupercrit = isSupercrit
     hitTextParticle.timer_fade = 0
     table.insert(hitTextParticles, hitTextParticle)
 end
@@ -60,33 +63,41 @@ function createCrystalExplosionParticle(x, y)
     crystalExplosionParticle = {}
     crystalExplosionParticle.x = x
     crystalExplosionParticle.y = y
-    crystalExplosionParticle.angle = love.math.random(0, 2 * math.pi * 10000) / 10000
+    crystalExplosionParticle.angle = love.math.random() * 2 * math.pi
     crystalExplosionParticle.speed = love.math.random(9, 36)
     crystalExplosionParticle.fadeTime = 1.15
     crystalExplosionParticle.timer_fade = 0
     table.insert(crystalExplosionParticles, crystalExplosionParticle)
 end
 
-function createBurnParticle(x, y)
+function createBurnParticle(x, y, enemyType)
+    local enemyScales = {
+        basic = 1,
+        tank = 32/20,
+        swift = 16/20,
+        sentry = 44/20,
+        centurion = 60/20,
+        exploder = 24/20
+    }
     burnParticle = {}
     burnParticle.x = x
     burnParticle.y = y
-    burnParticle.angle = love.math.random(0, 2 * math.pi * 10000) / 10000
+    burnParticle.angle = love.math.random() * 2 * math.pi
     burnParticle.speed = love.math.random(0, 4)
+    burnParticle.scale = enemyScales[enemyType]
     burnParticle.fadeTime = 2
     burnParticle.timer_fade = 0
     table.insert(burnParticles, burnParticle)
 end
 
-particles = {render = {}}
-
 function renderParticles()
     local killParticleAppearances = {
-        ["basic"] = {img_particle_kill_enemy_basic, 4},
-        ["tank"] = {img_particle_kill_enemy_tank, 5},
-        ["swift"] = {img_particle_kill_enemy_swift, 3},
-        ["sentry"] = {img_particle_kill_enemy_sentry, 6},
-        ["centurion"] = {img_particle_kill_enemy_centurion, 8},
+        basic = {img_particle_kill_enemy_basic, 4},
+        tank = {img_particle_kill_enemy_tank, 5},
+        swift = {img_particle_kill_enemy_swift, 3},
+        sentry = {img_particle_kill_enemy_sentry, 6},
+        centurion = {img_particle_kill_enemy_centurion, 8},
+        exploder = {img_particle_kill_enemy_exploder, 4},
     }
     --[[ Render the particles to be different depending on their origin ]]--
     for i,v in ipairs(killParticles) do
@@ -99,16 +110,10 @@ function renderParticles()
         love.graphics.draw(img_particle_collapse, v.x - 6, v.y - 6)
     end
     love.graphics.setFont(font_Afacad16)
-    local offsets = {
-        ["basic"] = 10,
-        ["tank"] = 16,
-        ["swift"] = 8,
-        ["sentry"] = 22,
-        ["centurion"] = 30,
-        }
     for i,v in ipairs(hitTextParticles) do
         love.graphics.setColor(1, v.isCrit and 0.2 or 1, v.isCrit and 0.4 or 1, 1-v.timer_fade/v.fadeTime)
-        love.graphics.printf(v.damage, math.floor(v.x - 50 + offsets[v.origin]), math.floor(v.y - 15), 100, "center")
+        --local hitText = v.isSupercrit and (string.format("%.1f (x%.2f)", v.damage, levelingInfo[11].supercriticalFactor[player.abilities.supercritical.level + 1])) or (v.damage)
+        love.graphics.printf(v.isSupercrit and (string.format("%s (x%.2f)", v.damage, levelingInfo[11].supercriticalFactor[player.abilities.supercritical.level + 1])) or (v.damage), math.floor(v.x - 100 + enemyOffsets[v.origin]), math.floor(v.y - 15), 200, "center")
     end
     for i,v in ipairs(meteorParticles) do
         love.graphics.setColor(1, 1, 1, 1-v.timer_fade/v.fadeTime)
@@ -118,12 +123,9 @@ function renderParticles()
         love.graphics.setColor(1, 1, 1, 1-v.timer_fade/v.fadeTime)
         love.graphics.draw(img_particle_crystalExplosion, v.x - 3, v.y - 3)
     end
-end
-
-function particles.render.burn()
     for i,v in ipairs(burnParticles) do
         love.graphics.setColor(1, 1, 1, 0.2-(v.timer_fade/v.fadeTime)*0.2)
-        love.graphics.draw(img_particle_burn, v.x - 5, v.y - 5)
+        love.graphics.draw(img_particle_burn, v.x - 5, v.y - 5, 0, v.scale)
     end
 end
 

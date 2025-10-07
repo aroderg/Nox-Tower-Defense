@@ -109,4 +109,34 @@ function towers.reload()
             end
         end
     end
+
+    --- Aurora tower display & processing.
+    --- @param i boolean The "mode" of the tower, true for processing, false for rendering.
+    function towers.aurora(i, dt)
+        local maxFrames = 80
+        local changeRate = 10
+        local startDelay = 0
+        if player.tower.currentHealth > 0 then
+            if startDelayTimer < startDelay then
+                if i then
+                    startDelayTimer = startDelayTimer + dt
+                else
+                    love.graphics.draw(img_tower_aurora_static, 928, 508)
+                end
+            else
+                if i then
+                    frameExact = frameExact + dt * changeRate
+                    frame = math.floor(frameExact)
+                end
+                love.graphics.setColor(1, 1, 1, 1)
+                love.graphics.draw(img_tower_aurora_static, 960, 540, math.cos(frame/maxFrames) * math.pi * 2, 1, 1, 32, 32)
+                love.graphics.setColor(1, 1, 1, 1)
+                if not shieldActive then
+                    love.graphics.draw(img_tower_aurora_unshielded, 928, 508)
+                else
+                    love.graphics.draw(img_tower_aurora_shield, 928, 508)
+                end
+            end
+        end
+    end
 end

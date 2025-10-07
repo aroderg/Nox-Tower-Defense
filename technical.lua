@@ -19,3 +19,13 @@ function technical.deepMerge(default, saved)
         end
     end
 end
+
+function technical.findItemInList(item, list)
+    local itemFound = false
+    for _,v in ipairs(list) do
+        if v == item then
+            itemFound = true
+        end
+    end
+    return itemFound
+end

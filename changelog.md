@@ -1,3 +1,41 @@
+# NoxTD 1.1 Aurora
+### Oct 7, 2025
+- Added Idle Gains:
+    - For every 10 unique Waves beaten on any difficulty, gain 2 Silver/min.
+    - For every 100 unique Waves beaten on any difficulty, gain 0.06 Gold/min.
+    - Idle Time also goes up when you are offline with a maximum time of 6 hours (360m).
+    - Idle Time is unaffected by Game Speed.
+- Added Lifesteal and Cluster Fire related upgrades:
+    - Lifesteal:
+        - Lifesteal Chance increases the chance of healing by some damage dealt, maximum of 20%.
+        - Lifesteal Percent increases the amount of damage the tower heals by (in %), maximum of 8.25% of damage dealt.
+    - Cluster Fire:
+        - Cluster Fire Chance increases the chance of shooting several enemies simultaneously, maximum of 22.5%.
+        - Cluster Fire Targets increases the number of targets the tower would shoot simultaneously, maximum of 6.
+        - Cluster Fire Efficiency increases the damage dealt to enemies which have been hit by Cluster Fire up to 85%.
+- Added the Exploder enemy type:
+    - Explodes when dies or approaches the tower.
+    - Deals damage in a diameter of 10u equal to 250% of Basic enemies' attack damage.
+- Added 3 Abilities: Sniper Kit, Tank Kit and Supercritical:
+    - Sniper Kit increases your tower's Range while decreasing its Attack Speed.
+    - Tank Kit increases your tower's Health, Regeneration, and Resistance and decreases its Attack Damage and Attack Speed stats.
+    - Supercritical increases your Critical Chance, Critical Factor and grants a chance to deal more damage compared to critical hits.
+- Added the Ability Chance and Cooldown Nexus stat buffs:
+    - Ability Chance increases the chance of some Abilities triggering.
+    - Ability Cooldown speeds up timed Abilities.
+- Added the Acceleration modifier which speeds the game up by 4% each level, up to a maximum of 172% total compared to normal game speed.
+- In-round tooltips show both Science and Round levels bought in brackets.
+- The Theme setting allows you to change accent colors and backgrounds out of 5 pre-set ones.
+- Added Difficulty 5.
+    - Enemy HP and Damage start at 210K and 15K respectively.
+    - Enemy amount and spawn rate start at 23 and 2.7 respectively.
+- Added small instant visual hues on Ability previews based on their role.
+- The Hub has different backgrounds based on chosen theme.
+- Significantly weakened Magma Touch.
+- Silver Multiplier is displayed under currently selected Difficulty.
+- Enemy scaling has been tuned down for Difficulties 3 and 4.
+- Increased Electrum alloying requirements.
+
 ## NoxTD 1.0.3 Nova
 ### Sep 2, 2025
 - Added the Berserker Kit ability - it increases your Attack Damage and Attack Speed while decreasing Health and Resistance.

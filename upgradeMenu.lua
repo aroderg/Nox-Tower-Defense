@@ -3,13 +3,7 @@ function drawUpgradeMenu()
     if player.menu.upgrades then
         love.graphics.setLineStyle("smooth")
         love.graphics.setLineWidth(3)
-        if background == "main" or background == "stellar" then
-            love.graphics.setColor(0.106, 0.11, 0.22, 1)
-        elseif background == "eclipse" then
-            love.graphics.setColor(0.13, 0.05, 0, 1)
-        elseif background == "nova" then
-            love.graphics.setColor(0, 0.004, 0.1)
-        end
+        love.graphics.setColor(accentColors[player.misc.theme].towerInfo)
         love.graphics.rectangle("fill", 860, 750, 200, 52)
         love.graphics.setColor(1, 1, 1, 1)
         love.graphics.rectangle("line", 860, 750, 200, 52, 2, 2)
@@ -18,7 +12,7 @@ function drawUpgradeMenu()
         love.graphics.printf("Upgrades", 860, 767, 200, "center")
         love.graphics.setLineStyle("rough")
         love.graphics.setLineWidth(1)
-        love.graphics.setColor(0, 0, 0, 0.8)
+        love.graphics.setColor(0, 0, 0, 0.5)
         love.graphics.rectangle("fill", 0, 800, 1920, 280)
         love.graphics.setColor(1, 1, 1, 1)
         love.graphics.setFont(font_VeraBold24)
@@ -57,8 +51,6 @@ function drawUpgradeMenu()
         love.graphics.setLineStyle("rough")
         love.graphics.setFont(font_VeraBold18)
 
-        processUpgradeModule.reload()
-
         local sectionColors = {
             ATK = {0.8, 0.35, 0, 1},
             VIT = {0, 0.7, 0.8, 1},
@@ -72,19 +64,13 @@ function drawUpgradeMenu()
             end
 
         love.graphics.setColor(1, 1, 1, 1)
-        if not player.menu.paused and player.tower.currentHealth > 0 and not player.menu.gameplayInfo and not player.menu.battleStats then
+        if not player.menu.paused and player.tower.currentHealth > 0 and not player.menu.gameplayInfo and not player.menu.battleStats and player.settings.tooltips then
             tooltips.displayRound()
         end
     else
         love.graphics.setLineStyle("smooth")
         love.graphics.setLineWidth(3)
-        if background == "main" or background == "stellar" then
-            love.graphics.setColor(0.106, 0.11, 0.22, 1)
-        elseif background == "eclipse" then
-            love.graphics.setColor(0.13, 0.05, 0, 1)
-        elseif background == "nova" then
-            love.graphics.setColor(0, 0.004, 0.1)
-        end
+        love.graphics.setColor(accentColors[player.misc.theme].towerInfo)
         love.graphics.rectangle("fill", 860, 1030, 200, 52)
         love.graphics.setColor(1, 1, 1, 1)
         love.graphics.rectangle("line", 860, 1030, 200, 52, 2, 2)
@@ -140,11 +126,11 @@ function upgradeMenu_mouse_new(x, y)
 
         local round = player.upgrades.round
         local upgradeNames = {
-            ATK = {"attackDamage", "attackSpeed", "critChance", "critFactor", "range"},
-            VIT = {"health", "regeneration", "resistance", "shieldCooldown", "shieldDuration", "meteorAmount", "meteorRPM"},
+            ATK = {"attackDamage", "attackSpeed", "critChance", "critFactor", "range", "clusterFireChance", "clusterFireTargets", "clusterFireEfficiency"},
+            VIT = {"health", "regeneration", "resistance", "shieldCooldown", "shieldDuration", "meteorAmount", "meteorRPM", "lifestealChance", "lifestealPercent"},
             UTL = {"copperPerWave", "silverPerWave", "copperBonus", "silverBonus"}
         }
-        local upgradeBonuses = {
+        --[[local upgradeBonuses = {
             ATK = {
                 attackDamage = (player.abilities.berserkerKit.equipped and 1 + levelingInfo[8].attackDamageIncrease[player.abilities.berserkerKit.level + 1] / 100 or 1),
                 attackSpeed = (player.abilities.berserkerKit.equipped and 1 + levelingInfo[8].attackSpeedIncrease[player.abilities.berserkerKit.level + 1] / 100 or 1)
@@ -154,12 +140,13 @@ function upgradeMenu_mouse_new(x, y)
                 resistance = (player.abilities.berserkerKit.equipped and 1 - levelingInfo[8].resistanceDecrease / 100 or 1)
             },
             UTL = {}
-        }
+        }]]
         local upgradeSectionNames = {"ATK", "VIT", "UTL"}
         for i=1,#upgradeSectionNames do
             if roundUpgradeSection == upgradeSectionNames[i] then
                 for j,w in pairs(upgradeNames[roundUpgradeSection]) do
-                    round[upgradeNames[roundUpgradeSection][j]].level, round[upgradeNames[roundUpgradeSection][j]].cost, player.tower[upgradeNames[roundUpgradeSection][j]] = processUpgradeModule.upgrade(x, y, upgradeModules["round"][roundUpgradeSection][j], reloadFormulae(upgradeModules["science"][roundUpgradeSection][j][8], upgradeModules["round"][roundUpgradeSection][j][8] + 1)["round"][roundUpgradeSection][j][1], reloadFormulae(upgradeModules["science"][roundUpgradeSection][j][8], upgradeModules["round"][roundUpgradeSection][j][8] + 1)["round"][roundUpgradeSection][j][2] * (upgradeBonuses[roundUpgradeSection][w] or 1))
+                    round[upgradeNames[roundUpgradeSection][j]].level, round[upgradeNames[roundUpgradeSection][j]].cost, player.tower[upgradeNames[roundUpgradeSection][j]] = processUpgradeModule.upgrade(x, y, upgradeModules["round"][roundUpgradeSection][j], reloadFormulae(upgradeModules["science"][roundUpgradeSection][j][8], upgradeModules["round"][roundUpgradeSection][j][8] + 1)["round"][roundUpgradeSection][j][1], reloadFormulae(upgradeModules["science"][roundUpgradeSection][j][8], upgradeModules["round"][roundUpgradeSection][j][8] + 1)["round"][roundUpgradeSection][j][2])
+                    processUpgradeModule.reload()
                 end
             end
         end

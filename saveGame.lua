@@ -5,6 +5,10 @@ function saveGame()
         currentGold = player.currencies.currentGold,
         currentElectrum = player.currencies.currentElectrum,
         currentTokens = player.currencies.currentTokens,
+        idleGains = {silver = player.idleGains.silver, gold = player.idleGains.gold},
+        timeModified = socket.gettime(),
+        idleTime = player.idleTime,
+        storedGains = {silver = player.storedGains.silver, gold = player.storedGains.gold},
         upgrades = {
             unlocks = {
                 crit = player.upgrades.unlocks.crit,
@@ -14,6 +18,7 @@ function saveGame()
                 resistance = player.upgrades.unlocks.resistance,
                 shield = player.upgrades.unlocks.shield,
                 meteor = player.upgrades.unlocks.meteor,
+                lifesteal = player.upgrades.unlocks.lifesteal,
 
                 resourceBonus = player.upgrades.unlocks.resourceBonus,
             },
@@ -22,12 +27,17 @@ function saveGame()
                 attackSpeed = player.upgrades.nexus.attackSpeed.level,
                 health = player.upgrades.nexus.health.level,
                 regeneration = player.upgrades.nexus.regeneration.level,
+                abilityChance = player.upgrades.nexus.abilityChance.level,
+                abilityCooldown = player.upgrades.nexus.abilityCooldown.level
             },
             attackDamage = player.upgrades.science.attackDamage.level,
             attackSpeed = player.upgrades.science.attackSpeed.level,
             critChance = player.upgrades.science.critChance.level,
             critFactor = player.upgrades.science.critFactor.level,
             range = player.upgrades.science.range.level,
+            clusterFireChance = player.upgrades.science.clusterFireChance.level,
+            clusterFireTargets = player.upgrades.science.clusterFireTargets.level,
+            clusterFireEfficiency = player.upgrades.science.clusterFireEfficiency.level,
             
             health = player.upgrades.science.health.level,
             regeneration = player.upgrades.science.regeneration.level,
@@ -36,6 +46,8 @@ function saveGame()
             shieldDuration = player.upgrades.science.shieldDuration.level,
             meteorAmount = player.upgrades.science.meteorAmount.level,
             meteorRPM = player.upgrades.science.meteorRPM.level,
+            lifestealChance = player.upgrades.science.lifestealChance.level,
+            lifestealPercent = player.upgrades.science.lifestealPercent.level,
 
             copperPerWave = player.upgrades.science.copperPerWave.level,
             silverPerWave = player.upgrades.science.silverPerWave.level,
@@ -60,6 +72,10 @@ function saveGame()
             hyperloop = {
                 unlocked = player.modifiers.hyperloop.unlocked,
                 level = player.modifiers.hyperloop.level
+            },
+            acceleration = {
+                unlocked = player.modifiers.acceleration.unlocked,
+                level = player.modifiers.acceleration.level
             }
         },
 
@@ -68,12 +84,14 @@ function saveGame()
             d2 = player.bestWaves.d2,
             d3 = player.bestWaves.d3,
             d4 = player.bestWaves.d4,
+            d5 = player.bestWaves.d5,
         },
 
         stats = {
             enemiesKilled = player.stats.save.enemiesKilled,
             damageDealt = player.stats.save.damageDealt,
             silverEarned = player.stats.save.silverEarned,
+            goldEarned = player.stats.save.goldEarned,
             wavesSkipped = player.stats.save.wavesSkipped,
             projectilesFired = player.stats.save.projectilesFired,
             upgradesAcquired = {
@@ -81,6 +99,13 @@ function saveGame()
                 nexus = player.stats.save.upgradesAcquired.nexus
             },
             wavesBeaten = player.stats.save.wavesBeaten,
+            clusterFire = {
+                triggered = player.stats.save.clusterFire.triggered
+            },
+            lifesteal = {
+                triggered = player.stats.save.lifesteal.triggered,
+                healed = player.stats.save.lifesteal.healed,
+            },
             spikedCrystals = {
                 enemiesKilled = player.stats.save.spikedCrystals.enemiesKilled,
                 damageDealt = player.stats.save.spikedCrystals.damageDealt,
@@ -110,6 +135,10 @@ function saveGame()
             JerelosBlessing = {
                 triggered = player.stats.save.JerelosBlessing.triggered,
                 healthRegenerated = player.stats.save.JerelosBlessing.healthRegenerated
+            },
+            supercritical = {
+                triggered = player.stats.save.supercritical.triggered,
+                damageDealt = player.stats.save.supercritical.damageDealt
             }
         },
 
@@ -163,11 +192,30 @@ function saveGame()
                 level = player.abilities.berserkerKit.level,
                 equipped = player.abilities.berserkerKit.equipped,
                 amount = player.abilities.berserkerKit.amount
+            },
+            sniperKit = {
+                unlocked = player.abilities.sniperKit.unlocked,
+                level = player.abilities.sniperKit.level,
+                equipped = player.abilities.sniperKit.equipped,
+                amount = player.abilities.sniperKit.amount
+            },
+            tankKit = {
+                unlocked = player.abilities.tankKit.unlocked,
+                level = player.abilities.tankKit.level,
+                equipped = player.abilities.tankKit.equipped,
+                amount = player.abilities.tankKit.amount
+            },
+            supercritical = {
+                unlocked = player.abilities.supercritical.unlocked,
+                level = player.abilities.supercritical.level,
+                equipped = player.abilities.supercritical.equipped,
+                amount = player.abilities.supercritical.amount
             }
         },
 
         misc = {
-            abilityAssembling = true
+            abilityAssembling = player.misc.abilityAssembling,
+            theme = player.misc.theme
         },
         settings = {
             particleMultiplierIndex = player.settings.particleMultiplier,

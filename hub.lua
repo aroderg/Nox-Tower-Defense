@@ -3,35 +3,46 @@ local rolledClass
 local rolledInternalAbility
 local rolledAbility
 local abilitiesFromRolledClass = {}
+orbital = {}
 
-local orbitals = {
-    "The space is waiting for you.",
-    "Novae stellae semper clare fulgent.", --Latin for "New stars always shine bright."
-    "Are we moving to other galaxies?",
-    "Neverending waves.",
-    "100% chance of alien invasion.",
-    "Lost in space, still going strong.",
-    "Spiraling up the upgrade path.",
-    "One tower should be enough.",
-    "Look, I'm an Orbital! So pretty!",
-    "Nice to meet you, " .. os.getenv("USERNAME") .. ".",
-    "Defending the tower again, are we?",
-    player.currencies.currentElectrum .. " Electrum? What are you going to do with it?",
-    player.currencies.currentSilver .. " Silver... I'd just assume you found some floating debris.",
-    "\"" .. player.currencies.currentGold .. " Gold\" - that is something pirates would be jealous of.",
-    player.currencies.currentTokens .. " Tokens could be enough for a Nexus upgrade.",
-    "Might as well make the background different.",
-    "Running low on resources?",
-    "Look at that, a bright Nova out there all by herself!",
-    "Ever wondered why they are called Meteors?",
-    "We found no use for space rocks.",
-    "Oh, you like tower defending, you're a tower defender O_O",
-    "Wave " .. player.bestWaves.d1 .. " is solid progress, let's see if you can go further.",
-    "Woah, you've cleared " .. player.stats.save.wavesBeaten .. " waves so far. Impressive!",
-    "They would prefer to connect sometime soon.",
-    "Ability of The Day: " .. internalAbilities[love.math.random(1, #internalAbilities)].name .. ""
-}
-local currentOrbital = love.math.random(1, 25)
+--- Update all the Orbitals displayed in the Hub.
+---@param shuffle boolean Whether to change the random Orbital displayed.
+function orbital.update(shuffle)
+    local orbitals = {
+        "The space is waiting for you.",
+        "Novae stellae semper clare fulgent.", --Latin for "New stars always shine bright."
+        "Are we moving to other galaxies?",
+        "Neverending waves.",
+        "100% chance of alien invasion.",
+        "Lost in space, still going strong.",
+        "Spiraling up the upgrade path.",
+        "One tower should be enough.",
+        "Look, I'm an Orbital! So pretty!",
+        "Nice to meet you, " .. os.getenv("USERNAME") .. ".",
+        "Defending the tower again, are we?",
+        player.currencies.currentElectrum .. " Electrum? What will you do with it?",
+        string.format("%d Silver... I'd just assume you found some floating debris.", player.currencies.currentSilver),
+        string.format("%d Gold... That is something pirates would be jealous of.", player.currencies.currentGold),
+        player.currencies.currentTokens .. " Tokens could be enough for a Nexus upgrade.",
+        "Running low on resources?",
+        "Look at that, a bright Aurora out there all by herself!",
+        "Ever wondered why they are called Meteors?",
+        "We found no use for space rocks.",
+        "Oh, you like tower defending, you're a tower defender O_O",
+        "Wave " .. player.bestWaves.d1 .. " is solid progress, let's see if you can go further.",
+        "Woah, you've cleared " .. player.stats.save.wavesBeaten .. " waves so far. Impressive!",
+        "They would prefer to connect sometime soon.",
+        "Ability of the Day: " .. internalAbilities[love.math.random(1, #internalAbilities)].name .. "",
+        "Those " .. (player.modifiers.acceleration.unlocked and "accelerated " or "") .. "space battles look gorgeous.",
+        "If you like offense, try the Berserker Kit. If you like defense, try the Tank Kit.",
+        "Don't waste your offline time!",
+        "Don't forget to check all the themes in the Settings.",
+        "The Lifesteal upgrade can really save a run sometimes.",
+        "The Hub looks great with the " .. settings_themeNames[player.misc.theme] .. " theme. Check the others out!"
+    }
+    player.misc.currentOrbital = shuffle and love.math.random(27, 30) or player.misc.currentOrbital
+    return orbitals[player.misc.currentOrbital]
+end
 
 --- Draws all of the Hub visuals.
 function inHub_visual()
@@ -39,8 +50,13 @@ function inHub_visual()
         love.graphics.setLineWidth(1)
         love.graphics.setFont(font_Afacad24)
         love.graphics.setLineStyle("smooth")
-        love.graphics.setColor(0, 0, 0.2, 1)
-        love.graphics.rectangle("fill", 0, 0, 1920, 1080)
+        if player.misc.theme == "main" then
+            love.graphics.setColor(1, 1, 1, 1)
+        else
+            love.graphics.setColor(0.5, 0.5, 0.5, 1)
+            --love.graphics.setColor(1, 1, 1, 1)
+        end
+        love.graphics.draw(accentColors[player.misc.theme].background, 0, 0)
 
         local hubColors = {{0.65, 0.5, 0}, {0, 0.65, 0.3}, {0.5, 0, 0.6}, {0.8, 0.2, 0.2}}
         for i=1,#hubSections do
@@ -54,9 +70,11 @@ function inHub_visual()
             love.graphics.printf(hubSections[i], 30, (1080 / #hubSections) * (i - 1) + 3, 100, "center")
         end
 
+        love.graphics.setColor(0, 0, 0, 0.5)
+        love.graphics.rectangle("fill", 1800, 100, 119, 200, 4, 4)
         love.graphics.setColor(1, 1, 1, 1)
         love.graphics.setLineWidth(2)
-        love.graphics.rectangle("line", 1800, 100, 150, 200, 4, 4)
+        love.graphics.rectangle("line", 1800, 100, 119, 200, 4, 4)
         love.graphics.setFont(font_Vera16)
         love.graphics.draw(img_currency_silver, 1810, 110)
         love.graphics.printf(string.format("%s", notations.convertToLetterNotation(player.currencies.currentSilver, "brief")), 1844, 117, 100, "left")
@@ -85,41 +103,45 @@ function inHub_visual()
                 love.graphics.printf(hubLore[i], 760, 120, 400, "center")
             end
         end
-        love.graphics.setColor(0.1, 0.15, 0.5, 1)
-        love.graphics.rectangle("fill", 1746, 22, 140, 32)
-        love.graphics.setColor(0.3, 0.75, 0.85, 1)
+
+        love.graphics.setColor(accentColors[player.misc.theme].buttons)
+        love.graphics.rectangle("fill", 1800, 22, 118, 32)
+        love.graphics.setColor(accentColors[player.misc.theme].buttonOutlines)
         love.graphics.setLineWidth(2)
-        love.graphics.rectangle("line", 1746, 22, 140, 32, 2, 2)
+        love.graphics.rectangle("line", 1800, 22, 118, 32, 2, 2)
         love.graphics.setFont(font_Afacad24)
         love.graphics.setColor(1, 1, 1, 1)
-        love.graphics.printf("Settings", 1726, 21, 180, "center")
-        love.graphics.setColor(0.1, 0.15, 0.5, 1)
-        love.graphics.rectangle("fill", 1746, 62, 140, 32)
-        love.graphics.setColor(0.3, 0.75, 0.85, 1)
+        love.graphics.printf("Settings", 1780, 21, 158, "center")
+        love.graphics.setColor(accentColors[player.misc.theme].buttons)
+        love.graphics.rectangle("fill", 1800, 62, 118, 32)
+        love.graphics.setColor(accentColors[player.misc.theme].buttonOutlines)
         love.graphics.setLineWidth(2)
-        love.graphics.rectangle("line", 1746, 62, 140, 32, 2, 2)
+        love.graphics.rectangle("line", 1800, 62, 118, 32, 2, 2)
         love.graphics.setFont(font_Afacad24)
         love.graphics.setColor(1, 1, 1, 1)
-        love.graphics.printf("Stats", 1726, 61, 180, "center")
+        love.graphics.printf("Stats", 1780, 61, 158, "center")
         love.graphics.setLineWidth(1)
+        
         if hubSection == "Main" then
             love.graphics.setFont(font_Afacad16)
-            love.graphics.printf({{0, 1, 1, 0.4}, "(" .. orbitals[currentOrbital] .. ")"}, 1024, 82, 700, "left")
+            love.graphics.printf({{0, 1, 1, 0.4}, "(" .. orbital.update() .. ")"}, 1024, 82, 700, "left")
             love.graphics.setFont(font_AfacadSemiBold28)
             love.graphics.printf(string.format("Difficulty %d", player.difficulty.difficulty), 810, 738, 300, "center")
-            local bestWaves = {player.bestWaves.d1, player.bestWaves.d2, player.bestWaves.d3, player.bestWaves.d4}
-            local highestDiffUnlocked = player.difficulty.unlocks.d4 and 4 or player.difficulty.unlocks.d3 and 3 or player.difficulty.unlocks.d2 and 2 or 1
+            local bestWaves = {player.bestWaves.d1, player.bestWaves.d2, player.bestWaves.d3, player.bestWaves.d4, player.bestWaves.d5}
+            local highestDiffUnlocked = player.difficulty.unlocks.d5 and 5 or player.difficulty.unlocks.d4 and 4 or player.difficulty.unlocks.d3 and 3 or player.difficulty.unlocks.d2 and 2 or 1
             love.graphics.setFont(font_Afacad24)
-            love.graphics.printf(string.format("Best Wave: %s", bestWaves[player.difficulty.difficulty] or "None"), 810, 780, 300, "center")
+            love.graphics.printf(string.format("Best Wave: %s", bestWaves[player.difficulty.difficulty] or "None"), 810, 772, 300, "center")
+            love.graphics.setFont(font_Afacad18)
+            love.graphics.printf({{1, 1, 1, 1}, "Silver Multiplier: ", {0.5, 1, 1, 1}, "x" .. difficultyMultipliers[player.difficulty.difficulty]}, 810, 799, 300, "center")
             if player.difficulty.difficulty > 1 then
                 love.graphics.draw(img_button_arrowLeft, 840, 746)
             end
             if player.difficulty.difficulty < highestDiffUnlocked then
                 love.graphics.draw(img_button_arrowRight, 1056, 746)
             end
-            love.graphics.setColor(0.1, 0.15, 0.5, 1)
+            love.graphics.setColor(accentColors[player.misc.theme].buttons)
             love.graphics.rectangle("fill", 860, 900, 200, 80, 3, 3)
-            love.graphics.setColor(0.3, 0.75, 0.85, 1)
+            love.graphics.setColor(accentColors[player.misc.theme].buttonOutlines)
             love.graphics.setLineWidth(2)
             love.graphics.rectangle("line", 860, 900, 200, 80, 3, 3)
             love.graphics.setLineWidth(1)
@@ -152,12 +174,15 @@ function inHub_visual()
             love.graphics.setLineWidth(2)
 
             --[[ Electrum sub-menu ]]--
+            love.graphics.setColor(0, 0, 0, 0.5)
+            love.graphics.rectangle("fill", 1650, 100, 150, 200, 4, 4)
+            love.graphics.setColor(1, 1, 1, 1)
             love.graphics.rectangle("line", 1650, 100, 150, 200, 4, 4)
             love.graphics.draw(img_currency_silver, 1660, 110)
             love.graphics.draw(img_currency_gold, 1759, 110)
             love.graphics.setFont(font_Vera16)
-            love.graphics.printf("400", 1655, 140, 40, "center")
-            love.graphics.printf("2", 1755, 140, 40, "center")
+            love.graphics.printf("600", 1655, 140, 40, "center")
+            love.graphics.printf("3", 1755, 140, 40, "center")
             love.graphics.line(1676, 160, 1725, 190)
             love.graphics.line(1775, 160, 1725, 190)
             love.graphics.line(1725, 190, 1725, 200)
@@ -175,10 +200,12 @@ function inHub_visual()
             end
 
             --[[ Token sub-menu ]]--
+            love.graphics.setColor(0, 0, 0, 0.5)
+            love.graphics.rectangle("fill", 1450, 100, 200, 200, 4, 4)
             love.graphics.setColor(1, 1, 1, 1)
             love.graphics.rectangle("line", 1450, 100, 200, 200, 4, 4)
             love.graphics.setFont(font_AfacadBold20)
-            love.graphics.printf("Claim your tokens!", 1450, 110, 200, "center")
+            love.graphics.printf("Claim your tokens!", 1450, 100, 200, "center")
             love.graphics.draw(img_currency_token_big, 1518, 136)
             love.graphics.setFont(font_VeraBold18)
             love.graphics.printf("15", 1500, 200, 100, "center")
@@ -201,28 +228,32 @@ function inHub_visual()
                 {name = "Attack Damage", maxLevel = 41, currentLevel = player.upgrades.nexus.attackDamage.level, cost = player.upgrades.nexus.attackDamage.cost, value = player.upgrades.nexus.attackDamage.value},
                 {name = "Attack Speed", maxLevel = 26, currentLevel = player.upgrades.nexus.attackSpeed.level, cost = player.upgrades.nexus.attackSpeed.cost, value = player.upgrades.nexus.attackSpeed.value},
                 {name = "Health", maxLevel = 41, currentLevel = player.upgrades.nexus.health.level, cost = player.upgrades.nexus.health.cost, value = player.upgrades.nexus.health.value},
-                {name = "Regeneration", maxLevel = 41, currentLevel = player.upgrades.nexus.regeneration.level, cost = player.upgrades.nexus.regeneration.cost, value = player.upgrades.nexus.regeneration.value}
+                {name = "Regeneration", maxLevel = 41, currentLevel = player.upgrades.nexus.regeneration.level, cost = player.upgrades.nexus.regeneration.cost, value = player.upgrades.nexus.regeneration.value},
+                {name = "Ability Chance", maxLevel = 41, currentLevel = player.upgrades.nexus.abilityChance.level, cost = player.upgrades.nexus.abilityChance.cost, value = player.upgrades.nexus.abilityChance.value},
+                {name = "Ability Cooldown", maxLevel = 31, currentLevel = player.upgrades.nexus.abilityCooldown.level, cost = player.upgrades.nexus.abilityCooldown.cost, value = player.upgrades.nexus.abilityCooldown.value},
             }
             for i,v in pairs(nexusBuffs) do
-                love.graphics.setColor(1, 1, 1, 1)
                 love.graphics.setLineStyle("smooth")
                 love.graphics.setLineWidth(2)
                 love.graphics.setFont(font_Afacad20)
-                love.graphics.rectangle("line", 650 + (i - 1) * 160, 250, 150, 200, 4, 4)
-                love.graphics.printf(v.name, 650 + (i - 1) * 160, 250, 150, "center")
-                love.graphics.printf(string.format("x%.2f", v.value), 650 + (i - 1) * 160, 280, 150, "center")
+                love.graphics.setColor(0, 0, 0, 0.5)
+                love.graphics.rectangle("fill", 485 + (i - 1) * 160, 300, 150, 150, 4, 4)
+                love.graphics.setColor(1, 1, 1, 1)
+                love.graphics.rectangle("line", 485 + (i - 1) * 160, 300, 150, 150, 4, 4)
+                love.graphics.printf(v.name, 485 + (i - 1) * 160, 300, 150, "center")
+                love.graphics.printf(v.name == "Ability Cooldown" and string.format("/%.3f", v.value) or string.format("x%.2f", v.value), 485 + (i - 1) * 160, 330, 150, "center")
                 love.graphics.setColor(0.6, 0.45, 0.25, 1)
-                love.graphics.rectangle("fill", 655 + (i - 1) * 160, 405, 140, 40)
+                love.graphics.rectangle("fill", 490 + (i - 1) * 160, 405, 140, 40)
                 love.graphics.setColor(1, 1, 1, 1)
                 love.graphics.setLineStyle("rough")
                 love.graphics.setLineWidth(1)
-                love.graphics.rectangle("line", 655 + (i - 1) * 160, 405, 140, 40)
+                love.graphics.rectangle("line", 490 + (i - 1) * 160, 405, 140, 40)
                 love.graphics.setFont(font_Afacad24)
                 if v.currentLevel < v.maxLevel then
-                    love.graphics.draw(img_currency_token, 660 + (i - 1) * 160, 410)
-                    love.graphics.print(v.cost, 692 + (i - 1) * 160, 409)
+                    love.graphics.draw(img_currency_token, 495 + (i - 1) * 160, 410)
+                    love.graphics.print(v.cost, 527 + (i - 1) * 160, 409)
                 else
-                    love.graphics.printf("Max", 655 + (i - 1) * 160, 409, 140, "center")
+                    love.graphics.printf("Max", 490 + (i - 1) * 160, 409, 140, "center")
                 end
             end
 
@@ -232,12 +263,18 @@ function inHub_visual()
             local gameplayModifiers = {
                 {name = "Wave Skip", unlockCost = 10, value = player.modifiers.waveSkip.value, cost = player.modifiers.waveSkip.cost, maxLevel = 10, text = {{1, 1, 1, 1}, "There is a ", {0, 1, 0.7, 1}, string.format("%d%%", player.modifiers.waveSkip.value), {1, 1, 1, 1}, " chance of skipping a wave and immediately advancing to the next one."}, upgradeText = "Chance", unlocked = player.modifiers.waveSkip.unlocked, level = player.modifiers.waveSkip.level},
                 {name = "Hyperloop", unlockCost = 15, value = player.modifiers.hyperloop.value, cost = player.modifiers.hyperloop.cost, maxLevel = 11, text = {{1, 1, 1, 1}, "All enemies outside of the tower range are ", {1, 0.5, 0.3, 1}, string.format("%d%%", player.modifiers.hyperloop.value), {1, 1, 1, 1}, " faster."}, upgradeText = "Speed", unlocked = player.modifiers.hyperloop.unlocked, level = player.modifiers.hyperloop.level},
+                {name = "Acceleration", unlockCost = 15, value = player.modifiers.acceleration.value, cost = player.modifiers.acceleration.cost, maxLevel = 19, text = {{1, 1, 1, 1}, "The game is processed at ", {1, 0.44, 0.79}, 100 + player.modifiers.acceleration.value * 100, {1, 1, 1, 1}, "% of the normal speed."}, upgradeText = "Speed", unlocked = player.modifiers.acceleration.unlocked, level = player.modifiers.acceleration.level},
             }
 
             for i,v in pairs(gameplayModifiers) do
                 love.graphics.setFont(font_Afacad20)
                 love.graphics.setLineStyle("smooth")
                 love.graphics.setLineWidth(2)
+                love.graphics.setColor(0, 0, 0, 1)
+                love.graphics.rectangle("fill", 650, 550 + 140 * (i - 1), 630, 35, 4, 4)
+                love.graphics.setColor(0, 0, 0, 0.5)
+                love.graphics.rectangle("fill", 650, 585 + 140 * (i - 1), 630, 85, 4, 4)
+                love.graphics.setColor(1, 1, 1, 1)
                 love.graphics.rectangle("line", 650, 550 + 140 * (i - 1), 630, 120, 4, 4)
                 love.graphics.setLineStyle("rough")
                 love.graphics.setLineWidth(1)
@@ -279,11 +316,36 @@ function inHub_visual()
                 love.graphics.printf(v.text, 660, 585 + 140 * (i - 1), 350, "left")
             end
 
+            love.graphics.setLineStyle("smooth")
+            love.graphics.setLineWidth(2)
+            love.graphics.setColor(0, 0, 0, 0.5)
+            love.graphics.rectangle("fill", 1650, 300, 269, 200, 4, 4)
+            love.graphics.setColor(1, 1, 1, 1)
+            love.graphics.rectangle("line", 1650, 300, 269, 200, 4, 4)
+            love.graphics.setFont(font_AfacadBold24)
+            love.graphics.printf("Idle Gains", 1650, 300, 269, "center")
+            love.graphics.setFont(font_AfacadBold18)
+            love.graphics.printf(string.format("%dm %ds/%dm", math.floor(player.idleTime / 60), player.idleTime % 60, math.floor(player.idleTimeCap / 60)), 1650, 335, 269, "center")
+            love.graphics.setColor(1, 0, 0, 1)
+            love.graphics.rectangle("fill", 1657, 330, 253, 8)
+            love.graphics.setColor(0, 1, 0, 1)
+            love.graphics.rectangle("fill", 1657, 330, (player.idleTime / player.idleTimeCap) * 253, 8)
+            love.graphics.setFont(font_Afacad18)
+            love.graphics.setColor(1, 1, 1, 1)
+            love.graphics.draw(img_currency_silver, 1657, 360)
+            love.graphics.draw(img_currency_gold, 1657, 392)
+            love.graphics.printf(string.format("+%d/min -> %s", player.idleGains.silver, notations.convertToLetterNotation(player.storedGains.silver)), 1691, 363, 300, "left")
+            love.graphics.printf(string.format("+%.2f/min -> %.2f", player.idleGains.gold, player.storedGains.gold), 1691, 395, 300, "left")
+            love.graphics.setLineStyle("rough")
+            love.graphics.rectangle("line", 1655, 465, 260, 30)
+            love.graphics.setFont(font_Afacad20)
+            love.graphics.printf("Claim", 1655, 465, 260, "center")
+
         elseif hubSection == "Abilities" then
             love.graphics.setFont(font_AfacadBold24)
             love.graphics.printf(string.format("Equipped: %d/%d", player.abilities.equipped, player.abilities.maxEquipped), 860, 200, 200, "center")
             love.graphics.draw(img_button_questionMark, 1040, 205)
-            love.graphics.setColor(0.2, 0, 0.3, 1)
+            love.graphics.setColor(accentColors[player.misc.theme].upgradeModule)
             love.graphics.rectangle("fill", 810, 250, 300, 60)
             love.graphics.setColor(1, 1, 1, 1)
             love.graphics.setLineStyle("rough")
@@ -326,9 +388,16 @@ function inHub_visual()
                 tooltips.displayAbilityInfo()
             end
             for i,v in pairs(internalAbilities) do
+                local roleColors = {
+                    active = {0.98, 0.44, 0.24},
+                    link = {0.5, 0.99, 0.52},
+                    passive = {0.45, 0.61, 0.89},
+                }
                 --Draw the brief ("Card") appearance of the Ability.
+                love.graphics.setColor(0, 0, 0, 0.5)
+                love.graphics.rectangle("fill", abilityFunctions.calculateOffset(i), 360 + math.floor((i - 1) / 5) * 230, 150, 200, 2, 2)
                 love.graphics.setLineStyle("rough")
-                love.graphics.setColor(1, 1, 1, 0.25 + 0.75 * (v.unlocked and 1 or 0))
+                love.graphics.setColor(0.35 + 0.65 * (v.unlocked and 1 or 0), 0.35 + 0.65 * (v.unlocked and 1 or 0), 0.35 + 0.65 * (v.unlocked and 1 or 0), 1)
                 love.graphics.draw(v.preview, abilityFunctions.calculateOffset(i), 390 + math.floor((i - 1) / 5) * 230)
                 love.graphics.setColor(1, 1, 1, 0.5)
                 love.graphics.setLineWidth(1)
@@ -340,7 +409,7 @@ function inHub_visual()
                 love.graphics.rectangle("line", abilityFunctions.calculateOffset(i), 360 + math.floor((i - 1) / 5) * 230, 150, 200, 2, 2)
                 love.graphics.setColor(1, 1, 1, 1)
                 love.graphics.setFont(font_AfacadBold20)
-                love.graphics.printf(v.name, abilityFunctions.calculateOffset(i), 360 + math.floor((i - 1) / 5) * 230, 150, "center")
+                love.graphics.printf(v.name, abilityFunctions.calculateOffset(i), 361 + math.floor((i - 1) / 5) * 230, 150, "center")
                 love.graphics.setFont(font_Afacad20)
                 love.graphics.printf("Level " .. v.level, abilityFunctions.calculateOffset(i), 495 + math.floor((i - 1) / 5) * 230, 150, "center")
                 love.graphics.setLineWidth(1)
@@ -353,14 +422,22 @@ function inHub_visual()
                 love.graphics.rectangle("line", abilityFunctions.calculateOffset(i) + 76, 530 + math.floor((i - 1) / 5) * 230, 70, 25)
                 love.graphics.printf(not v.equipped and "Equip" or "Unequip", abilityFunctions.calculateOffset(i) + 76, 531 + math.floor((i - 1) / 5) * 230, 70, "center")
                 love.graphics.setColor(1, 1, 1, 1)
+                local roleTagColor = roleColors[(tostring(v.tags.role)):sub(1, 1):lower() .. (tostring(v.tags.role)):sub(2, -1)]
+                love.graphics.setColor(roleTagColor)
+                love.graphics.rectangle("fill", abilityFunctions.calculateOffset(i) + 5, 470 + math.floor((i - 1) / 5) * 230, 15, 15, 2, 2)
             end
             for i,v in pairs(internalAbilities) do
                 abilityFunctions.showInfo.draw(v)
             end
             if player.menu.rolledAbilityDisplay then
+                local roleColors = {
+                    active = {0.98, 0.44, 0.24},
+                    link = {0.5, 0.99, 0.52},
+                    passive = {0.45, 0.61, 0.89},
+                }
                 love.graphics.setColor(0, 0, 0, 0.5)
                 love.graphics.rectangle("fill", 0, 0, 1920, 1080)
-                love.graphics.setColor(0.15, 0, 0.3, 1)
+                love.graphics.setColor(accentColors[player.misc.theme].menus)
                 love.graphics.rectangle("fill", 660, 390, 600, 300, 2, 2)
                 love.graphics.setColor(1, 1, 1, 1)
                 love.graphics.setLineStyle("smooth")
@@ -383,9 +460,14 @@ function inHub_visual()
                     {0.35, 1, 0.5, 1}
                 love.graphics.printf({{1, 1, 1, 1}, "Class: ", classColor, abilitiesFromRolledClass[rolledAbility].class}, 675, 515, 150, "center")
                 love.graphics.printf({{1, 1, 1, 1}, "Amount: ", amountColor, abilitiesFromRolledClass[rolledAbility].amount + 1, {1, 1, 1, 1}, "/", {0.35, 1, 0.5, 1}, abilitiesFromRolledClass[rolledAbility].nextLevelRequirement}, 675, 535, 150, "center")
-                love.graphics.setColor(0.1, 0.15, 0.5, 1)
+                local roleTagColor = roleColors[(tostring(abilitiesFromRolledClass[rolledAbility].tags.role)):sub(1, 1):lower() .. (tostring(abilitiesFromRolledClass[rolledAbility].tags.role)):sub(2, -1)]
+                love.graphics.setColor(roleTagColor)
+                love.graphics.rectangle("fill", 680, 485, 15, 15, 2, 2)
+                love.graphics.setColor(1, 1, 1, 1)
+                love.graphics.setFont(font_Afacad24)
+                love.graphics.setColor(accentColors[player.misc.theme].buttons)
                 love.graphics.rectangle("fill", 920, 645, 80, 35, 2, 2)
-                love.graphics.setColor(0.3, 0.75, 0.85, 1)
+                love.graphics.setColor(accentColors[player.misc.theme].buttonOutlines)
                 love.graphics.setLineWidth(2)
                 love.graphics.rectangle("line", 920, 645, 80, 35, 2, 2)
                 love.graphics.setColor(1, 1, 1, 1)
@@ -409,10 +491,10 @@ function inHub_mouse(x, y)
                 hubSection = hubSections[i]
             end
         end
-        if x >= 1746 and x <= 1886 and y >= 22 and y <= 54 and not player.menu.settings and not player.menu.saveStats and not abilityFunctions.checkMenuDisplay() then
+        if x >= 1800 and x <= 1918 and y >= 22 and y <= 54 and not player.menu.settings and not player.menu.saveStats and not abilityFunctions.checkMenuDisplay() and not player.menu.rolledAbilityDisplay then
             player.menu.settings = true
         end
-        if x >= 1746 and x <= 1886 and y >= 62 and y <= 94 and not player.menu.settings and not player.menu.saveStats and not abilityFunctions.checkMenuDisplay() then
+        if x >= 1800 and x <= 1918 and y >= 62 and y <= 94 and not player.menu.settings and not player.menu.saveStats and not abilityFunctions.checkMenuDisplay() and not player.menu.rolledAbilityDisplay then
             player.menu.saveStats = true
         end
         
@@ -420,7 +502,7 @@ function inHub_mouse(x, y)
         if hubSection == "Main" then
             if x >= 860 and x <= 1060 and y >= 900 and y <= 980 and not player.menu.settings then
                 player.location = "round"
-                currentOrbital = love.math.random(1, 25)
+                orbital.update(true)
                 player.difficulty.difficulty = player.difficulty.difficulty
                 roundUpgradeSection = "ATK"
                 resetRoundValues()
@@ -429,10 +511,10 @@ function inHub_mouse(x, y)
                 player.menu.paused = false
                 gameplay.gameSpeed = player.maxGameSpeed
             end
-            local levelUnlocks = {player.difficulty.unlocks.d2, player.difficulty.unlocks.d3, player.difficulty.unlocks.d4}
+            local levelUnlocks = {player.difficulty.unlocks.d2, player.difficulty.unlocks.d3, player.difficulty.unlocks.d4, player.difficulty.unlocks.d5}
             if x >= 840 and x <= 864 and y >= 746 and y <= 770 and player.difficulty.difficulty > 1 and levelUnlocks[player.difficulty.difficulty - 1] and not player.menu.settings then
                 player.difficulty.difficulty = player.difficulty.difficulty - 1
-            elseif x >= 1056 and x <= 1080 and y >= 746 and y <= 770 and player.difficulty.difficulty < 4 and levelUnlocks[player.difficulty.difficulty] and not player.menu.settings then
+            elseif x >= 1056 and x <= 1080 and y >= 746 and y <= 770 and player.difficulty.difficulty < 5 and levelUnlocks[player.difficulty.difficulty] and not player.menu.settings then
                 player.difficulty.difficulty = player.difficulty.difficulty + 1
             end
 
@@ -440,32 +522,11 @@ function inHub_mouse(x, y)
 
             local science = player.upgrades.science
             local upgradeNames = {
-                ATK = {"attackDamage", "attackSpeed", "critChance", "critFactor", "range"},
-                VIT = {"health", "regeneration", "resistance", "shieldCooldown", "shieldDuration", "meteorAmount", "meteorRPM"},
+                ATK = {"attackDamage", "attackSpeed", "critChance", "critFactor", "range", "clusterFireChance", "clusterFireTargets", "clusterFireEfficiency"},
+                VIT = {"health", "regeneration", "resistance", "shieldCooldown", "shieldDuration", "meteorAmount", "meteorRPM", "lifestealChance", "lifestealPercent"},
                 UTL = {"copperPerWave", "silverPerWave", "copperBonus", "silverBonus"}
             }
-            local upgradeBonuses = {
-                ATK = {
-                    attackDamage = (player.abilities.berserkerKit.equipped and 1 + levelingInfo[8].attackDamageIncrease[player.abilities.berserkerKit.level + 1] / 100 or 1),
-                    attackSpeed = (player.abilities.berserkerKit.equipped and 1 + levelingInfo[8].attackSpeedIncrease[player.abilities.berserkerKit.level + 1] / 100 or 2)
-                },
-                VIT = {
-                    health = (player.abilities.berserkerKit.equipped and 1 - levelingInfo[8].healthDecrease / 100 or 1) * (player.abilities.JerelosBlessing.equipped and levelingInfo[7].healthIncrease[player.abilities.JerelosBlessing.level + 1] or 1),
-                    resistance = (player.abilities.berserkerKit.equipped and 1 - levelingInfo[8].resistanceDecrease / 100 or 1)
-                },
-                UTL = {}
-            }
             local upgradeSectionNames = {"ATK", "VIT", "UTL"}
-            -- for i=1,#upgradeSectionNames do
-            --     local currentProcessedSection = upgradeSectionNames[i]
-            --     for j=1,#upgradeNames[currentProcessedSection] do
-            --         if i == 2 and j == 1 then
-            --             player.upgrades.science.health.level, player.upgrades.science.health.cost, player.tower.health = processUpgradeModule.upgrade(x, y, upgradeModules["science"][currentProcessedSection][1], reloadFormulae(upgradeModules["science"][currentProcessedSection][1][8] + 1)["science"][upgradeSectionNames[i]][1][1], reloadFormulae(upgradeModules["science"][currentProcessedSection][1][8] + 1)["science"][currentProcessedSection][1][2]  * (player.abilities.JerelosBlessing.equipped and levelingInfo[7].healthIncrease[player.abilities.JerelosBlessing.level + 1] or 1) * (player.abilities.berserkerKit.equipped and 1 - levelingInfo[8].healthDecrease / 100 or 1))
-            --         else
-            --             player.upgrades.science[upgradeNames[currentProcessedSection][j]].level, player.upgrades.science[upgradeNames[currentProcessedSection][j]].cost, player.tower[upgradeNames[currentProcessedSection][j]] = processUpgradeModule.upgrade(x, y, upgradeModules["science"][currentProcessedSection][j], reloadFormulae(upgradeModules["science"][currentProcessedSection][j][8] + 1)["science"][currentProcessedSection][j][1], reloadFormulae(upgradeModules["science"][currentProcessedSection][j][8] + 1)["science"][currentProcessedSection][j][2])
-            --         end
-            --     end
-            -- end
             for i=1,#upgradeSectionNames do
                 local currentProcessedSection = upgradeSectionNames[i]
                 if currentProcessedSection == upgradeSectionNames[i] then
@@ -479,20 +540,22 @@ function inHub_mouse(x, y)
             if not player.menu.settings then
                 player.upgrades.unlocks.crit = processUnlockPanel.clickCheck(x, y, unlockPanels["crit"])
                 player.upgrades.unlocks.range = processUnlockPanel.clickCheck(x, y, unlockPanels["range"])
+                player.upgrades.unlocks.clusterFire = processUnlockPanel.clickCheck(x, y, unlockPanels["clusterFire"])
                 player.upgrades.unlocks.resistance = processUnlockPanel.clickCheck(x, y, unlockPanels["resistance"])
                 player.upgrades.unlocks.shield = processUnlockPanel.clickCheck(x, y, unlockPanels["shield"])
                 player.upgrades.unlocks.meteor = processUnlockPanel.clickCheck(x, y, unlockPanels["meteor"])
+                player.upgrades.unlocks.lifesteal = processUnlockPanel.clickCheck(x, y, unlockPanels["lifesteal"])
                 player.upgrades.unlocks.resourceBonus = processUnlockPanel.clickCheck(x, y, unlockPanels["resourceBonus"])
             end
 
         elseif hubSection == "Nexus" then
             --[[ If in Nexus, clicking the Alloy button starts the Electrum alloying process after spending 400 Silver and 2 Gold ]]--
             if x >= 1655 and x <= 1795 and y >= 265 and y <= 295 and not player.menu.settings then
-                if player.currencies.currentSilver >= 400 and player.currencies.currentGold >= 2 and player.canClaim.electrum then
+                if player.currencies.currentSilver >= 600 and player.currencies.currentGold >= 3 and player.canClaim.electrum then
                     player.canClaim.electrum = false
                     player.timers.electrum = 0
-                    player.currencies.currentSilver = player.currencies.currentSilver - 400
-                    player.currencies.currentGold = player.currencies.currentGold - 2
+                    player.currencies.currentSilver = player.currencies.currentSilver - 600
+                    player.currencies.currentGold = player.currencies.currentGold - 3
                 end
             end
 
@@ -506,7 +569,7 @@ function inHub_mouse(x, y)
             end
 
             --[[ Attack Damage stat buff ]]--
-            if x >= 655 and x <= 795 and y >= 405 and y <= 445 and not player.menu.settings then
+            if x >= 490 and x <= 630 and y >= 405 and y <= 445 and not player.menu.settings then
                 if player.currencies.currentTokens >= player.upgrades.nexus.attackDamage.cost and player.upgrades.nexus.attackDamage.level < 41 then
                     player.currencies.currentTokens = player.currencies.currentTokens - player.upgrades.nexus.attackDamage.cost
                     player.upgrades.nexus.attackDamage.level = player.upgrades.nexus.attackDamage.level + 1
@@ -519,7 +582,7 @@ function inHub_mouse(x, y)
             end
 
             --[[ Attack Speed stat buff ]]--
-            if x >= 815 and x <= 955 and y >= 405 and y <= 445 and not player.menu.settings then
+            if x >= 650 and x <= 790 and y >= 405 and y <= 445 and not player.menu.settings then
                 if player.currencies.currentTokens >= player.upgrades.nexus.attackSpeed.cost and player.upgrades.nexus.attackSpeed.level < 26 then
                     player.currencies.currentTokens = player.currencies.currentTokens - player.upgrades.nexus.attackSpeed.cost
                     player.upgrades.nexus.attackSpeed.level = player.upgrades.nexus.attackSpeed.level + 1
@@ -532,7 +595,7 @@ function inHub_mouse(x, y)
             end
 
             --[[ Health stat buff ]]--
-            if x >= 975 and x <= 1115 and y >= 405 and y <= 445 and not player.menu.settings then
+            if x >= 810 and x <= 950 and y >= 405 and y <= 445 and not player.menu.settings then
                 if player.currencies.currentTokens >= player.upgrades.nexus.health.cost and player.upgrades.nexus.health.level < 41 then
                     player.currencies.currentTokens = player.currencies.currentTokens - player.upgrades.nexus.health.cost
                     player.upgrades.nexus.health.level = player.upgrades.nexus.health.level + 1
@@ -545,13 +608,37 @@ function inHub_mouse(x, y)
             end
 
             --[[ Regeneration stat buff ]]--
-            if x >= 1135 and x <= 1275 and y >= 405 and y <= 445 and not player.menu.settings then
+            if x >= 970 and x <= 1110 and y >= 405 and y <= 445 and not player.menu.settings then
                 if player.currencies.currentTokens >= player.upgrades.nexus.regeneration.cost and player.upgrades.nexus.regeneration.level < 41 then
                     player.currencies.currentTokens = player.currencies.currentTokens - player.upgrades.nexus.regeneration.cost
                     player.upgrades.nexus.regeneration.level = player.upgrades.nexus.regeneration.level + 1
                     player.upgrades.nexus.regeneration.cost = 20 + ((player.upgrades.nexus.regeneration.level * (player.upgrades.nexus.regeneration.level - 1)) / 2) * 5
                     player.upgrades.nexus.regeneration.value = math.min(1 + (player.upgrades.nexus.regeneration.level - 1) * 10/100, 5)
                     player.tower.regeneration = reloadFormulae(player.upgrades.science.regeneration.level)["science"]["VIT"][2][2]
+                    player.stats.save.upgradesAcquired.nexus = player.stats.save.upgradesAcquired.nexus + 1
+                end
+                processUpgradeModule.reload()
+            end
+
+            --[[ Ability Chance stat buff ]]--
+            if x >= 1130 and x <= 1270 and y >= 405 and y <= 445 and not player.menu.settings then
+                if player.currencies.currentTokens >= player.upgrades.nexus.abilityChance.cost and player.upgrades.nexus.abilityChance.level < 41 then
+                    player.currencies.currentTokens = player.currencies.currentTokens - player.upgrades.nexus.abilityChance.cost
+                    player.upgrades.nexus.abilityChance.level = player.upgrades.nexus.abilityChance.level + 1
+                    player.upgrades.nexus.abilityChance.cost = 20 + ((player.upgrades.nexus.abilityChance.level * (player.upgrades.nexus.abilityChance.level - 1)) / 2) * 5
+                    player.upgrades.nexus.abilityChance.value = math.min(1 + (player.upgrades.nexus.abilityChance.level - 1) * 2/100, 1.8)
+                    player.stats.save.upgradesAcquired.nexus = player.stats.save.upgradesAcquired.nexus + 1
+                end
+                processUpgradeModule.reload()
+            end
+
+            --[[ Ability Cooldown stat buff ]]--
+            if x >= 1290 and x <= 1430 and y >= 405 and y <= 445 and not player.menu.settings then
+                if player.currencies.currentTokens >= player.upgrades.nexus.abilityCooldown.cost and player.upgrades.nexus.abilityCooldown.level < 41 then
+                    player.currencies.currentTokens = player.currencies.currentTokens - player.upgrades.nexus.regeneration.cost
+                    player.upgrades.nexus.abilityCooldown.level = player.upgrades.nexus.abilityCooldown.level + 1
+                    player.upgrades.nexus.abilityCooldown.cost = 20 + ((player.upgrades.nexus.abilityCooldown.level * (player.upgrades.nexus.abilityCooldown.level - 1)) / 2) * 5
+                    player.upgrades.nexus.abilityCooldown.value = math.min(1 + (player.upgrades.nexus.abilityCooldown.level - 1) * 1.2/100, 1.36)
                     player.stats.save.upgradesAcquired.nexus = player.stats.save.upgradesAcquired.nexus + 1
                 end
                 processUpgradeModule.reload()
@@ -587,6 +674,31 @@ function inHub_mouse(x, y)
                     end
                 processUpgradeModule.reload()
                 end
+            elseif x >= 1155 and x <= 1275 and y >= 895 and y <= 945 and not player.menu.settings then
+                if player.currencies.currentElectrum >= player.modifiers.acceleration.cost and player.modifiers.acceleration.level < 19 then
+                    if player.modifiers.acceleration.unlocked then
+                        player.currencies.currentElectrum = player.currencies.currentElectrum - player.modifiers.acceleration.cost
+                        player.modifiers.acceleration.level = player.modifiers.acceleration.level + 1
+                        player.modifiers.acceleration.cost = math.floor(5 * (2^(player.modifiers.acceleration.level))^0.21) or 15
+                        player.modifiers.acceleration.value = math.min(0.04 * (player.modifiers.acceleration.level), 0.72)
+                    else
+                        player.currencies.currentElectrum = player.currencies.currentElectrum - 15
+                        player.modifiers.acceleration.unlocked = true
+                        player.modifiers.acceleration.cost = math.floor(5 * (2^(player.modifiers.acceleration.level))^0.21)
+                        player.modifiers.acceleration.value = 0
+                    end
+                processUpgradeModule.reload()
+                end
+            elseif x >= 1655 and x <= 1915 and y >= 465 and y <= 495 and not player.menu.settings and not player.menu.saveStats then
+                if player.idleTime >= 60 then
+                    player.currencies.currentSilver = player.currencies.currentSilver + player.storedGains.silver
+                    player.stats.save.silverEarned = player.stats.save.silverEarned + player.storedGains.silver
+                    player.currencies.currentGold = player.currencies.currentGold + math.floor(player.storedGains.gold)
+                    player.stats.save.goldEarned = player.currencies.currentGold + math.floor(player.storedGains.gold)
+                    player.storedGains.silver = 0
+                    player.storedGains.gold = player.storedGains.gold % 1
+                    player.idleTime = player.idleTime % 60
+                end
             end
         elseif hubSection == "Abilities" then
             if x >= 1017 and x <= 1107 and y >= 253 and y <= 307 and not abilityFunctions.checkMenuDisplay() and not player.menu.rolledAbilityDisplay and not player.menu.settings then
@@ -602,7 +714,7 @@ function inHub_mouse(x, y)
                 end
                 if not player.misc.abilityAssembling and not player.menu.settings and player.timers.abilityAssembly >= player.cooldowns.abilityAssembly_current then
                     abilitiesFromRolledClass = {}
-                    local rolledPercent = love.math.random(0, 100000) / 1000
+                    local rolledPercent = love.math.random() * 100
                     local chanceClassRange = {0, 0}
                     for i=1,#abilityClasses do
                         chanceClassRange[1] = chanceClassRange[2]
@@ -637,18 +749,19 @@ function inHub_mouse(x, y)
                     player.abilities[v.internalName].equipped = abilityFunctions.changeEquipState(x, y, abilityFunctions.calculateOffset(i) + 76, 530 + math.floor((i - 1) / 5) * 230, v)
                     player.menu.abilities[v.internalName] = abilityFunctions.showInfo.process(x, y, abilityFunctions.calculateOffset(i) + 5, 530 + math.floor((i - 1) / 5) * 230, v)
                     player.abilities[v.internalName].level, player.abilities[v.internalName].amount = abilityFunctions.upgrade(x, y, v)
-                    if v.internalName == "JerelosBlessing" then
-                        player.tower.health = reloadFormulae(player.upgrades.round.health.level)["science"]["VIT"][1][2]
-                        player.tower.currentHealth = player.tower.health
-                        processUpgradeModule.reload()
-                    end
                 end
+                processUpgradeModule.reload()
+                resetRoundValues()
                 player.tower = {
                     attackDamage = reloadFormulae(player.upgrades.round.attackDamage.level)["science"]["ATK"][1][2],
                     attackSpeed = reloadFormulae(player.upgrades.round.attackSpeed.level)["science"]["ATK"][2][2],
                     critChance = reloadFormulae(player.upgrades.round.critChance.level)["science"]["ATK"][3][2],
                     critFactor = reloadFormulae(player.upgrades.round.critFactor.level)["science"]["ATK"][4][2],
                     range = reloadFormulae(player.upgrades.round.range.level)["science"]["ATK"][5][2],
+                    clusterFireChance = reloadFormulae(player.upgrades.round.clusterFireChance.level)["science"]["ATK"][6][2],
+                    clusterFireTargets = reloadFormulae(player.upgrades.round.clusterFireTargets.level)["science"]["ATK"][7][2],
+                    clusterFireEfficiency = reloadFormulae(player.upgrades.round.clusterFireEfficiency.level)["science"]["ATK"][8][2],
+
                     health = reloadFormulae(player.upgrades.round.health.level)["science"]["VIT"][1][2],
                     currentHealth = reloadFormulae(player.upgrades.round.health.level)["science"]["VIT"][1][2],
                     regeneration = reloadFormulae(player.upgrades.round.regeneration.level)["science"]["VIT"][2][2],
@@ -657,7 +770,9 @@ function inHub_mouse(x, y)
                     shieldDuration = reloadFormulae(player.upgrades.round.shieldDuration.level)["science"]["VIT"][5][2],
                     meteorAmount = reloadFormulae(player.upgrades.round.meteorAmount.level)["science"]["VIT"][6][2],
                     meteorRPM = reloadFormulae(player.upgrades.round.meteorRPM.level)["science"]["VIT"][7][2],
-                    
+                    lifestealChance = reloadFormulae(player.upgrades.round.lifestealChance.level)["science"]["VIT"][8][2],
+                    lifestealPercent = reloadFormulae(player.upgrades.round.lifestealPercent.level)["science"]["VIT"][9][2],
+
                     copperPerWave = reloadFormulae(player.upgrades.round.copperPerWave.level)["science"]["UTL"][1][2],
                     silverPerWave = reloadFormulae(player.upgrades.round.silverPerWave.level)["science"]["UTL"][2][2],
                     copperBonus = reloadFormulae(player.upgrades.round.copperBonus.level)["science"]["UTL"][3][2],
@@ -668,7 +783,7 @@ function inHub_mouse(x, y)
             abilityFunctions.updateInternals()
         end
     elseif player.menu.saveStats then
-        if x >= 910 and x <= 1010 and y >= 780 and y <= 820 and player.menu.saveStats then
+        if x >= 910 and x <= 1010 and y >= 780 and y <= 820 then
             player.menu.saveStats = false
         end
     end

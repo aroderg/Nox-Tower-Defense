@@ -11,7 +11,7 @@ function statsMenus.savefile.draw()
     love.graphics.setLineStyle("smooth")
     love.graphics.setColor(0, 0, 0, 0.5)
     love.graphics.rectangle("fill", 0, 0, 1920, 1080)
-    love.graphics.setColor(0.2, 0, 0.35, 1)
+    love.graphics.setColor(accentColors[player.misc.theme].menus)
     love.graphics.rectangle("fill", 710, 240, 500, 600, 2, 2)
     love.graphics.setColor(1, 1, 1, 1)
     love.graphics.rectangle("line", 710, 240, 500, 600, 2, 2)
@@ -21,11 +21,15 @@ function statsMenus.savefile.draw()
         "Enemies Killed",
         "Damage Dealt",
         "Silver Earned",
+        "Gold Earned",
         "Waves Skipped",
         "Projectiles Fired",
         "Science Upgrades",
         "Nexus Upgrades",
         "Waves Defeated",
+        "Cluster Fire - Triggered",
+        "Lifesteal - Triggered",
+        "HP healed by Lifesteal",
         "Spiked Crystals - Enemies Killed",
         "Spiked Crystals - Damage Dealt",
         "Spiked Crystals - Crystals Spawned",
@@ -42,16 +46,24 @@ function statsMenus.savefile.draw()
         "Lightning Orb - Orbs Spawned",
         "Jerelo's Blessing - Triggered",
         "Jerelo's Blessing - Health Regenerated",
+        "Supercritical - Hits",
+        "Supercritical - Damage Dealt",
     }
     local statVars = {
         {player.stats.save.enemiesKilled, "brief"},
         {player.stats.save.damageDealt, "precise"},
         {player.stats.save.silverEarned, "brief"},
+        {player.stats.save.goldEarned, "brief"},
         {player.stats.save.wavesSkipped, "brief"},
         {player.stats.save.projectilesFired, "brief"},
         {player.stats.save.upgradesAcquired.science, "brief"},
         {player.stats.save.upgradesAcquired.nexus, "brief"},
         {player.stats.save.wavesBeaten, "brief"},
+
+        {player.stats.save.clusterFire.triggered, "brief"},
+        
+        {player.stats.save.lifesteal.triggered, "brief"},
+        {player.stats.save.lifesteal.healed, "precise"},
         
         {player.stats.save.spikedCrystals.enemiesKilled, "brief"},
         {player.stats.save.spikedCrystals.damageDealt, "precise"},
@@ -75,6 +87,9 @@ function statsMenus.savefile.draw()
 
         {player.stats.save.JerelosBlessing.triggered, "brief"},
         {player.stats.save.JerelosBlessing.healthRegenerated, "precise"},
+
+        {player.stats.save.supercritical.triggered, "brief"},
+        {player.stats.save.supercritical.damageDealt, "precise"}
     }
     for i=1,math.min(#statNames, #statVars) do
         love.graphics.setScissor(710, 280, 500, 490)
@@ -95,9 +110,9 @@ function statsMenus.savefile.draw()
         love.graphics.line(760, rowCenter + 1, 1160, rowCenter + 1)
         love.graphics.setScissor()
     end
-    love.graphics.setColor(0.1, 0.15, 0.5, 1)
+    love.graphics.setColor(accentColors[player.misc.theme].buttons)
     love.graphics.rectangle("fill", 910, 780, 100, 40, 2, 2)
-    love.graphics.setColor(0.3, 0.75, 0.85, 1)
+    love.graphics.setColor(accentColors[player.misc.theme].buttonOutlines)
     love.graphics.setLineWidth(2)
     love.graphics.rectangle("line", 910, 780, 100, 40, 2, 2)
     love.graphics.setFont(font_Afacad24)
@@ -110,7 +125,7 @@ function statsMenus.battle.draw()
     love.graphics.setLineStyle("smooth")
     love.graphics.setColor(0, 0, 0, 0.5)
     love.graphics.rectangle("fill", 0, 0, 1920, 1080)
-    love.graphics.setColor(0.2, 0, 0.35, 1)
+    love.graphics.setColor(accentColors[player.misc.theme].menus)
     love.graphics.rectangle("fill", 710, 240, 500, 600, 2, 2)
     love.graphics.setColor(1, 1, 1, 1)
     love.graphics.rectangle("line", 710, 240, 500, 600, 2, 2)
@@ -127,10 +142,14 @@ function statsMenus.battle.draw()
         "Damage Dealt",
         "Copper Earned",
         "Silver Earned",
+        "Gold Earned",
         "Damage Absorbed",
         "Waves Skipped",
         "Projectiles Fired",
         "Upgrades Acquired",
+        "Cluster Fire - Triggered",
+        "Lifesteal - Triggered",
+        "HP healed by Lifesteal",
         "Spiked Crystals - Enemies Killed",
         "Spiked Crystals - Damage Dealt",
         "Spiked Crystals - Crystals Spawned",
@@ -147,6 +166,8 @@ function statsMenus.battle.draw()
         "Lightning Orb - Orbs Spawned",
         "Jerelo's Blessing - Triggered",
         "Jerelo's Blessing - Health Regenerated",
+        "Supercritical - Hits",
+        "Supercritical - Damage Dealt"
     }
     local statVars = {
         player.stats.battle.gameTime,
@@ -156,10 +177,16 @@ function statsMenus.battle.draw()
         {player.stats.battle.damageDealt, "precise"},
         {player.stats.battle.copperEarned, "brief"},
         {player.stats.battle.silverEarned, "brief"},
+        {player.stats.battle.goldEarned, "brief"},
         {player.stats.battle.shieldDamageAbsorb, "precise"},
         {player.stats.battle.wavesSkipped, "brief"},
         {player.stats.battle.projectilesFired, "brief"},
         {player.stats.battle.upgradesAcquired, "brief"},
+
+        {player.stats.battle.clusterFire.triggered, "brief"},
+
+        {player.stats.battle.lifesteal.triggered, "brief"},
+        {player.stats.battle.lifesteal.healed, "precise"},
         
         {player.stats.battle.spikedCrystals.enemiesKilled, "brief"},
         {player.stats.battle.spikedCrystals.damageDealt, "precise"},
@@ -183,6 +210,9 @@ function statsMenus.battle.draw()
 
         {player.stats.battle.JerelosBlessing.triggered, "brief"},
         {player.stats.battle.JerelosBlessing.healthRegenerated, "precise"},
+
+        {player.stats.battle.supercritical.triggered, "brief"},
+        {player.stats.battle.supercritical.damageDealt, "precise"}
     }
     for i=1,math.min(#statNames, #statVars) do
         love.graphics.setScissor(710, 280, 500, 490)
@@ -206,9 +236,9 @@ function statsMenus.battle.draw()
         love.graphics.line(760, rowCenter + 1, 1160, rowCenter + 1)
         love.graphics.setScissor()
     end
-    love.graphics.setColor(0.1, 0.15, 0.5, 1)
+    love.graphics.setColor(accentColors[player.misc.theme].buttons)
     love.graphics.rectangle("fill", 910, 780, 100, 40, 2, 2)
-    love.graphics.setColor(0.3, 0.75, 0.85, 1)
+    love.graphics.setColor(accentColors[player.misc.theme].buttonOutlines)
     love.graphics.setLineWidth(2)
     love.graphics.rectangle("line", 910, 780, 100, 40, 2, 2)
     love.graphics.setFont(font_Afacad24)
@@ -217,8 +247,8 @@ function statsMenus.battle.draw()
 end
 
 function statsMenus.savefile.process(dt)
-    statTextScrollState = math.max(math.min(statTextScrollState + savefileVel.velx * dt, 0), -110)
-    statTextScrollState = math.max(math.min(statTextScrollState + savefileVel.vely * dt, 0), -110)
+    statTextScrollState = math.max(math.min(statTextScrollState + savefileVel.velx * dt, 0), 565-25*33)
+    statTextScrollState = math.max(math.min(statTextScrollState + savefileVel.vely * dt, 0), 565-25*33)
 
     -- Gradually reduce the velocity to create smooth scrolling effect.
     savefileVel.velx = savefileVel.velx - savefileVel.velx * math.min(dt * 7, 1)
@@ -226,8 +256,8 @@ function statsMenus.savefile.process(dt)
 end
 
 function statsMenus.battle.process(dt)
-    statTextScrollState = math.max(math.min(statTextScrollState + battleVel.velx * dt, 0), -185)
-    statTextScrollState = math.max(math.min(statTextScrollState + battleVel.vely * dt, 0), -185)
+    statTextScrollState = math.max(math.min(statTextScrollState + battleVel.velx * dt, 0), 565-25*36)
+    statTextScrollState = math.max(math.min(statTextScrollState + battleVel.vely * dt, 0), 565-25*36)
 
     -- Gradually reduce the velocity to create smooth scrolling effect.
     battleVel.velx = battleVel.velx - battleVel.velx * math.min(dt * 7, 1)

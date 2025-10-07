@@ -5,23 +5,30 @@ abilityFunctions = {
 --- Calculates an offset that is used to center all the Abilities while in the "Ability" Hub section.
 ---@param n number The number of the Ability.
 function abilityFunctions.calculateOffset(n)
-    local alignmentOffset = 0
-    if n <= 5 then
-        alignmentOffset = (1920 - ((math.min(#internalAbilities, 6) * 150) + ((math.min(#internalAbilities - 1, 5)) * 30))) / 2
-        return alignmentOffset + (n % 6 - 0.5) * 180
-    else
+    local cols = {525, 705, 885, 1065, 1245}
+    return cols[(n - 1) % 5 + 1]
+    --local alignmentOffset = 0
+    --if n <= 5 then
+        --alignmentOffset = (1920 - ((math.min(#internalAbilities, 6) * 150) + ((math.min(#internalAbilities - 1, 5)) * 30))) / 2
+        --return alignmentOffset + (n % 6 - 0.5 + math.floor(n / 5)) * 180
+    --[[else
         alignmentOffset = 1920 - (((n + 1) * 150) + ((n - 0.5) * 30))
-        return alignmentOffset + (n % 6 - 0.5) * 360
-    end
+        return alignmentOffset + (n % 6 - 0.5) * 360]]--
+    --end
 end
 
 --- Draw the detailed ("Panel") appearance of the Ability.
 ---@param ability table The Ability to draw.
 function abilityFunctions.showInfo.draw(ability)
     if ability.menu then
+        local roleColors = {
+            active = {0.98, 0.44, 0.24},
+            link = {0.5, 0.99, 0.52},
+            passive = {0.45, 0.61, 0.89},
+        }
         love.graphics.setColor(0, 0, 0, 0.5)
         love.graphics.rectangle("fill", 0, 0, 1920, 1080)
-        love.graphics.setColor(0.15, 0, 0.3, 1)
+        love.graphics.setColor(accentColors[player.misc.theme].menus)
         love.graphics.rectangle("fill", 660, 340, 600, 400, 2, 2)
         love.graphics.setColor(1, 1, 1, 1)
         love.graphics.setLineStyle("smooth")
@@ -31,6 +38,10 @@ function abilityFunctions.showInfo.draw(ability)
         love.graphics.draw(ability.preview, 885, 360)
         love.graphics.setFont(font_AfacadBold24)
         love.graphics.printf(ability.name, 810, 470, 300, "center")
+        local roleTagColor = roleColors[(tostring(ability.tags.role)):sub(1, 1):lower() .. (tostring(ability.tags.role)):sub(2, -1)]
+        love.graphics.setColor(roleTagColor)
+        love.graphics.rectangle("fill", 890, 440, 15, 15, 2, 2)
+        love.graphics.setColor(1, 1, 1, 1)
         love.graphics.setFont(font_Afacad24)
         if ability.level < #ability.levelRequirements - 1 then
             love.graphics.printf("Level " .. ability.level .. string.format(" (%d/%d)", ability.amount, ability.nextLevelRequirement), 670, 355, 216, "center")
@@ -72,16 +83,16 @@ function abilityFunctions.showInfo.draw(ability)
         --love.graphics.printf("Event: " .. ability.event, 1035, 385, 224, "center")
         --love.graphics.printf({{1, 1, 1, 1}, "Frequency: ", {0.35, 0.95, 0.7, 1}, not ability.guaranteed and ability.frequency or string.format("1/%d", ability.frequency), {1, 1, 1, 1}, ability.guaranteed and "(G)" or "", {1, 1, 1, 1}, ability.event == "Time" and "s" or not ability.guaranteed and "%" or ""}, 1035, 415, 224, "center")
         if freqSuffix ~= "" then
-            love.graphics.printf("Frequency: " .. ability.frequency .. freqSuffix, 1035, 441 + rowOffset, 224, "center")
+            love.graphics.printf(freqSuffix == "s" and string.format("Frequency: %.1f", ability.frequency) .. freqSuffix or string.format("Frequency: %.3f", ability.frequency) .. freqSuffix, 1035, 441 + rowOffset, 224, "center")
         end
         love.graphics.setLineWidth(1)
         love.graphics.setLineStyle("smooth")
         love.graphics.printf(ability.effect, 680, 510, 560, "left")
         love.graphics.rectangle("line", 885, 360, 150, 100, 2, 2)
         love.graphics.rectangle("line", 660, 340, 600, 400, 2, 2)
-        love.graphics.setColor(0.1, 0.15, 0.5, 1)
+        love.graphics.setColor(accentColors[player.misc.theme].buttons)
         love.graphics.rectangle("fill", 910, 680, 100, 40, 2, 2)
-        love.graphics.setColor(0.3, 0.75, 0.85, 1)
+        love.graphics.setColor(accentColors[player.misc.theme].buttonOutlines)
         love.graphics.setLineWidth(2)
         love.graphics.rectangle("line", 910, 680, 100, 40, 2, 2)
         love.graphics.setFont(font_Afacad24)
@@ -152,8 +163,7 @@ function abilityFunctions.showInfo.process(x, y, ax, ay, ability)
     end
 end
 
---- Update the ability levels and leveling info
-function abilityFunctions.updateInternals()
+function abilityFunctions.updateLeveling()
     levelingInfo = {
         {
             --| SPIKED CRYSTALS - LEVELS FROM 0 to 11 |--
@@ -182,9 +192,9 @@ function abilityFunctions.updateInternals()
         },
         {
             --| MAGMA TOUCH - LEVELS FROM 0 to 9 |--
-            frequency =         {20,  18.5, 16, 14.5, 13.5, 12.5, 11.5, 11,   10.5, 10}, -- seconds
-            damage =            {7.5, 8.5,  10, 12,   14,   16,   18,   20,   23.5, 27.5}, -- %
-            levelRequirements = {3,   3,    4,  4,    5,    7,    9,    12,   16,   20}
+            frequency =         {33,  30,  27, 25, 23, 21, 19, 18, 17,   16}, -- seconds
+            damage =            {7.5, 8.5, 10, 12, 14, 16, 18, 20, 23.5, 27.5}, -- %
+            levelRequirements = {3,   3,   4,  4,  5,  7,  9,  12, 16,   20}
         },
         {
             --| LIGHTNING ORB - LEVELS FROM 0 to 8 |--
@@ -206,15 +216,41 @@ function abilityFunctions.updateInternals()
             attackDamageIncrease = {15,  20,   25,   30,   35,   40,   50}, -- %
             attackSpeedIncrease =  {10,  12.5, 15,   17.5, 20,   22.5, 27.5}, -- %
             levelRequirements =    {4,   4,    5,    6,    7,    8,    11}
+        },
+        {
+            --| SNIPER'S KIT - LEVELS FROM 0 to 8 |--
+            attackSpeedDecrease =  40, -- %
+            rangeIncrease =        {6, 8, 10, 12.5, 15, 17.5, 20, 22.5, 25}, -- %
+            levelRequirements =    {4, 4, 5,  6,    7,  8,    11, 14,   18}
+        },
+        {
+            --| TANK KIT - LEVELS FROM 0 to 6 |--
+            attackDamageDecrease =  30, -- %
+            attackSpeedDecrease =  10, -- %
+            healthStatsIncrease =  {15, 18,   21,   24,  27,  30,   36}, -- %
+            resistanceIncrease =   {1,  2.05, 3.15, 4.3, 5.5, 6.75, 7.05}, -- %
+            levelRequirements =    {4,  4,    5,    6,   7,   8,    11}
+        },
+        {
+            --| SUPERCRITICAL - LEVELS FROM 0 to 9 |--
+            criticalChanceIncrease = {6,   7,    8,    10,   12,   14,   16,   19,   22,    25}, -- %
+            criticalFactorIncrease = {1,   1.02, 1.05, 1.08, 1.12, 1.16, 1.2,  1.24, 1.28,  1.32}, -- multiplier (1 = 100%)
+            supercriticalChance =    {1,   1.6,  2.2,  2.8,  3.4,  4,    4.75, 5.5,  6.3,   7.15}, -- %
+            supercriticalFactor =    {2.5, 2.6,  2.7,  2.85, 3,    3.15, 3.35, 3.6,  3.85,  4.1}, -- multiplier (1 = 100%)
+            levelRequirements =      {1,   1,    2,    3,    4,    6,    8,    10,   12,    16}
         }
     }
+end
+
+--- Update the ability levels and leveling info
+function abilityFunctions.updateInternals()
     internalAbilities = {
         {
             name = "Spiked Crystals",
             internalName = "spikedCrystals",
             effect = {{1, 1, 1, 1}, "Spawn up to ", {1, 0.5, 0.4, 1}, levelingInfo[1].quantity[player.abilities.spikedCrystals.level + 1], {1, 1, 1, 1}, " crystals inside the tower's range. Upon getting touched by an enemy, the crystal explodes and deals ", {1, 0.4, 0.8, 1}, levelingInfo[1].damage[player.abilities.spikedCrystals.level + 1], {1, 1, 1, 1}, "% damage to nearby enemies."},
             tags = {condition = "Time", role = "Active", AoE = true, category = "VIT"},
-            frequency = levelingInfo[1].frequency[player.abilities.spikedCrystals.level + 1],
+            frequency = levelingInfo[1].frequency[player.abilities.spikedCrystals.level + 1] / player.upgrades.nexus.abilityCooldown.value,
             level = player.abilities.spikedCrystals.level,
             preview = img_ability_preview_spikedCrystals,
             equipped = player.abilities.spikedCrystals.equipped,
@@ -230,14 +266,14 @@ function abilityFunctions.updateInternals()
             internalName = "scatterFire",
             effect = {{1, 1, 1, 1}, "Shoot out ", {0.5, 0.9, 0.8, 1}, levelingInfo[2].quantity[player.abilities.scatterFire.level + 1], {1, 1, 1, 1}, " projectiles going from a random point on the screen."},
             tags = {condition = "Projectile Fired", role = "Link", AoE = false, category = "ATK"},
-            frequency = levelingInfo[2].frequency[player.abilities.scatterFire.level + 1],
+            frequency = levelingInfo[2].frequency[player.abilities.scatterFire.level + 1] * player.upgrades.nexus.abilityChance.value,
             level = player.abilities.scatterFire.level,
             preview = img_ability_preview_scatterFire,
             equipped = player.abilities.scatterFire.equipped,
             unlocked = player.abilities.scatterFire.unlocked,
             menu = player.menu.abilities.scatterFire,
             amount = player.abilities.scatterFire.amount,
-            class = "C",
+            class = "D",
             nextLevelRequirement = levelingInfo[2].levelRequirements[player.abilities.scatterFire.level + 1],
             levelRequirements = levelingInfo[2].levelRequirements
         },
@@ -246,14 +282,14 @@ function abilityFunctions.updateInternals()
             internalName = "burstFire",
             effect = {{1, 1, 1, 1}, "Shoot out ", {0.75, 0.75, 0.75, 1}, levelingInfo[3].quantity[player.abilities.burstFire.level + 1], {1, 1, 1, 1}, " projectiles going from the center of the tower."},
             tags = {condition = "Projectile Fired", role = "Link", AoE = false, category = "ATK"},
-            frequency = levelingInfo[3].frequency[player.abilities.burstFire.level + 1],
+            frequency = levelingInfo[3].frequency[player.abilities.burstFire.level + 1] * player.upgrades.nexus.abilityChance.value,
             level = player.abilities.burstFire.level,
             preview = img_ability_preview_burstFire,
             equipped = player.abilities.burstFire.equipped,
             unlocked = player.abilities.burstFire.unlocked,
             menu = player.menu.abilities.burstFire,
             amount = player.abilities.burstFire.amount,
-            class = "C",
+            class = "D",
             nextLevelRequirement = levelingInfo[3].levelRequirements[player.abilities.burstFire.level + 1],
             levelRequirements = levelingInfo[3].levelRequirements
         },
@@ -278,14 +314,14 @@ function abilityFunctions.updateInternals()
             internalName = "magmaTouch",
             effect = {{1, 1, 1, 1}, "Summon a magma pool in a random position on the screen. Applies a burning effect on any enemy touching it, dealing ", {1, 0.6, 0.15, 1}, levelingInfo[5].damage[player.abilities.magmaTouch.level + 1], {1, 1, 1, 1}, "% damage each second for 4 seconds before disappearing. Maximum of 20 magma pools."},
             tags = {condition = "Time", role = "Active", AoE = true, category = "VIT", incompatibilities = {"JerelosBlessing"}},
-            frequency = levelingInfo[5].frequency[player.abilities.magmaTouch.level + 1],
+            frequency = levelingInfo[5].frequency[player.abilities.magmaTouch.level + 1] / player.upgrades.nexus.abilityCooldown.value,
             level = player.abilities.magmaTouch.level,
             preview = img_ability_preview_magmaTouch,
             equipped = player.abilities.magmaTouch.equipped,
             unlocked = player.abilities.magmaTouch.unlocked,
             menu = player.menu.abilities.magmaTouch,
             amount = player.abilities.magmaTouch.amount,
-            class = "B",
+            class = "C",
             nextLevelRequirement = levelingInfo[5].levelRequirements[player.abilities.magmaTouch.level + 1],
             levelRequirements = levelingInfo[5].levelRequirements
         },
@@ -294,21 +330,21 @@ function abilityFunctions.updateInternals()
             internalName = "lightningOrb",
             effect = {{1, 1, 1, 1}, "The tower shoots a flying lightning orb, shooting a laser to the farthest enemy within ", {1, 0.95, 0.55, 1}, levelingInfo[6].range[player.abilities.lightningOrb.level + 1], {1, 1, 1, 1}, "u, continuously dealing damage equal to ", {0.65, 0.45, 0.9, 1}, levelingInfo[6].damage[player.abilities.lightningOrb.level + 1], {1, 1, 1, 1}, "% damage per second."},
             tags = {condition = "Time", role = "Active", AoE = false, category = "ATK"},
-            frequency = levelingInfo[6].frequency[player.abilities.lightningOrb.level + 1],
+            frequency = levelingInfo[6].frequency[player.abilities.lightningOrb.level + 1] / player.upgrades.nexus.abilityCooldown.value,
             level = player.abilities.lightningOrb.level,
             preview = img_ability_preview_lightningOrb,
             equipped = player.abilities.lightningOrb.equipped,
             unlocked = player.abilities.lightningOrb.unlocked,
             menu = player.menu.abilities.lightningOrb,
             amount = player.abilities.lightningOrb.amount,
-            class = "D",
+            class = "B",
             nextLevelRequirement = levelingInfo[6].levelRequirements[player.abilities.lightningOrb.level + 1],
             levelRequirements = levelingInfo[6].levelRequirements
         },
         {
             name = "Jerelo's Blessing",
             internalName = "JerelosBlessing",
-            effect = {{1, 1, 1, 1}, "The tower gathers energy from Jerelo, the Nature elemental, which provides it with a x", {0.4, 0.8, 1, 1}, levelingInfo[7].healthIncrease[player.abilities.JerelosBlessing.level + 1], {1, 1, 1, 1}, " increase of its maximum health and a ", {0.1, 0.75, 0.65, 1}, levelingInfo[7].regenChance[player.abilities.JerelosBlessing.level + 1], {1, 1, 1, 1}, "% chance to restore all health at the end of a wave."},
+            effect = {{1, 1, 1, 1}, "The tower gathers energy from Jerelo, the Nature elemental, which provides it with a x", {0.4, 0.8, 1, 1}, levelingInfo[7].healthIncrease[player.abilities.JerelosBlessing.level + 1], {1, 1, 1, 1}, " increase of its maximum health and a ", {0.1, 0.75, 0.65, 1}, levelingInfo[7].regenChance[player.abilities.JerelosBlessing.level + 1] * player.upgrades.nexus.abilityChance.value, {1, 1, 1, 1}, "% chance to restore all health at the end of a wave."},
             tags = {condition = "None, Wave Finish", role = "Passive", AoE = false, category = "VIT", incompatibilities = {"magmaTouch"}},
             frequency = 1,
             level = player.abilities.JerelosBlessing.level,
@@ -325,7 +361,7 @@ function abilityFunctions.updateInternals()
             name = "Berserker Kit",
             internalName = "berserkerKit",
             effect = {{1, 1, 1, 1}, "The tower sacrifices ", {0, 0.9, 0.75, 1}, levelingInfo[8].healthDecrease, {1, 1, 1, 1}, "% of its maximum health and ", {0, 0.1, 0.85, 1}, levelingInfo[8].resistanceDecrease, {1, 1, 1, 1}, "% of its resistance to instead increase its attack damage and attack speed by ", {0.6, 0.4, 0.75, 1}, levelingInfo[8].attackDamageIncrease[player.abilities.berserkerKit.level + 1], {1, 1, 1, 1}, "% and ", {0.45, 0.95, 0.8, 1}, levelingInfo[8].attackSpeedIncrease[player.abilities.berserkerKit.level + 1], {1, 1, 1, 1}, "% respectively.\nNegative Resistance = damage amplification."},
-            tags = {condition = "None", role = "Passive", AoE = false, category = "VIT"},
+            tags = {condition = "None", role = "Passive", AoE = false, category = "ATK"},
             frequency = 1,
             level = player.abilities.berserkerKit.level,
             preview = img_ability_preview_berserkerKit,
@@ -336,6 +372,54 @@ function abilityFunctions.updateInternals()
             class = "B",
             nextLevelRequirement = levelingInfo[8].levelRequirements[player.abilities.berserkerKit.level + 1],
             levelRequirements = levelingInfo[8].levelRequirements
+        },
+        {
+            name = "Sniper Kit",
+            internalName = "sniperKit",
+            effect = {{1, 1, 1, 1}, "Decreases the tower's attack speed by ", {0.8, 0.4, 0.45}, levelingInfo[9].attackSpeedDecrease, {1, 1, 1, 1}, "% but increases its attack range by ", {0.8, 0.35, 0.55}, levelingInfo[9].rangeIncrease[player.abilities.sniperKit.level + 1], {1, 1, 1, 1}, "%."},
+            tags = {condition = "None", role = "Passive", AoE = false, category = "ATK"},
+            frequency = 1,
+            level = player.abilities.sniperKit.level,
+            preview = img_ability_preview_sniperKit,
+            equipped = player.abilities.sniperKit.equipped,
+            unlocked = player.abilities.sniperKit.unlocked,
+            menu = player.menu.abilities.sniperKit,
+            amount = player.abilities.sniperKit.amount,
+            class = "B",
+            nextLevelRequirement = levelingInfo[9].levelRequirements[player.abilities.sniperKit.level + 1],
+            levelRequirements = levelingInfo[9].levelRequirements
+        },
+        {
+            name = "Tank Kit",
+            internalName = "tankKit",
+            effect = {{1, 1, 1, 1}, "Exchange ", {0.44, 0.46, 1, 1}, levelingInfo[10].attackDamageDecrease, {1, 1, 1, 1}, "% of the tower's attack damage and ", {0, 0.95, 1}, levelingInfo[10].attackSpeedDecrease, {1, 1, 1, 1}, "% of attack speed for a ", {0.68, 0.35, 1, 1}, levelingInfo[10].healthStatsIncrease[player.abilities.tankKit.level + 1], {1, 1, 1, 1}, "% additional HP and regeneration, and a ", {0, 1, 0.63, 1}, levelingInfo[10].resistanceIncrease[player.abilities.tankKit.level + 1], {1, 1, 1, 1}, "% resistance bonus."},
+            tags = {condition = "None", role = "Passive", AoE = false, category = "VIT"},
+            frequency = 1,
+            level = player.abilities.tankKit.level,
+            preview = img_ability_preview_tankKit,
+            equipped = player.abilities.tankKit.equipped,
+            unlocked = player.abilities.tankKit.unlocked,
+            menu = player.menu.abilities.tankKit,
+            amount = player.abilities.tankKit.amount,
+            class = "B",
+            nextLevelRequirement = levelingInfo[10].levelRequirements[player.abilities.tankKit.level + 1],
+            levelRequirements = levelingInfo[10].levelRequirements
+        },
+        {
+            name = "Supercritical",
+            internalName = "supercritical",
+            effect = {{1, 1, 1, 1}, "Gives the tower a ", {1, 0.85, 0.58, 1}, levelingInfo[11].criticalChanceIncrease[player.abilities.supercritical.level + 1], {1, 1, 1, 1}, "% Critical Chance increase, x", {1, 0.71, 0.47}, levelingInfo[11].criticalFactorIncrease[player.abilities.supercritical.level + 1], {1, 1, 1, 1}, " Critical Factor increase, and ", {1, 0.29, 0.84, 1}, levelingInfo[11].supercriticalChance[player.abilities.supercritical.level + 1], {1, 1, 1, 1}, "% chance to deal additional x", {1, 0.2, 0.63, 1}, levelingInfo[11].supercriticalFactor[player.abilities.supercritical.level + 1], {1, 1, 1, 1}, " amount of critical damage on a Critical hit."},
+            tags = {condition = "None, Projectile Fired", role = "Active", AoE = false, category = "ATK"},
+            frequency = 1,
+            level = player.abilities.supercritical.level,
+            preview = img_ability_preview_supercritical,
+            equipped = player.abilities.supercritical.equipped,
+            unlocked = player.abilities.supercritical.unlocked,
+            menu = player.menu.abilities.supercritical,
+            amount = player.abilities.supercritical.amount,
+            class = "A",
+            nextLevelRequirement = levelingInfo[11].levelRequirements[player.abilities.supercritical.level + 1],
+            levelRequirements = levelingInfo[11].levelRequirements
         }
     }
 
@@ -343,11 +427,12 @@ function abilityFunctions.updateInternals()
     abilityClassProbabilities = {D = 60, C = 25, B = 10, A = 5}
 
     equipSlotRequirements = {
+        {difficulty = 1, wave = 50},
         {difficulty = 1, wave = 100},
         {difficulty = 2, wave = 100},
         {difficulty = 2, wave = 200},
         {difficulty = 3, wave = 50},
-        {difficulty = 4, wave = 50}
+        {difficulty = 4, wave = 50},
     }
 end
 
