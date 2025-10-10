@@ -17,20 +17,20 @@ function towers.reload()
 
     --- Eclipse tower display & processing.
     --- @param i boolean The "mode" of the tower, true for processing, false for rendering.
-    function towers.eclipse(i, dt)
+    function towers.eclipse(i, logicStep)
         local maxFrames = 120
         local changeRate = 24
         local startDelay = 0
         if player.tower.currentHealth > 0 then
             if startDelayTimer < startDelay then
                 if i then
-                    startDelayTimer = startDelayTimer + dt
+                    startDelayTimer = startDelayTimer + logicStep
                 else
                     love.graphics.draw(img_tower_eclipse_sun, 928, 508)
                 end
             else
                 if i then
-                    frameExact = frameExact + dt * changeRate
+                    frameExact = frameExact + logicStep * changeRate
                     frame = math.floor(frameExact)
                 else
                     love.graphics.draw(img_tower_eclipse_sun, 928, 508)
@@ -44,7 +44,7 @@ function towers.reload()
 
     --- Eclipse2 tower display & processing.
     --- @param i boolean The "mode" of the tower, true for processing, false for rendering.
-    function towers.eclipse2(i, dt)
+    function towers.eclipse2(i, logicStep)
         love.graphics.setColor(1, 1, 1, 1)
         local maxFrames = 120
         local changeRate = 16
@@ -52,7 +52,7 @@ function towers.reload()
         if player.tower.currentHealth > 0 then
             if startDelayTimer < startDelay then
                 if i then
-                    startDelayTimer = startDelayTimer + dt
+                    startDelayTimer = startDelayTimer + logicStep
                 else
                     if not shieldActive then
                         love.graphics.draw(img_tower_eclipse_sun2, 928, 508)
@@ -62,7 +62,7 @@ function towers.reload()
                 end
             else
                 if i then
-                    frameExact = frameExact + dt * changeRate
+                    frameExact = frameExact + logicStep * changeRate
                     frame = math.floor(frameExact)
                 else
                     if not shieldActive then
@@ -82,20 +82,20 @@ function towers.reload()
 
     --- Nova tower display & processing.
     --- @param i boolean The "mode" of the tower, true for processing, false for rendering.
-    function towers.nova(i, dt)
+    function towers.nova(i, logicStep)
         local maxFrames = 2880
         local changeRate = 120
         local startDelay = 0
         if player.tower.currentHealth > 0 then
             if startDelayTimer < startDelay then
                 if i then
-                    startDelayTimer = startDelayTimer + dt
+                    startDelayTimer = startDelayTimer + logicStep
                 else
                     love.graphics.draw(img_tower_nova_static, 928, 508)
                 end
             else
                 if i then
-                    frameExact = frameExact + dt * changeRate
+                    frameExact = frameExact + logicStep * changeRate
                     frame = math.floor(frameExact)
                 else
                     love.graphics.setColor(1, 1, 1, 1)
@@ -112,20 +112,20 @@ function towers.reload()
 
     --- Aurora tower display & processing.
     --- @param i boolean The "mode" of the tower, true for processing, false for rendering.
-    function towers.aurora(i, dt)
+    function towers.aurora(i, logicStep)
         local maxFrames = 80
         local changeRate = 10
         local startDelay = 0
         if player.tower.currentHealth > 0 then
             if startDelayTimer < startDelay then
                 if i then
-                    startDelayTimer = startDelayTimer + dt
+                    startDelayTimer = startDelayTimer + logicStep
                 else
                     love.graphics.draw(img_tower_aurora_static, 928, 508)
                 end
             else
                 if i then
-                    frameExact = frameExact + dt * changeRate
+                    frameExact = frameExact + logicStep * changeRate
                     frame = math.floor(frameExact)
                 end
                 love.graphics.setColor(1, 1, 1, 1)

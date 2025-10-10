@@ -129,48 +129,48 @@ function renderParticles()
     end
 end
 
-function updateParticles(dt)
+function updateParticles(logicStep)
     --[[ Move particles from the center of their spawn when enemy killed/tower collapsed ]]--
     for i,v in ipairs(killParticles) do
-        v.timer_fade = v.timer_fade + dt * gameplay.gameSpeed
-        v.x = v.x + math.cos(v.angle) * v.speed * dt * gameplay.gameSpeed
-        v.y = v.y + math.sin(v.angle) * v.speed * dt * gameplay.gameSpeed
+        v.timer_fade = v.timer_fade + logicStep * gameplay.gameSpeed
+        v.x = v.x + math.cos(v.angle) * v.speed * logicStep * gameplay.gameSpeed
+        v.y = v.y + math.sin(v.angle) * v.speed * logicStep * gameplay.gameSpeed
         if v.timer_fade >= v.fadeTime then
             table.remove(killParticles, i)
         end
     end
     for i,v in ipairs(collapseParticles) do
-        v.timer_fade = v.timer_fade + dt * gameplay.gameSpeed
-        v.x = v.x + math.cos(v.angle) * v.speed * dt * gameplay.gameSpeed
-        v.y = v.y + math.sin(v.angle) * v.speed * dt * gameplay.gameSpeed
+        v.timer_fade = v.timer_fade + logicStep * gameplay.gameSpeed
+        v.x = v.x + math.cos(v.angle) * v.speed * logicStep * gameplay.gameSpeed
+        v.y = v.y + math.sin(v.angle) * v.speed * logicStep * gameplay.gameSpeed
         if v.timer_fade >= v.fadeTime then
             table.remove(collapseParticles, i)
         end
     end
     for i,v in ipairs(hitTextParticles) do
-        v.timer_fade = v.timer_fade + dt * gameplay.gameSpeed
+        v.timer_fade = v.timer_fade + logicStep * gameplay.gameSpeed
         if v.timer_fade >= v.fadeTime then
             table.remove(hitTextParticles, i)
         end
     end
     for i,v in ipairs(meteorParticles) do
-        v.timer_fade = v.timer_fade + dt * gameplay.gameSpeed
+        v.timer_fade = v.timer_fade + logicStep * gameplay.gameSpeed
         if v.timer_fade >= v.fadeTime then
             table.remove(meteorParticles, i)
         end
     end
     for i,v in ipairs(crystalExplosionParticles) do
-        v.timer_fade = v.timer_fade + dt * gameplay.gameSpeed
-        v.x = v.x + math.cos(v.angle) * v.speed * dt * gameplay.gameSpeed
-        v.y = v.y + math.sin(v.angle) * v.speed * dt * gameplay.gameSpeed
+        v.timer_fade = v.timer_fade + logicStep * gameplay.gameSpeed
+        v.x = v.x + math.cos(v.angle) * v.speed * logicStep * gameplay.gameSpeed
+        v.y = v.y + math.sin(v.angle) * v.speed * logicStep * gameplay.gameSpeed
         if v.timer_fade >= v.fadeTime then
             table.remove(crystalExplosionParticles, i)
         end
     end
     for i,v in ipairs(burnParticles) do
-        v.timer_fade = v.timer_fade + dt * gameplay.gameSpeed
-        v.x = v.x + math.cos(v.angle) * v.speed * dt * gameplay.gameSpeed
-        v.y = v.y + math.sin(v.angle) * v.speed * dt * gameplay.gameSpeed
+        v.timer_fade = v.timer_fade + logicStep * gameplay.gameSpeed
+        v.x = v.x + math.cos(v.angle) * v.speed * logicStep * gameplay.gameSpeed
+        v.y = v.y + math.sin(v.angle) * v.speed * logicStep * gameplay.gameSpeed
         if v.timer_fade >= v.fadeTime then
             table.remove(burnParticles, i)
         end

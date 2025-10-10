@@ -394,7 +394,7 @@ function loadGame()
 
     if not player.canClaim.ability and player.misc.abilityAssembling then
         if player.timers.abilityAssembly < player.cooldowns.abilityAssembly_current then
-            player.timers.abilityAssembly = player.timers.abilityAssembly + dt * gameplay.gameSpeed
+            player.timers.abilityAssembly = player.timers.abilityAssembly + logicStep * gameplay.gameSpeed
         else
             player.timers.abilityAssembly = player.cooldowns.abilityAssembly_current
             player.canClaim.ability = true
@@ -447,6 +447,13 @@ function loadGame()
             menus = {0.16, 0, 0.19, 1},
             background = love.graphics.newImage("assets/background_aurora.png")
         }
+    }
+
+    player.debug = {
+        updateTimer = 0,
+        updateInterval = 1,
+        memUsage = 0,
+        UPS = 0
     }
     --saveGame()
 end

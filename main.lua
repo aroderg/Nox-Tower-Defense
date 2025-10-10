@@ -183,6 +183,8 @@ function love.load()
     end
     --What range melee enemies can attack from at maximum
     TOWER_SIZE = 42
+    --Maximum delta time, game slows down if FPS is lower than 1/MAX_STEP
+    MAX_STEP = 1/50
     love.graphics.setLineStyle("rough")
     settings_particleMultiplierNames = {"None", "Minimal", "Reduced", "Normal", "Rich", "Fancy", "Fabulous", "Stormful"}
     settings_notationNames = {"kmbt", "e", "alphabet"}
@@ -1376,21 +1378,29 @@ function love.draw()
     end
     love.graphics.setColor(1, 1, 1, 1)
     love.graphics.setFont(font_Afacad16)
-    love.graphics.printf("v" .. gameVersionSemantic .. " - " .. love.timer.getFPS() .. "fps", 1743, 0, 120, "right")
+    love.graphics.printf("v" .. gameVersionSemantic .. " - " .. love.timer.getFPS() .. "fps, " .. player.debug.memUsage .. "KB, " .. player.debug.UPS .. "ups", 1643, 0, 220, "right")
 end
 
 function love.update(dt)
+    logicStep = math.min(dt, MAX_STEP)
+    if player.debug.updateTimer < player.debug.updateInterval then
+        player.debug.updateTimer = player.debug.updateTimer + logicStep
+    else
+        player.debug.updateTimer = 0
+        player.debug.memUsage = math.floor(collectgarbage("count"))
+        player.debug.UPS = math.floor(1 / logicStep)
+    end
     if player.location == "round" then
         --[[ Update Exploders' animation ]]--
-        exploderAnimationFrame = (exploderAnimationFrame + 14 * dt) % 11
+        exploderAnimationFrame = (exploderAnimationFrame + 14 * logicStep) % 11
         img_enemy_exploder = exploderAnimation[math.floor(exploderAnimationFrame + 1)]
         --[[ Automatically shoot the closest enemy in range ]]--
         if player.tower.currentHealth > 0 then
             if not player.menu.paused then
-                towers.aurora(true, dt)
+                towers.aurora(true, logicStep)
             end
             if timers.projectile < 1 / player.tower.attackSpeed then
-                timers.projectile = timers.projectile + dt * gameplay.gameSpeed
+                timers.projectile = timers.projectile + logicStep * gameplay.gameSpeed
             else
                 local targetAmount = 1
                 local clusterFireProbability = player.upgrades.unlocks.clusterFire and love.math.random() * 100 or 101
@@ -1445,7 +1455,7 @@ function love.update(dt)
             end
             --[[ Spawn an enemy once the enemy spawn timer goes off ]]--
             if timers.enemy < 1 / enemyAttributes.spawnRate then
-                timers.enemy = timers.enemy + dt * gameplay.gameSpeed
+                timers.enemy = timers.enemy + logicStep * gameplay.gameSpeed
             else
                 timers.enemy = 0
                 if enemyAttributes.pendingEnemies > 0 then
@@ -1457,8 +1467,8 @@ function love.update(dt)
         end
         --[[ Move projectiles depending on their angle ]]--
         for i,v in ipairs(projectilesOnField) do
-            v.x = v.x + math.cos(v.angle) * v.speed * dt * gameplay.gameSpeed
-            v.y = v.y + math.sin(v.angle) * v.speed * dt * gameplay.gameSpeed
+            v.x = v.x + math.cos(v.angle) * v.speed * logicStep * gameplay.gameSpeed
+            v.y = v.y + math.sin(v.angle) * v.speed * logicStep * gameplay.gameSpeed
             if math.dist(960, 540, v.x + 3, v.y + 3) > player.tower.range and not v.scatterFire then
                 table.remove(projectilesOnField, i)
             elseif v.x + 3 < -10 and v.x + 3 > 1930 and v.y + 3 < -10 and v.y + 3 > 1090 and v.scatterFire then
@@ -1522,7 +1532,7 @@ function love.update(dt)
                 end
             end
             if v.timer_untilAttack < (1 / v.attackSpeed) / rainforestMultiplier then
-                v.timer_untilAttack = v.timer_untilAttack + dt * gameplay.gameSpeed
+                v.timer_untilAttack = v.timer_untilAttack + logicStep * gameplay.gameSpeed
             else
                 --[[ If an enemy is close enough, start attacking the tower ]]--
                 local damageReduction = not v.resistanceIgnore and 1 - player.tower.resistance / 100 or 1
@@ -1562,20 +1572,20 @@ function love.update(dt)
                 local hyperloopMultiplier = math.dist(v.x + enemyOffsets[v.type], v.y + enemyOffsets[v.type], 960, 540) > player.tower.range and 1 + player.modifiers.hyperloop.value / 100 or 1
                 local rainforestMultiplier = (rainforestActive and math.dist(v.x + enemyOffsets[v.type], v.y + enemyOffsets[v.type], 960, 540) <= player.tower.range) and 1 - levelingInfo[4].density[player.abilities.rainforest.level + 1] / 100 or 1
                 v.angle = math.atan2(540 - v.y - 2 - enemyOffsets[v.type], 960 - v.x - 2 - enemyOffsets[v.type])
-                v.x = v.x + math.cos(v.angle) * v.speed * dt * gameplay.gameSpeed * hyperloopMultiplier * rainforestMultiplier
-                v.y = v.y + math.sin(v.angle) * v.speed * dt * gameplay.gameSpeed * hyperloopMultiplier * rainforestMultiplier
+                v.x = v.x + math.cos(v.angle) * v.speed * logicStep * gameplay.gameSpeed * hyperloopMultiplier * rainforestMultiplier
+                v.y = v.y + math.sin(v.angle) * v.speed * logicStep * gameplay.gameSpeed * hyperloopMultiplier * rainforestMultiplier
             end
             --[[ Regenerate 1% of Centurion health per second ]]
             if v.type == "centurion" and player.tower.currentHealth > 0 then
                 if v.currentHP < v.maxHP then
-                    v.currentHP = math.min(v.currentHP + v.maxHP * (0.01 * dt * gameplay.gameSpeed), v.maxHP)
+                    v.currentHP = math.min(v.currentHP + v.maxHP * (0.01 * logicStep * gameplay.gameSpeed), v.maxHP)
                     centurionCurrentHP = v.currentHP
                 end
             end
             if player.abilities.magmaTouch.unlocked and player.abilities.magmaTouch.equipped then
                 if v.burningTime > 0 then
-                    v.burningTime = v.burningTime - dt * gameplay.gameSpeed
-                    v.burningUntilDamage = v.burningUntilDamage - dt * gameplay.gameSpeed
+                    v.burningTime = v.burningTime - logicStep * gameplay.gameSpeed
+                    v.burningUntilDamage = v.burningUntilDamage - logicStep * gameplay.gameSpeed
                 end
                 if v.burningUntilDamage < 0 then
                     damageEnemy(i, player.tower.attackDamage * (levelingInfo[5].damage[player.abilities.magmaTouch.level + 1] / 100), false, false, "magmaPool")
@@ -1584,7 +1594,7 @@ function love.update(dt)
             end
         end
         for i,v in ipairs(exploderAoEs) do
-            v.timer = v.timer + dt * gameplay.gameSpeed
+            v.timer = v.timer + logicStep * gameplay.gameSpeed
             if v.timer >= exploderExplodeTime then
                 for j,w in ipairs(enemiesOnField) do
                     table.remove(w.hitByExploderIDs, v.id)
@@ -1620,11 +1630,11 @@ function love.update(dt)
                 {960 + (player.tower.range + 40 + love.math.random(-14, 14)) * math.cos(v.angle - 0.024 * math.pi), 540 + (player.tower.range + 40 + love.math.random(-14, 14)) * math.sin(v.angle - 0.024 * math.pi)},
                 {960 + (player.tower.range + 40 + love.math.random(-14, 14)) * math.cos(v.angle - 0.018 * math.pi), 540 + (player.tower.range + 40 + love.math.random(-14, 14)) * math.sin(v.angle - 0.018 * math.pi)}
             }
-            v.angle = v.angle + (player.tower.meteorRPM * (2 * math.pi)) / 60 * dt * gameplay.gameSpeed
+            v.angle = v.angle + (player.tower.meteorRPM * (2 * math.pi)) / 60 * logicStep * gameplay.gameSpeed
             v.x = 960 + (player.tower.range + 40) * math.cos(v.angle)
             v.y = 540 + (player.tower.range + 40) * math.sin(v.angle)
             if v.timer_particle < v.particleFreq then
-                v.timer_particle = v.timer_particle + dt * gameplay.gameSpeed
+                v.timer_particle = v.timer_particle + logicStep * gameplay.gameSpeed
             else
                 for i=1,love.math.random(1, 2) * settings_particleMultipliers[player.settings.particleMultiplier] do
                     createMeteorParticle(love.math.random(potentialParticlePos[1][1], potentialParticlePos[2][1]), love.math.random(potentialParticlePos[1][2], potentialParticlePos[2][2]))
@@ -1647,16 +1657,16 @@ function love.update(dt)
                 end
             end
         end
-        abilityObjects.spikedCrystal.process(dt)
-        abilityObjects.magmaPool.process(dt)
-        abilityObjects.lightningOrb.process(dt)
-        abilityObjects.lightningOrb_laser.process(dt)
+        abilityObjects.spikedCrystal.process(logicStep)
+        abilityObjects.magmaPool.process(logicStep)
+        abilityObjects.lightningOrb.process(logicStep)
+        abilityObjects.lightningOrb_laser.process(logicStep)
 
         --[[ If no enemies on field are present and the wave enemy cap is reached, wait a few seconds before advancing to the next wave ]]--
         if player.tower.currentHealth > 0 then
             if #enemiesOnField == 0 and enemyAttributes.pendingEnemies <= 0 then
                 if timers.nextWave < gameplay.waveCooldown then
-                    timers.nextWave = timers.nextWave + dt * gameplay.gameSpeed
+                    timers.nextWave = timers.nextWave + logicStep * gameplay.gameSpeed
                 else
                     wavesSkipped = 0
                     timers.nextWave = 0
@@ -1711,12 +1721,12 @@ function love.update(dt)
 
         --[[ Regenerate health every frame, cap at max health if regeneration overflows ]]--
         if player.tower.currentHealth < player.tower.health and player.tower.currentHealth > 0 then
-            player.tower.currentHealth = math.min(player.tower.currentHealth + player.tower.regeneration * dt * gameplay.gameSpeed, player.tower.health)
+            player.tower.currentHealth = math.min(player.tower.currentHealth + player.tower.regeneration * logicStep * gameplay.gameSpeed, player.tower.health)
         end
 
         if player.settings.waveSkipMessages and waveSkipMessage then
             if timers.waveSkip < 3 then
-                timers.waveSkip = timers.waveSkip + dt
+                timers.waveSkip = timers.waveSkip + logicStep
             else
                 timers.waveSkip = 0
                 waveSkipMessage = false
@@ -1727,14 +1737,14 @@ function love.update(dt)
             --[[ Count time until Shield activation, activate Shield for a specified time when cooldown ends (only if Shield upgrades are unlocked) ]]--
             if not shieldActive then
                 if timers.shieldActivation < player.tower.shieldCooldown then
-                    timers.shieldActivation = timers.shieldActivation + dt * gameplay.gameSpeed
+                    timers.shieldActivation = timers.shieldActivation + logicStep * gameplay.gameSpeed
                 else
                     timers.shieldActivation = 0
                     shieldActive = true
                 end
             elseif shieldActive then
                 if timers.shieldActive < player.tower.shieldDuration then
-                    timers.shieldActive = timers.shieldActive + dt * gameplay.gameSpeed
+                    timers.shieldActive = timers.shieldActive + logicStep * gameplay.gameSpeed
                 else
                     timers.shieldActive = 0
                     shieldActive = false
@@ -1743,10 +1753,10 @@ function love.update(dt)
         end
 
         checkIfTowerCollapsed()
-        updateParticles(dt)
+        updateParticles(logicStep)
 
-        player.stats.battle.gameTime = player.stats.battle.gameTime + dt * gameplay.gameSpeed
-        player.stats.battle.realTime = player.stats.battle.realTime + dt * (gameplay.gameSpeed ~= 0 and 1 or 0)
+        player.stats.battle.gameTime = player.stats.battle.gameTime + logicStep * gameplay.gameSpeed
+        player.stats.battle.realTime = player.stats.battle.realTime + logicStep * (gameplay.gameSpeed ~= 0 and 1 or 0)
 
         if player.abilities.rainforest.unlocked and player.abilities.rainforest.equipped then
             if gameplay.wave >= 20 and (gameplay.wave % 10 <= 4) then
@@ -1762,7 +1772,7 @@ function love.update(dt)
 
         if player.abilities.magmaTouch.unlocked and player.abilities.magmaTouch.equipped then
             if timers.magmaPool < levelingInfo[5].frequency[player.abilities.magmaTouch.level + 1] then
-                timers.magmaPool = timers.magmaPool + dt * gameplay.gameSpeed
+                timers.magmaPool = timers.magmaPool + logicStep * gameplay.gameSpeed
             else
                 if #magmaPools < 20 then
                     timers.magmaPool = 0
@@ -1773,7 +1783,7 @@ function love.update(dt)
 
         if player.abilities.lightningOrb.unlocked and player.abilities.lightningOrb.equipped then
             if timers.lightningOrb < levelingInfo[6].frequency[player.abilities.lightningOrb.level + 1] then
-                timers.lightningOrb = timers.lightningOrb + dt * gameplay.gameSpeed
+                timers.lightningOrb = timers.lightningOrb + logicStep * gameplay.gameSpeed
             else
                 timers.lightningOrb = 0
                 abilityObjects.lightningOrb.spawn()
@@ -1783,7 +1793,7 @@ function love.update(dt)
         end
 
         if player.menu.battleStats then
-            statsMenus.battle.process(dt)
+            statsMenus.battle.process(logicStep)
         end
 
     elseif player.location == "hub" then
@@ -1794,7 +1804,7 @@ function love.update(dt)
             end
         end
         if player.menu.saveStats then
-            statsMenus.savefile.process(dt)
+            statsMenus.savefile.process(logicStep)
         end
     end
     if love.mouse.isDown(1) then
@@ -1808,7 +1818,7 @@ function love.update(dt)
     --[[ Set a timer for alloying Electrum, add 1 Electrum when the timer runs out ]]--
     if not player.canClaim.electrum then
         if player.timers.electrum < player.cooldowns.electrum then
-            player.timers.electrum = player.timers.electrum + dt
+            player.timers.electrum = player.timers.electrum + logicStep
         else
             player.timers.electrum = 0
             player.canClaim.electrum = true
@@ -1817,7 +1827,7 @@ function love.update(dt)
     end
     if not player.canClaim.tokens then
         if player.timers.tokens < player.cooldowns.tokens then
-            player.timers.tokens = player.timers.tokens + dt
+            player.timers.tokens = player.timers.tokens + logicStep
         else
             player.timers.tokens = 0
             player.canClaim.tokens = true
@@ -1825,7 +1835,7 @@ function love.update(dt)
     end
     if not player.canClaim.ability and player.misc.abilityAssembling then
         if player.timers.abilityAssembly < player.cooldowns.abilityAssembly_current then
-            player.timers.abilityAssembly = player.timers.abilityAssembly + dt
+            player.timers.abilityAssembly = player.timers.abilityAssembly + logicStep
         else
             player.timers.abilityAssembly = player.cooldowns.abilityAssembly_current
             player.canClaim.ability = true
@@ -1833,7 +1843,7 @@ function love.update(dt)
         end
     end
     local oldIdleTime = math.floor(player.idleTime / 60)
-    player.idleTime = math.min(player.idleTime + dt, 21600)
+    player.idleTime = math.min(player.idleTime + logicStep, 21600)
     if math.floor(player.idleTime / 60) > oldIdleTime then
         player.storedGains.silver = player.storedGains.silver + player.idleGains.silver
         player.storedGains.gold = player.storedGains.gold + player.idleGains.gold

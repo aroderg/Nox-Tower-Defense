@@ -52,10 +52,10 @@ function abilityObjects.spikedCrystal.draw()
 end
 
 --- Process all Spiked Crystals and their collisions with any enemy.
-function abilityObjects.spikedCrystal.process(dt)
+function abilityObjects.spikedCrystal.process(logicStep)
     if player.abilities.spikedCrystals.unlocked and player.abilities.spikedCrystals.equipped then
         if timers.crystal < levelingInfo[1].frequency[player.abilities.spikedCrystals.level + 1] then
-            timers.crystal = timers.crystal + dt * gameplay.gameSpeed
+            timers.crystal = timers.crystal + logicStep * gameplay.gameSpeed
         else
             timers.crystal = 0
             for i=1,math.max(levelingInfo[1].quantity[player.abilities.spikedCrystals.level + 1] - #spikedCrystals, 0) do
@@ -72,12 +72,12 @@ function abilityObjects.spikedCrystal.process(dt)
             centurion = 60,
             exploder = 24,
         }
-        v.timer_lifespan = v.timer_lifespan + dt * gameplay.gameSpeed
+        v.timer_lifespan = v.timer_lifespan + logicStep * gameplay.gameSpeed
         if v.state == "exploding" then
             audio_crystal_explosion:setVolume(1 * player.settings.volume^2)
             audio_crystal_explosion:play()
             if v.timer_explosion < v.timer_explosionDuration then
-                v.timer_explosion = v.timer_explosion + dt * gameplay.gameSpeed
+                v.timer_explosion = v.timer_explosion + logicStep * gameplay.gameSpeed
             else
                 for i=1,8*settings_particleMultipliers[player.settings.particleMultiplier] do
                     createCrystalExplosionParticle(v.x + 11, v.y + 11)
@@ -125,7 +125,7 @@ function abilityObjects.magmaPool.draw()
 end
 
 --- Process all Magma Pools and their collisions with enemies, apply the burning effects to the enemy it collides with.
-function abilityObjects.magmaPool.process(dt)
+function abilityObjects.magmaPool.process(logicStep)
     for i,v in ipairs(magmaPools) do
         local size = {
             basic = 20,
@@ -176,10 +176,10 @@ function abilityObjects.lightningOrb.draw()
 end
 
 --- Process all Lightning Orbs and move them depending on their angle.
-function abilityObjects.lightningOrb.process(dt)
+function abilityObjects.lightningOrb.process(logicStep)
     for i,v in ipairs(lightningOrbs) do
-        v.x = v.x + math.cos(v.angle) * v.speed * dt * gameplay.gameSpeed
-        v.y = v.y + math.sin(v.angle) * v.speed * dt * gameplay.gameSpeed
+        v.x = v.x + math.cos(v.angle) * v.speed * logicStep * gameplay.gameSpeed
+        v.y = v.y + math.sin(v.angle) * v.speed * logicStep * gameplay.gameSpeed
         local farthestEnemy = findClosestEnemyInRange(v.x, v.y, v.range * 20)[#findClosestEnemyInRange(v.x, v.y, v.range * 20)]
         if farthestEnemy and #lightningOrb_lasers < #lightningOrbs then
             abilityObjects.lightningOrb_laser.spawn(v.x, v.y, math.dist(v.x, v.y, farthestEnemy.x + enemyOffsets[farthestEnemy.type], farthestEnemy.y + enemyOffsets[farthestEnemy.type]), math.atan2(farthestEnemy.y + enemyOffsets[farthestEnemy.type] / 2 - v.y, farthestEnemy.x + enemyOffsets[farthestEnemy.type] / 2 - v.x))
@@ -217,7 +217,7 @@ function abilityObjects.lightningOrb_laser.draw()
 end
 
 --- Process all Lightning Orb Lasers and damage to the farthest enemy in range.
-function abilityObjects.lightningOrb_laser.process(dt)
+function abilityObjects.lightningOrb_laser.process(logicStep)
     local damagedEnemyIndex = 1
     for i,v in ipairs(lightningOrbs) do
         local farthestEnemy = findClosestEnemyInRange(v.x, v.y, v.range * 20)[#findClosestEnemyInRange(v.x, v.y, v.range * 20)]
@@ -229,7 +229,7 @@ function abilityObjects.lightningOrb_laser.process(dt)
                 end
             end
             if player.tower.currentHealth > 0 and gameplay.gameSpeed > 0 then
-                damageEnemy(damagedEnemyIndex, (levelingInfo[6].damage[player.abilities.lightningOrb.level + 1] / 100) * player.tower.attackDamage * dt * gameplay.gameSpeed, false, false, "lightningOrb")--damageEnemy(farthestEnemy, levelingInfo[6].damage[player.abilities.lightningOrb.level + 1] * 100 * dt * player.tower.attackDamage, false)
+                damageEnemy(damagedEnemyIndex, (levelingInfo[6].damage[player.abilities.lightningOrb.level + 1] / 100) * player.tower.attackDamage * logicStep * gameplay.gameSpeed, false, false, "lightningOrb")--damageEnemy(farthestEnemy, levelingInfo[6].damage[player.abilities.lightningOrb.level + 1] * 100 * logicStep * player.tower.attackDamage, false)
             end
         end
     end

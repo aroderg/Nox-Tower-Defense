@@ -246,22 +246,22 @@ function statsMenus.battle.draw()
     love.graphics.printf("Back", 910, 782, 100, "center")
 end
 
-function statsMenus.savefile.process(dt)
-    statTextScrollState = math.max(math.min(statTextScrollState + savefileVel.velx * dt, 0), 565-25*33)
-    statTextScrollState = math.max(math.min(statTextScrollState + savefileVel.vely * dt, 0), 565-25*33)
+function statsMenus.savefile.process(logicStep)
+    statTextScrollState = math.max(math.min(statTextScrollState + savefileVel.velx * logicStep, 0), 565-25*33)
+    statTextScrollState = math.max(math.min(statTextScrollState + savefileVel.vely * logicStep, 0), 565-25*33)
 
     -- Gradually reduce the velocity to create smooth scrolling effect.
-    savefileVel.velx = savefileVel.velx - savefileVel.velx * math.min(dt * 7, 1)
-    savefileVel.vely = savefileVel.vely - savefileVel.vely * math.min(dt * 7, 1)
+    savefileVel.velx = savefileVel.velx - savefileVel.velx * math.min(logicStep * 7, 1)
+    savefileVel.vely = savefileVel.vely - savefileVel.vely * math.min(logicStep * 7, 1)
 end
 
-function statsMenus.battle.process(dt)
-    statTextScrollState = math.max(math.min(statTextScrollState + battleVel.velx * dt, 0), 565-25*36)
-    statTextScrollState = math.max(math.min(statTextScrollState + battleVel.vely * dt, 0), 565-25*36)
+function statsMenus.battle.process(logicStep)
+    statTextScrollState = math.max(math.min(statTextScrollState + battleVel.velx * logicStep, 0), 565-25*36)
+    statTextScrollState = math.max(math.min(statTextScrollState + battleVel.vely * logicStep, 0), 565-25*36)
 
     -- Gradually reduce the velocity to create smooth scrolling effect.
-    battleVel.velx = battleVel.velx - battleVel.velx * math.min(dt * 7, 1)
-    battleVel.vely = battleVel.vely - battleVel.vely * math.min(dt * 7, 1)
+    battleVel.velx = battleVel.velx - battleVel.velx * math.min(logicStep * 7, 1)
+    battleVel.vely = battleVel.vely - battleVel.vely * math.min(logicStep * 7, 1)
 end
 
 function statsMenus.resetScroll()
