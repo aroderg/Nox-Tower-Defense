@@ -1020,7 +1020,7 @@ function updateEnemyStats(difficulty, wave)
         --[[ Set stats for Level 0 enemies ]]--
         enemyAttributes.spawnRate = 0.5 + (math.floor(0.3 * math.sqrt(0.1 * wave) * 10) / 10)
         pendingEnemies = 5 + math.floor(math.sqrt(6 * wave))
-        enemyAttributes.health = (1.95 + ((1.25 * wave)^2.5 / 20)) * (1.2^(math.floor(wave / 100)))
+        enemyAttributes.health = (1.95 + ((1.25 * wave)^2.5 / 20) - 0.037) * (1.2^(math.floor(wave / 100)))
         enemyAttributes.attackDamage = (0.875 + (wave^2.25 / 40) + 0.1 * wave^2) * (1.1^math.floor(wave / 100))
         enemyAttributes.speed = 60
         tankSpawnChance = math.min(math.floor(math.log(wave^2, 10) * 100) / 100, 4)
@@ -1384,11 +1384,11 @@ end
 function love.update(dt)
     logicStep = math.min(dt, MAX_STEP)
     if player.debug.updateTimer < player.debug.updateInterval then
-        player.debug.updateTimer = player.debug.updateTimer + logicStep
+        player.debug.updateTimer = player.debug.updateTimer + dt
     else
         player.debug.updateTimer = 0
         player.debug.memUsage = math.floor(collectgarbage("count"))
-        player.debug.UPS = math.floor(1 / logicStep)
+        player.debug.UPS = math.floor(1 / dt)
     end
     if player.location == "round" then
         --[[ Update Exploders' animation ]]--
@@ -1466,7 +1466,8 @@ function love.update(dt)
             findClosestEnemyInRange(960, 540, player.tower.range)
         end
         --[[ Move projectiles depending on their angle ]]--
-        for i,v in ipairs(projectilesOnField) do
+        for i=#projectilesOnField,1,-1 do
+            local v = projectilesOnField[i]
             v.x = v.x + math.cos(v.angle) * v.speed * logicStep * gameplay.gameSpeed
             v.y = v.y + math.sin(v.angle) * v.speed * logicStep * gameplay.gameSpeed
             if math.dist(960, 540, v.x + 3, v.y + 3) > player.tower.range and not v.scatterFire then
@@ -1474,7 +1475,8 @@ function love.update(dt)
             elseif v.x + 3 < -10 and v.x + 3 > 1930 and v.y + 3 < -10 and v.y + 3 > 1090 and v.scatterFire then
                 table.remove(projectilesOnField, i)
             end
-            for j,w in ipairs(enemiesOnField) do
+            for j=#enemiesOnField,1,-1 do
+                local w = enemiesOnField[j]
                 local size = {
                     basic = 20,
                     tank = 32,
@@ -1516,7 +1518,8 @@ function love.update(dt)
             end
         end
 
-        for i,v in ipairs(enemiesOnField) do
+        for i=#enemiesOnField,1,-1 do
+            local v = enemiesOnField[i]
             local stopDistance = {
                 basic = TOWER_SIZE + 10,
                 tank = TOWER_SIZE + 16,
@@ -1593,7 +1596,8 @@ function love.update(dt)
                 end
             end
         end
-        for i,v in ipairs(exploderAoEs) do
+        for i=#exploderAoEs,1,-1 do
+            local v = exploderAoEs[i]
             v.timer = v.timer + logicStep * gameplay.gameSpeed
             if v.timer >= exploderExplodeTime then
                 for j,w in ipairs(enemiesOnField) do

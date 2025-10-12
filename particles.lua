@@ -131,7 +131,8 @@ end
 
 function updateParticles(logicStep)
     --[[ Move particles from the center of their spawn when enemy killed/tower collapsed ]]--
-    for i,v in ipairs(killParticles) do
+    for i=#killParticles,1,-1 do
+        local v = killParticles[i]
         v.timer_fade = v.timer_fade + logicStep * gameplay.gameSpeed
         v.x = v.x + math.cos(v.angle) * v.speed * logicStep * gameplay.gameSpeed
         v.y = v.y + math.sin(v.angle) * v.speed * logicStep * gameplay.gameSpeed
@@ -139,7 +140,8 @@ function updateParticles(logicStep)
             table.remove(killParticles, i)
         end
     end
-    for i,v in ipairs(collapseParticles) do
+    for i=#collapseParticles,1,-1 do
+        local v = collapseParticles[i]
         v.timer_fade = v.timer_fade + logicStep * gameplay.gameSpeed
         v.x = v.x + math.cos(v.angle) * v.speed * logicStep * gameplay.gameSpeed
         v.y = v.y + math.sin(v.angle) * v.speed * logicStep * gameplay.gameSpeed
@@ -147,19 +149,22 @@ function updateParticles(logicStep)
             table.remove(collapseParticles, i)
         end
     end
-    for i,v in ipairs(hitTextParticles) do
+    for i=#hitTextParticles,1,-1 do
+        local v = hitTextParticles[i]
         v.timer_fade = v.timer_fade + logicStep * gameplay.gameSpeed
         if v.timer_fade >= v.fadeTime then
             table.remove(hitTextParticles, i)
         end
     end
-    for i,v in ipairs(meteorParticles) do
+    for i=#meteorParticles,1,-1 do
+        local v = meteorParticles[i]
         v.timer_fade = v.timer_fade + logicStep * gameplay.gameSpeed
         if v.timer_fade >= v.fadeTime then
             table.remove(meteorParticles, i)
         end
     end
-    for i,v in ipairs(crystalExplosionParticles) do
+    for i=#crystalExplosionParticles,1,-1 do
+        local v = crystalExplosionParticles[i]
         v.timer_fade = v.timer_fade + logicStep * gameplay.gameSpeed
         v.x = v.x + math.cos(v.angle) * v.speed * logicStep * gameplay.gameSpeed
         v.y = v.y + math.sin(v.angle) * v.speed * logicStep * gameplay.gameSpeed
@@ -167,7 +172,8 @@ function updateParticles(logicStep)
             table.remove(crystalExplosionParticles, i)
         end
     end
-    for i,v in ipairs(burnParticles) do
+    for i=#burnParticles,1,-1 do
+        local v = burnParticles[i]
         v.timer_fade = v.timer_fade + logicStep * gameplay.gameSpeed
         v.x = v.x + math.cos(v.angle) * v.speed * logicStep * gameplay.gameSpeed
         v.y = v.y + math.sin(v.angle) * v.speed * logicStep * gameplay.gameSpeed

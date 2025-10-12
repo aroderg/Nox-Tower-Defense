@@ -63,7 +63,8 @@ function abilityObjects.spikedCrystal.process(logicStep)
             end
         end
     end
-    for i,v in ipairs(spikedCrystals) do
+    for i=#spikedCrystals,1,-1 do
+        local v = spikedCrystals[i]
         local size = {
             basic = 20,
             tank = 32,
@@ -126,7 +127,8 @@ end
 
 --- Process all Magma Pools and their collisions with enemies, apply the burning effects to the enemy it collides with.
 function abilityObjects.magmaPool.process(logicStep)
-    for i,v in ipairs(magmaPools) do
+    for i=#magmaPools,1,-1 do
+        local v = magmaPools[i]
         local size = {
             basic = 20,
             tank = 32,
@@ -135,7 +137,8 @@ function abilityObjects.magmaPool.process(logicStep)
             centurion = 60,
             exploder = 24,
         }
-        for j,w in ipairs(enemiesOnField) do
+        for j=#enemiesOnField,1,-1 do
+            local w = enemiesOnField[j]
             if math.dist(v.x + 18, v.y + 18, w.x + size[w.type] / 2, w.y + size[w.type] / 2) < 16 + size[w.type] / 2 then
                 table.remove(magmaPools, i)
                 damageEnemy(j, player.tower.attackDamage * (levelingInfo[5].damage[player.abilities.magmaTouch.level + 1] / 100), false, false, "magmaPool")
@@ -177,7 +180,8 @@ end
 
 --- Process all Lightning Orbs and move them depending on their angle.
 function abilityObjects.lightningOrb.process(logicStep)
-    for i,v in ipairs(lightningOrbs) do
+    for i=#lightningOrbs,1,-1 do
+        local v = lightningOrbs[i]
         v.x = v.x + math.cos(v.angle) * v.speed * logicStep * gameplay.gameSpeed
         v.y = v.y + math.sin(v.angle) * v.speed * logicStep * gameplay.gameSpeed
         local farthestEnemy = findClosestEnemyInRange(v.x, v.y, v.range * 20)[#findClosestEnemyInRange(v.x, v.y, v.range * 20)]
