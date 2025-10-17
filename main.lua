@@ -1020,8 +1020,8 @@ function updateEnemyStats(difficulty, wave)
         --[[ Set stats for Level 0 enemies ]]--
         enemyAttributes.spawnRate = 0.5 + (math.floor(0.3 * math.sqrt(0.1 * wave) * 10) / 10)
         pendingEnemies = 5 + math.floor(math.sqrt(6 * wave))
-        enemyAttributes.health = (1.95 + ((1.25 * wave)^2.5 / 20) - 0.037) * (1.2^(math.floor(wave / 100)))
-        enemyAttributes.attackDamage = (0.875 + (wave^2.25 / 40) + 0.1 * wave^2) * (1.1^math.floor(wave / 100))
+        enemyAttributes.health = (1.95 + 1/20 * (1.25 * wave)^2.5 - 0.037) * 1.2 ^ math.floor(wave / 100)
+        enemyAttributes.attackDamage = (0.875 + wave^2.25 / 40 + 0.1 * wave^2) * 1.1 ^ math.floor(wave / 100)
         enemyAttributes.speed = 60
         tankSpawnChance = math.min(math.floor(math.log(wave^2, 10) * 100) / 100, 4)
         swiftSpawnChance = math.min(math.floor(math.log(wave^3, 10) * 100) / 100, 6)
@@ -1029,8 +1029,8 @@ function updateEnemyStats(difficulty, wave)
         --[[ Set stats for Level α enemies ]]--
         enemyAttributes.spawnRate = 0.9 + (math.floor(0.12 * math.sqrt(wave) * 10)) / 10
         pendingEnemies = 7 + math.floor(3 * math.sqrt(1.2 * wave))
-        enemyAttributes.health = (245.9 + (2 * wave)^2 + (wave^3 / 10)) * (1.23^(math.floor(wave / 100)))
-        enemyAttributes.attackDamage = (70.98 + 9 * wave + (wave^3 / 50)) * (1.13^math.floor(wave / 100))
+        enemyAttributes.health = (243.95 + 4 * wave^2 + 2.05 * wave^3) * 1.23 ^ math.floor(wave / 100)
+        enemyAttributes.attackDamage = (70.73 + 9 * wave + 0.279 * wave^3) * 1.13 ^ math.floor(wave / 100)
         enemyAttributes.speed = 68
         tankSpawnChance = math.min(math.floor((math.log(wave^5, 10))^0.75 * 100) / 100, 6)
         swiftSpawnChance = math.min(math.floor(math.log(wave^3.75, 10) * 100) / 100, 8)
@@ -1039,8 +1039,8 @@ function updateEnemyStats(difficulty, wave)
         --[[ Set stats for Level β enemies ]]--
         enemyAttributes.spawnRate = 1.3 + (math.floor((0.2 * wave) / (math.sqrt(1.75 * wave))) * 10) / 10
         pendingEnemies = 10 + 2 * math.floor((math.sqrt(17 * wave)) / 2)
-        enemyAttributes.health = (1948.39 + (6 * wave) ^ 2.2 + (wave ^ 3.2) / 10) * (1.26 ^ math.floor(wave / 100))
-        enemyAttributes.attackDamage = (449.975 + 30 * wave + (wave ^ 3.45) / 40) * (1.16 ^ math.floor(wave / 100))
+        enemyAttributes.health = (1935.99 + (6 * wave)^2.2 + wave^3.2 / 10 * 125) * 1.26 ^ math.floor(wave / 100)
+        enemyAttributes.attackDamage = (449.59 + 30 * wave + 0.411 * wave^3.45) * 1.16 ^ math.floor(wave / 100)
         enemyAttributes.speed = 76
         tankSpawnChance = math.min(math.floor((math.sqrt(2.5 * wave - 2.5)^0.8) * 100) / 100, 10)
         swiftSpawnChance = math.min(math.floor((math.sqrt(2 * wave - 2) - math.log(wave^3, 10)) * 100) / 100, 12.5)
@@ -1049,8 +1049,8 @@ function updateEnemyStats(difficulty, wave)
         --[[ Set stats for Level γ enemies ]]--
         enemyAttributes.spawnRate = 1.8 + (math.floor(math.sqrt(0.04 * wave) * 10)) / 10
         pendingEnemies = 14 + 2 * math.floor((3 * math.sqrt(2.75 * wave)) / 2)
-        enemyAttributes.health = (17826.24 + (8 * wave) ^ 2.48 + (wave ^ 3.6) / 8) * (1.29 ^ math.floor(wave / 100))
-        enemyAttributes.attackDamage = (3534.97 + 65 * (wave ^ 1.5) + (wave ^ 3.6) / 30) * (1.19 ^ math.floor(wave / 100))
+        enemyAttributes.health = (17791.09 + (8 * wave)^2.48 + 35.269 * wave^3.6) * 1.29 ^ math.floor(wave / 100)
+        enemyAttributes.attackDamage = (3534.97 + 65 * wave^1.5 + 3 * wave^3.6) * 1.19 ^ math.floor(wave / 100)
         enemyAttributes.speed = 84
         tankSpawnChance = math.min(math.floor((math.sqrt(4 * wave - 4)^0.85) * 100) / 100, 14)
         swiftSpawnChance = math.min(math.floor((math.sqrt(2 * wave - 2)^1.05) * 100) / 100, 18)
@@ -1059,8 +1059,8 @@ function updateEnemyStats(difficulty, wave)
         --[[ Set stats for Difficulty 5 enemies ]]--
         enemyAttributes.spawnRate = 2.2 + (math.floor(math.sqrt(0.05 * (wave+5)) * 10)) / 10
         pendingEnemies = 19 + 2 * math.floor((3 * math.sqrt(3 * wave)) / 1.9)
-        enemyAttributes.health = (208978.65 + (14 * wave)^2.6 + ((wave + 4)^3.9 / 8)) * (1.32^math.floor(wave / 100))
-        enemyAttributes.attackDamage = (14879.72 + (75 * wave^2.15) + ((wave + 5)^3.8 / 20)) * (1.22^math.floor(wave / 100))
+        enemyAttributes.health = (189391.18 + (14 * wave)^2.6 + 295.5 * (1/8 * (wave + 4)^3.9)) * 1.32 ^ math.floor(wave / 100)
+        enemyAttributes.attackDamage = (7317.29 + 75 * wave^2.15 + 8.4 * (wave + 5)^3.8) * 1.22 ^ math.floor(wave / 100)
         enemyAttributes.speed = 92
         tankSpawnChance = math.min(1.1 + math.floor((math.sqrt(4 * wave - 4)^0.85) * 100) / 100, 14)
         swiftSpawnChance = math.min(1.5 + math.floor((math.sqrt(2 * wave - 2)^1.05) * 100) / 100, 18)
