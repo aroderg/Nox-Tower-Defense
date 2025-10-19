@@ -241,7 +241,7 @@ function abilityFunctions.updateLeveling()
         },
         {
             --| DISRUPTANCE WAVE - LEVELS FROM 0 to 12 |--
-            frequency =         6 / player.upgrades.nexus.abilityCooldown.value, -- seconds
+            frequency =         8, -- seconds
             damage =            {15, 18, 21, 25, 29, 36, 45, 56, 69, 85, 105, 135, 180}, -- %
             levelRequirements = {1,  1,  1,  1,  1,  2,  2,  3,  5,  7,  9,   12,  15}
         }
@@ -434,7 +434,7 @@ function abilityFunctions.updateInternals()
             tags = {condition = "Time", role = "Active", AoE = true, category = "ATK"},
             frequency = levelingInfo[12].frequency / player.upgrades.nexus.abilityCooldown.value,
             level = player.abilities.disruptWave.level,
-            preview = img_ability_preview_supercritical,
+            preview = img_ability_preview_disruptWave,
             equipped = player.abilities.disruptWave.equipped,
             unlocked = player.abilities.disruptWave.unlocked,
             menu = player.menu.abilities.disruptWave,

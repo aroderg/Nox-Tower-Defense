@@ -109,6 +109,7 @@ function love.load()
         img_JerelosBlessing_waves_var2 = love.graphics.newImage("assets/JerelosBlessing_waves_var2.png")
         img_JerelosBlessing_waves_var3 = love.graphics.newImage("assets/JerelosBlessing_waves_var3.png")
         img_JerelosBlessing_waves_var4 = love.graphics.newImage("assets/JerelosBlessing_waves_var4.png")
+        img_disruptWave = love.graphics.newImage("assets/disruptWave.png")
 
         --Ability previews
         img_ability_preview_spikedCrystals = love.graphics.newImage("assets/ability_preview_spikedCrystals.png")
@@ -122,6 +123,7 @@ function love.load()
         img_ability_preview_sniperKit = love.graphics.newImage("assets/ability_preview_sniperKit.png")
         img_ability_preview_tankKit = love.graphics.newImage("assets/ability_preview_tankKit.png")
         img_ability_preview_supercritical = love.graphics.newImage("assets/ability_preview_supercritical.png")
+        img_ability_preview_disruptWave = love.graphics.newImage("assets/ability_preview_disruptWave.png")
 
         --Audio
         audio_enemy_kill = love.audio.newSource("assets/audio/enemy_kill.wav", "static")
@@ -1087,7 +1089,7 @@ function love.draw()
         love.graphics.ellipse("line", 960, 540, player.tower.range, player.tower.range)
         love.graphics.setColor(1, 1, 1, 1)
         if rainforestActive then
-            love.graphics.draw(img_rainforest, 960 - player.tower.range + 1, 540 - player.tower.range + 1, 0, (player.tower.range * 2 + 36) / 1080)
+            love.graphics.draw(img_rainforest, 960 - player.tower.range, 540 - player.tower.range, 0, (player.tower.range * 2 + 42) / 1080)
         end
         love.graphics.setColor(1, 1, 0, 0.4)
         love.graphics.setLineWidth(1.5)
@@ -1138,6 +1140,15 @@ function love.draw()
         --love.graphics.printf(string.format("Wave %d", gameplay_wave), 810, 1000, 300, "center")
         for i,v in ipairs(meteors) do
             love.graphics.draw(img_meteor, v.x - 14, v.y - 14)
+        end
+        if player.abilities.disruptWave.unlocked and player.abilities.disruptWave.equipped then
+            local spreadTime = 0.4
+            local fadeTime = 0.2
+            local waveScale = math.min(timers.disruptWave, spreadTime) * (1/spreadTime) * (player.tower.range*2/512)
+            local wavePosScale = math.min(timers.disruptWave, spreadTime) * (1/spreadTime)
+            local fadeAlpha = math.min(math.max(timers.disruptWave - spreadTime, 0), fadeTime) * (0.8/fadeTime)
+            love.graphics.setColor(1, 1, 1, 0.8 - fadeAlpha)
+            love.graphics.draw(img_disruptWave, 960 - player.tower.range * wavePosScale, 540 - player.tower.range * wavePosScale, 0, waveScale)
         end
         renderParticles()
         abilityObjects.spikedCrystal.draw()
@@ -1380,6 +1391,7 @@ function love.draw()
     love.graphics.setFont(font_Afacad16)
     love.graphics.printf("v" .. gameVersionSemantic .. " - " .. love.timer.getFPS() .. "fps, " .. player.debug.memUsage .. "KB, " .. player.debug.UPS .. "ups", 1643, 0, 220, "right")
     love.graphics.print(timers.disruptWave, 125, 100)
+    love.graphics.print("Number of Projectiles: " .. #projectilesOnField, 125, 120)
 end
 
 function love.update(dt)
@@ -1473,7 +1485,7 @@ function love.update(dt)
             v.y = v.y + math.sin(v.angle) * v.speed * logicStep * gameplay.gameSpeed
             if math.dist(960, 540, v.x + 3, v.y + 3) > player.tower.range and not v.scatterFire then
                 table.remove(projectilesOnField, i)
-            elseif v.x + 3 < -10 and v.x + 3 > 1930 and v.y + 3 < -10 and v.y + 3 > 1090 and v.scatterFire then
+            elseif v.x + 3 < -10 or v.x + 3 > 1930 or v.y + 3 < -10 or v.y + 3 > 1090 and v.scatterFire then
                 table.remove(projectilesOnField, i)
             end
             for j=#enemiesOnField,1,-1 do

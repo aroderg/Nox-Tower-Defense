@@ -180,7 +180,7 @@ end
 
 --- Process all Lightning Orbs and move them depending on their angle.
 function abilityObjects.lightningOrb.process(logicStep)
-    for i=#lightningOrbs,1,-1 do
+    for i,v in pairs(lightningOrbs) do
         local v = lightningOrbs[i]
         v.x = v.x + math.cos(v.angle) * v.speed * logicStep * gameplay.gameSpeed
         v.y = v.y + math.sin(v.angle) * v.speed * logicStep * gameplay.gameSpeed
