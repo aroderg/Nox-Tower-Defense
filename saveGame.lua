@@ -210,6 +210,12 @@ function saveGame()
                 level = player.abilities.supercritical.level,
                 equipped = player.abilities.supercritical.equipped,
                 amount = player.abilities.supercritical.amount
+            },
+            disruptWave = {
+                unlocked = player.abilities.disruptWave.unlocked,
+                level = player.abilities.disruptWave.level,
+                equipped = player.abilities.disruptWave.equipped,
+                amount = player.abilities.disruptWave.amount
             }
         },
 

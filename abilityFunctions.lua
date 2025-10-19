@@ -238,6 +238,12 @@ function abilityFunctions.updateLeveling()
             supercriticalChance =    {1,   1.6,  2.2,  2.8,  3.4,  4,    4.75, 5.5,  6.3,   7.15}, -- %
             supercriticalFactor =    {2.5, 2.6,  2.7,  2.85, 3,    3.15, 3.35, 3.6,  3.85,  4.1}, -- multiplier (1 = 100%)
             levelRequirements =      {1,   1,    2,    3,    4,    6,    8,    10,   12,    16}
+        },
+        {
+            --| DISRUPTANCE WAVE - LEVELS FROM 0 to 12 |--
+            frequency =         6 / player.upgrades.nexus.abilityCooldown.value, -- seconds
+            damage =            {15, 18, 21, 25, 29, 36, 45, 56, 69, 85, 105, 135, 180}, -- %
+            levelRequirements = {1,  1,  1,  1,  1,  2,  2,  3,  5,  7,  9,   12,  15}
         }
     }
 end
@@ -420,7 +426,24 @@ function abilityFunctions.updateInternals()
             class = "A",
             nextLevelRequirement = levelingInfo[11].levelRequirements[player.abilities.supercritical.level + 1],
             levelRequirements = levelingInfo[11].levelRequirements
+        },
+        {
+            name = "Disruptance Wave",
+            internalName = "disruptWave",
+            effect = {{1, 1, 1, 1}, "Launch a blast wave dealing ", {0.28, 0.98, 0.48}, levelingInfo[12].damage[player.abilities.disruptWave.level + 1], {1, 1, 1, 1}, "% damage to all enemies within the tower's range."},
+            tags = {condition = "Time", role = "Active", AoE = true, category = "ATK"},
+            frequency = levelingInfo[12].frequency / player.upgrades.nexus.abilityCooldown.value,
+            level = player.abilities.disruptWave.level,
+            preview = img_ability_preview_supercritical,
+            equipped = player.abilities.disruptWave.equipped,
+            unlocked = player.abilities.disruptWave.unlocked,
+            menu = player.menu.abilities.disruptWave,
+            amount = player.abilities.disruptWave.amount,
+            class = "B",
+            nextLevelRequirement = levelingInfo[11].levelRequirements[player.abilities.disruptWave.level + 1],
+            levelRequirements = levelingInfo[11].levelRequirements
         }
+        
     }
 
     abilityClasses = {"D", "C", "B", "A"}

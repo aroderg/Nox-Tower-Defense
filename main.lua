@@ -230,8 +230,8 @@ function reloadIdleGains()
     local gold = 0
     for i=1,4 do
         local diffIndex = "d" .. i
-        silver = silver + 2 * math.floor(player.bestWaves[diffIndex] / 10)
-        gold = gold + 0.06 * math.floor(player.bestWaves[diffIndex] / 100)
+        silver = silver + 0.86 * math.floor(player.bestWaves[diffIndex] / 10)
+        gold = gold + 0.024 * math.floor(player.bestWaves[diffIndex] / 100)
     end
     return silver, gold
 end
@@ -363,8 +363,8 @@ function reloadFormulae(x, z)
             },
 
             UTL = {
-                {(z - x + 1) * ((z - x + 1) + 1) / 2 + 9, 6 * (z - 1)}, --Copper/wave Round upgrade
-                {((z - x + 1) + 2)^2 + 1, 3 * (z - 1)}, --Silver/wave Round upgrade
+                {(z - x + 1) * ((z - x + 1) + 1) / 2 + 9, math.floor(6 * (z-1)^0.75)}, --Copper/wave Round upgrade
+                {((z - x + 1) + 2)^2 + 1, math.floor(3 * (z-1)^0.6)}, --Silver/wave Round upgrade
                 {(0.2 * (z - x))^2 + 2 * (z - x) + 3.96, math.min(1 + 0.02 * (z - 1), 10)}, --Copper Bonus Round upgrade
                 {0.4 * (z - x)^1.6 + 6.6, math.min(1 + 0.01 * (z - 1), 4)} --Silver Bonus Round upgrade
             }
@@ -394,8 +394,8 @@ function reloadFormulae(x, z)
             },
 
             UTL = {
-                {(x^2 + x + 1) * 3 + 11, 6 * (x - 1)}, --Copper/wave Science Upgrade
-                {((8 * x) / 5)^2 + 27.44, 3 * (x - 1)}, --Silver/wave Science Upgrade
+                {(x^2 + x + 1) * 3 + 11, math.floor(6 * (x-1)^0.75)}, --Copper/wave Science Upgrade
+                {((8 * x) / 5)^2 + 27.44, math.floor(3 * (x-1)^0.6)}, --Silver/wave Science Upgrade
                 {(0.4 * (x - 1))^1.9 + 8, math.min(1 + 0.02 * (x - 1), 10)}, --Copper Bonus Science Upgrade
                 {0.4 * x^2 + x + 8.6, math.min(1 + 0.01 * (x - 1), 4)} --Silver Bonus Science Upgrade
             }
@@ -1379,6 +1379,7 @@ function love.draw()
     love.graphics.setColor(1, 1, 1, 1)
     love.graphics.setFont(font_Afacad16)
     love.graphics.printf("v" .. gameVersionSemantic .. " - " .. love.timer.getFPS() .. "fps, " .. player.debug.memUsage .. "KB, " .. player.debug.UPS .. "ups", 1643, 0, 220, "right")
+    love.graphics.print(timers.disruptWave, 125, 100)
 end
 
 function love.update(dt)
@@ -1782,6 +1783,18 @@ function love.update(dt)
                     timers.magmaPool = 0
                     abilityObjects.magmaPool.spawn()
                 end
+            end
+        end
+
+        if player.abilities.disruptWave.unlocked and player.abilities.disruptWave.equipped then
+            if timers.disruptWave < levelingInfo[12].frequency then
+                timers.disruptWave = timers.disruptWave + logicStep * gameplay.gameSpeed
+            else
+                local damage = player.tower.attackDamage * levelingInfo[12].damage[player.abilities.disruptWave.level + 1]
+                for i=#findClosestEnemyInRange(960, 540, player.tower.range),1,-1 do
+                    damageEnemy(i, damage, false, false, "disruptWave")
+                end
+                timers.disruptWave = 0
             end
         end
 

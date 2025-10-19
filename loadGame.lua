@@ -124,7 +124,8 @@ function loadGame()
             berserkerKit = {unlocked = false, level = 0, equipped = false, amount = 0},
             sniperKit = {unlocked = false, level = 0, equipped = false, amount = 0},
             tankKit = {unlocked = false, level = 0, equipped = false, amount = 0},
-            supercritical = {unlocked = false, level = 0, equipped = false, amount = 0}
+            supercritical = {unlocked = false, level = 0, equipped = false, amount = 0},
+            disruptWave = {unlocked = false, level = 0, equipped = false, amount = 0}
         },
         misc = {abilityAssembling = false, tokensRefundable = true, theme = "aurora", currentOrbital = love.math.random(27, 30)}
     }
@@ -306,7 +307,7 @@ function loadGame()
             equipped = 0,
             maxEquipped = 1
         }
-        local abilityNames = {"spikedCrystals", "scatterFire", "burstFire", "rainforest", "magmaTouch", "lightningOrb", "JerelosBlessing", "berserkerKit", "sniperKit", "tankKit", "supercritical"}
+        local abilityNames = {"spikedCrystals", "scatterFire", "burstFire", "rainforest", "magmaTouch", "lightningOrb", "JerelosBlessing", "berserkerKit", "sniperKit", "tankKit", "supercritical", "disruptWave"}
         for i,v in ipairs(abilityNames) do
             if not loadedData.abilities[abilityNames[i]] then
                 loadedData.abilities[abilityNames[i]] = {
@@ -373,7 +374,7 @@ function loadGame()
     }
 
     player.menu = {
-        abilities = {spikedCrystals = false, scatterFire = false, burstFire = false, rainforest = false, magmaTouch = false, lightningOrb = false, JerelosBlessing = false, berserkerKit = false, sniperKit = false},
+        abilities = {},
         saveStats = false,
         rolledAbilityDisplay = false
     }
@@ -566,7 +567,7 @@ function resetRoundValues()
     updateEnemyStats(gameplay.difficulty, gameplay.wave)
 
     --[[ Timers ]]--
-    timers = {projectile = 0, enemy = 0, nextWave = 0, shieldActivation = 0, shieldActive = 0, waveSkip = 3, crystal = 0, magmaPool = 0, lightningOrb = 0}
+    timers = {projectile = 0, enemy = 0, nextWave = 0, shieldActivation = 0, shieldActive = 0, waveSkip = 3, crystal = 0, magmaPool = 0, lightningOrb = 0, disruptWave = 0}
 
     --[[ Misc ]]--
     waveSkipMessage = false
