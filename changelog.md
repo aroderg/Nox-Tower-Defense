@@ -1,3 +1,14 @@
+# NoxTD 1.1.1 Aurora
+### Oct 22nd, 2025
+- Added the Blast Wave ability, regularly dealing damage to all enemies within the tower's range.
+- Changed enemy scaling on D2+ once again.
+- Fixed the Damage Round upgrade cost showing "nannil" if upgraded in the Hub.
+- Nerfed Copper/wave and Silver/wave upgrades.
+- Made the game dependent on logic steps which cannot exceed 1/50th of a second instead of raw delta time.
+- Optimized the table.remove functions.
+- Made Scatter Fire projectiles actually remove themselves if they are off-screen.
+- Pressing Escape while in battle will pause the game.
+
 # NoxTD 1.1 Aurora
 ### Oct 7, 2025
 - Added Idle Gains:
