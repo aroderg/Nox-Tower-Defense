@@ -268,8 +268,8 @@ function processUpgradeModule.reload()
             },
 
             ["UTL"] = {
-                {"Copper/wave", 10, 850, 350, 60, player.tower.copperPerWave, player.upgrades.round.copperPerWave.cost, player.upgrades.round.copperPerWave.level, "round", math.huge, "brief", nil, nil, ["precedingUpgrade"] = 0}, --Copper/wave Science Upgrade
-                {"Silver/wave", 10, 920, 350, 60, player.tower.silverPerWave, player.upgrades.round.silverPerWave.cost, player.upgrades.round.silverPerWave.level, "round", math.huge, "brief", nil, nil, ["precedingUpgrade"] = 0}, --Silver/wave Science Upgrade
+                {"Copper/wave", 10, 850, 350, 60, player.tower.copperPerWave, player.upgrades.round.copperPerWave.cost, player.upgrades.round.copperPerWave.level, "round", math.huge, "precise", nil, nil, ["precedingUpgrade"] = 0}, --Copper/wave Science Upgrade
+                {"Silver/wave", 10, 920, 350, 60, player.tower.silverPerWave, player.upgrades.round.silverPerWave.cost, player.upgrades.round.silverPerWave.level, "round", math.huge, "precise", nil, nil, ["precedingUpgrade"] = 0}, --Silver/wave Science Upgrade
                 {"Copper Bonus", 10, 990, 350, 60, player.tower.copperBonus, player.upgrades.round.copperBonus.cost, player.upgrades.round.copperBonus.level, "round", 451, "precise2", "x", nil, ["precedingUpgrade"] = player.upgrades.unlocks.resourceBonus}, --Copper Bonus Science Upgrade
                 {"Silver Bonus", 370, 850, 350, 60, player.tower.silverBonus, player.upgrades.round.silverBonus.cost, player.upgrades.round.silverBonus.level, "round", 301, "precise2", "x", nil, ["precedingUpgrade"] = player.upgrades.unlocks.resourceBonus} --Silver Bonus Science Upgrade
             }
@@ -299,8 +299,8 @@ function processUpgradeModule.reload()
             },
 
             ["UTL"] = {
-                {"Copper/wave", 245, 840, 350, 60, player.tower.copperPerWave, player.upgrades.science.copperPerWave.cost, player.upgrades.science.copperPerWave.level, "science", math.huge, "brief", nil, nil, ["precedingUpgrade"] = 0}, --Copper/wave Science Upgrade
-                {"Silver/wave", 605, 840, 350, 60, player.tower.silverPerWave, player.upgrades.science.silverPerWave.cost, player.upgrades.science.silverPerWave.level, "science", math.huge, "brief", nil, nil, ["precedingUpgrade"] = 0}, --Silver/wave Science Upgrade
+                {"Copper/wave", 245, 840, 350, 60, player.tower.copperPerWave, player.upgrades.science.copperPerWave.cost, player.upgrades.science.copperPerWave.level, "science", math.huge, "precise", nil, nil, ["precedingUpgrade"] = 0}, --Copper/wave Science Upgrade
+                {"Silver/wave", 605, 840, 350, 60, player.tower.silverPerWave, player.upgrades.science.silverPerWave.cost, player.upgrades.science.silverPerWave.level, "science", math.huge, "precise", nil, nil, ["precedingUpgrade"] = 0}, --Silver/wave Science Upgrade
                 {"Copper Bonus", 965, 840, 350, 60, player.tower.copperBonus, player.upgrades.science.copperBonus.cost, player.upgrades.science.copperBonus.level, "science", 451, "precise2", "x", nil, ["precedingUpgrade"] = player.upgrades.unlocks.resourceBonus, "resourceBonus"}, --Copper Bonus Science Upgrade
                 {"Silver Bonus", 1325, 840, 350, 60, player.tower.silverBonus, player.upgrades.science.silverBonus.cost, player.upgrades.science.silverBonus.level, "science", 301, "precise2", "x", nil, ["precedingUpgrade"] = player.upgrades.unlocks.resourceBonus, "resourceBonus"} --Silver Bonus Science Upgrade
             }
@@ -365,8 +365,8 @@ function reloadFormulae(x, z)
             },
 
             UTL = {
-                {(z - x + 1) * ((z - x + 1) + 1) / 2 + 9, math.floor(6 * (z-1)^0.75)}, --Copper/wave Round upgrade
-                {((z - x + 1) + 2)^2 + 1, math.floor(3 * (z-1)^0.6)}, --Silver/wave Round upgrade
+                {(z - x + 1) * ((z - x + 1) + 1) / 2 + 9, 6 * (z-1)^0.75}, --Copper/wave Round upgrade
+                {((z - x + 1) + 2)^2 + 1, 3 * (z-1)^0.6}, --Silver/wave Round upgrade
                 {(0.2 * (z - x))^2 + 2 * (z - x) + 3.96, math.min(1 + 0.02 * (z - 1), 10)}, --Copper Bonus Round upgrade
                 {0.4 * (z - x)^1.6 + 6.6, math.min(1 + 0.01 * (z - 1), 4)} --Silver Bonus Round upgrade
             }
@@ -396,8 +396,8 @@ function reloadFormulae(x, z)
             },
 
             UTL = {
-                {(x^2 + x + 1) * 3 + 11, math.floor(6 * (x-1)^0.75)}, --Copper/wave Science Upgrade
-                {((8 * x) / 5)^2 + 27.44, math.floor(3 * (x-1)^0.6)}, --Silver/wave Science Upgrade
+                {(x^2 + x + 1) * 3 + 11, 6 * (x-1)^0.75}, --Copper/wave Science Upgrade
+                {((8 * x) / 5)^2 + 27.44, 3 * (x-1)^0.6}, --Silver/wave Science Upgrade
                 {(0.4 * (x - 1))^1.9 + 8, math.min(1 + 0.02 * (x - 1), 10)}, --Copper Bonus Science Upgrade
                 {0.4 * x^2 + x + 8.6, math.min(1 + 0.01 * (x - 1), 4)} --Silver Bonus Science Upgrade
             }
@@ -819,7 +819,7 @@ function skipWave(wavesSkipped)
     gameplay.wave = gameplay.wave + wavesSkipped
 
     local oldCopperAmount = player.currencies.currentCopper
-    misc.copperBuffer = misc.copperBuffer + (player.tower.copperBonus % 1) * player.tower.copperPerWave * wavesSkipped
+    misc.copperBuffer = misc.copperBuffer + player.tower.copperBonus * player.tower.copperPerWave * wavesSkipped
     player.currencies.currentCopper = player.currencies.currentCopper + math.floor(player.tower.copperBonus) * player.tower.copperPerWave * wavesSkipped
     if misc.copperBuffer >= 1 then
         player.currencies.currentCopper = player.currencies.currentCopper + math.floor(misc.copperBuffer)
@@ -830,7 +830,7 @@ function skipWave(wavesSkipped)
     player.stats.battle.copperEarned = player.stats.battle.copperEarned + copperEarned
 
     local oldSilverAmount = player.currencies.currentSilver
-    misc.silverBuffer = misc.silverBuffer + (player.tower.silverBonus % 1) * player.tower.silverPerWave * wavesSkipped
+    misc.silverBuffer = misc.silverBuffer + player.tower.silverBonus * player.tower.silverPerWave * wavesSkipped
     player.currencies.currentSilver = player.currencies.currentSilver + math.floor(player.tower.silverBonus) * player.tower.silverPerWave * wavesSkipped
     if misc.silverBuffer >= 1 then
         player.currencies.currentSilver = player.currencies.currentSilver + math.floor(misc.silverBuffer)
@@ -845,7 +845,7 @@ function skipWave(wavesSkipped)
     end
 
     local JerelosBlessingRegen = love.math.random() * 100
-    if JerelosBlessingRegen <= levelingInfo[7].regenChance[player.abilities.JerelosBlessing.level + 1] then
+    if JerelosBlessingRegen <= levelingInfo[7].regenChance[player.abilities.JerelosBlessing.level + 1] and gameplay.gameSpeed > 0 then
         player.tower.currentHealth = player.tower.health
     end
 
@@ -995,6 +995,9 @@ function damageEnemy(s, damage, crit, superCrit, damageSource)
     elseif damageSource == "lightningOrb" then
         player.stats.battle.lightningOrb.damageDealt = player.stats.battle.lightningOrb.damageDealt + math.min(damage, de.currentHP)
         player.stats.save.lightningOrb.damageDealt = player.stats.save.lightningOrb.damageDealt + math.min(damage, de.currentHP)
+    elseif damageSource == "disruptWave" then
+        player.stats.battle.disruptWave.damageDealt = player.stats.battle.disruptWave.damageDealt + math.min(damage, de.currentHP)
+        player.stats.save.disruptWave.damageDealt = player.stats.save.disruptWave.damageDealt + math.min(damage, de.currentHP)
     end
     de.currentHP = de.currentHP - damage
     if de.type == "sentry" then
@@ -1390,8 +1393,34 @@ function love.draw()
     love.graphics.setColor(1, 1, 1, 1)
     love.graphics.setFont(font_Afacad16)
     love.graphics.printf("v" .. gameVersionSemantic .. " - " .. love.timer.getFPS() .. "fps, " .. player.debug.memUsage .. "KB, " .. player.debug.UPS .. "ups", 1643, 0, 220, "right")
-    love.graphics.print(timers.disruptWave, 125, 100)
-    love.graphics.print("Number of Projectiles: " .. #projectilesOnField, 125, 120)
+    if player.menu.debugInfo then
+        love.graphics.setColor(0, 0, 0, 0.8)
+        love.graphics.rectangle("fill", 0, 0, 170, 305)
+        love.graphics.setColor(1, 1, 1, 0.25)
+        love.graphics.setLineWidth(1)
+        love.graphics.rectangle("line", -1, -1, 171, 306)
+        love.graphics.setColor(1, 1, 1, 1)
+        love.graphics.print("pjc: " .. #projectilesOnField, 5, 0)
+        love.graphics.print("enc: " .. #enemiesOnField, 5, 15)
+        love.graphics.print("pjt: " .. timers.projectile, 5, 45)
+        love.graphics.print("ent: " .. timers.enemy, 5, 60)
+        love.graphics.print("sat: " .. timers.shieldActivation, 5, 75)
+        love.graphics.print("sdt: " .. timers.shieldActive, 5, 90)
+        love.graphics.print("wst: " .. timers.waveSkip, 5, 105)
+        love.graphics.print("mtt: " .. timers.magmaPool, 5, 120)
+        love.graphics.print("sct: " .. timers.crystal, 5, 135)
+        love.graphics.print("nwt: " .. timers.nextWave, 5, 150)
+        love.graphics.print("lot: " .. timers.lightningOrb, 5, 165)
+        love.graphics.print("dwt: " .. timers.disruptWave, 5, 180)
+
+        love.graphics.print("cbf: " .. misc.copperBuffer, 5, 210)
+        love.graphics.print("sbf: " .. misc.silverBuffer, 5, 225)
+
+        love.graphics.print("cpw: " .. player.tower.copperPerWave * player.tower.copperBonus, 5, 240)
+        love.graphics.print("spw: " .. player.tower.silverPerWave * player.tower.silverBonus * difficultyMultipliers[player.difficulty.difficulty], 5, 255)
+        love.graphics.print("dt: " .. love.timer.getDelta(), 5, 270)
+        love.graphics.print("lst: " .. logicStep, 5, 285)
+    end
 end
 
 function love.update(dt)
@@ -1513,7 +1542,7 @@ function love.update(dt)
                         player.stats.battle.burstFire.damageDealt = player.stats.battle.burstFire.damageDealt + math.min(damage, w.currentHP)
                         player.stats.save.burstFire.damageDealt = player.stats.save.burstFire.damageDealt + math.min(damage, w.currentHP)
                     end
-                    if lifesteal <= player.tower.lifestealChance then
+                    if lifesteal <= player.tower.lifestealChance and gameplay.gameSpeed > 0 then
                         local oldHealth = player.tower.currentHealth
                         player.tower.currentHealth = math.min(player.tower.currentHealth + (math.min(damage, w.currentHP) * (player.tower.lifestealPercent / 100)), player.tower.health)
                         local healthGap = player.tower.currentHealth - oldHealth
@@ -1689,7 +1718,7 @@ function love.update(dt)
                     timers.nextWave = 0
 
                     local oldCopperAmount = player.currencies.currentCopper
-                    misc.copperBuffer = misc.copperBuffer + (player.tower.copperBonus % 1) * player.tower.copperPerWave
+                    misc.copperBuffer = misc.copperBuffer + player.tower.copperBonus * (player.tower.copperPerWave % 1)
                     player.currencies.currentCopper = player.currencies.currentCopper + math.floor(player.tower.copperBonus) * player.tower.copperPerWave
                     if misc.copperBuffer >= 1 then
                         player.currencies.currentCopper = player.currencies.currentCopper + math.floor(misc.copperBuffer)
@@ -1700,7 +1729,7 @@ function love.update(dt)
                     player.stats.battle.copperEarned = player.stats.battle.copperEarned + copperEarned
 
                     local oldSilverAmount = player.currencies.currentSilver
-                    misc.silverBuffer = misc.silverBuffer + (player.tower.silverBonus % 1) * player.tower.silverPerWave * difficultyMultipliers[gameplay.difficulty]
+                    misc.silverBuffer = misc.silverBuffer + player.tower.silverBonus * (player.tower.silverPerWave % 1) * difficultyMultipliers[gameplay.difficulty]
                     player.currencies.currentSilver = player.currencies.currentSilver + math.floor(player.tower.silverBonus) * player.tower.silverPerWave * difficultyMultipliers[gameplay.difficulty]
                     if misc.silverBuffer >= 1 then
                         player.currencies.currentSilver = player.currencies.currentSilver + math.floor(misc.silverBuffer)
@@ -1803,6 +1832,8 @@ function love.update(dt)
                 timers.disruptWave = timers.disruptWave + logicStep * gameplay.gameSpeed
             else
                 local damage = player.tower.attackDamage * levelingInfo[12].damage[player.abilities.disruptWave.level + 1]
+                player.stats.battle.disruptWave.triggered = player.stats.battle.disruptWave.triggered + 1
+                player.stats.save.disruptWave.triggered = player.stats.save.disruptWave.triggered + 1
                 for i=#findClosestEnemyInRange(960, 540, player.tower.range),1,-1 do
                     damageEnemy(i, damage, false, false, "disruptWave")
                 end
@@ -2000,8 +2031,16 @@ end
 
 function love.keypressed(key)
     if key == "escape" then
-        saveGame()
-        love.event.quit()
+        if player.location == "hub" then
+            saveGame()
+            love.event.quit()
+        else
+            gameplay.gameSpeed = player.menu.paused and player.maxGameSpeed or 0
+            player.menu.paused = not player.menu.paused
+        end
+    end
+    if love.keyboard.isDown("w") and key == "f2" then
+        player.menu.debugInfo = not player.menu.debugInfo
     end
     if key == "tab" and not player.menu.paused then
         if player.location == "round" then
@@ -2020,9 +2059,6 @@ function love.keypressed(key)
             end
             player.menu.saveStats = not player.menu.saveStats
         end
-    end
-    if player.location == "round" and key == "g" then
-        spawnMagmaPool()
     end
 end
 

@@ -108,7 +108,8 @@ function loadGame()
                 magmaTouch = {enemiesKilled = 0, damageDealt = 0, spawned = 0},
                 lightningOrb = {enemiesKilled = 0, damageDealt = 0, spawned = 0},
                 JerelosBlessing = {triggered = 0, healthRegenerated = 0},
-                supercritical = {triggered = 0, damageDealt = 0}
+                supercritical = {triggered = 0, damageDealt = 0},
+                disruptWave = {triggered = 0, damageDealt = 0}
             },
         },
         abilities = {
@@ -303,6 +304,16 @@ function loadGame()
             triggered = loadedData.stats.supercritical.triggered or player.stats.save.supercritical.triggered,
             damageDealt = loadedData.stats.supercritical.damageDealt or player.stats.save.supercritical.damageDealt
         }
+        player.stats.save.disruptWave = loadedData.stats.disruptWave and
+        {
+            triggered = loadedData.stats.disruptWave.triggered or player.stats.save.disruptWave.triggered,
+            damageDealt = loadedData.stats.disruptWave.damageDealt or player.stats.save.disruptWave.damageDealt
+        }
+        or
+        {
+            triggered = 0,
+            damageDealt = 0
+        }
         player.abilities = {
             equipped = 0,
             maxEquipped = 1
@@ -376,7 +387,8 @@ function loadGame()
     player.menu = {
         abilities = {},
         saveStats = false,
-        rolledAbilityDisplay = false
+        rolledAbilityDisplay = false,
+        debugInfo = false
     }
 
     abilityFunctions.updateLeveling()
@@ -558,7 +570,8 @@ function resetRoundValues()
         magmaTouch = {enemiesKilled = 0, damageDealt = 0, spawned = 0},
         lightningOrb = {enemiesKilled = 0, damageDealt = 0, spawned = 0},
         JerelosBlessing = {triggered = 0, healthRegenerated = 0},
-        supercritical = {triggered = 0, damageDealt = 0}
+        supercritical = {triggered = 0, damageDealt = 0},
+        disruptWave = {triggered = 0, damageDealt = 0}
     }
     player.stats.wave = {enemiesKilled = 0}
     enemyAttributes = {}
@@ -589,4 +602,6 @@ function resetRoundValues()
     lightningOrb_lasers = {}
     sentryAlive = false
     centurionAlive = false
+
+    processUpgradeModule.reload()
 end

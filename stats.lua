@@ -48,6 +48,8 @@ function statsMenus.savefile.draw()
         "Jerelo's Blessing - Health Regenerated",
         "Supercritical - Hits",
         "Supercritical - Damage Dealt",
+        "Disruption Wave - Triggered",
+        "Disruption Wave - Damage Dealt",
     }
     local statVars = {
         {player.stats.save.enemiesKilled, "brief"},
@@ -89,7 +91,10 @@ function statsMenus.savefile.draw()
         {player.stats.save.JerelosBlessing.healthRegenerated, "precise"},
 
         {player.stats.save.supercritical.triggered, "brief"},
-        {player.stats.save.supercritical.damageDealt, "precise"}
+        {player.stats.save.supercritical.damageDealt, "precise"},
+
+        {player.stats.save.disruptWave.triggered, "brief"},
+        {player.stats.save.disruptWave.damageDealt, "precise"}
     }
     for i=1,math.min(#statNames, #statVars) do
         love.graphics.setScissor(710, 280, 500, 490)
@@ -167,7 +172,9 @@ function statsMenus.battle.draw()
         "Jerelo's Blessing - Triggered",
         "Jerelo's Blessing - Health Regenerated",
         "Supercritical - Hits",
-        "Supercritical - Damage Dealt"
+        "Supercritical - Damage Dealt",
+        "Disruption Wave - Triggered",
+        "Disruption Wave - Damage Dealt"
     }
     local statVars = {
         player.stats.battle.gameTime,
@@ -212,7 +219,10 @@ function statsMenus.battle.draw()
         {player.stats.battle.JerelosBlessing.healthRegenerated, "precise"},
 
         {player.stats.battle.supercritical.triggered, "brief"},
-        {player.stats.battle.supercritical.damageDealt, "precise"}
+        {player.stats.battle.supercritical.damageDealt, "precise"},
+
+        {player.stats.battle.disruptWave.triggered, "brief"},
+        {player.stats.battle.disruptWave.damageDealt, "precise"}
     }
     for i=1,math.min(#statNames, #statVars) do
         love.graphics.setScissor(710, 280, 500, 490)
@@ -247,8 +257,8 @@ function statsMenus.battle.draw()
 end
 
 function statsMenus.savefile.process(logicStep)
-    statTextScrollState = math.max(math.min(statTextScrollState + savefileVel.velx * logicStep, 0), 565-25*33)
-    statTextScrollState = math.max(math.min(statTextScrollState + savefileVel.vely * logicStep, 0), 565-25*33)
+    statTextScrollState = math.max(math.min(statTextScrollState + savefileVel.velx * logicStep, 0), 565-25*35)
+    statTextScrollState = math.max(math.min(statTextScrollState + savefileVel.vely * logicStep, 0), 565-25*35)
 
     -- Gradually reduce the velocity to create smooth scrolling effect.
     savefileVel.velx = savefileVel.velx - savefileVel.velx * math.min(logicStep * 7, 1)
@@ -256,8 +266,8 @@ function statsMenus.savefile.process(logicStep)
 end
 
 function statsMenus.battle.process(logicStep)
-    statTextScrollState = math.max(math.min(statTextScrollState + battleVel.velx * logicStep, 0), 565-25*36)
-    statTextScrollState = math.max(math.min(statTextScrollState + battleVel.vely * logicStep, 0), 565-25*36)
+    statTextScrollState = math.max(math.min(statTextScrollState + battleVel.velx * logicStep, 0), 565-25*38)
+    statTextScrollState = math.max(math.min(statTextScrollState + battleVel.vely * logicStep, 0), 565-25*38)
 
     -- Gradually reduce the velocity to create smooth scrolling effect.
     battleVel.velx = battleVel.velx - battleVel.velx * math.min(logicStep * 7, 1)

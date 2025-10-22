@@ -139,6 +139,10 @@ function saveGame()
             supercritical = {
                 triggered = player.stats.save.supercritical.triggered,
                 damageDealt = player.stats.save.supercritical.damageDealt
+            },
+            disruptWave = {
+                triggered = player.stats.save.disruptWave.triggered,
+                damageDealt = player.stats.save.disruptWave.damageDealt
             }
         },
 
