@@ -122,6 +122,12 @@ function tooltips.general()
             {1110, 268, 24, 24, 150, 75, "Class Probabilities:\nD: 60%\nC: 25%\nB: 10%\nA: 5%"}
         }
 
+        function tooltips.displayDiscordTooltip()
+            if tooltips.hoverCheck(1710, 31, 80, 62) then
+                tooltips.appearance(110, 20, "Join our Discord.")
+            end
+        end
+
         function tooltips.displayAbilityInfo()
             for i,v in ipairs(abilityInfoTooltips) do
                 if tooltips.hoverCheck(abilityInfoTooltips[i][1], abilityInfoTooltips[i][2], abilityInfoTooltips[i][3], abilityInfoTooltips[i][4]) then

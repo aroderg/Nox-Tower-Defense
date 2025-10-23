@@ -147,6 +147,7 @@ function love.load()
 
         --Miscere
         img_exploder_aoe = love.graphics.newImage("assets/exploder_aoe_big.png")
+        img_discordLogo = love.graphics.newImage("assets/discord.png")
     end
 
     --- Reloads all fonts.
@@ -232,7 +233,7 @@ function reloadIdleGains()
     local gold = 0
     for i=1,4 do
         local diffIndex = "d" .. i
-        silver = silver + 0.86 * math.floor(player.bestWaves[diffIndex] / 10)
+        silver = silver + 0.8 * math.floor(player.bestWaves[diffIndex] / 10)
         gold = gold + 0.024 * math.floor(player.bestWaves[diffIndex] / 100)
     end
     return silver, gold

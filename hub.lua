@@ -121,6 +121,7 @@ function inHub_visual()
         love.graphics.setColor(1, 1, 1, 1)
         love.graphics.printf("Stats", 1780, 61, 158, "center")
         love.graphics.setLineWidth(1)
+        love.graphics.draw(img_discordLogo, 1710, 22, 0, 80/512, 80/512)
         
         if hubSection == "Main" then
             love.graphics.setFont(font_Afacad16)
@@ -148,6 +149,9 @@ function inHub_visual()
             love.graphics.setFont(font_Afacad28)
             love.graphics.setColor(1, 1, 1, 1)
             love.graphics.printf("Battle", 780, 920, 360, "center")
+            if not player.menu.settings and not player.menu.saveStats then
+                tooltips.displayDiscordTooltip()
+            end
             
         elseif hubSection == "Science" then
 
@@ -334,8 +338,8 @@ function inHub_visual()
             love.graphics.setColor(1, 1, 1, 1)
             love.graphics.draw(img_currency_silver, 1657, 360)
             love.graphics.draw(img_currency_gold, 1657, 392)
-            love.graphics.printf(string.format("+%.1f/min -> %s", player.idleGains.silver, notations.convertToLetterNotation(player.storedGains.silver)), 1691, 363, 300, "left")
-            love.graphics.printf(string.format("+%.2f/min -> %s", player.idleGains.gold, player.storedGains.gold), 1691, 395, 300, "left")
+            love.graphics.printf(string.format("+%.2f/min -> %s", player.idleGains.silver, notations.convertToLetterNotation(player.storedGains.silver, "precise2")), 1691, 363, 300, "left")
+            love.graphics.printf(string.format("+%.2f/min -> %.2f", player.idleGains.gold, player.storedGains.gold), 1691, 395, 300, "left")
             love.graphics.setLineStyle("rough")
             love.graphics.rectangle("line", 1655, 465, 260, 30)
             love.graphics.setFont(font_Afacad20)
@@ -496,6 +500,9 @@ function inHub_mouse(x, y)
         end
         if x >= 1800 and x <= 1918 and y >= 62 and y <= 94 and not player.menu.settings and not player.menu.saveStats and not abilityFunctions.checkMenuDisplay() and not player.menu.rolledAbilityDisplay then
             player.menu.saveStats = true
+        end
+        if x >= 1710 and x <= 1790 and y >= 31 and y <= 93 then
+            love.system.openURL("https://discord.gg/V576eHJQH3")
         end
         
         --[[ Exit Hub and go to battle ]]--

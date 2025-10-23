@@ -1,3 +1,8 @@
+# NoxTD 1.1.1a Aurora
+### Oct 24th, 2025
+- Added link to the Discord server.
+- Made visual representation of Spiked Crystal explosion match the logic one.
+
 # NoxTD 1.1.1 Aurora
 ### Oct 22nd, 2025
 - Added the Blast Wave ability, regularly dealing damage to all enemies within the tower's range.

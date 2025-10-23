@@ -38,9 +38,9 @@ function abilityObjects.spikedCrystal.draw()
             love.graphics.draw(img_crystal_multilayered_l2, v.x + 11, v.y + 11, v.timer_lifespan / 5.75, 1, 1, 11, 11)
             love.graphics.draw(img_crystal_multilayered_l3, v.x + 11, v.y + 11, v.timer_lifespan / 5.75, 1, 1, 11, 11)
         else
-            local cs = math.min(1 + v.timer_explosion * 7.5, 2)
+            local cs = 2--local cs = math.min(1 + v.timer_explosion * 7.5, 2)
             love.graphics.setColor(1, 1, 1, 1 - v.timer_explosion / 0.2)
-            love.graphics.draw(img_crystal_aoe, v.x + 11 - 16 * cs, v.y + 11 - 16 * cs, 0, cs / 2, cs / 2)
+            love.graphics.draw(img_crystal_aoe, v.x + 11 - 24 * cs, v.y + 11 - 24 * cs, 0, cs * 0.75, cs * 0.75)
             love.graphics.setColor(1, 1, 1, 1)
             love.graphics.setColor(1, 1, 1, 1 - v.timer_explosion / v.timer_explosionDuration)
             love.graphics.draw(img_crystal_multilayered_l1, v.x + 11, v.y + 11, v.timer_explosion * 8, cs, 1, 11, 11)
@@ -87,7 +87,7 @@ function abilityObjects.spikedCrystal.process(logicStep)
             end
         end
         for j,w in ipairs(enemiesOnField) do
-            if v.x + 20 > w.x and v.x < w.x + size[w.type] and v.y + 20 > w.y and v.y < w.y + size[w.type] and player.tower.currentHealth > 0 and v.state == "alive" and math.dist(v.x + 11, v.y + 11, w.x + enemyOffsets[w.type], w.y + enemyOffsets[w.type]) < 64 then
+            if v.x + 20 > w.x and v.x < w.x + size[w.type] and v.y + 20 > w.y and v.y < w.y + size[w.type] and player.tower.currentHealth > 0 and v.state == "alive" and math.dist(v.x + 11, v.y + 11, w.x + enemyOffsets[w.type], w.y + enemyOffsets[w.type]) < 48 then
                 local damage = player.tower.attackDamage * (levelingInfo[1].damage[player.abilities.spikedCrystals.level + 1] / 100)
                 damageEnemy(j, damage, false, false, "spikedCrystal")
                 v.state = "exploding"
