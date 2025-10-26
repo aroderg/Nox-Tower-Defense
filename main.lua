@@ -1151,7 +1151,7 @@ function love.draw()
             local waveScale = math.min(timers.disruptWave, spreadTime) * (1/spreadTime) * (player.tower.range*2/512)
             local wavePosScale = math.min(timers.disruptWave, spreadTime) * (1/spreadTime)
             local fadeAlpha = math.min(math.max(timers.disruptWave - spreadTime, 0), fadeTime) * (0.8/fadeTime)
-            love.graphics.setColor(1, 1, 1, 0.8 - fadeAlpha)
+            love.graphics.setColor(1, 1, 1, player.stats.battle.gameTime > 1 and 0.8 - fadeAlpha or 0)
             love.graphics.draw(img_disruptWave, 960 - player.tower.range * wavePosScale, 540 - player.tower.range * wavePosScale, 0, waveScale)
         end
         renderParticles()
@@ -1396,10 +1396,10 @@ function love.draw()
     love.graphics.printf("v" .. gameVersionSemantic .. " - " .. love.timer.getFPS() .. "fps, " .. player.debug.memUsage .. "KB, " .. player.debug.UPS .. "ups", 1643, 0, 220, "right")
     if player.menu.debugInfo then
         love.graphics.setColor(0, 0, 0, 0.8)
-        love.graphics.rectangle("fill", 0, 0, 170, 305)
+        love.graphics.rectangle("fill", 0, 0, 170, 335)
         love.graphics.setColor(1, 1, 1, 0.25)
         love.graphics.setLineWidth(1)
-        love.graphics.rectangle("line", -1, -1, 171, 306)
+        love.graphics.rectangle("line", -1, -1, 171, 336)
         love.graphics.setColor(1, 1, 1, 1)
         love.graphics.print("pjc: " .. #projectilesOnField, 5, 0)
         love.graphics.print("enc: " .. #enemiesOnField, 5, 15)
@@ -1413,14 +1413,16 @@ function love.draw()
         love.graphics.print("nwt: " .. timers.nextWave, 5, 150)
         love.graphics.print("lot: " .. timers.lightningOrb, 5, 165)
         love.graphics.print("dwt: " .. timers.disruptWave, 5, 180)
+        love.graphics.print("tht: " .. player.tower.health / player.tower.regeneration, 5, 195)
+        love.graphics.print("rht: " .. (player.tower.health - player.tower.currentHealth) / player.tower.regeneration, 5, 210)
 
-        love.graphics.print("cbf: " .. misc.copperBuffer, 5, 210)
-        love.graphics.print("sbf: " .. misc.silverBuffer, 5, 225)
+        love.graphics.print("cbf: " .. misc.copperBuffer, 5, 240)
+        love.graphics.print("sbf: " .. misc.silverBuffer, 5, 255)
 
-        love.graphics.print("cpw: " .. player.tower.copperPerWave * player.tower.copperBonus, 5, 240)
-        love.graphics.print("spw: " .. player.tower.silverPerWave * player.tower.silverBonus * difficultyMultipliers[player.difficulty.difficulty], 5, 255)
-        love.graphics.print("dt: " .. love.timer.getDelta(), 5, 270)
-        love.graphics.print("lst: " .. logicStep, 5, 285)
+        love.graphics.print("cpw: " .. player.tower.copperPerWave * player.tower.copperBonus, 5, 270)
+        love.graphics.print("spw: " .. player.tower.silverPerWave * player.tower.silverBonus * difficultyMultipliers[player.difficulty.difficulty], 5, 285)
+        love.graphics.print("dt: " .. love.timer.getDelta(), 5, 300)
+        love.graphics.print("lst: " .. logicStep, 5, 315)
     end
 end
 
@@ -2035,7 +2037,7 @@ function love.keypressed(key)
         if player.location == "hub" then
             saveGame()
             love.event.quit()
-        else
+        elseif not player.menu.settings and not player.menu.battleStats and not player.menu.gameplayInfo and not gameOver then
             gameplay.gameSpeed = player.menu.paused and player.maxGameSpeed or 0
             player.menu.paused = not player.menu.paused
         end

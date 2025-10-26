@@ -122,6 +122,10 @@ function inHub_visual()
         love.graphics.printf("Stats", 1780, 61, 158, "center")
         love.graphics.setLineWidth(1)
         love.graphics.draw(img_discordLogo, 1710, 22, 0, 80/512, 80/512)
+        if not player.menu.settings and not player.menu.saveStats then
+            tooltips.displayDiscordTooltip()
+        end
+        love.graphics.setColor(1, 1, 1, 1)
         
         if hubSection == "Main" then
             love.graphics.setFont(font_Afacad16)
@@ -149,9 +153,6 @@ function inHub_visual()
             love.graphics.setFont(font_Afacad28)
             love.graphics.setColor(1, 1, 1, 1)
             love.graphics.printf("Battle", 780, 920, 360, "center")
-            if not player.menu.settings and not player.menu.saveStats then
-                tooltips.displayDiscordTooltip()
-            end
             
         elseif hubSection == "Science" then
 
@@ -408,7 +409,10 @@ function inHub_visual()
                 love.graphics.rectangle("line", abilityFunctions.calculateOffset(i), 390 + math.floor((i - 1) / 5) * 230, 150, 100)
                 love.graphics.setLineWidth(2)
                 love.graphics.setLineStyle("smooth")
-                local borderColor = v.level < #v.levelRequirements - 1 and {1, 1, 1, 1} or {1, 0.5, 0, 1}
+                local nextLvlReq = (v.level < #v.levelRequirements - 1) and (v.levelRequirements[v.level + 1]) or math.huge
+                local borderColor =
+                --(v.level < #v.levelRequirements - 1) and {1, 1, 1, 1} or
+                (v.amount >= nextLvlReq) and {0, 1, 0, 1} or (v.level < #v.levelRequirements - 1) and {1, 1, 1, 1} or {1, 0.5, 0, 1}
                 love.graphics.setColor(borderColor)
                 love.graphics.rectangle("line", abilityFunctions.calculateOffset(i), 360 + math.floor((i - 1) / 5) * 230, 150, 200, 2, 2)
                 love.graphics.setColor(1, 1, 1, 1)
@@ -460,10 +464,10 @@ function inHub_visual()
                     abilitiesFromRolledClass[rolledAbility].class == "A" and {0.25, 0.9, 0.75, 1} or
                     {1, 1, 1, 1}
                 local amountColor =
-                    abilitiesFromRolledClass[rolledAbility].amount < abilitiesFromRolledClass[rolledAbility].nextLevelRequirement and {1, 0.4, 0.35, 1} or
+                    abilitiesFromRolledClass[rolledAbility].amount < abilitiesFromRolledClass[rolledAbility].nextLevelRequirement - 1 and {1, 0.4, 0.35, 1} or
                     {0.35, 1, 0.5, 1}
                 love.graphics.printf({{1, 1, 1, 1}, "Class: ", classColor, abilitiesFromRolledClass[rolledAbility].class}, 675, 515, 150, "center")
-                love.graphics.printf({{1, 1, 1, 1}, "Amount: ", amountColor, abilitiesFromRolledClass[rolledAbility].amount + 1, {1, 1, 1, 1}, "/", {0.35, 1, 0.5, 1}, abilitiesFromRolledClass[rolledAbility].nextLevelRequirement}, 675, 535, 150, "center")
+                love.graphics.printf({{1, 1, 1, 1}, "Amount: ", amountColor, abilitiesFromRolledClass[rolledAbility].amount + (abilitiesFromRolledClass[rolledAbility].unlocked and 1 or 0), {1, 1, 1, 1}, "/", {0.35, 1, 0.5, 1}, abilitiesFromRolledClass[rolledAbility].nextLevelRequirement}, 675, 535, 150, "center")
                 local roleTagColor = roleColors[(tostring(abilitiesFromRolledClass[rolledAbility].tags.role)):sub(1, 1):lower() .. (tostring(abilitiesFromRolledClass[rolledAbility].tags.role)):sub(2, -1)]
                 love.graphics.setColor(roleTagColor)
                 love.graphics.rectangle("fill", 680, 485, 15, 15, 2, 2)
@@ -712,7 +716,7 @@ function inHub_mouse(x, y)
                 if player.currencies.currentTokens >= 60 then
                     if player.timers.abilityAssembly == 0 and not player.misc.abilityAssembling and not player.menu.settings then
                         player.currencies.currentTokens = player.currencies.currentTokens - 60
-                        player.cooldowns.abilityAssembly_current = love.math.random(player.cooldowns.abilityAssembly_min, player.cooldowns.abilityAssembly_max)
+                        player.cooldowns.abilityAssembly_current = 2--love.math.random(player.cooldowns.abilityAssembly_min, player.cooldowns.abilityAssembly_max)
                         player.timers.abilityAssembly = 0
                         player.misc.abilityAssembling = true
                         player.canClaim.ability = false
@@ -738,8 +742,12 @@ function inHub_mouse(x, y)
                     end
                     rolledAbility = love.math.random(1, #abilitiesFromRolledClass)
                     rolledInternalAbility = abilitiesFromRolledClass[rolledAbility].internalName
+                    if player.abilities[rolledInternalAbility].unlocked then
+                        player.abilities[rolledInternalAbility].amount = player.abilities[rolledInternalAbility].amount + 1
+                    else
+                        player.abilities[rolledInternalAbility].amount = 0
+                    end
                     player.abilities[rolledInternalAbility].unlocked = true
-                    player.abilities[rolledInternalAbility].amount = player.abilities[rolledInternalAbility].amount + 1
                     player.menu.rolledAbilityDisplay = true
                     player.timers.abilityAssembly = 0
                     player.misc.abilityAssembling = false

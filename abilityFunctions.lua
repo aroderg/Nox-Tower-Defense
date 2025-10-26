@@ -399,7 +399,7 @@ function abilityFunctions.updateInternals()
             name = "Tank Kit",
             internalName = "tankKit",
             effect = {{1, 1, 1, 1}, "Exchange ", {0.44, 0.46, 1, 1}, levelingInfo[10].attackDamageDecrease, {1, 1, 1, 1}, "% of the tower's attack damage and ", {0, 0.95, 1}, levelingInfo[10].attackSpeedDecrease, {1, 1, 1, 1}, "% of attack speed for a ", {0.68, 0.35, 1, 1}, levelingInfo[10].healthStatsIncrease[player.abilities.tankKit.level + 1], {1, 1, 1, 1}, "% additional HP and regeneration, and a ", {0, 1, 0.63, 1}, levelingInfo[10].resistanceIncrease[player.abilities.tankKit.level + 1], {1, 1, 1, 1}, "% resistance bonus."},
-            tags = {condition = "None", role = "Passive", AoE = false, category = "VIT"},
+            tags = {condition = "None", role = "Passive", AoE = false, category = "VIT", incompatibilities = {"supercritical"}},
             frequency = 1,
             level = player.abilities.tankKit.level,
             preview = img_ability_preview_tankKit,
@@ -415,7 +415,7 @@ function abilityFunctions.updateInternals()
             name = "Supercritical",
             internalName = "supercritical",
             effect = {{1, 1, 1, 1}, "Gives the tower a ", {1, 0.85, 0.58, 1}, levelingInfo[11].criticalChanceIncrease[player.abilities.supercritical.level + 1], {1, 1, 1, 1}, "% Critical Chance increase, x", {1, 0.71, 0.47}, levelingInfo[11].criticalFactorIncrease[player.abilities.supercritical.level + 1], {1, 1, 1, 1}, " Critical Factor increase, and ", {1, 0.29, 0.84, 1}, levelingInfo[11].supercriticalChance[player.abilities.supercritical.level + 1], {1, 1, 1, 1}, "% chance to deal additional x", {1, 0.2, 0.63, 1}, levelingInfo[11].supercriticalFactor[player.abilities.supercritical.level + 1], {1, 1, 1, 1}, " amount of critical damage on a Critical hit."},
-            tags = {condition = "None, Projectile Fired", role = "Active", AoE = false, category = "ATK"},
+            tags = {condition = "None, Projectile Fired", role = "Active", AoE = false, category = "ATK", incompatibilities = {"tankKit"}},
             frequency = 1,
             level = player.abilities.supercritical.level,
             preview = img_ability_preview_supercritical,
@@ -440,8 +440,8 @@ function abilityFunctions.updateInternals()
             menu = player.menu.abilities.disruptWave,
             amount = player.abilities.disruptWave.amount,
             class = "B",
-            nextLevelRequirement = levelingInfo[11].levelRequirements[player.abilities.disruptWave.level + 1],
-            levelRequirements = levelingInfo[11].levelRequirements
+            nextLevelRequirement = levelingInfo[12].levelRequirements[player.abilities.disruptWave.level + 1],
+            levelRequirements = levelingInfo[12].levelRequirements
         }
         
     }
