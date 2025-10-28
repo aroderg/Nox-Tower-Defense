@@ -38,7 +38,7 @@ function abilityObjects.spikedCrystal.draw()
             love.graphics.draw(img_crystal_multilayered_l2, v.x + 11, v.y + 11, v.timer_lifespan / 5.75, 1, 1, 11, 11)
             love.graphics.draw(img_crystal_multilayered_l3, v.x + 11, v.y + 11, v.timer_lifespan / 5.75, 1, 1, 11, 11)
         else
-            local cs = 2--local cs = math.min(1 + v.timer_explosion * 7.5, 2)
+            local cs = math.min(1 + v.timer_explosion * 7.5, 2)
             love.graphics.setColor(1, 1, 1, 1 - v.timer_explosion / 0.2)
             love.graphics.draw(img_crystal_aoe, v.x + 11 - 24 * cs, v.y + 11 - 24 * cs, 0, cs * 0.75, cs * 0.75)
             love.graphics.setColor(1, 1, 1, 1)

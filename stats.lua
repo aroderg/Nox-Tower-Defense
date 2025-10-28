@@ -37,7 +37,7 @@ function statsMenus.savefile.draw()
         "Scatter Fire - Triggered",
         "Burst Fire - Damage Dealt",
         "Burst Fire - Triggered",
-        "Rainforest - Triggered",
+        "Ice Domain - Triggered",
         "Magma Touch - Enemies Killed",
         "Magma Touch - Damage Dealt",
         "Magma Touch - Pools Spawned",
@@ -77,7 +77,7 @@ function statsMenus.savefile.draw()
         {player.stats.save.burstFire.damageDealt, "precise"},
         {player.stats.save.burstFire.triggered, "brief"},
 
-        {player.stats.save.rainforest.triggered, "brief"},
+        {player.stats.save.iceDomain.triggered, "brief"},
 
         {player.stats.save.magmaTouch.enemiesKilled, "brief"},
         {player.stats.save.magmaTouch.damageDealt, "precise"},
@@ -162,7 +162,7 @@ function statsMenus.battle.draw()
         "Scatter Fire - Triggered",
         "Burst Fire - Damage Dealt",
         "Burst Fire - Triggered",
-        "Rainforest - Triggered",
+        "Ice Domain - Triggered",
         "Magma Touch - Enemies Killed",
         "Magma Touch - Damage Dealt",
         "Magma Touch - Pools Spawned",
@@ -205,7 +205,7 @@ function statsMenus.battle.draw()
         {player.stats.battle.burstFire.damageDealt, "precise"},
         {player.stats.battle.burstFire.triggered, "brief"},
 
-        {player.stats.battle.rainforest.triggered, "brief"},
+        {player.stats.battle.iceDomain.triggered, "brief"},
 
         {player.stats.battle.magmaTouch.enemiesKilled, "brief"},
         {player.stats.battle.magmaTouch.damageDealt, "precise"},

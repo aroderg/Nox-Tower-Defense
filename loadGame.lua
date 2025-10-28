@@ -104,7 +104,7 @@ function loadGame()
                 spikedCrystals = {enemiesKilled = 0, damageDealt = 0, spawned = 0},
                 scatterFire = {damageDealt = 0, triggered = 0},
                 burstFire = {damageDealt = 0, triggered = 0},
-                rainforest = {triggered = 0},
+                iceDomain = {triggered = 0},
                 magmaTouch = {enemiesKilled = 0, damageDealt = 0, spawned = 0},
                 lightningOrb = {enemiesKilled = 0, damageDealt = 0, spawned = 0},
                 JerelosBlessing = {triggered = 0, healthRegenerated = 0},
@@ -118,7 +118,7 @@ function loadGame()
             spikedCrystals = {unlocked = false, level = 0, equipped = false, amount = 0},
             scatterFire = {unlocked = false, level = 0, equipped = false, amount = 0},
             burstFire = {unlocked = false, level = 0,equipped = false, amount = 0},
-            rainforest = {unlocked = false, level = 0, equipped = false, amount = 0},
+            iceDomain = {unlocked = false, level = 0, equipped = false, amount = 0},
             magmaTouch = {unlocked = false, level = 0, equipped = false, amount = 0},
             lightningOrb = {unlocked = false, level = 0, equipped = false, amount = 0},
             JerelosBlessing = {unlocked = false, level = 0, equipped = false, amount = 0},
@@ -128,7 +128,7 @@ function loadGame()
             supercritical = {unlocked = false, level = 0, equipped = false, amount = 0},
             disruptWave = {unlocked = false, level = 0, equipped = false, amount = 0}
         },
-        misc = {abilityAssembling = false, tokensRefundable = true, theme = "aurora", currentOrbital = love.math.random(27, 30)}
+        misc = {abilityAssembling = false, tokensRefundable = true, theme = "aurora", currentOrbital = love.math.random(33, 33)}
     }
 
     -- Check if SAVEFILE.sav is present in the game dir
@@ -160,7 +160,7 @@ function loadGame()
             currentElectrum = loadedData.currentElectrum or player.currencies.currentElectrum,
             currentTokens = loadedData.currentTokens or player.currencies.currentTokens,
         }
-        player.idleTimeCap = player.idleTimeCap or 21600 --how long my friend can la
+        player.idleTimeCap = player.idleTimeCap or 21600
         player.idleGains = {silver = loadedData.idleGains.silver or player.idleGains.silver, gold = loadedData.idleGains.gold or player.idleGains.gold}
         player.timeModified = loadedData.timeModified or player.timeModified
         local oldIdleTime = loadedData.idleTime
@@ -283,8 +283,11 @@ function loadGame()
             damageDealt = loadedData.stats.burstFire.damageDealt or player.stats.save.burstFire.damageDealt,
             triggered = loadedData.stats.burstFire.triggered or player.stats.save.burstFire.triggered
         }
-        player.stats.save.rainforest = {
-            triggered = loadedData.stats.rainforest.triggered or player.stats.save.rainforest.triggered
+        if not loadedData.stats.iceDomain then
+            loadedData.stats.iceDomain = {triggered = 0}
+        end
+        player.stats.save.iceDomain = {
+            triggered = loadedData.stats.iceDomain.triggered or player.stats.save.iceDomain.triggered
         }
         player.stats.save.magmaTouch = {
             enemiesKilled = loadedData.stats.magmaTouch.enemiesKilled or player.stats.save.magmaTouch.triggered,
@@ -318,7 +321,7 @@ function loadGame()
             equipped = 0,
             maxEquipped = 1
         }
-        local abilityNames = {"spikedCrystals", "scatterFire", "burstFire", "rainforest", "magmaTouch", "lightningOrb", "JerelosBlessing", "berserkerKit", "sniperKit", "tankKit", "supercritical", "disruptWave"}
+        local abilityNames = {"spikedCrystals", "scatterFire", "burstFire", "iceDomain", "magmaTouch", "lightningOrb", "JerelosBlessing", "berserkerKit", "sniperKit", "tankKit", "supercritical", "disruptWave"}
         for i,v in ipairs(abilityNames) do
             if not loadedData.abilities[abilityNames[i]] then
                 loadedData.abilities[abilityNames[i]] = {
@@ -539,7 +542,7 @@ function resetRoundValues()
     }
 
     --[[ Gameplay properties ]]--
-    gameplay = {difficulty = player.difficulty.difficulty, wave = 1, gameSpeed = player.maxGameSpeed}
+    gameplay = {difficulty = player.difficulty.difficulty, wave = 20, gameSpeed = player.maxGameSpeed}
     misc = {
         copperBuffer = 0,
         silverBuffer = 0,
@@ -566,7 +569,7 @@ function resetRoundValues()
         spikedCrystals = {enemiesKilled = 0, damageDealt = 0, spawned = 0},
         scatterFire = {damageDealt = 0, triggered = 0},
         burstFire = {damageDealt = 0, triggered = 0},
-        rainforest = {triggered = 0},
+        iceDomain = {triggered = 0},
         magmaTouch = {enemiesKilled = 0, damageDealt = 0, spawned = 0},
         lightningOrb = {enemiesKilled = 0, damageDealt = 0, spawned = 0},
         JerelosBlessing = {triggered = 0, healthRegenerated = 0},

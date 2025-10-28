@@ -26,6 +26,7 @@ function love.load()
         img_background_eclipse = love.graphics.newImage("assets/background_eclipse.png")
         img_background_nova = love.graphics.newImage("assets/background_nova.png")
         img_background_aurora = love.graphics.newImage("assets/background_aurora.png")
+        --img_background_interstellar = love.graphics.newImage("assets/background_interstellar.png")
 
         --Currencies
         img_currency_copper = love.graphics.newImage("assets/currency_copper.png")
@@ -94,6 +95,7 @@ function love.load()
         img_crystal_multilayered_l3 = love.graphics.newImage("assets/crystal_multilayered_l3.png")
         img_crystal_aoe = love.graphics.newImage("assets/crystal_aoe.png")
         img_rainforest = love.graphics.newImage("assets/rainforest.png")
+        img_ice_domain = love.graphics.newImage("assets/ice_domain.png")
         img_magmaTouch_pool = love.graphics.newImage("assets/magmaTouch_pool.png")
         img_lightningOrb = love.graphics.newImage("assets/lightningOrb.png")
         img_lightningOrb_shadow = love.graphics.newImage("assets/lightningOrb_shadow.png")
@@ -116,6 +118,7 @@ function love.load()
         img_ability_preview_scatterFire = love.graphics.newImage("assets/ability_preview_scatterFire.png")
         img_ability_preview_burstFire = love.graphics.newImage("assets/ability_preview_burstFire.png")
         img_ability_preview_rainforest = love.graphics.newImage("assets/ability_preview_rainforest.png")
+        img_ability_preview_iceDomain = love.graphics.newImage("assets/ability_preview_iceDomain.png")
         img_ability_preview_magmaTouch = love.graphics.newImage("assets/ability_preview_magmaTouch.png")
         img_ability_preview_lightningOrb = love.graphics.newImage("assets/ability_preview_lightningOrb.png")
         img_ability_preview_JerelosBlessing = love.graphics.newImage("assets/ability_preview_JerelosBlessing.png")
@@ -231,7 +234,7 @@ function math.dist(x1,y1, x2,y2) return ((x2-x1)^2+(y2-y1)^2)^0.5 end
 function reloadIdleGains()
     local silver = 0
     local gold = 0
-    for i=1,4 do
+    for i=1,5 do
         local diffIndex = "d" .. i
         silver = silver + 0.8 * math.floor(player.bestWaves[diffIndex] / 10)
         gold = gold + 0.024 * math.floor(player.bestWaves[diffIndex] / 100)
@@ -269,8 +272,8 @@ function processUpgradeModule.reload()
             },
 
             ["UTL"] = {
-                {"Copper/wave", 10, 850, 350, 60, player.tower.copperPerWave, player.upgrades.round.copperPerWave.cost, player.upgrades.round.copperPerWave.level, "round", math.huge, "precise", nil, nil, ["precedingUpgrade"] = 0}, --Copper/wave Science Upgrade
-                {"Silver/wave", 10, 920, 350, 60, player.tower.silverPerWave, player.upgrades.round.silverPerWave.cost, player.upgrades.round.silverPerWave.level, "round", math.huge, "precise", nil, nil, ["precedingUpgrade"] = 0}, --Silver/wave Science Upgrade
+                {"Copper/Wave", 10, 850, 350, 60, player.tower.copperPerWave, player.upgrades.round.copperPerWave.cost, player.upgrades.round.copperPerWave.level, "round", math.huge, "precise", nil, nil, ["precedingUpgrade"] = 0}, --Copper/wave Science Upgrade
+                {"Silver/Wave", 10, 920, 350, 60, player.tower.silverPerWave, player.upgrades.round.silverPerWave.cost, player.upgrades.round.silverPerWave.level, "round", math.huge, "precise", nil, nil, ["precedingUpgrade"] = 0}, --Silver/wave Science Upgrade
                 {"Copper Bonus", 10, 990, 350, 60, player.tower.copperBonus, player.upgrades.round.copperBonus.cost, player.upgrades.round.copperBonus.level, "round", 451, "precise2", "x", nil, ["precedingUpgrade"] = player.upgrades.unlocks.resourceBonus}, --Copper Bonus Science Upgrade
                 {"Silver Bonus", 370, 850, 350, 60, player.tower.silverBonus, player.upgrades.round.silverBonus.cost, player.upgrades.round.silverBonus.level, "round", 301, "precise2", "x", nil, ["precedingUpgrade"] = player.upgrades.unlocks.resourceBonus} --Silver Bonus Science Upgrade
             }
@@ -300,8 +303,8 @@ function processUpgradeModule.reload()
             },
 
             ["UTL"] = {
-                {"Copper/wave", 245, 840, 350, 60, player.tower.copperPerWave, player.upgrades.science.copperPerWave.cost, player.upgrades.science.copperPerWave.level, "science", math.huge, "precise", nil, nil, ["precedingUpgrade"] = 0}, --Copper/wave Science Upgrade
-                {"Silver/wave", 605, 840, 350, 60, player.tower.silverPerWave, player.upgrades.science.silverPerWave.cost, player.upgrades.science.silverPerWave.level, "science", math.huge, "precise", nil, nil, ["precedingUpgrade"] = 0}, --Silver/wave Science Upgrade
+                {"Copper/Wave", 245, 840, 350, 60, player.tower.copperPerWave, player.upgrades.science.copperPerWave.cost, player.upgrades.science.copperPerWave.level, "science", math.huge, "precise", nil, nil, ["precedingUpgrade"] = 0}, --Copper/wave Science Upgrade
+                {"Silver/Wave", 605, 840, 350, 60, player.tower.silverPerWave, player.upgrades.science.silverPerWave.cost, player.upgrades.science.silverPerWave.level, "science", math.huge, "precise", nil, nil, ["precedingUpgrade"] = 0}, --Silver/wave Science Upgrade
                 {"Copper Bonus", 965, 840, 350, 60, player.tower.copperBonus, player.upgrades.science.copperBonus.cost, player.upgrades.science.copperBonus.level, "science", 451, "precise2", "x", nil, ["precedingUpgrade"] = player.upgrades.unlocks.resourceBonus, "resourceBonus"}, --Copper Bonus Science Upgrade
                 {"Silver Bonus", 1325, 840, 350, 60, player.tower.silverBonus, player.upgrades.science.silverBonus.cost, player.upgrades.science.silverBonus.level, "science", 301, "precise2", "x", nil, ["precedingUpgrade"] = player.upgrades.unlocks.resourceBonus, "resourceBonus"} --Silver Bonus Science Upgrade
             }
@@ -1028,7 +1031,6 @@ function updateEnemyStats(difficulty, wave)
         pendingEnemies = 5 + math.floor(math.sqrt(6 * wave))
         enemyAttributes.health = (1.95 + 1/20 * (1.25 * wave)^2.5 - 0.037) * 1.2 ^ math.floor(wave / 100)
         enemyAttributes.attackDamage = (0.875 + wave^2.25 / 40 + 0.1 * wave^2) * 1.1 ^ math.floor(wave / 100)
-        enemyAttributes.speed = 60
         tankSpawnChance = math.min(math.floor(math.log(wave^2, 10) * 100) / 100, 4)
         swiftSpawnChance = math.min(math.floor(math.log(wave^3, 10) * 100) / 100, 6)
     elseif difficulty == 2 then
@@ -1037,7 +1039,6 @@ function updateEnemyStats(difficulty, wave)
         pendingEnemies = 7 + math.floor(3 * math.sqrt(1.2 * wave))
         enemyAttributes.health = (243.95 + 4 * wave^2 + 2.05 * wave^3) * 1.23 ^ math.floor(wave / 100)
         enemyAttributes.attackDamage = (70.73 + 9 * wave + 0.279 * wave^3) * 1.13 ^ math.floor(wave / 100)
-        enemyAttributes.speed = 68
         tankSpawnChance = math.min(math.floor((math.log(wave^5, 10))^0.75 * 100) / 100, 6)
         swiftSpawnChance = math.min(math.floor(math.log(wave^3.75, 10) * 100) / 100, 8)
         exploderSpawnChance = math.min(0.01 * wave, 1.5)
@@ -1047,7 +1048,6 @@ function updateEnemyStats(difficulty, wave)
         pendingEnemies = 10 + 2 * math.floor((math.sqrt(17 * wave)) / 2)
         enemyAttributes.health = (1935.99 + (6 * wave)^2.2 + wave^3.2 / 10 * 125) * 1.26 ^ math.floor(wave / 100)
         enemyAttributes.attackDamage = (449.59 + 30 * wave + 0.411 * wave^3.45) * 1.16 ^ math.floor(wave / 100)
-        enemyAttributes.speed = 76
         tankSpawnChance = math.min(math.floor((math.sqrt(2.5 * wave - 2.5)^0.8) * 100) / 100, 10)
         swiftSpawnChance = math.min(math.floor((math.sqrt(2 * wave - 2) - math.log(wave^3, 10)) * 100) / 100, 12.5)
         exploderSpawnChance = math.min(0.014 * wave, 2.4)
@@ -1057,7 +1057,6 @@ function updateEnemyStats(difficulty, wave)
         pendingEnemies = 14 + 2 * math.floor((3 * math.sqrt(2.75 * wave)) / 2)
         enemyAttributes.health = (17791.09 + (8 * wave)^2.48 + 35.269 * wave^3.6) * 1.29 ^ math.floor(wave / 100)
         enemyAttributes.attackDamage = (3534.97 + 65 * wave^1.5 + 3 * wave^3.6) * 1.19 ^ math.floor(wave / 100)
-        enemyAttributes.speed = 84
         tankSpawnChance = math.min(math.floor((math.sqrt(4 * wave - 4)^0.85) * 100) / 100, 14)
         swiftSpawnChance = math.min(math.floor((math.sqrt(2 * wave - 2)^1.05) * 100) / 100, 18)
         exploderSpawnChance = math.min(0.019 * wave, 3)
@@ -1067,7 +1066,6 @@ function updateEnemyStats(difficulty, wave)
         pendingEnemies = 19 + 2 * math.floor((3 * math.sqrt(3 * wave)) / 1.9)
         enemyAttributes.health = (189391.18 + (14 * wave)^2.6 + 295.5 * (1/8 * (wave + 4)^3.9)) * 1.32 ^ math.floor(wave / 100)
         enemyAttributes.attackDamage = (7317.29 + 75 * wave^2.15 + 8.4 * (wave + 5)^3.8) * 1.22 ^ math.floor(wave / 100)
-        enemyAttributes.speed = 92
         tankSpawnChance = math.min(1.1 + math.floor((math.sqrt(4 * wave - 4)^0.85) * 100) / 100, 14)
         swiftSpawnChance = math.min(1.5 + math.floor((math.sqrt(2 * wave - 2)^1.05) * 100) / 100, 18)
         exploderSpawnChance = math.min(0.035 * wave, 5)
@@ -1075,6 +1073,7 @@ function updateEnemyStats(difficulty, wave)
     player.timers.nextWave = 0
     gameplay.waveCooldown = waveCooldowns[gameplay.difficulty]
     player.stats.wave.enemiesKilled = 0
+    enemyAttributes.speed = 70
     enemyAttributes.pendingEnemies = pendingEnemies
     enemyAttributes.waveCap = pendingEnemies
     enemyAttributes.spawn.tank = tankSpawnChance
@@ -1091,10 +1090,6 @@ function love.draw()
         love.graphics.setLineStyle("smooth")
         love.graphics.setColor(1, 1, 1, 0.5)
         love.graphics.ellipse("line", 960, 540, player.tower.range, player.tower.range)
-        love.graphics.setColor(1, 1, 1, 1)
-        if rainforestActive then
-            love.graphics.draw(img_rainforest, 960 - player.tower.range, 540 - player.tower.range, 0, (player.tower.range * 2 + 42) / 1080)
-        end
         love.graphics.setColor(1, 1, 0, 0.4)
         love.graphics.setLineWidth(1.5)
         love.graphics.ellipse("line", 960, 540, TOWER_SIZE, TOWER_SIZE)
@@ -1122,11 +1117,6 @@ function love.draw()
                 love.graphics.draw(quads_enemy_exploder, enemyAssets[v.type], x, y)
             else
                 love.graphics.draw(enemyAssets[v.type], x, y)
-            end
-            if rainforestActive and math.dist(v.x + enemyOffsets[v.type], v.y + enemyOffsets[v.type], 960, 540) <= player.tower.range then
-                love.graphics.setColor(0.4, 0.65, 0.1, 0.5)
-                love.graphics.ellipse("line", x + enemyOffsets[v.type], y + enemyOffsets[v.type], 14, 14)
-                love.graphics.setColor(1, 1, 1, 1)
             end
         end
         for i,v in ipairs(exploderAoEs) do
@@ -1161,6 +1151,10 @@ function love.draw()
         abilityObjects.lightningOrb_laser.draw()
         drawUpgradeMenu()
         towerInfo_visual()
+        if player.misc.iceDomainActive then
+            love.graphics.setColor(1, 1, 1, levelingInfo[4].density[player.abilities.iceDomain.level + 1] / 100)
+            love.graphics.draw(img_ice_domain, 960 - player.tower.range, 540 - player.tower.range, 0, (player.tower.range * 2 + 42) / 1080)
+        end
         love.graphics.setColor(1, 1, 1, 1)
         if sentryAlive then
             drawSentryBossbar()
@@ -1423,6 +1417,8 @@ function love.draw()
         love.graphics.print("spw: " .. player.tower.silverPerWave * player.tower.silverBonus * difficultyMultipliers[player.difficulty.difficulty], 5, 285)
         love.graphics.print("dt: " .. love.timer.getDelta(), 5, 300)
         love.graphics.print("lst: " .. logicStep, 5, 315)
+
+        love.graphics.print("stm: " .. tostring(player.menu.saveStats), 5, 330)
     end
 end
 
@@ -1573,13 +1569,13 @@ function love.update(dt)
                 centurion = TOWER_SIZE + 30,
                 exploder = TOWER_SIZE + 12
                 }
-            local rainforestMultiplier = rainforestActive and 1 - levelingInfo[4].density[player.abilities.rainforest.level + 1] / 100 or 1
+            local iceDomainSpeedMultiplier = player.misc.iceDomainActive and 1 - levelingInfo[4].density[player.abilities.iceDomain.level + 1] / 100 or 1
             if v.burningTime > 0 and gameplay.gameSpeed > 0 then
                 for i=1,love.math.random(-4, 1) * settings_particleMultipliers[player.settings.particleMultiplier] do
                     createBurnParticle(v.x, v.y, v.type)
                 end
             end
-            if v.timer_untilAttack < (1 / v.attackSpeed) / rainforestMultiplier then
+            if v.timer_untilAttack < (1 / v.attackSpeed) / iceDomainSpeedMultiplier then
                 v.timer_untilAttack = v.timer_untilAttack + logicStep * gameplay.gameSpeed
             else
                 --[[ If an enemy is close enough, start attacking the tower ]]--
@@ -1618,10 +1614,10 @@ function love.update(dt)
             --[[ Move each enemy towards the central tower if it is further than the specified distance ]]--
             if math.dist(v.x + enemyOffsets[v.type], v.y + enemyOffsets[v.type], 960, 540) > stopDistance[v.type] then
                 local hyperloopMultiplier = math.dist(v.x + enemyOffsets[v.type], v.y + enemyOffsets[v.type], 960, 540) > player.tower.range and 1 + player.modifiers.hyperloop.value / 100 or 1
-                local rainforestMultiplier = (rainforestActive and math.dist(v.x + enemyOffsets[v.type], v.y + enemyOffsets[v.type], 960, 540) <= player.tower.range) and 1 - levelingInfo[4].density[player.abilities.rainforest.level + 1] / 100 or 1
+                local iceDomainSpeedMultiplier = (player.misc.iceDomainActive and math.dist(v.x + enemyOffsets[v.type], v.y + enemyOffsets[v.type], 960, 540) <= player.tower.range) and 1 - levelingInfo[4].density[player.abilities.iceDomain.level + 1] / 100 or 1
                 v.angle = math.atan2(540 - v.y - 2 - enemyOffsets[v.type], 960 - v.x - 2 - enemyOffsets[v.type])
-                v.x = v.x + math.cos(v.angle) * v.speed * logicStep * gameplay.gameSpeed * hyperloopMultiplier * rainforestMultiplier
-                v.y = v.y + math.sin(v.angle) * v.speed * logicStep * gameplay.gameSpeed * hyperloopMultiplier * rainforestMultiplier
+                v.x = v.x + math.cos(v.angle) * v.speed * logicStep * gameplay.gameSpeed * hyperloopMultiplier * iceDomainSpeedMultiplier
+                v.y = v.y + math.sin(v.angle) * v.speed * logicStep * gameplay.gameSpeed * hyperloopMultiplier * iceDomainSpeedMultiplier
             end
             --[[ Regenerate 1% of Centurion health per second ]]
             if v.type == "centurion" and player.tower.currentHealth > 0 then
@@ -1807,15 +1803,15 @@ function love.update(dt)
         player.stats.battle.gameTime = player.stats.battle.gameTime + logicStep * gameplay.gameSpeed
         player.stats.battle.realTime = player.stats.battle.realTime + logicStep * (gameplay.gameSpeed ~= 0 and 1 or 0)
 
-        if player.abilities.rainforest.unlocked and player.abilities.rainforest.equipped then
+        if player.abilities.iceDomain.unlocked and player.abilities.iceDomain.equipped then
             if gameplay.wave >= 20 and (gameplay.wave % 10 <= 4) then
-                if not rainforestActive then
-                    rainforestActive = true
-                    player.stats.battle.rainforest.triggered = player.stats.battle.rainforest.triggered + 1
-                    player.stats.save.rainforest.triggered = player.stats.save.rainforest.triggered + 1
+                if not player.misc.iceDomainActive then
+                    player.misc.iceDomainActive = true
+                    player.stats.battle.iceDomain.triggered = player.stats.battle.iceDomain.triggered + 1
+                    player.stats.save.iceDomain.triggered = player.stats.save.iceDomain.triggered + 1
                 end
             else
-                rainforestActive = false
+                player.misc.iceDomainActive = false
             end
         end
 

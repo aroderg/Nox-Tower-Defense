@@ -35,12 +35,23 @@ function orbital.update(shuffle)
         "Ability of the Day: " .. internalAbilities[love.math.random(1, #internalAbilities)].name .. "",
         "Those " .. (player.modifiers.acceleration.unlocked and "accelerated " or "") .. "space battles look gorgeous.",
         "If you like offense, try the Berserker Kit. If you like defense, try the Tank Kit.",
-        "Don't waste your offline time!",
+        "Don't waste your offline time! It caps at 6 hours.",
         "Don't forget to check all the themes in the Settings.",
         "The Lifesteal upgrade can really save a run sometimes.",
-        "The Hub looks great with the " .. settings_themeNames[player.misc.theme] .. " theme. Check the others out!"
+        "The Hub looks great with the " .. settings_themeNames[player.misc.theme] .. " theme. Check the others out!",
+        "Disruptance Wave is great for crowd control.",
+        love.system.getOS() .. " user?",
+        "The harder the difficulty, the better the Silver Multiplier!",
+        "Pressing Escape while in a wave? That's the instant pause button now.",
+        "If you see an Ability border glowing orange, it's maxed. Time to celebrate!",
+        "It's not truly idle if you're not gaining Silver, right?",
+        "Built with LOVE2d. We hope you enjoy it!",
+        "A lone tower against the cosmos. That's the Nox way.",
+        "Feeling impatient? Wave Skip Chance can get you through quickly.",
+        "You can open Settings and Stats right from the Hub, too.",
+
     }
-    player.misc.currentOrbital = shuffle and love.math.random(27, 30) or player.misc.currentOrbital
+    player.misc.currentOrbital = shuffle and love.math.random(1, #orbitals) or player.misc.currentOrbital
     return orbitals[player.misc.currentOrbital]
 end
 
@@ -122,7 +133,7 @@ function inHub_visual()
         love.graphics.printf("Stats", 1780, 61, 158, "center")
         love.graphics.setLineWidth(1)
         love.graphics.draw(img_discordLogo, 1710, 22, 0, 80/512, 80/512)
-        if not player.menu.settings and not player.menu.saveStats then
+        if not player.menu.settings and not player.menu.saveStats and not player.menu.rolledAbilityDisplay and not abilityFunctions.checkMenuDisplay() then
             tooltips.displayDiscordTooltip()
         end
         love.graphics.setColor(1, 1, 1, 1)
@@ -499,15 +510,6 @@ function inHub_mouse(x, y)
                 hubSection = hubSections[i]
             end
         end
-        if x >= 1800 and x <= 1918 and y >= 22 and y <= 54 and not player.menu.settings and not player.menu.saveStats and not abilityFunctions.checkMenuDisplay() and not player.menu.rolledAbilityDisplay then
-            player.menu.settings = true
-        end
-        if x >= 1800 and x <= 1918 and y >= 62 and y <= 94 and not player.menu.settings and not player.menu.saveStats and not abilityFunctions.checkMenuDisplay() and not player.menu.rolledAbilityDisplay then
-            player.menu.saveStats = true
-        end
-        if x >= 1710 and x <= 1790 and y >= 31 and y <= 93 then
-            love.system.openURL("https://discord.gg/V576eHJQH3")
-        end
         
         --[[ Exit Hub and go to battle ]]--
         if hubSection == "Main" then
@@ -716,7 +718,7 @@ function inHub_mouse(x, y)
                 if player.currencies.currentTokens >= 60 then
                     if player.timers.abilityAssembly == 0 and not player.misc.abilityAssembling and not player.menu.settings then
                         player.currencies.currentTokens = player.currencies.currentTokens - 60
-                        player.cooldowns.abilityAssembly_current = 2--love.math.random(player.cooldowns.abilityAssembly_min, player.cooldowns.abilityAssembly_max)
+                        player.cooldowns.abilityAssembly_current = love.math.random(player.cooldowns.abilityAssembly_min, player.cooldowns.abilityAssembly_max)
                         player.timers.abilityAssembly = 0
                         player.misc.abilityAssembling = true
                         player.canClaim.ability = false
@@ -801,5 +803,14 @@ function inHub_mouse(x, y)
         if x >= 910 and x <= 1010 and y >= 780 and y <= 820 then
             player.menu.saveStats = false
         end
+    end
+    if x >= 1800 and x <= 1918 and y >= 22 and y <= 54 and not player.menu.settings and not abilityFunctions.checkMenuDisplay() and not player.menu.rolledAbilityDisplay and not player.menu.saveStats then
+        player.menu.settings = true
+    end
+    if x >= 1800 and x <= 1918 and y >= 62 and y <= 94 and not player.menu.settings and not abilityFunctions.checkMenuDisplay() and not player.menu.rolledAbilityDisplay and not player.menu.saveStats then
+        player.menu.saveStats = true
+    end
+    if x >= 1710 and x <= 1790 and y >= 31 and y <= 93 and not player.menu.settings and not abilityFunctions.checkMenuDisplay() and not player.menu.rolledAbilityDisplay and not player.menu.saveStats then
+        love.system.openURL("https://discord.gg/V576eHJQH3")
     end
 end

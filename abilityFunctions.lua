@@ -73,7 +73,7 @@ function abilityFunctions.showInfo.draw(ability)
             ability.class == "A" and {0.25, 0.9, 0.75, 1} or
             {1, 1, 1, 1}
         local freqSuffix = ability.tags.condition == "Time" and "s" or (ability.tags.condition == "Projectile Fired" or ability.tags.condition == "Wave Start") and "%" or ""
-        if ability.name == "Rainforest" then
+        if ability.name == "Ice Domain" then
             freqSuffix = " waves"
         end
         local rowOffset = freqSuffix ~= "" and -16 or 0
@@ -83,7 +83,7 @@ function abilityFunctions.showInfo.draw(ability)
         --love.graphics.printf("Event: " .. ability.event, 1035, 385, 224, "center")
         --love.graphics.printf({{1, 1, 1, 1}, "Frequency: ", {0.35, 0.95, 0.7, 1}, not ability.guaranteed and ability.frequency or string.format("1/%d", ability.frequency), {1, 1, 1, 1}, ability.guaranteed and "(G)" or "", {1, 1, 1, 1}, ability.event == "Time" and "s" or not ability.guaranteed and "%" or ""}, 1035, 415, 224, "center")
         if freqSuffix ~= "" then
-            love.graphics.printf(freqSuffix == "s" and string.format("Frequency: %.1f", ability.frequency) .. freqSuffix or string.format("Frequency: %.3f", ability.frequency) .. freqSuffix, 1035, 441 + rowOffset, 224, "center")
+            love.graphics.printf(freqSuffix == "s" and string.format("Frequency: %.1f", ability.frequency) .. freqSuffix or freqSuffix == " waves" and string.format("Frequency: %d", ability.frequency) .. freqSuffix or string.format("Frequency: %.2f", ability.frequency) .. freqSuffix, 1035, 441 + rowOffset, 224, "center")
         end
         love.graphics.setLineWidth(1)
         love.graphics.setLineStyle("smooth")
@@ -300,26 +300,26 @@ function abilityFunctions.updateInternals()
             levelRequirements = levelingInfo[3].levelRequirements
         },
         {
-            name = "Rainforest",
-            internalName = "rainforest",
-            effect = {{1, 1, 1, 1}, "Cover the tower's range in a dense rainforest for 5 waves, slowing all enemies' move and attack speed by ", {0.5, 0.85, 1, 1}, levelingInfo[4].density[player.abilities.rainforest.level + 1], {1, 1, 1, 1}, "%.\nFirst covering happens at wave 20."},
-            tags = {condition = "Wave Start", role = "Passive", AoE = true, category = "VIT"},
+            name = "Ice Domain",
+            internalName = "iceDomain",
+            effect = {{1, 1, 1, 1}, "Cover the tower's range by an icy catalyst, slowing all enemies' move and attack speed by ", {0.5, 0.85, 1, 1}, levelingInfo[4].density[player.abilities.iceDomain.level + 1], {1, 1, 1, 1}, "%.\nFirst covering happens at wave 20."},
+            tags = {condition = "Wave Start", role = "Passive", AoE = true, category = "VIT", incompatibilities = {"magmaTouch"}},
             frequency = levelingInfo[4].frequency,
-            level = player.abilities.rainforest.level,
-            preview = img_ability_preview_rainforest,
-            equipped = player.abilities.rainforest.equipped,
-            unlocked = player.abilities.rainforest.unlocked,
-            menu = player.menu.abilities.rainforest,
-            amount = player.abilities.rainforest.amount,
+            level = player.abilities.iceDomain.level,
+            preview = img_ability_preview_iceDomain,
+            equipped = player.abilities.iceDomain.equipped,
+            unlocked = player.abilities.iceDomain.unlocked,
+            menu = player.menu.abilities.iceDomain,
+            amount = player.abilities.iceDomain.amount,
             class = "A",
-            nextLevelRequirement = levelingInfo[4].levelRequirements[player.abilities.rainforest.level + 1],
+            nextLevelRequirement = levelingInfo[4].levelRequirements[player.abilities.iceDomain.level + 1],
             levelRequirements = levelingInfo[4].levelRequirements
         },
         {
             name = "Magma Touch",
             internalName = "magmaTouch",
             effect = {{1, 1, 1, 1}, "Summon a magma pool in a random position on the screen. Applies a burning effect on any enemy touching it, dealing ", {1, 0.6, 0.15, 1}, levelingInfo[5].damage[player.abilities.magmaTouch.level + 1], {1, 1, 1, 1}, "% damage each second for 4 seconds before disappearing. Maximum of 20 magma pools."},
-            tags = {condition = "Time", role = "Active", AoE = true, category = "VIT", incompatibilities = {"JerelosBlessing"}},
+            tags = {condition = "Time", role = "Active", AoE = true, category = "VIT", incompatibilities = {"JerelosBlessing", "iceDomain"}},
             frequency = levelingInfo[5].frequency[player.abilities.magmaTouch.level + 1] / player.upgrades.nexus.abilityCooldown.value,
             level = player.abilities.magmaTouch.level,
             preview = img_ability_preview_magmaTouch,
@@ -367,7 +367,7 @@ function abilityFunctions.updateInternals()
             name = "Berserker Kit",
             internalName = "berserkerKit",
             effect = {{1, 1, 1, 1}, "The tower sacrifices ", {0, 0.9, 0.75, 1}, levelingInfo[8].healthDecrease, {1, 1, 1, 1}, "% of its maximum health and ", {0, 0.1, 0.85, 1}, levelingInfo[8].resistanceDecrease, {1, 1, 1, 1}, "% of its resistance to instead increase its attack damage and attack speed by ", {0.6, 0.4, 0.75, 1}, levelingInfo[8].attackDamageIncrease[player.abilities.berserkerKit.level + 1], {1, 1, 1, 1}, "% and ", {0.45, 0.95, 0.8, 1}, levelingInfo[8].attackSpeedIncrease[player.abilities.berserkerKit.level + 1], {1, 1, 1, 1}, "% respectively.\nNegative Resistance = damage amplification."},
-            tags = {condition = "None", role = "Passive", AoE = false, category = "ATK"},
+            tags = {condition = "None", role = "Passive", AoE = false, category = "ATK", incompatibilities = {"sniperKit", "tankKit"}},
             frequency = 1,
             level = player.abilities.berserkerKit.level,
             preview = img_ability_preview_berserkerKit,
@@ -383,7 +383,7 @@ function abilityFunctions.updateInternals()
             name = "Sniper Kit",
             internalName = "sniperKit",
             effect = {{1, 1, 1, 1}, "Decreases the tower's attack speed by ", {0.8, 0.4, 0.45}, levelingInfo[9].attackSpeedDecrease, {1, 1, 1, 1}, "% but increases its attack range by ", {0.8, 0.35, 0.55}, levelingInfo[9].rangeIncrease[player.abilities.sniperKit.level + 1], {1, 1, 1, 1}, "%."},
-            tags = {condition = "None", role = "Passive", AoE = false, category = "ATK"},
+            tags = {condition = "None", role = "Passive", AoE = false, category = "ATK", incompatibilities = {"berserkerKit", "tankKit"}},
             frequency = 1,
             level = player.abilities.sniperKit.level,
             preview = img_ability_preview_sniperKit,
@@ -399,7 +399,7 @@ function abilityFunctions.updateInternals()
             name = "Tank Kit",
             internalName = "tankKit",
             effect = {{1, 1, 1, 1}, "Exchange ", {0.44, 0.46, 1, 1}, levelingInfo[10].attackDamageDecrease, {1, 1, 1, 1}, "% of the tower's attack damage and ", {0, 0.95, 1}, levelingInfo[10].attackSpeedDecrease, {1, 1, 1, 1}, "% of attack speed for a ", {0.68, 0.35, 1, 1}, levelingInfo[10].healthStatsIncrease[player.abilities.tankKit.level + 1], {1, 1, 1, 1}, "% additional HP and regeneration, and a ", {0, 1, 0.63, 1}, levelingInfo[10].resistanceIncrease[player.abilities.tankKit.level + 1], {1, 1, 1, 1}, "% resistance bonus."},
-            tags = {condition = "None", role = "Passive", AoE = false, category = "VIT", incompatibilities = {"supercritical"}},
+            tags = {condition = "None", role = "Passive", AoE = false, category = "VIT", incompatibilities = {"berserkerKit", "sniperKit", "supercritical"}},
             frequency = 1,
             level = player.abilities.tankKit.level,
             preview = img_ability_preview_tankKit,

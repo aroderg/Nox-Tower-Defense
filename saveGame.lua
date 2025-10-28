@@ -119,8 +119,8 @@ function saveGame()
                 damageDealt = player.stats.save.burstFire.damageDealt,
                 triggered = player.stats.save.burstFire.triggered
             },
-            rainforest = {
-                triggered = player.stats.save.rainforest.triggered
+            iceDomain = {
+                triggered = player.stats.save.iceDomain.triggered
             },
             magmaTouch = {
                 enemiesKilled = player.stats.save.magmaTouch.enemiesKilled,
@@ -167,11 +167,11 @@ function saveGame()
                 equipped = player.abilities.burstFire.equipped,
                 amount = player.abilities.burstFire.amount
             },
-            rainforest = {
-                unlocked = player.abilities.rainforest.unlocked,
-                level = player.abilities.rainforest.level,
-                equipped = player.abilities.rainforest.equipped,
-                amount = player.abilities.rainforest.amount
+            iceDomain = {
+                unlocked = player.abilities.iceDomain.unlocked,
+                level = player.abilities.iceDomain.level,
+                equipped = player.abilities.iceDomain.equipped,
+                amount = player.abilities.iceDomain.amount
             },
             magmaTouch = {
                 unlocked = player.abilities.magmaTouch.unlocked,
