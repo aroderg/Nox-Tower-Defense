@@ -251,10 +251,10 @@ function processUpgradeModule.reload()
             ["ATK"] = {
                 {"Damage", 10, 850, 350, 60, player.tower.attackDamage, player.upgrades.round.attackDamage.cost, player.upgrades.round.attackDamage.level, "round", math.huge, "precise", nil, nil, ["precedingUpgrade"] = 0}, --Attack Damage Science upgrade
                 {"Attack Speed", 10, 920, 350, 60, player.tower.attackSpeed, player.upgrades.round.attackSpeed.cost, player.upgrades.round.attackSpeed.level, "round", 106, "precise2", nil, nil, ["precedingUpgrade"] = 0}, --Attack Speed Science upgrade
-                {"Critical Chance", 10, 990, 350, 60, player.tower.critChance, player.upgrades.round.critChance.cost, player.upgrades.round.critChance.level, "round", 51, "precise", nil, "%", ["precedingUpgrade"] = player.upgrades.unlocks.crit}, --Critical Chance Science upgrade
+                {"Critical Chance", 10, 990, 350, 60, player.tower.critChance, player.upgrades.round.critChance.cost, player.upgrades.round.critChance.level, "round", 81, "precise", nil, "%", ["precedingUpgrade"] = player.upgrades.unlocks.crit}, --Critical Chance Science upgrade
                 {"Critical Factor", 370, 850, 350, 60, player.tower.critFactor, player.upgrades.round.critFactor.cost, player.upgrades.round.critFactor.level, "round", 181, "precise2", "x", nil, ["precedingUpgrade"] = player.upgrades.unlocks.crit}, --Critical Factor Science upgrade
                 {"Range", 370, 920, 350, 60, player.tower.range, player.upgrades.round.range.cost, player.upgrades.round.range.level, "round", 81, "precise", nil, nil, ["precedingUpgrade"] = player.upgrades.unlocks.range}, --Range Science upgrade
-                {"Cluster Fire Chance", 370, 990, 350, 60, player.tower.clusterFireChance, player.upgrades.round.clusterFireChance.cost, player.upgrades.round.clusterFireChance.level, "round", 76, "precise", nil, "%", ["precedingUpgrade"] = player.upgrades.unlocks.clusterFire}, --Cluster Fire Chance Science upgrade
+                {"Cluster Fire Chance", 370, 990, 350, 60, player.tower.clusterFireChance, player.upgrades.round.clusterFireChance.cost, player.upgrades.round.clusterFireChance.level, "round", 121, "precise2", nil, "%", ["precedingUpgrade"] = player.upgrades.unlocks.clusterFire}, --Cluster Fire Chance Science upgrade
                 {"Cluster Fire Targets", 730, 850, 350, 60, player.tower.clusterFireTargets, player.upgrades.round.clusterFireTargets.cost, player.upgrades.round.clusterFireTargets.level, "round", 5, "brief", nil, nil, ["precedingUpgrade"] = player.upgrades.unlocks.clusterFire}, --Range Science upgrade
                 {"Cluster Fire Efficiency", 730, 920, 350, 60, player.tower.clusterFireEfficiency, player.upgrades.round.clusterFireEfficiency.cost, player.upgrades.round.clusterFireEfficiency.level, "round", 144, "precise2", nil, "%", ["precedingUpgrade"] = player.upgrades.unlocks.clusterFire}, --Range Science upgrade
             },
@@ -282,10 +282,10 @@ function processUpgradeModule.reload()
             ["ATK"] = {
                 {"Damage", 245, 240, 350, 60, player.tower.attackDamage, player.upgrades.science.attackDamage.cost, player.upgrades.science.attackDamage.level, "science", math.huge, "precise", nil, nil, ["precedingUpgrade"] = 0}, --Attack Damage Science upgrade
                 {"Attack Speed", 605, 240, 350, 60, player.tower.attackSpeed, player.upgrades.science.attackSpeed.cost, player.upgrades.science.attackSpeed.level, "science", 106, "precise2", nil, nil, ["precedingUpgrade"] = 0}, --Attack Speed Science upgrade
-                {"Critical Chance", 965, 240, 350, 60, player.tower.critChance, player.upgrades.science.critChance.cost, player.upgrades.science.critChance.level, "science", 51, "precise", nil, "%", ["precedingUpgrade"] = player.upgrades.unlocks.crit, "crit"}, --Critical Chance Science upgrade
+                {"Critical Chance", 965, 240, 350, 60, player.tower.critChance, player.upgrades.science.critChance.cost, player.upgrades.science.critChance.level, "science", 81, "precise", nil, "%", ["precedingUpgrade"] = player.upgrades.unlocks.crit, "crit"}, --Critical Chance Science upgrade
                 {"Critical Factor", 1325, 240, 350, 60, player.tower.critFactor, player.upgrades.science.critFactor.cost, player.upgrades.science.critFactor.level, "science", 181, "precise2", "x", nil, ["precedingUpgrade"] = player.upgrades.unlocks.crit, "crit"}, --Critical Factor Science upgrade
                 {"Range", 245, 310, 350, 60, player.tower.range, player.upgrades.science.range.cost, player.upgrades.science.range.level, "science", 81, "precise", nil, nil, ["precedingUpgrade"] = player.upgrades.unlocks.range, "range"}, --Range Science upgrade
-                {"Cluster Fire Chance", 605, 310, 350, 60, player.tower.clusterFireChance, player.upgrades.science.clusterFireChance.cost, player.upgrades.science.clusterFireChance.level, "science", 76, "precise", nil, "%", ["precedingUpgrade"] = player.upgrades.unlocks.clusterFire, "clusterFire"}, --Cluster Fire Chance Science upgrade
+                {"Cluster Fire Chance", 605, 310, 350, 60, player.tower.clusterFireChance, player.upgrades.science.clusterFireChance.cost, player.upgrades.science.clusterFireChance.level, "science", 121, "precise2", nil, "%", ["precedingUpgrade"] = player.upgrades.unlocks.clusterFire, "clusterFire"}, --Cluster Fire Chance Science upgrade
                 {"Cluster Fire Targets", 965, 310, 350, 60, player.tower.clusterFireTargets, player.upgrades.science.clusterFireTargets.cost, player.upgrades.science.clusterFireTargets.level, "science", 5, "brief", nil, nil, ["precedingUpgrade"] = player.upgrades.unlocks.clusterFire, "clusterFire"}, --Cluster Fire Targets Science upgrade
                 {"Cluster Fire Efficiency", 1325, 310, 350, 60, player.tower.clusterFireEfficiency, player.upgrades.science.clusterFireEfficiency.cost, player.upgrades.science.clusterFireEfficiency.level, "science", 144, "precise2", nil, "%", ["precedingUpgrade"] = player.upgrades.unlocks.clusterFire, "clusterFire"}, --Cluster Fire Targets Science upgrade
             },
@@ -348,10 +348,10 @@ function reloadFormulae(x, z)
             ATK = {
                 {(0.2 * ((z - x + 1)^2) + 0.4 * (z - x + 1) + 0.4) / ((z - x + 1)^0.2) + 1, ((0.25 * z - 0.25)^3 + 4 + z) * player.upgrades.nexus.attackDamage.value * BKAttackDamage * TKAttackDamage}, --Attack Damage Round upgrade
                 {5 * ((z - x + 1)^math.log(((z - x + 1) + 10) / 10)), (math.min(0.8 + 0.04 * (z - 1), 5)) * player.upgrades.nexus.attackSpeed.value * BKAttackSpeed * SKAttackSpeed * TKAttackSpeed}, --Attack Speed Round upgrade
-                {((z - x) / 2)^2 + 5.75, math.min(0.3 * (z - 1), 15) * SCCritChance}, --Critical Chance Round upgrade
+                {((z - x) / 2)^2 + 5.75, math.min(0.3 * (z - 1), 24) * SCCritChance}, --Critical Chance Round upgrade
                 {0.1 * ((z - x)^2) + (z - x) + 0.9, math.min(1 + 0.05 * (z - 1), 10) * SCCritFactor}, --Critical Factor Round upgrade
                 {((z - x)^2 + 5 * (z - x)) / 6 + 2 * (z - x) + 5/3, math.min(240 + 2 * (z - 1), 400) * SKRange}, --Range Round upgrade
-                {(z - x)^1.7 + 2 * (z - x) + 7, math.min(0.3 * (z-1), 24)}, --Cluster Fire Chance Round upgrade
+                {(z - x)^1.7 + 2 * (z - x) + 7, math.min(0.25 * (z-1), 30)}, --Cluster Fire Chance Round upgrade
                 {(3.6 * (z - x + 1))^3 + 354, math.min(z + 1, 6)}, --Cluster Fire Targets Round upgrade
                 {0.35 * (z - x + 3)^2 + 5.65 - 2 * (z-x + 3), math.min(25 + math.sqrt(25 * z), 85)}, --Cluster Fire Efficiency Science upgrade
             },
@@ -379,10 +379,10 @@ function reloadFormulae(x, z)
             ATK = {
                 {0.4 * x^2 + 2.6, ((0.25 * x - 0.25)^3 + 4 + x) * player.upgrades.nexus.attackDamage.value * BKAttackDamage * TKAttackDamage}, --Attack Damage Science upgrade
                 {8^((x - 1) / 20) + 3 * x + 4, (math.min(0.8 + 0.04 * (x - 1), 5)) * player.upgrades.nexus.attackSpeed.value * BKAttackSpeed * SKAttackSpeed * TKAttackSpeed}, --Attack Speed Science upgrade
-                {(x / 2)^2 + 4 * x + 1.75, math.min(0.3 * (x - 1), 15) * SCCritChance}, --Critical Chance Science Upgrade
+                {(x / 2)^2 + 4 * x + 1.75, math.min(0.3 * (x - 1), 24) * SCCritChance}, --Critical Chance Science Upgrade
                 {0.2 * (x^2) + 1.8, math.min(1 + 0.05 * (x - 1), 10) * SCCritFactor}, --Critical Factor Science upgrade
                 {(x^2 + 5 * x) / 3 + 2 * x + 4, math.min(240 + 2 * (x - 1), 400) * SKRange}, --Range Science upgrade
-                {x^2.1 + 29 * x, math.min(0.3 * (x-1), 24)}, --Cluster Fire Chance Science upgrade
+                {x^2.1 + 29 * x, math.min(0.25 * (x-1), 30)}, --Cluster Fire Chance Science upgrade
                 {(5 * x)^3.2 + 728, math.min(x + 1, 6)}, --Cluster Fire Targets Science upgrade
                 {0.35 * (x + 4)^2.3 + 0.85 + 2 * (x + 4), math.min(25 + math.sqrt(25 * x), 85)}, --Cluster Fire Efficiency Science upgrade
             },
@@ -455,21 +455,21 @@ function processUpgradeModule.draw(module)
         love.graphics.rectangle("line", attributes.ux + buttonXY[1], attributes.uy + buttonXY[2], attributes.width - buttonXY[1] - 3, attributes.height - buttonXY[2] * 2)
         if attributes.level < attributes.maxLevel then
             if attributes.type == "round" then
-                love.graphics.draw(img_currency_copper, attributes.ux + buttonXY[1] + 4, attributes.uy + (attributes.height - buttonXY[2] * 2 - 15) / 2, 0, 20/32)
+                love.graphics.draw(img_currency_copper, attributes.ux + buttonXY[1] + 2, attributes.uy + (attributes.height - buttonXY[2] * 2 - 15) / 2, 0, 20/32)
                 if player.currencies.currentCopper >= attributes.cost then
                     love.graphics.setColor(1, 1, 1, 1)
                 else
                     love.graphics.setColor(1, 0.5, 0.5, 1)
                 end
             else
-                love.graphics.draw(img_currency_silver, attributes.ux + buttonXY[1] + 4, attributes.uy + (attributes.height - buttonXY[2] * 2 - 15) / 2, 0, 20/32)
+                love.graphics.draw(img_currency_silver, attributes.ux + buttonXY[1] + 2, attributes.uy + (attributes.height - buttonXY[2] * 2 - 15) / 2, 0, 20/32)
                 if player.currencies.currentSilver >= attributes.cost then
                     love.graphics.setColor(1, 1, 1, 1)
                 else
                     love.graphics.setColor(1, 0.5, 0.5, 1)
                 end
             end
-            love.graphics.print(string.format("%s", notations.convertToLetterNotation(attributes.cost, "brief")), attributes.ux + buttonXY[1] + 24, attributes.uy + ((attributes.height - buttonXY[2] * 2) / 2) - 11)
+            love.graphics.print(string.format("%s", notations.convertToLetterNotation(attributes.cost, "brief")), attributes.ux + buttonXY[1] + 21, attributes.uy + ((attributes.height - buttonXY[2] * 2) / 2) - 11)
         else
             love.graphics.printf("Max", attributes.ux + buttonXY[1], attributes.uy + ((attributes.height - buttonXY[2] * 2) / 2) - 12, attributes.width - buttonXY[1] - 3, "center")
         end
@@ -1179,7 +1179,7 @@ function love.draw()
             if player.misc.silverAddedMessage then
                 love.graphics.setColor(0.94, 0.97, 0.95)
                 love.graphics.setFont(font_Afacad18)
-                love.graphics.print("+" .. notations.convertToLetterNotation(math.floor(player.tower.silverPerWave * player.tower.silverBonus * difficultyMultipliers[gameplay.difficulty]), "precise2"), 123, 146)
+                love.graphics.print("+" .. notations.convertToLetterNotation(math.floor(player.tower.silverPerWave * player.tower.silverBonus * difficultyMultipliers[gameplay.difficulty]), "brief"), 123, 146)
             end
         end
         love.graphics.draw(img_button_pause, 1870, 10)
@@ -1443,10 +1443,13 @@ function love.update(dt)
     logicStep = math.min(dt, MAX_STEP)
     if player.debug.updateTimer < player.debug.updateInterval then
         player.debug.updateTimer = player.debug.updateTimer + dt
+        player.debug.currentUpdates = player.debug.currentUpdates + 1
+        player.debug.memUsage = math.floor(collectgarbage("count"))
     else
         player.debug.updateTimer = 0
-        player.debug.memUsage = math.floor(collectgarbage("count"))
-        player.debug.UPS = math.floor(1 / dt)
+        player.debug.UPS = player.debug.currentUpdates
+        player.debug.currentUpdates = 0
+        -- player.debug.UPS = math.floor(1 / dt)
     end
     if player.location == "round" then
         --[[ Update Exploders' animation ]]--
@@ -1899,7 +1902,7 @@ function love.update(dt)
         local mcx, mcy = love.mouse.getPosition()
         if player.menu.settings then
             if mcx >= 835 and mcx <= 1085 and mcy >= 670 and mcy <= 682 then
-                player.settings.volume = (mcx - 835) / 250
+                player.settings.volume = math.floor((mcx - 835) / 250 * 200) / 200
             end
         end
     end

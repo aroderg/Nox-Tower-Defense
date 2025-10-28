@@ -531,7 +531,7 @@ function inHub_mouse(x, y)
                 player.difficulty.difficulty = player.difficulty.difficulty + 1
             end
 
-        elseif hubSection == "Science" then
+        elseif hubSection == "Science" and not player.menu.settings then
 
             local science = player.upgrades.science
             local upgradeNames = {
@@ -799,11 +799,6 @@ function inHub_mouse(x, y)
             end
             abilityFunctions.updateInternals()
         end
-    elseif player.menu.saveStats then
-        if x >= 910 and x <= 1010 and y >= 780 and y <= 820 then
-            player.menu.saveStats = false
-        end
-    end
     if x >= 1800 and x <= 1918 and y >= 22 and y <= 54 and not player.menu.settings and not abilityFunctions.checkMenuDisplay() and not player.menu.rolledAbilityDisplay and not player.menu.saveStats then
         player.menu.settings = true
     end
@@ -812,5 +807,10 @@ function inHub_mouse(x, y)
     end
     if x >= 1710 and x <= 1790 and y >= 31 and y <= 93 and not player.menu.settings and not abilityFunctions.checkMenuDisplay() and not player.menu.rolledAbilityDisplay and not player.menu.saveStats then
         love.system.openURL("https://discord.gg/V576eHJQH3")
+    end
+    elseif player.menu.saveStats then
+        if x >= 910 and x <= 1010 and y >= 780 and y <= 820 then
+            player.menu.saveStats = false
+        end
     end
 end

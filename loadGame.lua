@@ -469,6 +469,7 @@ function loadGame()
         updateTimer = 0,
         updateInterval = 1,
         memUsage = 0,
+        currentUpdates = 0,
         UPS = 0
     }
     --saveGame()
