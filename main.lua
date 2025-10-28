@@ -845,7 +845,7 @@ function skipWave(wavesSkipped)
     player.stats.battle.silverEarned = player.stats.battle.silverEarned + silverEarned
 
     if wavesSkipped > 0 then
-        waveSkipMessage = true
+        player.misc.waveSkipMessage = true
     end
 
     local JerelosBlessingRegen = love.math.random() * 100
@@ -1161,13 +1161,25 @@ function love.draw()
         elseif centurionAlive then
             drawCenturionBossbar()
         end
-        if waveSkipMessage and player.settings.waveSkipMessages then
-            love.graphics.setColor(1, 1, 1, 1)
-            love.graphics.setFont(font_Afacad20)
-            if not player.menu.upgrades then
-                love.graphics.printf({{1, 1, 1, 1}, "Skipped ", {0.35, 1, 0.75, 1}, string.format("%d ", wavesSkipped), {1, 1, 1, 1}, "wave", {1, 1, 1, 1}, string.format("%s!", wavesSkipped > 1 and "s" or "")}, 1690, 920, 220, "center")
-            else
-                love.graphics.printf({{1, 1, 1, 1}, "Skipped ", {0.35, 1, 0.75, 1}, string.format("%d ", wavesSkipped), {1, 1, 1, 1}, "wave", {1, 1, 1, 1}, string.format("%s!", wavesSkipped > 1 and "s" or "")}, 1690, 690, 220, "center")
+        if player.settings.waveSkipMessages then
+            if player.misc.waveSkipMessage then
+                love.graphics.setColor(1, 1, 1, 1)
+                love.graphics.setFont(font_Afacad20)
+                if not player.menu.upgrades then
+                    love.graphics.printf({{1, 1, 1, 1}, "Skipped ", {0.35, 1, 0.75, 1}, string.format("%d ", wavesSkipped), {1, 1, 1, 1}, "wave", {1, 1, 1, 1}, string.format("%s!", wavesSkipped > 1 and "s" or "")}, 1690, 920, 220, "center")
+                else
+                    love.graphics.printf({{1, 1, 1, 1}, "Skipped ", {0.35, 1, 0.75, 1}, string.format("%d ", wavesSkipped), {1, 1, 1, 1}, "wave", {1, 1, 1, 1}, string.format("%s!", wavesSkipped > 1 and "s" or "")}, 1690, 690, 220, "center")
+                end
+            end
+            if player.misc.copperAddedMessage then
+                love.graphics.setColor(0.92, 0.45, 0.26)
+                love.graphics.setFont(font_Afacad18)
+                love.graphics.print("+" .. notations.convertToLetterNotation(math.floor(player.tower.copperPerWave * player.tower.copperBonus), "precise2"), 123, 114)
+            end
+            if player.misc.silverAddedMessage then
+                love.graphics.setColor(0.94, 0.97, 0.95)
+                love.graphics.setFont(font_Afacad18)
+                love.graphics.print("+" .. notations.convertToLetterNotation(math.floor(player.tower.silverPerWave * player.tower.silverBonus * difficultyMultipliers[gameplay.difficulty]), "precise2"), 123, 146)
             end
         end
         love.graphics.draw(img_button_pause, 1870, 10)
@@ -1390,10 +1402,10 @@ function love.draw()
     love.graphics.printf("v" .. gameVersionSemantic .. " - " .. love.timer.getFPS() .. "fps, " .. player.debug.memUsage .. "KB, " .. player.debug.UPS .. "ups", 1643, 0, 220, "right")
     if player.menu.debugInfo then
         love.graphics.setColor(0, 0, 0, 0.8)
-        love.graphics.rectangle("fill", 0, 0, 170, 335)
+        love.graphics.rectangle("fill", 0, 0, 170, 455)
         love.graphics.setColor(1, 1, 1, 0.25)
         love.graphics.setLineWidth(1)
-        love.graphics.rectangle("line", -1, -1, 171, 336)
+        love.graphics.rectangle("line", -1, -1, 171, 456)
         love.graphics.setColor(1, 1, 1, 1)
         love.graphics.print("pjc: " .. #projectilesOnField, 5, 0)
         love.graphics.print("enc: " .. #enemiesOnField, 5, 15)
@@ -1402,23 +1414,28 @@ function love.draw()
         love.graphics.print("sat: " .. timers.shieldActivation, 5, 75)
         love.graphics.print("sdt: " .. timers.shieldActive, 5, 90)
         love.graphics.print("wst: " .. timers.waveSkip, 5, 105)
-        love.graphics.print("mtt: " .. timers.magmaPool, 5, 120)
-        love.graphics.print("sct: " .. timers.crystal, 5, 135)
-        love.graphics.print("nwt: " .. timers.nextWave, 5, 150)
-        love.graphics.print("lot: " .. timers.lightningOrb, 5, 165)
-        love.graphics.print("dwt: " .. timers.disruptWave, 5, 180)
-        love.graphics.print("tht: " .. player.tower.health / player.tower.regeneration, 5, 195)
-        love.graphics.print("rht: " .. (player.tower.health - player.tower.currentHealth) / player.tower.regeneration, 5, 210)
+        love.graphics.print("cat: " .. timers.copperAdd, 5, 120)
+        love.graphics.print("sam: " .. timers.silverAdd, 5, 135)
+        love.graphics.print("mtt: " .. timers.magmaPool, 5, 150)
+        love.graphics.print("sct: " .. timers.crystal, 5, 165)
+        love.graphics.print("nwt: " .. timers.nextWave, 5, 180)
+        love.graphics.print("lot: " .. timers.lightningOrb, 5, 195)
+        love.graphics.print("dwt: " .. timers.disruptWave, 5, 210)
+        love.graphics.print("tht: " .. player.tower.health / player.tower.regeneration, 5, 225)
+        love.graphics.print("rht: " .. (player.tower.health - player.tower.currentHealth) / player.tower.regeneration, 5, 240)
 
-        love.graphics.print("cbf: " .. misc.copperBuffer, 5, 240)
-        love.graphics.print("sbf: " .. misc.silverBuffer, 5, 255)
+        love.graphics.print("cbf: " .. misc.copperBuffer, 5, 270)
+        love.graphics.print("sbf: " .. misc.silverBuffer, 5, 285)
 
-        love.graphics.print("cpw: " .. player.tower.copperPerWave * player.tower.copperBonus, 5, 270)
-        love.graphics.print("spw: " .. player.tower.silverPerWave * player.tower.silverBonus * difficultyMultipliers[player.difficulty.difficulty], 5, 285)
-        love.graphics.print("dt: " .. love.timer.getDelta(), 5, 300)
-        love.graphics.print("lst: " .. logicStep, 5, 315)
+        love.graphics.print("cpw: " .. player.tower.copperPerWave * player.tower.copperBonus, 5, 315)
+        love.graphics.print("spw: " .. player.tower.silverPerWave * player.tower.silverBonus * difficultyMultipliers[player.difficulty.difficulty], 5, 330)
+        love.graphics.print("dt: " .. love.timer.getDelta(), 5, 345)
+        love.graphics.print("lst: " .. logicStep, 5, 360)
 
-        love.graphics.print("stm: " .. tostring(player.menu.saveStats), 5, 330)
+        love.graphics.print("bsm: " .. tostring(player.menu.battleStats), 5, 390)
+        love.graphics.print("ssm: " .. tostring(player.menu.saveStats), 5, 405)
+        love.graphics.print("stm: " .. tostring(player.menu.settings), 5, 420)
+        love.graphics.print("gim: " .. tostring(player.menu.gameplayInfo), 5, 435)
     end
 end
 
@@ -1726,6 +1743,7 @@ function love.update(dt)
                     local newCopperAmount = player.currencies.currentCopper
                     local copperEarned = newCopperAmount - oldCopperAmount
                     player.stats.battle.copperEarned = player.stats.battle.copperEarned + copperEarned
+                    player.misc.copperAddedMessage = true
 
                     local oldSilverAmount = player.currencies.currentSilver
                     misc.silverBuffer = misc.silverBuffer + player.tower.silverBonus * (player.tower.silverPerWave % 1) * difficultyMultipliers[gameplay.difficulty]
@@ -1738,6 +1756,7 @@ function love.update(dt)
                     local silverEarned = newSilverAmount - oldSilverAmount
                     player.stats.battle.silverEarned = player.stats.battle.silverEarned + silverEarned
                     player.stats.save.silverEarned = player.stats.save.silverEarned + silverEarned
+                    player.misc.silverAddedMessage = true
 
                     gameplay.wave = gameplay.wave + 1
                     player.stats.save.wavesBeaten = player.stats.save.wavesBeaten + 1
@@ -1769,13 +1788,23 @@ function love.update(dt)
             player.tower.currentHealth = math.min(player.tower.currentHealth + player.tower.regeneration * logicStep * gameplay.gameSpeed, player.tower.health)
         end
 
-        if player.settings.waveSkipMessages and waveSkipMessage then
-            if timers.waveSkip < 3 then
-                timers.waveSkip = timers.waveSkip + logicStep
-            else
-                timers.waveSkip = 0
-                waveSkipMessage = false
-            end
+        if player.misc.waveSkipMessage and timers.waveSkip < 3 then
+            timers.waveSkip = timers.waveSkip + logicStep
+        else
+            timers.waveSkip = 0
+            player.misc.waveSkipMessage = false
+        end
+        if player.misc.copperAddedMessage and timers.copperAdd < 2 then
+            timers.copperAdd = timers.copperAdd + logicStep
+        else
+            timers.copperAdd = 0
+            player.misc.copperAddedMessage = false
+        end
+        if player.misc.silverAddedMessage and timers.silverAdd < 2 then
+            timers.silverAdd = timers.silverAdd + logicStep
+        else
+            timers.silverAdd = 0
+            player.misc.silverAddedMessage = false
         end
 
         if player.upgrades.unlocks.shield then

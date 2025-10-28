@@ -542,7 +542,7 @@ function inHub_mouse(x, y)
             local upgradeSectionNames = {"ATK", "VIT", "UTL"}
             for i=1,#upgradeSectionNames do
                 local currentProcessedSection = upgradeSectionNames[i]
-                if currentProcessedSection == upgradeSectionNames[i] then
+                if currentProcessedSection == upgradeSectionNames[i] and not player.menu.saveStats then
                     for j,w in pairs(upgradeNames[currentProcessedSection]) do
                         player.upgrades.science[upgradeNames[currentProcessedSection][j]].level, player.upgrades.science[upgradeNames[currentProcessedSection][j]].cost, player.tower[upgradeNames[currentProcessedSection][j]] = processUpgradeModule.upgrade(x, y, upgradeModules["science"][currentProcessedSection][j], reloadFormulae(upgradeModules["science"][currentProcessedSection][j][8] + 1)["science"][currentProcessedSection][j][1], reloadFormulae(upgradeModules["science"][currentProcessedSection][j][8] + 1)["science"][currentProcessedSection][j][2])
                     end
@@ -550,7 +550,7 @@ function inHub_mouse(x, y)
             end
 
             unlockPanelsPressed = 0
-            if not player.menu.settings then
+            if not player.menu.settings and not player.menu.saveStats then
                 player.upgrades.unlocks.crit = processUnlockPanel.clickCheck(x, y, unlockPanels["crit"])
                 player.upgrades.unlocks.range = processUnlockPanel.clickCheck(x, y, unlockPanels["range"])
                 player.upgrades.unlocks.clusterFire = processUnlockPanel.clickCheck(x, y, unlockPanels["clusterFire"])
