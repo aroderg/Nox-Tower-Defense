@@ -145,6 +145,9 @@ function love.load()
         audio_lightningOrb_launch = love.audio.newSource("assets/audio/lightningOrb_launch.wav", "static")
         audio_upgrade_bought = love.audio.newSource("assets/audio/upgrade_bought.wav", "static")
 
+        --Music
+        audioST_Echoes = love.audio.newSource("assets/audio/Echoes.mp3", "stream")
+
         --Quads
         quads_enemy_exploder = love.graphics.newImage("assets/enemy_exploder_quads.png")
 
@@ -1903,6 +1906,7 @@ function love.update(dt)
         if player.menu.settings then
             if mcx >= 835 and mcx <= 1085 and mcy >= 670 and mcy <= 682 then
                 player.settings.volume = math.floor((mcx - 835) / 250 * 200) / 200
+                audioST_Echoes:setVolume(1 * player.settings.volume^2)
             end
         end
     end

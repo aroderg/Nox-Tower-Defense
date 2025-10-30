@@ -533,6 +533,8 @@ function inHub_mouse(x, y)
                 gameOver = false
                 player.menu.paused = false
                 gameplay.gameSpeed = player.maxGameSpeed
+                audioST_Echoes:setVolume(1 * player.settings.volume^2)
+                audioST_Echoes:play()
             end
             local levelUnlocks = {player.difficulty.unlocks.d2, player.difficulty.unlocks.d3, player.difficulty.unlocks.d4, player.difficulty.unlocks.d5}
             if x >= 840 and x <= 864 and y >= 746 and y <= 770 and player.difficulty.difficulty > 1 and levelUnlocks[player.difficulty.difficulty - 1] and not player.menu.settings then
