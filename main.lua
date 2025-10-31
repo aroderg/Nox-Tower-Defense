@@ -146,7 +146,7 @@ function love.load()
         audio_upgrade_bought = love.audio.newSource("assets/audio/upgrade_bought.wav", "static")
 
         --Music
-        audioST_Echoes = love.audio.newSource("assets/audio/Echoes.mp3", "stream")
+        -- audioST_Echoes = love.audio.newSource("assets/audio/Echoes.mp3", "stream")
 
         --Quads
         quads_enemy_exploder = love.graphics.newImage("assets/enemy_exploder_quads.png")
@@ -1175,14 +1175,12 @@ function love.draw()
                 end
             end
             if player.misc.copperAddedMessage then
-                love.graphics.setColor(0.92, 0.45, 0.26)
-                love.graphics.setFont(font_Afacad18)
-                love.graphics.print("+" .. notations.convertToLetterNotation(math.floor(player.tower.copperPerWave * player.tower.copperBonus), "precise2"), 123, 114)
+                love.graphics.setFont(font_Afacad16)
+                love.graphics.print({{1, 1, 1, 1}, "+", {0.92, 0.45, 0.26}, notations.convertToLetterNotation(math.floor(player.tower.copperPerWave * player.tower.copperBonus), "brief")}, 123, 116)
             end
             if player.misc.silverAddedMessage then
-                love.graphics.setColor(0.94, 0.97, 0.95)
-                love.graphics.setFont(font_Afacad18)
-                love.graphics.print("+" .. notations.convertToLetterNotation(math.floor(player.tower.silverPerWave * player.tower.silverBonus * difficultyMultipliers[gameplay.difficulty]), "brief"), 123, 146)
+                love.graphics.setFont(font_Afacad16)
+                love.graphics.print({{1, 1, 1, 1}, "+", {0.94, 0.97, 0.95}, notations.convertToLetterNotation(math.floor(player.tower.silverPerWave * player.tower.silverBonus * difficultyMultipliers[gameplay.difficulty]), "brief")}, 123, 148)
             end
         end
         love.graphics.draw(img_button_pause, 1870, 10)
@@ -1906,7 +1904,7 @@ function love.update(dt)
         if player.menu.settings then
             if mcx >= 835 and mcx <= 1085 and mcy >= 670 and mcy <= 682 then
                 player.settings.volume = math.floor((mcx - 835) / 250 * 200) / 200
-                audioST_Echoes:setVolume(1 * player.settings.volume^2)
+                -- audioST_Echoes:setVolume(1 * player.settings.volume^2)
             end
         end
     end

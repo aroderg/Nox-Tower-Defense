@@ -242,7 +242,7 @@ function loadGame()
         player.modifiers.hyperloop.cost = player.modifiers.hyperloop.unlocked and player.modifiers.hyperloop.level^2 - 2 * player.modifiers.hyperloop.level + 11 or 15
         player.modifiers.hyperloop.value = player.modifiers.hyperloop.unlocked and math.min(2 + 8 * player.modifiers.hyperloop.level, 90) or 0
         player.modifiers.acceleration.cost = player.modifiers.acceleration.unlocked and math.floor(5 * (2^(player.modifiers.acceleration.level))^0.21) or 15
-        player.modifiers.acceleration.value = player.modifiers.acceleration.unlocked and math.min(0.04 * (player.modifiers.acceleration.level), 0.72) or 0
+        player.modifiers.acceleration.value = player.modifiers.acceleration.unlocked and math.min(0.04 * (player.modifiers.acceleration.level), 0.8) or 0
         player.settings = {
             particleMultiplier = loadedData.settings.particleMultiplierIndex or player.settings.particleMultiplierIndex,
             waveSkipMessages = loadedData.settings.waveSkipMessages or player.settings.waveSkipMessages,

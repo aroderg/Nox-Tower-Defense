@@ -82,5 +82,5 @@ function gameEnd()
     if #collapseParticles == 0 then
         gameplay.gameSpeed = 0
     end
-    audioST_Echoes:stop()
+    -- audioST_Echoes:stop()
 end

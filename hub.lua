@@ -277,9 +277,9 @@ function inHub_visual()
             love.graphics.printf("Gameplay modifiers", 810, 500, 300, "center")
 
             local gameplayModifiers = {
-                {name = "Wave Skip", unlockCost = 10, value = player.modifiers.waveSkip.value, cost = player.modifiers.waveSkip.cost, maxLevel = 10, text = {{1, 1, 1, 1}, "There is a ", {0, 1, 0.7, 1}, string.format("%d%%", player.modifiers.waveSkip.value), {1, 1, 1, 1}, " chance of skipping a wave and immediately advancing to the next one."}, upgradeText = "Chance", unlocked = player.modifiers.waveSkip.unlocked, level = player.modifiers.waveSkip.level},
-                {name = "Hyperloop", unlockCost = 15, value = player.modifiers.hyperloop.value, cost = player.modifiers.hyperloop.cost, maxLevel = 11, text = {{1, 1, 1, 1}, "All enemies outside of the tower range are ", {1, 0.5, 0.3, 1}, string.format("%d%%", player.modifiers.hyperloop.value), {1, 1, 1, 1}, " faster."}, upgradeText = "Speed", unlocked = player.modifiers.hyperloop.unlocked, level = player.modifiers.hyperloop.level},
-                {name = "Acceleration", unlockCost = 15, value = player.modifiers.acceleration.value, cost = player.modifiers.acceleration.cost, maxLevel = 19, text = {{1, 1, 1, 1}, "The game is processed at ", {1, 0.44, 0.79}, 100 + player.modifiers.acceleration.value * 100, {1, 1, 1, 1}, "% of the normal speed."}, upgradeText = "Speed", unlocked = player.modifiers.acceleration.unlocked, level = player.modifiers.acceleration.level},
+                {name = "Wave Skip", unlockCost = 10, value = player.modifiers.waveSkip.value, cost = player.modifiers.waveSkip.cost, maxLevel = 10, text = {{1, 1, 1, 1}, "There is a ", {0, 1, 0.7, 1}, string.format("%d", player.modifiers.waveSkip.value), {1, 1, 1, 1}, "% chance of skipping a wave and immediately advancing to the next one."}, upgradeText = "Chance", unlocked = player.modifiers.waveSkip.unlocked, level = player.modifiers.waveSkip.level},
+                {name = "Hyperloop", unlockCost = 15, value = player.modifiers.hyperloop.value, cost = player.modifiers.hyperloop.cost, maxLevel = 11, text = {{1, 1, 1, 1}, "All enemies outside of the tower range are ", {1, 0.5, 0.3, 1}, string.format("%d", player.modifiers.hyperloop.value), {1, 1, 1, 1}, "% faster."}, upgradeText = "Speed", unlocked = player.modifiers.hyperloop.unlocked, level = player.modifiers.hyperloop.level},
+                {name = "Acceleration", unlockCost = 15, value = player.modifiers.acceleration.value, cost = player.modifiers.acceleration.cost, maxLevel = 20, text = {{1, 1, 1, 1}, "The game is processed at ", {1, 0.44, 0.79}, 100 + player.modifiers.acceleration.value * 100, {1, 1, 1, 1}, "% of the normal speed."}, upgradeText = "Speed", unlocked = player.modifiers.acceleration.unlocked, level = player.modifiers.acceleration.level},
             }
 
             for i,v in pairs(gameplayModifiers) do
@@ -533,8 +533,8 @@ function inHub_mouse(x, y)
                 gameOver = false
                 player.menu.paused = false
                 gameplay.gameSpeed = player.maxGameSpeed
-                audioST_Echoes:setVolume(1 * player.settings.volume^2)
-                audioST_Echoes:play()
+                -- audioST_Echoes:setVolume(1 * player.settings.volume^2)
+                -- audioST_Echoes:play()
             end
             local levelUnlocks = {player.difficulty.unlocks.d2, player.difficulty.unlocks.d3, player.difficulty.unlocks.d4, player.difficulty.unlocks.d5}
             if x >= 840 and x <= 864 and y >= 746 and y <= 770 and player.difficulty.difficulty > 1 and levelUnlocks[player.difficulty.difficulty - 1] and not player.menu.settings then
@@ -729,12 +729,12 @@ function inHub_mouse(x, y)
                 processUpgradeModule.reload()
                 end
             elseif x >= 1155 and x <= 1275 and y >= 895 and y <= 945 and not player.menu.settings then
-                if player.currencies.currentElectrum >= player.modifiers.acceleration.cost and player.modifiers.acceleration.level < 19 then
+                if player.currencies.currentElectrum >= player.modifiers.acceleration.cost and player.modifiers.acceleration.level < 20 then
                     if player.modifiers.acceleration.unlocked then
                         player.currencies.currentElectrum = player.currencies.currentElectrum - player.modifiers.acceleration.cost
                         player.modifiers.acceleration.level = player.modifiers.acceleration.level + 1
                         player.modifiers.acceleration.cost = math.floor(5 * (2^(player.modifiers.acceleration.level))^0.21) or 15
-                        player.modifiers.acceleration.value = math.min(0.04 * (player.modifiers.acceleration.level), 0.72)
+                        player.modifiers.acceleration.value = math.min(0.04 * (player.modifiers.acceleration.level), 0.8)
                     else
                         player.currencies.currentElectrum = player.currencies.currentElectrum - 15
                         player.modifiers.acceleration.unlocked = true

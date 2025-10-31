@@ -1,11 +1,30 @@
-# NoxTD 1.1.1a Aurora
+### NoxTD 1.1.2 Aurora
+### Oct 31st, 2025
+- Fixed Disruptance Wave Ability crashing the game when upgraded to level 10.
+- Expanded Ability Card border functionality:
+    - Glows orange if the Ability is maxed out.
+    - Glows green if it's upgradable.
+    - Glows white otherwise.
+- Stat menu is openable in the Abilities Hub section.
+- Made all Kit Abilities incompatible.
+- Bumped Critical Chance and Cluster Fire upgrades to 24% and 30% respectively.
+- Ice Domain is incompatible with Magma Touch.
+- Redesigned the Rainforest Ability to Ice Domain.
+- Made D5 Waves count for Idle Gains.
+- Fixed absurd amount of decimal points for stored resources in Idle Gains.
+- Added on-screen messages for how much Copper/Silver you earned at the end of each wave.
+- Added 10 more Orbitals.
+- Switched logic of Nexus Buffs.
+- Misc menu fixes.
+
+### NoxTD 1.1.1a Aurora
 ### Oct 24th, 2025
 - Added link to the Discord server.
 - Made visual representation of Spiked Crystal explosion match the logic one.
 
-# NoxTD 1.1.1 Aurora
+## NoxTD 1.1.1 Aurora
 ### Oct 22nd, 2025
-- Added the Blast Wave ability, regularly dealing damage to all enemies within the tower's range.
+- Added the Disruptance Wave ability, regularly dealing damage to all enemies within the tower's range.
 - Changed enemy scaling on D2+ once again.
 - Fixed the Damage Round upgrade cost showing "nannil" if upgraded in the Hub.
 - Nerfed Copper/wave and Silver/wave upgrades.
@@ -39,7 +58,7 @@
 - Added the Ability Chance and Cooldown Nexus stat buffs:
     - Ability Chance increases the chance of some Abilities triggering.
     - Ability Cooldown speeds up timed Abilities.
-- Added the Acceleration modifier which speeds the game up by 4% each level, up to a maximum of 172% total compared to normal game speed.
+- Added the Acceleration Gameplay Modifier which speeds the game up by 4% each level, up to a maximum of 172% total compared to normal game speed.
 - In-round tooltips show both Science and Round levels bought in brackets.
 - The Theme setting allows you to change accent colors and backgrounds out of 5 pre-set ones.
 - Added Difficulty 5.
