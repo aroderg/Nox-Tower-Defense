@@ -128,7 +128,7 @@ function loadGame()
             supercritical = {unlocked = false, level = 0, equipped = false, amount = 0},
             disruptWave = {unlocked = false, level = 0, equipped = false, amount = 0}
         },
-        misc = {abilityAssembling = false, tokensRefundable = true, theme = "aurora", currentOrbital = love.math.random(33, 33)}
+        misc = {abilityAssembling = false, tokensRefundable = true, theme = "aurora", currentOrbital = love.math.random(1, 41)}
     }
 
     -- Check if SAVEFILE.sav is present in the game dir
