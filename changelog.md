@@ -1,4 +1,4 @@
-### NoxTD 1.1.2 Aurora
+## NoxTD 1.1.2 Aurora
 ### Oct 31st, 2025
 - Fixed Disruptance Wave Ability crashing the game when upgraded to level 10.
 - Expanded Ability Card border functionality:
