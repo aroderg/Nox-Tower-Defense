@@ -29,9 +29,9 @@ function love.load()
         --img_background_interstellar = love.graphics.newImage("assets/background_interstellar.png")
 
         --Currencies
-        img_currency_copper = love.graphics.newImage("assets/currency_copper.png")
-        img_currency_silver = love.graphics.newImage("assets/currency_silver.png")
-        img_currency_gold = love.graphics.newImage("assets/currency_gold.png")
+        img_currency_copper = love.graphics.newImage("assets/currency_copper_new.png")
+        img_currency_silver = love.graphics.newImage("assets/currency_silver_new.png")
+        img_currency_gold = love.graphics.newImage("assets/currency_gold_new.png")
         img_currency_electrum = love.graphics.newImage("assets/currency_electrum.png")
         img_currency_token = love.graphics.newImage("assets/currency_token.png")
         img_currency_token_big = love.graphics.newImage("assets/currency_token_big.png")
