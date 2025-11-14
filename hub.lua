@@ -8,6 +8,14 @@ orbital = {}
 --- Update all the Orbitals displayed in the Hub.
 ---@param shuffle boolean Whether to change the random Orbital displayed.
 function orbital.update(shuffle)
+    function getUsername()
+        local username = os.getenv("USERNAME")
+        if username == nil then
+            username = os.getenv("USER")
+        end
+        return username
+    end
+
     local orbitals = {
         "The space is waiting for you.",
         "Novae stellae semper clare fulgent.", --Latin for "New stars always shine bright."
@@ -18,7 +26,7 @@ function orbital.update(shuffle)
         "Spiraling up the upgrade path.",
         "One tower should be enough.",
         "Look, I'm an Orbital! So pretty!",
-        "Nice to meet you, " .. os.getenv("USERNAME") .. ".",
+        "Nice to meet you, " .. getUsername() .. ".",
         "Defending the tower again, are we?",
         player.currencies.currentElectrum .. " Electrum? What will you do with it?",
         string.format("%d Silver... I'd just assume you found some floating debris.", player.currencies.currentSilver),
