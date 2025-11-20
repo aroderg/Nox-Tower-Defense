@@ -1273,34 +1273,7 @@ function love.draw()
             end
         end
         if player.menu.enemyInfo then
-            love.graphics.setColor(0, 0, 0, 0.5)
-            love.graphics.rectangle("fill", 0, 0, 1920, 1080)
-            love.graphics.setColor(accentColors[player.misc.theme].menus)
-            love.graphics.rectangle("fill", 760, 210, 400, 660, 2, 2)
-            love.graphics.setColor(1, 1, 1, 1)
-            love.graphics.setLineWidth(1)
-            love.graphics.rectangle("line", 760, 210, 400, 660, 2, 2)
-            love.graphics.setFont(font_AfacadBold28)
-            love.graphics.printf("Enemy Info", 710, 213, 500, "center")
-
-            love.graphics.setFont(font_Afacad18)
-            font_Afacad20:setLineHeight(0.8)
-            love.graphics.draw(img_enemy_basic, 770, 270, 0, 40/20, 40/20)
-            love.graphics.printf("The Basics are considered to the cheapest and most expendable enemy group. Lacking any resistance types and special behaviours, they often can be destroyed relatively easily.", 820, 265, 330, "left")
-            love.graphics.draw(img_enemy_tank, 770, 390, 0, 40/32, 40/32)
-            love.graphics.printf("Colloquially known as \"Estorbo(s)\", these units offer five times as much Health compared to the Basics at the cost of being 20% slower. ", 820, 385, 330, "left")
-            love.graphics.draw(img_enemy_swift, 770, 510, 0, 40/16, 40/16)
-            love.graphics.printf("These units were designed to be good and quick when it comes to raiding the players' towers even though they only have 60% of Health. These have been equipped with a 2x Speed multiplier, along with a 1.5x Attack Speed multiplier.", 820, 505, 330, "left")
-
-            love.graphics.setColor(accentColors[player.misc.theme].buttons)
-            love.graphics.rectangle("fill", 890, 820, 140, 40)
-            love.graphics.setColor(accentColors[player.misc.theme].buttonOutlines)
-            love.graphics.setLineWidth(2)
-            love.graphics.rectangle("line", 890, 820, 140, 40, 2, 2)
-            love.graphics.setFont(font_Afacad24)
-            love.graphics.setColor(1, 1, 1, 1)
-            love.graphics.printf("Back", 870, 822, 180, "center")
-            love.graphics.setFont(font_Afacad20)
+            statsMenus.enemyInfo.draw()
         end
         if player.menu.battleStats then
             statsMenus.battle.draw()
@@ -1924,6 +1897,8 @@ function love.update(dt)
 
         if player.menu.battleStats then
             statsMenus.battle.process(logicStep)
+        elseif player.menu.enemyInfo then
+            statsMenus.enemyInfo.process(logicStep)
         end
 
     elseif player.location == "hub" then

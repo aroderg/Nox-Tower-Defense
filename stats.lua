@@ -1,10 +1,12 @@
 local statTextScrollState = 0
 local savefileVel = {velx = 0, vely = 0} -- The scroll velocity
 local battleVel = {velx = 0, vely = 0} -- The scroll velocity
+local enemyInfoVel = {velx = 0, vely = 0} -- The scroll velocity
 
 statsMenus = {
     savefile = {},
-    battle = {}
+    battle = {},
+    enemyInfo = {}
 }
 function statsMenus.savefile.draw()
     love.graphics.setLineWidth(1)
@@ -256,6 +258,39 @@ function statsMenus.battle.draw()
     love.graphics.printf("Back", 910, 782, 100, "center")
 end
 
+function statsMenus.enemyInfo.draw()
+    love.graphics.setColor(0, 0, 0, 0.5)
+    love.graphics.rectangle("fill", 0, 0, 1920, 1080)
+    love.graphics.setColor(accentColors[player.misc.theme].menus)
+    love.graphics.rectangle("fill", 760, 210, 400, 660, 2, 2)
+    love.graphics.setColor(1, 1, 1, 1)
+    love.graphics.setLineWidth(1)
+    love.graphics.rectangle("line", 760, 210, 400, 660, 2, 2)
+    love.graphics.setFont(font_AfacadBold28)
+    love.graphics.printf("Enemy Info", 710, 213, 500, "center")
+
+    love.graphics.setFont(font_Afacad18)
+    font_Afacad20:setLineHeight(0.8)
+    love.graphics.setScissor(760, 260, 400, 570)
+    love.graphics.draw(img_enemy_basic, 770, 270 + math.floor(statTextScrollState), 0, 40/20, 40/20)
+    love.graphics.printf("The Basics are considered to the cheapest and most expendable enemy group. Lacking any resistance types and special behaviours, they often can be destroyed relatively easily.", 820, 265 + math.floor(statTextScrollState), 330, "left")
+    love.graphics.draw(img_enemy_tank, 770, 390 + math.floor(statTextScrollState), 0, 40/32, 40/32)
+    love.graphics.printf("Colloquially known as \"Estorbo(s)\", these units offer five times as much health compared to the Basics at the cost of being 20% slower. ", 820, 385 + math.floor(statTextScrollState), 330, "left")
+    love.graphics.draw(img_enemy_swift, 770, 510 + math.floor(statTextScrollState), 0, 40/16, 40/16)
+    love.graphics.printf("These units were designed to be good and quick when it comes to raiding the players' towers even though they only have 60% of the usual health. These have been equipped with a 2x speed multiplier, along with a 1.5x attack speed multiplier.", 820, 505 + math.floor(statTextScrollState), 330, "left")
+    love.graphics.setScissor()
+
+    love.graphics.setColor(accentColors[player.misc.theme].buttons)
+    love.graphics.rectangle("fill", 890, 820, 140, 40)
+    love.graphics.setColor(accentColors[player.misc.theme].buttonOutlines)
+    love.graphics.setLineWidth(2)
+    love.graphics.rectangle("line", 890, 820, 140, 40, 2, 2)
+    love.graphics.setFont(font_Afacad24)
+    love.graphics.setColor(1, 1, 1, 1)
+    love.graphics.printf("Back", 870, 822, 180, "center")
+    love.graphics.setFont(font_Afacad20)
+end
+
 function statsMenus.savefile.process(logicStep)
     statTextScrollState = math.max(math.min(statTextScrollState + savefileVel.velx * logicStep, 0), 565-25*35)
     statTextScrollState = math.max(math.min(statTextScrollState + savefileVel.vely * logicStep, 0), 565-25*35)
@@ -274,19 +309,31 @@ function statsMenus.battle.process(logicStep)
     battleVel.vely = battleVel.vely - battleVel.vely * math.min(logicStep * 7, 1)
 end
 
+function statsMenus.enemyInfo.process(logicStep)
+    statTextScrollState = math.min(statTextScrollState + enemyInfoVel.velx * logicStep, 0)
+    statTextScrollState = math.min(statTextScrollState + enemyInfoVel.vely * logicStep, 0)
+
+    -- Gradually reduce the velocity to create smooth scrolling effect.
+    enemyInfoVel.velx = enemyInfoVel.velx - enemyInfoVel.velx * math.min(logicStep * 7, 1)
+    enemyInfoVel.vely = enemyInfoVel.vely - enemyInfoVel.vely * math.min(logicStep * 7, 1)
+end
+
 function statsMenus.resetScroll()
     statTextScrollState = 0
     local savefileVel = {velx = 0, vely = 0} -- The scroll velocity
     local battleVel = {velx = 0, vely = 0} -- The scroll velocity
+    local enemyInfoVel = {velx = 0, vely = 0} -- The scroll velocity
 end
 
 function love.wheelmoved(dx, dy)
     if player.menu.saveStats then
         savefileVel.velx = savefileVel.velx + dx * 480
         savefileVel.vely = savefileVel.vely + dy * 480
-    end
-    if player.menu.battleStats then
+    elseif player.menu.battleStats then
         battleVel.velx = battleVel.velx + dx * 480
         battleVel.vely = battleVel.vely + dy * 480
+    elseif player.menu.enemyInfo then
+        enemyInfoVel.velx = enemyInfoVel.velx + dx * 480
+        enemyInfoVel.vely = enemyInfoVel.vely + dy * 480
     end
 end
