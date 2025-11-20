@@ -271,13 +271,19 @@ function statsMenus.enemyInfo.draw()
 
     love.graphics.setFont(font_Afacad18)
     font_Afacad20:setLineHeight(0.8)
-    love.graphics.setScissor(760, 260, 400, 570)
+    love.graphics.setScissor(760, 260, 400, 550)
     love.graphics.draw(img_enemy_basic, 770, 270 + math.floor(statTextScrollState), 0, 40/20, 40/20)
     love.graphics.printf("The Basics are considered to the cheapest and most expendable enemy group. Lacking any resistance types and special behaviours, they often can be destroyed relatively easily.", 820, 265 + math.floor(statTextScrollState), 330, "left")
     love.graphics.draw(img_enemy_tank, 770, 390 + math.floor(statTextScrollState), 0, 40/32, 40/32)
-    love.graphics.printf("Colloquially known as \"Estorbo(s)\", these units offer five times as much health compared to the Basics at the cost of being 20% slower. ", 820, 385 + math.floor(statTextScrollState), 330, "left")
+    love.graphics.printf("Colloquially known as \"Estorbo(s)\", these units offer five times as much health compared to the Basics at the cost of being 20% slower.", 820, 385 + math.floor(statTextScrollState), 330, "left")
     love.graphics.draw(img_enemy_swift, 770, 510 + math.floor(statTextScrollState), 0, 40/16, 40/16)
     love.graphics.printf("These units were designed to be good and quick when it comes to raiding the players' towers even though they only have 60% of the usual health. These have been equipped with a 2x speed multiplier, along with a 1.5x attack speed multiplier.", 820, 505 + math.floor(statTextScrollState), 330, "left")
+    love.graphics.draw(img_enemy_sentry, 770, 680 + math.floor(statTextScrollState), 0, 40/44, 40/44)
+    love.graphics.printf("Sentries are the weakest boss enemies the tower will meet. They come with ever-scaling health and 4 times as much base attack damage, albeit only attacking once per 1.33s. They are 40% slower and come every 10 waves.", 820, 675 + math.floor(statTextScrollState), 330, "left")
+    love.graphics.draw(img_enemy_centurion, 770, 850 + math.floor(statTextScrollState), 0, 40/60, 40/60)
+    love.graphics.printf("Every 100 waves, ZrTG sends out their biggest and toughest enemy: The Centurion. It has 256x health, 10x attack damage and comes with the new ZrTg's technology that lets enemies ignore the tower's Shield upgrades.", 820, 845 + math.floor(statTextScrollState), 330, "left")
+    love.graphics.draw(img_enemy_exploder_static, 770, 1020 + math.floor(statTextScrollState), 0, 40/24, 40/24)
+    love.graphics.printf("A brand new expensive unit in a beta-test from ZrTG. When killed or gets too close to the tower, it explodes and deals 250% damage to every entity in a 5u radius. Keeping distance from units of this type is crucial for survival.", 820, 1015 + math.floor(statTextScrollState), 330, "left")
     love.graphics.setScissor()
 
     love.graphics.setColor(accentColors[player.misc.theme].buttons)
@@ -310,8 +316,8 @@ function statsMenus.battle.process(logicStep)
 end
 
 function statsMenus.enemyInfo.process(logicStep)
-    statTextScrollState = math.min(statTextScrollState + enemyInfoVel.velx * logicStep, 0)
-    statTextScrollState = math.min(statTextScrollState + enemyInfoVel.vely * logicStep, 0)
+    statTextScrollState = math.max(math.min(statTextScrollState + enemyInfoVel.velx * logicStep, 0), -350)
+    statTextScrollState = math.max(math.min(statTextScrollState + enemyInfoVel.vely * logicStep, 0), -350)
 
     -- Gradually reduce the velocity to create smooth scrolling effect.
     enemyInfoVel.velx = enemyInfoVel.velx - enemyInfoVel.velx * math.min(logicStep * 7, 1)
