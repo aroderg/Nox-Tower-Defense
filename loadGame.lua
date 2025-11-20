@@ -128,7 +128,7 @@ function loadGame()
             supercritical = {unlocked = false, level = 0, equipped = false, amount = 0},
             disruptWave = {unlocked = false, level = 0, equipped = false, amount = 0}
         },
-        misc = {abilityAssembling = false, tokensRefundable = true, theme = "aurora", currentOrbital = love.math.random(1, 41)}
+        misc = {abilityAssembling = false, tokensRefundable = true, theme = "aurora", currentOrbital = love.math.random(1, 39)}
     }
 
     -- Check if SAVEFILE.sav is present in the game dir
@@ -483,6 +483,7 @@ function resetRoundValues()
     player.menu.gameplayInfo = false
     player.menu.battleStats = false
     player.menu.saveStats = false
+    player.menu.enemyInfo = false
 
     --[[ Copper ]]--
     player.currencies.currentCopper = 0

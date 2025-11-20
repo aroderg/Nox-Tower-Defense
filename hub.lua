@@ -40,7 +40,6 @@ function orbital.update(shuffle)
         "Wave " .. player.bestWaves.d1 .. " is solid progress, let's see if you can go further.",
         "Woah, you've cleared " .. player.stats.save.wavesBeaten .. " waves so far. Impressive!",
         "They would prefer to connect sometime soon.",
-        "Ability of the Day: " .. internalAbilities[love.math.random(1, #internalAbilities)].name .. "",
         "Those " .. (player.modifiers.acceleration.unlocked and "accelerated " or "") .. "space battles look gorgeous.",
         "If you like offense, try the Berserker Kit. If you like defense, try the Tank Kit.",
         "Don't waste your offline time! It caps at 6 hours.",
@@ -56,8 +55,7 @@ function orbital.update(shuffle)
         "Built with LOVE2d. We hope you enjoy it!",
         "A lone tower against the cosmos. That's the Nox way.",
         "Feeling impatient? Wave Skip Chance can get you through quickly.",
-        "You can open Settings and Stats right from the Hub, too.",
-
+        "You can open Settings and Stats right from the Hub, too."
     }
     player.misc.currentOrbital = shuffle and love.math.random(1, #orbitals) or player.misc.currentOrbital
     return orbitals[player.misc.currentOrbital]

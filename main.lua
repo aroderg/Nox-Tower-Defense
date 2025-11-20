@@ -138,9 +138,8 @@ function love.load()
         audio_tower_damageTaken = love.audio.newSource("assets/audio/tower_damageTaken.wav", "static")
         audio_tower_damageAbsorbed = love.audio.newSource("assets/audio/tower_damageAbsorbed.wav", "static")
         audio_tower_collapse = love.audio.newSource("assets/audio/tower_collapse.wav", "static")
-        audio_tower_fire = love.audio.newSource("assets/audio/tower_fire.wav", "static")
-        audio_tower_lifestealTrigger = love.audio.newSource("assets/audio/tower_lifesteal.wav", "static")
-        audio_tower_clusterFire = love.audio.newSource("assets/audio/tower_clusterFire.wav", "static")
+        audio_tower_fire = love.audio.newSource("assets/audio/tower_fire2.wav", "static")
+        audio_tower_lifestealTrigger = love.audio.newSource("assets/audio/tower_lifesteal2.wav", "static")
         audio_rainforest_activation = love.audio.newSource("assets/audio/rainforest_activation.wav", "static")
         audio_lightningOrb_launch = love.audio.newSource("assets/audio/lightningOrb_launch.wav", "static")
         audio_upgrade_bought = love.audio.newSource("assets/audio/upgrade_bought.wav", "static")
@@ -1216,7 +1215,7 @@ function love.draw()
             love.graphics.rectangle("fill", 710, 240, 500, 600, 2, 2)
             love.graphics.setColor(1, 1, 1, 1)
             love.graphics.rectangle("line", 710, 240, 500, 600, 2, 2)
-            love.graphics.setFont(font_AfacadBold24)
+            love.graphics.setFont(font_AfacadBold28)
             love.graphics.printf(string.format("Gameplay Info - Wave %d", gameplay.wave), 710, 243, 500, "center")
             love.graphics.setFont(font_AfacadBold20)
             local columnCenters = {}
@@ -1230,10 +1229,11 @@ function love.draw()
             local wrapWidth = 200
             local enemySize = {20, 32, 16, 44, 60, 24}
             local enemyStats = {
-                {"Enemy", "Health", "Damage", "Speed", "Chance"},
+                {"Enemy", "Health", "Damage/t", "Speed", "Chance"},
                 {img_enemy_basic, img_enemy_tank, img_enemy_swift, img_enemy_sentry, img_enemy_centurion, img_enemy_exploder_static},
                 {enemyAttributes.health, enemyAttributes.health * 5, enemyAttributes.health * 0.75, enemyAttributes.health * (10 + math.floor((gameplay.wave - 10) / 10) * 2.5), enemyAttributes.health * 256, enemyAttributes.health},
                 {enemyAttributes.attackDamage, enemyAttributes.attackDamage * 1.2, enemyAttributes.attackDamage, enemyAttributes.attackDamage * 4, enemyAttributes.attackDamage * 10, enemyAttributes.attackDamage * 2.5},
+                {1, 0.9, 1.5, 0.75, 0.5},
                 {enemyAttributes.speed / 20, enemyAttributes.speed * 0.8 / 20, enemyAttributes.speed * 2 / 20, enemyAttributes.speed * 0.6 / 20, enemyAttributes.speed * 0.5 / 20, enemyAttributes.speed / 20},
                 {enemyAttributes.spawn.basic, enemyAttributes.spawn.tank, enemyAttributes.spawn.swift, gameplay.wave % 10 == 0 and gameplay.wave % 100 ~= 0 and 100 or 0, gameplay.wave % 100 == 0 and 100 or 0, enemyAttributes.spawn.exploder},
             }
@@ -1244,23 +1244,63 @@ function love.draw()
                 love.graphics.draw(enemyStats[2][i], columnCenters[1] - 11, rowCenters[i+1], 0, 20 / enemySize[i])
             end
             love.graphics.setFont(font_Afacad20)
-            for i=1,2 do
-                for j=1,#enemyStats[2] do
-                    love.graphics.printf(notations.convertToLetterNotation(enemyStats[i+2][j], "precise"), columnCenters[i+1] - wrapWidth / 2, rowCenters[j+1] - 2, wrapWidth, "center")
-                end
+            for j=1,#enemyStats[2] do
+                love.graphics.printf(notations.convertToLetterNotation(enemyStats[3][j], "precise"), columnCenters[2] - wrapWidth / 2, rowCenters[j+1] - 2, wrapWidth, "center")
             end
-            for i=1,#enemyStats[5] do
-                love.graphics.printf(string.format("%.1fu", enemyStats[5][i]), columnCenters[4] - wrapWidth / 2, rowCenters[i+1] - 2, wrapWidth, "center")
+            for j=1,#enemyStats[2] do
+                love.graphics.printf(notations.convertToLetterNotation(enemyStats[4][j], "precise") .. (enemyStats[5][j] and string.format("/%.2fs", 1 / enemyStats[5][j]) or ""), columnCenters[3] - wrapWidth / 2, rowCenters[j+1] - 2, wrapWidth, "center")
             end
             for i=1,#enemyStats[2] do
-                love.graphics.printf(string.format("%.1f%%", enemyStats[6][i]), columnCenters[5] - wrapWidth / 2, rowCenters[i+1] - 2, wrapWidth, "center")
+                love.graphics.printf(string.format("%.1fu", enemyStats[6][i]), columnCenters[4] - wrapWidth / 2, rowCenters[i+1] - 2, wrapWidth, "center")
             end
-            love.graphics.printf({{1, 1, 1, 1}, "Enemy spawn cap: ", {1, 0.8, 0.5, 1}, string.format("%d", enemyAttributes.waveCap)}, 710, 760, 500, "center")
-            love.graphics.printf({{1, 1, 1, 1}, "Enemy spawn rate: ", {1, 0.8, 0.5, 1}, string.format("%.1f", enemyAttributes.spawnRate), {1, 1, 1, 1}, "/s"}, 710, 800, 500, "center")
+            for i=1,#enemyStats[2] do
+                love.graphics.printf(string.format("%.1f%%", enemyStats[7][i]), columnCenters[5] - wrapWidth / 2, rowCenters[i+1] - 2, wrapWidth, "center")
+            end
+            love.graphics.setColor(accentColors[player.misc.theme].buttons)
+            love.graphics.rectangle("fill", 890, 790, 140, 40)
+            love.graphics.setColor(accentColors[player.misc.theme].buttonOutlines)
+            love.graphics.setLineWidth(2)
+            love.graphics.rectangle("line", 890, 790, 140, 40, 2, 2)
+            love.graphics.setFont(font_Afacad24)
+            love.graphics.setColor(1, 1, 1, 1)
+            love.graphics.printf("Enemy Info", 870, 792, 180, "center")
+            love.graphics.setFont(font_Afacad20)
+            love.graphics.printf({{1, 1, 1, 1}, "Enemy spawn cap: ", {1, 0.8, 0.5, 1}, string.format("%d", enemyAttributes.waveCap)}, 710, 730, 500, "center")
+            love.graphics.printf({{1, 1, 1, 1}, "Enemy spawn wrate: ", {1, 0.8, 0.5, 1}, string.format("%.1f", enemyAttributes.spawnRate), {1, 1, 1, 1}, "/s"}, 710, 755, 500, "center")
             love.graphics.draw(img_button_arrowRight_big, 1210, 522)
             if player.settings.tooltips then
                 tooltips.displayGameplayInfo()
             end
+        end
+        if player.menu.enemyInfo then
+            love.graphics.setColor(0, 0, 0, 0.5)
+            love.graphics.rectangle("fill", 0, 0, 1920, 1080)
+            love.graphics.setColor(accentColors[player.misc.theme].menus)
+            love.graphics.rectangle("fill", 760, 210, 400, 660, 2, 2)
+            love.graphics.setColor(1, 1, 1, 1)
+            love.graphics.setLineWidth(1)
+            love.graphics.rectangle("line", 760, 210, 400, 660, 2, 2)
+            love.graphics.setFont(font_AfacadBold28)
+            love.graphics.printf("Enemy Info", 710, 213, 500, "center")
+
+            love.graphics.setFont(font_Afacad18)
+            font_Afacad20:setLineHeight(0.8)
+            love.graphics.draw(img_enemy_basic, 770, 270, 0, 40/20, 40/20)
+            love.graphics.printf("The Basics are considered to the cheapest and most expendable enemy group. Lacking any resistance types and special behaviours, they often can be destroyed relatively easily.", 820, 265, 330, "left")
+            love.graphics.draw(img_enemy_tank, 770, 390, 0, 40/32, 40/32)
+            love.graphics.printf("Colloquially known as \"Estorbo(s)\", these units offer five times as much Health compared to the Basics at the cost of being 20% slower. ", 820, 385, 330, "left")
+            love.graphics.draw(img_enemy_swift, 770, 510, 0, 40/16, 40/16)
+            love.graphics.printf("These units were designed to be good and quick when it comes to raiding the players' towers even though they only have 60% of Health. These have been equipped with a 2x Speed multiplier, along with a 1.5x Attack Speed multiplier.", 820, 505, 330, "left")
+
+            love.graphics.setColor(accentColors[player.misc.theme].buttons)
+            love.graphics.rectangle("fill", 890, 820, 140, 40)
+            love.graphics.setColor(accentColors[player.misc.theme].buttonOutlines)
+            love.graphics.setLineWidth(2)
+            love.graphics.rectangle("line", 890, 820, 140, 40, 2, 2)
+            love.graphics.setFont(font_Afacad24)
+            love.graphics.setColor(1, 1, 1, 1)
+            love.graphics.printf("Back", 870, 822, 180, "center")
+            love.graphics.setFont(font_Afacad20)
         end
         if player.menu.battleStats then
             statsMenus.battle.draw()
@@ -1403,10 +1443,10 @@ function love.draw()
     love.graphics.printf("v" .. gameVersionSemantic .. " - " .. love.timer.getFPS() .. "fps, " .. player.debug.memUsage .. "KB, " .. player.debug.UPS .. "ups", 1643, 0, 220, "right")
     if player.menu.debugInfo then
         love.graphics.setColor(0, 0, 0, 0.8)
-        love.graphics.rectangle("fill", 0, 0, 170, 455)
+        love.graphics.rectangle("fill", 0, 0, 170, 470)
         love.graphics.setColor(1, 1, 1, 0.25)
         love.graphics.setLineWidth(1)
-        love.graphics.rectangle("line", -1, -1, 171, 456)
+        love.graphics.rectangle("line", -1, -1, 171, 471)
         love.graphics.setColor(1, 1, 1, 1)
         love.graphics.print("pjc: " .. #projectilesOnField, 5, 0)
         love.graphics.print("enc: " .. #enemiesOnField, 5, 15)
@@ -1437,6 +1477,7 @@ function love.draw()
         love.graphics.print("ssm: " .. tostring(player.menu.saveStats), 5, 405)
         love.graphics.print("stm: " .. tostring(player.menu.settings), 5, 420)
         love.graphics.print("gim: " .. tostring(player.menu.gameplayInfo), 5, 435)
+        love.graphics.print("eim: " .. tostring(player.menu.enemyInfo), 5, 450)
     end
 end
 
@@ -1469,9 +1510,6 @@ function love.update(dt)
                 if clusterFireProbability <= player.tower.clusterFireChance then
                     targetAmount = player.tower.clusterFireTargets
                     if findClosestEnemyInRange(960, 540, player.tower.range)[2] ~= nil then
-                        local cf = audio_tower_clusterFire:clone()
-                        cf:setVolume(1 * player.settings.volume^2)
-                        cf:play()
                         player.stats.battle.clusterFire.triggered = player.stats.battle.clusterFire.triggered + 1
                         player.stats.save.clusterFire.triggered = player.stats.save.clusterFire.triggered + 1
                     end
@@ -2023,9 +2061,13 @@ function love.mousepressed(x, y)
     end
 
     if player.menu.gameplayInfo then
-        if x >= 1210 and x <= 1246 and y >= 522 and y <= 558 then
+        if x >= 1210 and x <= 1246 and y >= 522 and y <= 558 and not player.menu.enemyInfo then
             player.menu.gameplayInfo = false
             player.menu.battleStats = true
+        elseif x >= 890 and x <= 1030 and y >= 790 and y <= 830 and not player.menu.enemyInfo then
+            player.menu.enemyInfo = true
+        elseif x >= 890 and x <= 1030 and y >= 820 and y <= 860 and player.menu.enemyInfo then
+            player.menu.enemyInfo = false
         end
     elseif player.menu.battleStats and player.tower.currentHealth > 0 then
         if x >= 674 and x <= 710 and y >= 522 and y <= 558 then
@@ -2077,10 +2119,10 @@ function love.keypressed(key)
     end
     if key == "tab" and not player.menu.paused then
         if player.location == "round" then
-            if not player.menu.battleStats then
+            if not player.menu.battleStats and not player.menu.enemyInfo then
                 player.menu.gameplayInfo = not player.menu.gameplayInfo
                 gameplay.gameSpeed = player.menu.gameplayInfo and 0 or player.maxGameSpeed
-            else
+            elseif player.menu.battleStats then
                 player.menu.gameplayInfo = false
                 player.menu.battleStats = false
                 gameplay.gameSpeed = player.menu.gameplayInfo and 0 or player.maxGameSpeed
