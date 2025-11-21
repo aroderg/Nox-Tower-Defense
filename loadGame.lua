@@ -109,7 +109,7 @@ function loadGame()
                 lightningOrb = {enemiesKilled = 0, damageDealt = 0, spawned = 0},
                 JerelosBlessing = {triggered = 0, healthRegenerated = 0},
                 supercritical = {triggered = 0, damageDealt = 0},
-                disruptWave = {triggered = 0, damageDealt = 0}
+                disruptWave = {triggered = 0, damageDealt = 0, enemiesKilled = 0}
             },
         },
         abilities = {
@@ -310,12 +310,14 @@ function loadGame()
         player.stats.save.disruptWave = loadedData.stats.disruptWave and
         {
             triggered = loadedData.stats.disruptWave.triggered or player.stats.save.disruptWave.triggered,
-            damageDealt = loadedData.stats.disruptWave.damageDealt or player.stats.save.disruptWave.damageDealt
+            damageDealt = loadedData.stats.disruptWave.damageDealt or player.stats.save.disruptWave.damageDealt,
+            enemiesKilled = loadedData.stats.disruptWave.enemiesKilled or player.stats.save.disruptWave.enemiesKilled,
         }
         or
         {
             triggered = 0,
-            damageDealt = 0
+            damageDealt = 0,
+            enemiesKilled = 0
         }
         player.abilities = {
             equipped = 0,
@@ -576,7 +578,7 @@ function resetRoundValues()
         lightningOrb = {enemiesKilled = 0, damageDealt = 0, spawned = 0},
         JerelosBlessing = {triggered = 0, healthRegenerated = 0},
         supercritical = {triggered = 0, damageDealt = 0},
-        disruptWave = {triggered = 0, damageDealt = 0}
+        disruptWave = {triggered = 0, damageDealt = 0, enemiesKilled = 0}
     }
     player.stats.wave = {enemiesKilled = 0}
     enemyAttributes = {}

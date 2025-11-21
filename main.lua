@@ -969,6 +969,9 @@ function killEnemy(s, damageSource)
     elseif damageSource == "lightningOrb" then
         player.stats.battle.lightningOrb.enemiesKilled = player.stats.battle.lightningOrb.enemiesKilled + 1
         player.stats.save.lightningOrb.enemiesKilled = player.stats.save.lightningOrb.enemiesKilled + 1
+    elseif damageSource == "disruptWave" then
+        player.stats.battle.disruptWave.enemiesKilled = player.stats.battle.disruptWave.enemiesKilled + 1
+        player.stats.save.disruptWave.enemiesKilled = player.stats.save.disruptWave.enemiesKilled + 1
     end
     table.remove(enemiesOnField, s)
 end
@@ -2057,6 +2060,7 @@ function love.mousepressed(x, y)
     if gameOver and #collapseParticles == 0 and player.location == "round" and not player.menu.gameplayInfo and not player.menu.battleStats then
         if x >= 890 and x <= 1030 and y >= 570 and y <= 610 then
             player.menu.battleStats = true
+            statsMenus.resetScroll()
         elseif x >= 870 and x <= 1050 and y >= 620 and y <= 680 then
             player.menu.upgrades = false
             player.location = "hub"

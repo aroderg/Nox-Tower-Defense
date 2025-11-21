@@ -142,7 +142,8 @@ function saveGame()
             },
             disruptWave = {
                 triggered = player.stats.save.disruptWave.triggered,
-                damageDealt = player.stats.save.disruptWave.damageDealt
+                damageDealt = player.stats.save.disruptWave.damageDealt,
+                enemiesKilled = player.stats.save.disruptWave.enemiesKilled
             }
         },
 

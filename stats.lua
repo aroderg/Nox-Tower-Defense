@@ -52,6 +52,7 @@ function statsMenus.savefile.draw()
         "Supercritical - Damage Dealt",
         "Disruption Wave - Triggered",
         "Disruption Wave - Damage Dealt",
+        "Disruption Wave - Enemies Killed",
     }
     local statVars = {
         {player.stats.save.enemiesKilled, "brief"},
@@ -96,7 +97,8 @@ function statsMenus.savefile.draw()
         {player.stats.save.supercritical.damageDealt, "precise"},
 
         {player.stats.save.disruptWave.triggered, "brief"},
-        {player.stats.save.disruptWave.damageDealt, "precise"}
+        {player.stats.save.disruptWave.damageDealt, "precise"},
+        {player.stats.save.disruptWave.enemiesKilled, "brief"}
     }
     for i=1,math.min(#statNames, #statVars) do
         love.graphics.setScissor(710, 280, 500, 490)
@@ -176,7 +178,8 @@ function statsMenus.battle.draw()
         "Supercritical - Hits",
         "Supercritical - Damage Dealt",
         "Disruption Wave - Triggered",
-        "Disruption Wave - Damage Dealt"
+        "Disruption Wave - Damage Dealt",
+        "Disruption Wave - Enemies Killed"
     }
     local statVars = {
         player.stats.battle.gameTime,
@@ -224,7 +227,8 @@ function statsMenus.battle.draw()
         {player.stats.battle.supercritical.damageDealt, "precise"},
 
         {player.stats.battle.disruptWave.triggered, "brief"},
-        {player.stats.battle.disruptWave.damageDealt, "precise"}
+        {player.stats.battle.disruptWave.damageDealt, "precise"},
+        {player.stats.battle.disruptWave.enemiesKilled, "brief"}
     }
     for i=1,math.min(#statNames, #statVars) do
         love.graphics.setScissor(710, 280, 500, 490)
@@ -298,8 +302,8 @@ function statsMenus.enemyInfo.draw()
 end
 
 function statsMenus.savefile.process(logicStep)
-    statTextScrollState = math.max(math.min(statTextScrollState + savefileVel.velx * logicStep, 0), 565-25*35)
-    statTextScrollState = math.max(math.min(statTextScrollState + savefileVel.vely * logicStep, 0), 565-25*35)
+    statTextScrollState = math.max(math.min(statTextScrollState + savefileVel.velx * logicStep, 0), 565-25*36)
+    statTextScrollState = math.max(math.min(statTextScrollState + savefileVel.vely * logicStep, 0), 565-25*36)
 
     -- Gradually reduce the velocity to create smooth scrolling effect.
     savefileVel.velx = savefileVel.velx - savefileVel.velx * math.min(logicStep * 7, 1)
@@ -307,8 +311,8 @@ function statsMenus.savefile.process(logicStep)
 end
 
 function statsMenus.battle.process(logicStep)
-    statTextScrollState = math.max(math.min(statTextScrollState + battleVel.velx * logicStep, 0), 565-25*38)
-    statTextScrollState = math.max(math.min(statTextScrollState + battleVel.vely * logicStep, 0), 565-25*38)
+    statTextScrollState = math.max(math.min(statTextScrollState + battleVel.velx * logicStep, 0), 565-25*39)
+    statTextScrollState = math.max(math.min(statTextScrollState + battleVel.vely * logicStep, 0), 565-25*39)
 
     -- Gradually reduce the velocity to create smooth scrolling effect.
     battleVel.velx = battleVel.velx - battleVel.velx * math.min(logicStep * 7, 1)
