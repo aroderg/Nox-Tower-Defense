@@ -325,10 +325,10 @@ function statsMenus.enemyInfo.process(logicStep)
 end
 
 function statsMenus.resetScroll()
-    statTextScrollState = 0
     local savefileVel = {velx = 0, vely = 0} -- The scroll velocity
     local battleVel = {velx = 0, vely = 0} -- The scroll velocity
     local enemyInfoVel = {velx = 0, vely = 0} -- The scroll velocity
+    statTextScrollState = 0
 end
 
 function love.wheelmoved(dx, dy)

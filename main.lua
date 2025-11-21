@@ -2039,8 +2039,10 @@ function love.mousepressed(x, y)
         if x >= 1210 and x <= 1246 and y >= 522 and y <= 558 and not player.menu.enemyInfo then
             player.menu.gameplayInfo = false
             player.menu.battleStats = true
+            statsMenus.resetScroll()
         elseif x >= 890 and x <= 1030 and y >= 790 and y <= 830 and not player.menu.enemyInfo then
             player.menu.enemyInfo = true
+            statsMenus.resetScroll()
         elseif x >= 890 and x <= 1030 and y >= 820 and y <= 860 and player.menu.enemyInfo then
             player.menu.enemyInfo = false
         end
@@ -2072,7 +2074,6 @@ function love.mousepressed(x, y)
             player.menu.gameplayInfo = false
             player.menu.battleStats = false
             gameplay.gameSpeed = player.menu.gameplayInfo and 0 or player.maxGameSpeed
-            statsMenus.resetScroll()
         end
     end
 
