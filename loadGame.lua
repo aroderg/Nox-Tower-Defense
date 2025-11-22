@@ -20,7 +20,7 @@ socket = require "socket"
 
 function loadGame()
     -- Initialize default player state
-    player = {
+    defaultPlayerState = {
         paused = false,
         location = "round",
         cooldowns = {electrum = 24, tokens = 600, abilityAssembly_min = 400, abilityAssembly_max = 800, abilityAssembly_current = 600},
@@ -135,19 +135,19 @@ function loadGame()
     if love.filesystem.getInfo("SAVEFILE.sav") and love.filesystem.read("SAVEFILE.sav") ~= "nil" then
         fileContent = love.filesystem.read("SAVEFILE.sav")
         loadedData = lume.deserialize(fileContent)
-
+        player = {}
         player.location = "hub"
         player.cooldowns = {
             electrum = 24,
             tokens = 600,
             abilityAssembly_min = 400,
             abilityAssembly_max = 800,
-            abilityAssembly_current = loadedData.cooldowns.abilityAssembly or player.cooldowns.abilityAssembly_current
+            abilityAssembly_current = loadedData.cooldowns.abilityAssembly or defaultPlayerState.cooldowns.abilityAssembly_current
         }
         player.timers = {
-            electrum = loadedData.timers.electrum or player.timers.electrum,
-            tokens = loadedData.timers.tokens or player.timers.tokens,
-            abilityAssembly = loadedData.timers.abilityAssembly or player.timers.abilityAssembly
+            electrum = loadedData.timers.electrum or defaultPlayerState.timers.electrum,
+            tokens = loadedData.timers.tokens or defaultPlayerState.timers.tokens,
+            abilityAssembly = loadedData.timers.abilityAssembly or defaultPlayerState.timers.abilityAssembly
         }
         player.canClaim = {
             tokens = (player.timers.tokens <= 0),
@@ -155,66 +155,68 @@ function loadGame()
             ability = (player.timers.abilityAssembly >= player.cooldowns.abilityAssembly_current)
         }
         player.currencies = {
-            currentSilver = loadedData.currentSilver or player.currencies.currentSilver,
-            currentGold = loadedData.currentGold or player.currencies.currentGold,
-            currentElectrum = loadedData.currentElectrum or player.currencies.currentElectrum,
-            currentTokens = loadedData.currentTokens or player.currencies.currentTokens,
+            currentSilver = loadedData.currentSilver or defaultPlayerState.currencies.currentSilver,
+            currentGold = loadedData.currentGold or defaultPlayerState.currencies.currentGold,
+            currentElectrum = loadedData.currentElectrum or defaultPlayerState.currencies.currentElectrum,
+            currentTokens = loadedData.currentTokens or defaultPlayerState.currencies.currentTokens,
         }
+
         player.idleTimeCap = player.idleTimeCap or 21600
-        player.idleGains = {silver = loadedData.idleGains.silver or player.idleGains.silver, gold = loadedData.idleGains.gold or player.idleGains.gold}
-        player.timeModified = loadedData.timeModified or player.timeModified
+        player.idleGains = {silver = loadedData.idleGains.silver or defaultPlayerState.idleGains.silver, gold = loadedData.idleGains.gold or defaultPlayerState.idleGains.gold}
+        player.timeModified = loadedData.timeModified or defaultPlayerState.timeModified
         local oldIdleTime = loadedData.idleTime
         player.idleTime = math.min(loadedData.idleTime + socket.gettime() - player.timeModified, player.idleTimeCap)
-        player.storedGains = {silver = loadedData.storedGains.silver or player.storedGains.silver, gold = loadedData.storedGains.gold or player.storedGains.gold}
+        player.storedGains = {silver = loadedData.storedGains.silver or defaultPlayerState.storedGains.silver, gold = loadedData.storedGains.gold or defaultPlayerState.storedGains.gold}
         player.storedGains.silver = player.storedGains.silver + player.idleGains.silver * (math.floor(player.idleTime / 60) - math.floor(oldIdleTime / 60))
         player.storedGains.gold = player.storedGains.gold + player.idleGains.gold * (math.floor(player.idleTime / 60) - math.floor(oldIdleTime / 60))
+
     --[[ Set upgrade unlocks ]]--
         player.upgrades = {
             unlocks = {
-                crit = loadedData.upgrades.unlocks.crit or player.upgrades.unlocks.crit,
-                range = loadedData.upgrades.unlocks.range or player.upgrades.unlocks.range,
-                clusterFire = loadedData.upgrades.unlocks.clusterFire or player.upgrades.unlocks.clusterFire,
+                crit = loadedData.upgrades.unlocks.crit or defaultPlayerState.upgrades.unlocks.crit,
+                range = loadedData.upgrades.unlocks.range or defaultPlayerState.upgrades.unlocks.range,
+                clusterFire = loadedData.upgrades.unlocks.clusterFire or defaultPlayerState.upgrades.unlocks.clusterFire,
 
-                resistance = loadedData.upgrades.unlocks.resistance or player.upgrades.unlocks.resistance,
-                shield = loadedData.upgrades.unlocks.shield or player.upgrades.unlocks.shield,
-                meteor = loadedData.upgrades.unlocks.meteor or player.upgrades.unlocks.meteor,
-                lifesteal = loadedData.upgrades.unlocks.lifesteal or player.upgrades.unlocks.lifesteal,
+                resistance = loadedData.upgrades.unlocks.resistance or defaultPlayerState.upgrades.unlocks.resistance,
+                shield = loadedData.upgrades.unlocks.shield or defaultPlayerState.upgrades.unlocks.shield,
+                meteor = loadedData.upgrades.unlocks.meteor or defaultPlayerState.upgrades.unlocks.meteor,
+                lifesteal = loadedData.upgrades.unlocks.lifesteal or defaultPlayerState.upgrades.unlocks.lifesteal,
 
-                resourceBonus = loadedData.upgrades.unlocks.resourceBonus or player.upgrades.unlocks.resourceBonus
+                resourceBonus = loadedData.upgrades.unlocks.resourceBonus or defaultPlayerState.upgrades.unlocks.resourceBonus
             },
             science = {
-                attackDamage = {level = loadedData.upgrades.attackDamage or player.upgrades.science.attackDamage.level, cost = 1, value = 1},
-                attackSpeed = {level = loadedData.upgrades.attackSpeed or player.upgrades.science.attackSpeed.level, cost = 1, value = 1},
-                critChance = {level = loadedData.upgrades.critChance or player.upgrades.science.critChance.level, cost = 1, value = 1},
-                critFactor = {level = loadedData.upgrades.critFactor or player.upgrades.science.critFactor.level, cost = 1, value = 1},
-                range = {level = loadedData.upgrades.range or player.upgrades.science.range.level, cost = 1, value = 1},
-                clusterFireChance = {level = loadedData.upgrades.clusterFireChance or player.upgrades.science.clusterFireChance.level, cost = 1, value = 1},
-                clusterFireTargets = {level = loadedData.upgrades.clusterFireTargets or player.upgrades.science.clusterFireTargets.level, cost = 1, value = 1},
-                clusterFireEfficiency = {level = loadedData.upgrades.clusterFireEfficiency or player.upgrades.science.clusterFireEfficiency.level, cost = 1, value = 1},
+                attackDamage = {level = loadedData.upgrades.attackDamage or defaultPlayerState.upgrades.science.attackDamage.level, cost = 1, value = 1},
+                attackSpeed = {level = loadedData.upgrades.attackSpeed or defaultPlayerState.upgrades.science.attackSpeed.level, cost = 1, value = 1},
+                critChance = {level = loadedData.upgrades.critChance or defaultPlayerState.upgrades.science.critChance.level, cost = 1, value = 1},
+                critFactor = {level = loadedData.upgrades.critFactor or defaultPlayerState.upgrades.science.critFactor.level, cost = 1, value = 1},
+                range = {level = loadedData.upgrades.range or defaultPlayerState.upgrades.science.range.level, cost = 1, value = 1},
+                clusterFireChance = {level = loadedData.upgrades.clusterFireChance or defaultPlayerState.upgrades.science.clusterFireChance.level, cost = 1, value = 1},
+                clusterFireTargets = {level = loadedData.upgrades.clusterFireTargets or defaultPlayerState.upgrades.science.clusterFireTargets.level, cost = 1, value = 1},
+                clusterFireEfficiency = {level = loadedData.upgrades.clusterFireEfficiency or defaultPlayerState.upgrades.science.clusterFireEfficiency.level, cost = 1, value = 1},
 
-                health = {level = loadedData.upgrades.health or player.upgrades.science.health.level, cost = 1, value = 1},
-                regeneration = {level = loadedData.upgrades.regeneration or player.upgrades.science.regeneration.level, cost = 1, value = 1},
-                resistance = {level = loadedData.upgrades.resistance or player.upgrades.science.resistance.level, cost = 1, value = 1},
-                shieldCooldown = {level = loadedData.upgrades.shieldCooldown or player.upgrades.science.shieldCooldown.level, cost = 1, value = 1},
-                shieldDuration = {level = loadedData.upgrades.shieldDuration or player.upgrades.science.shieldDuration.level, cost = 1, value = 1},
-                meteorAmount = {level = loadedData.upgrades.meteorAmount or player.upgrades.science.meteorAmount.levelt, cost = 1, value = 1},
-                meteorRPM = {level = loadedData.upgrades.meteorRPM or player.upgrades.science.meteorRPM.level, cost = 1, value = 1},
-                lifestealChance = {level = loadedData.upgrades.lifestealChance or player.upgrades.science.lifestealChance.level, cost = 1, value = 1},
-                lifestealPercent = {level = loadedData.upgrades.lifestealPercent or player.upgrades.science.lifestealPercent.level, cost = 1, value = 1},
+                health = {level = loadedData.upgrades.health or defaultPlayerState.upgrades.science.health.level, cost = 1, value = 1},
+                regeneration = {level = loadedData.upgrades.regeneration or defaultPlayerState.upgrades.science.regeneration.level, cost = 1, value = 1},
+                resistance = {level = loadedData.upgrades.resistance or defaultPlayerState.upgrades.science.resistance.level, cost = 1, value = 1},
+                shieldCooldown = {level = loadedData.upgrades.shieldCooldown or defaultPlayerState.upgrades.science.shieldCooldown.level, cost = 1, value = 1},
+                shieldDuration = {level = loadedData.upgrades.shieldDuration or defaultPlayerState.upgrades.science.shieldDuration.level, cost = 1, value = 1},
+                meteorAmount = {level = loadedData.upgrades.meteorAmount or defaultPlayerState.upgrades.science.meteorAmount.levelt, cost = 1, value = 1},
+                meteorRPM = {level = loadedData.upgrades.meteorRPM or defaultPlayerState.upgrades.science.meteorRPM.level, cost = 1, value = 1},
+                lifestealChance = {level = loadedData.upgrades.lifestealChance or defaultPlayerState.upgrades.science.lifestealChance.level, cost = 1, value = 1},
+                lifestealPercent = {level = loadedData.upgrades.lifestealPercent or defaultPlayerState.upgrades.science.lifestealPercent.level, cost = 1, value = 1},
 
-                copperPerWave = {level = loadedData.upgrades.copperPerWave or player.upgrades.science.copperPerWave.level, cost = 1, value = 1},
-                silverPerWave = {level = loadedData.upgrades.silverPerWave or player.upgrades.science.silverPerWave.level, cost = 1, value = 1},
-                copperBonus = {level = loadedData.upgrades.copperBonus or player.upgrades.science.copperBonus.level, cost = 1, value = 1},
-                silverBonus = {level = loadedData.upgrades.silverBonus or player.upgrades.science.silverBonus.level, cost = 1, value = 1},
+                copperPerWave = {level = loadedData.upgrades.copperPerWave or defaultPlayerState.upgrades.science.copperPerWave.level, cost = 1, value = 1},
+                silverPerWave = {level = loadedData.upgrades.silverPerWave or defaultPlayerState.upgrades.science.silverPerWave.level, cost = 1, value = 1},
+                copperBonus = {level = loadedData.upgrades.copperBonus or defaultPlayerState.upgrades.science.copperBonus.level, cost = 1, value = 1},
+                silverBonus = {level = loadedData.upgrades.silverBonus or defaultPlayerState.upgrades.science.silverBonus.level, cost = 1, value = 1},
             },
 
             nexus = {
-                attackDamage = {level = loadedData.upgrades.nexus.attackDamage or player.upgrades.nexus.attackDamage, cost = 1},
-                attackSpeed = {level = loadedData.upgrades.nexus.attackSpeed or player.upgrades.nexus.attackSpeed, cost = 1},
-                health = {level = loadedData.upgrades.nexus.health or player.upgrades.nexus.health, cost = 1},
-                regeneration = {level = loadedData.upgrades.nexus.regeneration or player.upgrades.nexus.regeneration, cost = 1},
-                abilityChance = {level = loadedData.upgrades.nexus.abilityChance or player.upgrades.nexus.abilityChance, cost = 1},
-                abilityCooldown = {level = loadedData.upgrades.nexus.abilityCooldown or player.upgrades.nexus.abilityCooldown, cost = 1},
+                attackDamage = {level = loadedData.upgrades.nexus.attackDamage or defaultPlayerState.upgrades.nexus.attackDamage, cost = 1},
+                attackSpeed = {level = loadedData.upgrades.nexus.attackSpeed or defaultPlayerState.upgrades.nexus.attackSpeed, cost = 1},
+                health = {level = loadedData.upgrades.nexus.health or defaultPlayerState.upgrades.nexus.health, cost = 1},
+                regeneration = {level = loadedData.upgrades.nexus.regeneration or defaultPlayerState.upgrades.nexus.regeneration, cost = 1},
+                abilityChance = {level = loadedData.upgrades.nexus.abilityChance or defaultPlayerState.upgrades.nexus.abilityChance, cost = 1},
+                abilityCooldown = {level = loadedData.upgrades.nexus.abilityCooldown or defaultPlayerState.upgrades.nexus.abilityCooldown, cost = 1},
             }
         }
         player.upgrades.nexus.attackDamage.value = math.min(1 + (player.upgrades.nexus.attackDamage.level - 1) * 10/100, 5)
@@ -244,80 +246,75 @@ function loadGame()
         player.modifiers.acceleration.cost = player.modifiers.acceleration.unlocked and math.floor(5 * (2^(player.modifiers.acceleration.level))^0.21) or 15
         player.modifiers.acceleration.value = player.modifiers.acceleration.unlocked and math.min(0.04 * (player.modifiers.acceleration.level), 0.8) or 0
         player.settings = {
-            particleMultiplier = loadedData.settings.particleMultiplierIndex or player.settings.particleMultiplierIndex,
-            waveSkipMessages = loadedData.settings.waveSkipMessages or player.settings.waveSkipMessages,
-            notation = loadedData.settings.notation or player.settings.notation,
-            tooltips = loadedData.settings.tooltips or player.settings.tooltips,
-            volume = loadedData.settings.volume or player.settings.volume
+            particleMultiplier = loadedData.settings.particleMultiplierIndex or defaultPlayerState.settings.particleMultiplierIndex,
+            waveSkipMessages = loadedData.settings.waveSkipMessages or defaultPlayerState.settings.waveSkipMessages,
+            notation = loadedData.settings.notation or defaultPlayerState.settings.notation,
+            tooltips = loadedData.settings.tooltips or defaultPlayerState.settings.tooltips,
+            volume = loadedData.settings.volume or defaultPlayerState.settings.volume
         }
-        player.bestWaves = {d1 = loadedData.pb.d1 or player.bestWaves.d1, d2 = loadedData.pb.d2 or player.bestWaves.d2, d3 = loadedData.pb.d3 or player.bestWaves.d3, d4 = loadedData.pb.d4 or player.bestWaves.d4, d5 = loadedData.pb.d5 or player.bestWaves.d5}
+        player.bestWaves = {d1 = loadedData.pb.d1 or defaultPlayerState.bestWaves.d1, d2 = loadedData.pb.d2 or defaultPlayerState.bestWaves.d2, d3 = loadedData.pb.d3 or defaultPlayerState.bestWaves.d3, d4 = loadedData.pb.d4 or defaultPlayerState.bestWaves.d4, d5 = loadedData.pb.d5 or defaultPlayerState.bestWaves.d5}
+        player.stats = {}
         player.stats.save = {}
-        player.stats.save.enemiesKilled = loadedData.stats.enemiesKilled or player.stats.save.enemiesKilled
-        player.stats.save.damageDealt = loadedData.stats.damageDealt or player.stats.save.damageDealt
-        player.stats.save.silverEarned = loadedData.stats.silverEarned or player.stats.save.silverEarned
-        player.stats.save.goldEarned = loadedData.stats.goldEarned or player.stats.save.goldEarned
-        player.stats.save.wavesSkipped = loadedData.stats.wavesSkipped or player.stats.save.wavesSkipped
-        player.stats.save.projectilesFired = loadedData.stats.projectilesFired or player.stats.save.projectilesFired
-        player.stats.save.wavesBeaten = loadedData.stats.wavesBeaten or player.stats.save.wavesBeaten
+        player.stats.save.enemiesKilled = loadedData.stats.enemiesKilled or pladefaultPlayerStateyer.stats.save.enemiesKilled
+        player.stats.save.damageDealt = loadedData.stats.damageDealt or defaultPlayerState.stats.save.damageDealt
+        player.stats.save.silverEarned = loadedData.stats.silverEarned or defaultPlayerState.stats.save.silverEarned
+        player.stats.save.goldEarned = loadedData.stats.goldEarned or defaultPlayerState.stats.save.goldEarned
+        player.stats.save.wavesSkipped = loadedData.stats.wavesSkipped or defaultPlayerState.stats.save.wavesSkipped
+        player.stats.save.projectilesFired = loadedData.stats.projectilesFired or defaultPlayerState.stats.save.projectilesFired
+        player.stats.save.wavesBeaten = loadedData.stats.wavesBeaten or defaultPlayerState.stats.save.wavesBeaten
         player.stats.save.clusterFire = {
-            triggered = loadedData.stats.clusterFire.triggered or player.stats.save.clusterFire.triggered,
+            triggered = loadedData.stats.clusterFire.triggered or defaultPlayerState.stats.save.clusterFire.triggered,
         }
         player.stats.save.lifesteal = {
             triggered = loadedData.stats.lifesteal.triggered,
             healed = loadedData.stats.lifesteal.healed,
         }
         player.stats.save.upgradesAcquired = {
-            science = loadedData.stats.upgradesAcquired.science or player.stats.save.upgradesAcquired.science,
-            nexus = loadedData.stats.upgradesAcquired.nexus or player.stats.save.upgradesAcquired.nexus
+            science = loadedData.stats.upgradesAcquired.science or defaultPlayerState.stats.save.upgradesAcquired.science,
+            nexus = loadedData.stats.upgradesAcquired.nexus or defaultPlayerState.stats.save.upgradesAcquired.nexus
         }
         player.stats.save.spikedCrystals = {
-            enemiesKilled = loadedData.stats.spikedCrystals.enemiesKilled or player.stats.save.spikedCrystals.enemiesKilled,
-            damageDealt = loadedData.stats.spikedCrystals.damageDealt or player.stats.save.spikedCrystals.damageDealt,
-            spawned = loadedData.stats.spikedCrystals.spawned or player.stats.save.spikedCrystals.spawned
+            enemiesKilled = loadedData.stats.spikedCrystals.enemiesKilled or defaultPlayerState.stats.save.spikedCrystals.enemiesKilled,
+            damageDealt = loadedData.stats.spikedCrystals.damageDealt or defaultPlayerState.stats.save.spikedCrystals.damageDealt,
+            spawned = loadedData.stats.spikedCrystals.spawned or defaultPlayerState.stats.save.spikedCrystals.spawned
         }
         player.stats.save.scatterFire = {
-            damageDealt = loadedData.stats.scatterFire.damageDealt or player.stats.save.scatterFire.damageDealt,
-            triggered = loadedData.stats.scatterFire.triggered or player.stats.save.scatterFire.triggered
+            damageDealt = loadedData.stats.scatterFire.damageDealt or defaultPlayerState.stats.save.scatterFire.damageDealt,
+            triggered = loadedData.stats.scatterFire.triggered or defaultPlayerState.stats.save.scatterFire.triggered
         }
         player.stats.save.burstFire = {
-            damageDealt = loadedData.stats.burstFire.damageDealt or player.stats.save.burstFire.damageDealt,
-            triggered = loadedData.stats.burstFire.triggered or player.stats.save.burstFire.triggered
+            damageDealt = loadedData.stats.burstFire.damageDealt or defaultPlayerState.stats.save.burstFire.damageDealt,
+            triggered = loadedData.stats.burstFire.triggered or defaultPlayerState.stats.save.burstFire.triggered
         }
         if not loadedData.stats.iceDomain then
             loadedData.stats.iceDomain = {triggered = 0}
         end
         player.stats.save.iceDomain = {
-            triggered = loadedData.stats.iceDomain.triggered or player.stats.save.iceDomain.triggered
+            triggered = loadedData.stats.iceDomain.triggered or defaultPlayerState.stats.save.iceDomain.triggered
         }
         player.stats.save.magmaTouch = {
-            enemiesKilled = loadedData.stats.magmaTouch.enemiesKilled or player.stats.save.magmaTouch.triggered,
-            damageDealt = loadedData.stats.magmaTouch.damageDealt or player.stats.save.magmaTouch.triggered,
-            spawned = loadedData.stats.magmaTouch.spawned or player.stats.save.magmaTouch.spawned
+            enemiesKilled = loadedData.stats.magmaTouch.enemiesKilled or defaultPlayerState.stats.save.magmaTouch.triggered,
+            damageDealt = loadedData.stats.magmaTouch.damageDealt or defaultPlayerState.stats.save.magmaTouch.triggered,
+            spawned = loadedData.stats.magmaTouch.spawned or defaultPlayerState.stats.save.magmaTouch.spawned
         }
         player.stats.save.lightningOrb = {
-            enemiesKilled = loadedData.stats.lightningOrb.enemiesKilled or player.stats.save.lightningOrb.enemiesKilled,
-            damageDealt = loadedData.stats.lightningOrb.damageDealt or player.stats.save.lightningOrb.damageDealt,
-            spawned = loadedData.stats.lightningOrb.spawned or player.stats.save.lightningOrb.spawned
+            enemiesKilled = loadedData.stats.lightningOrb.enemiesKilled or defaultPlayerState.stats.save.lightningOrb.enemiesKilled,
+            damageDealt = loadedData.stats.lightningOrb.damageDealt or defaultPlayerState.stats.save.lightningOrb.damageDealt,
+            spawned = loadedData.stats.lightningOrb.spawned or defaultPlayerState.stats.save.lightningOrb.spawned
         }
         player.stats.save.JerelosBlessing = {
-            triggered = loadedData.stats.JerelosBlessing.triggered or player.stats.save.JerelosBlessing.triggered,
-            healthRegenerated = loadedData.stats.JerelosBlessing.healthRegenerated or player.stats.save.JerelosBlessing.healthRegenerated
+            triggered = loadedData.stats.JerelosBlessing.triggered or defaultPlayerState.stats.save.JerelosBlessing.triggered,
+            healthRegenerated = loadedData.stats.JerelosBlessing.healthRegenerated or defaultPlayerState.stats.save.JerelosBlessing.healthRegenerated
         }
         player.stats.save.supercritical = {
-            triggered = loadedData.stats.supercritical.triggered or player.stats.save.supercritical.triggered,
-            damageDealt = loadedData.stats.supercritical.damageDealt or player.stats.save.supercritical.damageDealt
+            triggered = loadedData.stats.supercritical.triggered or defaultPlayerState.stats.save.supercritical.triggered,
+            damageDealt = loadedData.stats.supercritical.damageDealt or defaultPlayerState.stats.save.supercritical.damageDealt
         }
-        player.stats.save.disruptWave = loadedData.stats.disruptWave and
+        player.stats.save.disruptWave =
         {
-            triggered = loadedData.stats.disruptWave.triggered or player.stats.save.disruptWave.triggered,
-            damageDealt = loadedData.stats.disruptWave.damageDealt or player.stats.save.disruptWave.damageDealt,
-            enemiesKilled = loadedData.stats.disruptWave.enemiesKilled or player.stats.save.disruptWave.enemiesKilled,
-        }
-        or
-        {
-            triggered = 0,
-            damageDealt = 0,
-            enemiesKilled = 0
+            triggered = loadedData.stats.disruptWave.triggered or defaultPlayerState.stats.save.disruptWave.triggered,
+            damageDealt = loadedData.stats.disruptWave.damageDealt or defaultPlayerState.stats.save.disruptWave.damageDealt,
+            enemiesKilled = loadedData.stats.disruptWave.enemiesKilled or defaultPlayerState.stats.save.disruptWave.enemiesKilled,
         }
         player.abilities = {
             equipped = 0,
@@ -345,7 +342,7 @@ function loadGame()
                 amount = loadedData.abilities[abilityNames[i]].amount
             }
         end
-        misc = {
+        player.misc = {
             abilityAssembling = (loadedData.timers.abilityAssembly <= loadedData.cooldowns.abilityAssembly), currentOrbital = love.math.random(27, 30)
         }
         player.misc.theme = loadedData.misc.theme or player.misc.theme
@@ -410,17 +407,10 @@ function loadGame()
 
     player.maxGameSpeed = 1 + player.modifiers.acceleration.value
 
-    if not player.canClaim.ability and player.misc.abilityAssembling then
-        if player.timers.abilityAssembly < player.cooldowns.abilityAssembly_current then
-            player.timers.abilityAssembly = player.timers.abilityAssembly + logicStep * gameplay.gameSpeed
-        else
-            player.timers.abilityAssembly = player.cooldowns.abilityAssembly_current
-            player.canClaim.ability = true
-            player.misc.abilityAssembling = false
-        end
-    end
-    if not player.canClaim.ability and not player.misc.abilityAssembling then
-        player.timers.abilityAssembly = 0
+    if player.canClaim.ability and player.misc.abilityAssembling then
+        player.timers.abilityAssembly = player.cooldowns.abilityAssembly_current
+        player.canClaim.ability = false
+        player.misc.abilityAssembling = true
     end
     player.idleGains.silver, player.idleGains.gold = reloadIdleGains()
 

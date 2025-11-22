@@ -2127,8 +2127,5 @@ end
 end]]-- old function for volume control
 
 function love.quit()
-    if not player.canClaim.ability and player.misc.abilityAssembling then
-        player.currencies.currentTokens = player.currencies.currentTokens + 60
-    end
     saveGame()
 end
