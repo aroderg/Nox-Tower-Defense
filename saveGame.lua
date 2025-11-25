@@ -23,36 +23,38 @@ function saveGame()
                 resourceBonus = player.upgrades.unlocks.resourceBonus,
             },
             nexus = {
-                attackDamage = player.upgrades.nexus.attackDamage.level,
-                attackSpeed = player.upgrades.nexus.attackSpeed.level,
-                health = player.upgrades.nexus.health.level,
-                regeneration = player.upgrades.nexus.regeneration.level,
-                abilityChance = player.upgrades.nexus.abilityChance.level,
-                abilityCooldown = player.upgrades.nexus.abilityCooldown.level
+                attackDamage = {level = player.upgrades.nexus.attackDamage.level},
+                attackSpeed = {level = player.upgrades.nexus.attackSpeed.level},
+                health = {level = player.upgrades.nexus.health.level},
+                regeneration = {level = player.upgrades.nexus.regeneration.level},
+                abilityChance = {level = player.upgrades.nexus.abilityChance.level},
+                abilityCooldown = {level = player.upgrades.nexus.abilityCooldown.level}
             },
-            attackDamage = player.upgrades.science.attackDamage.level,
-            attackSpeed = player.upgrades.science.attackSpeed.level,
-            critChance = player.upgrades.science.critChance.level,
-            critFactor = player.upgrades.science.critFactor.level,
-            range = player.upgrades.science.range.level,
-            clusterFireChance = player.upgrades.science.clusterFireChance.level,
-            clusterFireTargets = player.upgrades.science.clusterFireTargets.level,
-            clusterFireEfficiency = player.upgrades.science.clusterFireEfficiency.level,
-            
-            health = player.upgrades.science.health.level,
-            regeneration = player.upgrades.science.regeneration.level,
-            resistance = player.upgrades.science.resistance.level,
-            shieldCooldown = player.upgrades.science.shieldCooldown.level,
-            shieldDuration = player.upgrades.science.shieldDuration.level,
-            meteorAmount = player.upgrades.science.meteorAmount.level,
-            meteorRPM = player.upgrades.science.meteorRPM.level,
-            lifestealChance = player.upgrades.science.lifestealChance.level,
-            lifestealPercent = player.upgrades.science.lifestealPercent.level,
+            science = {
+                attackDamage = {level = player.upgrades.science.attackDamage.level},
+                attackSpeed = {level = player.upgrades.science.attackSpeed.level},
+                critChance = {level = player.upgrades.science.critChance.level},
+                critFactor = {level = player.upgrades.science.critFactor.level},
+                range = {level = player.upgrades.science.range.level},
+                clusterFireChance = {level = player.upgrades.science.clusterFireChance.level},
+                clusterFireTargets = {level = player.upgrades.science.clusterFireTargets.level},
+                clusterFireEfficiency = {level = player.upgrades.science.clusterFireEfficiency.level},
+                
+                health = {level = player.upgrades.science.health.level},
+                regeneration = {level = player.upgrades.science.regeneration.level},
+                resistance = {level = player.upgrades.science.resistance.level},
+                shieldCooldown = {level = player.upgrades.science.shieldCooldown.level},
+                shieldDuration = {level = player.upgrades.science.shieldDuration.level},
+                meteorAmount = {level = player.upgrades.science.meteorAmount.level},
+                meteorRPM = {level = player.upgrades.science.meteorRPM.level},
+                lifestealChance = {level = player.upgrades.science.lifestealChance.level},
+                lifestealPercent = {level = player.upgrades.science.lifestealPercent.level},
 
-            copperPerWave = player.upgrades.science.copperPerWave.level,
-            silverPerWave = player.upgrades.science.silverPerWave.level,
-            copperBonus = player.upgrades.science.copperBonus.level,
-            silverBonus = player.upgrades.science.silverBonus.level,
+                copperPerWave = {level = player.upgrades.science.copperPerWave.level},
+                silverPerWave = {level = player.upgrades.science.silverPerWave.level},
+                copperBonus = {level = player.upgrades.science.copperBonus.level},
+                silverBonus = {level = player.upgrades.science.silverBonus.level}
+            }
         },
 
         timers = {
@@ -61,7 +63,7 @@ function saveGame()
             abilityAssembly = player.timers.abilityAssembly
         },
         cooldowns = {
-            abilityAssembly = player.cooldowns.abilityAssembly_current
+            abilityAssembly_current = player.cooldowns.abilityAssembly_current
         },
 
         modifiers = {
@@ -79,7 +81,7 @@ function saveGame()
             }
         },
 
-        pb = {
+        bestWaves = {
             d1 = player.bestWaves.d1,
             d2 = player.bestWaves.d2,
             d3 = player.bestWaves.d3,
@@ -88,62 +90,64 @@ function saveGame()
         },
 
         stats = {
-            enemiesKilled = player.stats.save.enemiesKilled,
-            damageDealt = player.stats.save.damageDealt,
-            silverEarned = player.stats.save.silverEarned,
-            goldEarned = player.stats.save.goldEarned,
-            wavesSkipped = player.stats.save.wavesSkipped,
-            projectilesFired = player.stats.save.projectilesFired,
-            upgradesAcquired = {
-                science = player.stats.save.upgradesAcquired.science,
-                nexus = player.stats.save.upgradesAcquired.nexus
-            },
-            wavesBeaten = player.stats.save.wavesBeaten,
-            clusterFire = {
-                triggered = player.stats.save.clusterFire.triggered
-            },
-            lifesteal = {
-                triggered = player.stats.save.lifesteal.triggered,
-                healed = player.stats.save.lifesteal.healed,
-            },
-            spikedCrystals = {
-                enemiesKilled = player.stats.save.spikedCrystals.enemiesKilled,
-                damageDealt = player.stats.save.spikedCrystals.damageDealt,
-                spawned = player.stats.save.spikedCrystals.spawned
-            },
-            scatterFire = {
-                damageDealt = player.stats.save.scatterFire.damageDealt,
-                triggered = player.stats.save.scatterFire.triggered
-            },
-            burstFire = {
-                damageDealt = player.stats.save.burstFire.damageDealt,
-                triggered = player.stats.save.burstFire.triggered
-            },
-            iceDomain = {
-                triggered = player.stats.save.iceDomain.triggered
-            },
-            magmaTouch = {
-                enemiesKilled = player.stats.save.magmaTouch.enemiesKilled,
-                damageDealt = player.stats.save.magmaTouch.damageDealt,
-                spawned = player.stats.save.magmaTouch.spawned
-            },
-            lightningOrb = {
-                enemiesKilled = player.stats.save.lightningOrb.enemiesKilled,
-                damageDealt = player.stats.save.lightningOrb.damageDealt,
-                spawned = player.stats.save.lightningOrb.spawned
-            },
-            JerelosBlessing = {
-                triggered = player.stats.save.JerelosBlessing.triggered,
-                healthRegenerated = player.stats.save.JerelosBlessing.healthRegenerated
-            },
-            supercritical = {
-                triggered = player.stats.save.supercritical.triggered,
-                damageDealt = player.stats.save.supercritical.damageDealt
-            },
-            disruptWave = {
-                triggered = player.stats.save.disruptWave.triggered,
-                damageDealt = player.stats.save.disruptWave.damageDealt,
-                enemiesKilled = player.stats.save.disruptWave.enemiesKilled
+            save = {
+                enemiesKilled = player.stats.save.enemiesKilled,
+                damageDealt = player.stats.save.damageDealt,
+                silverEarned = player.stats.save.silverEarned,
+                goldEarned = player.stats.save.goldEarned,
+                wavesSkipped = player.stats.save.wavesSkipped,
+                projectilesFired = player.stats.save.projectilesFired,
+                upgradesAcquired = {
+                    science = player.stats.save.upgradesAcquired.science,
+                    nexus = player.stats.save.upgradesAcquired.nexus
+                },
+                wavesBeaten = player.stats.save.wavesBeaten,
+                clusterFire = {
+                    triggered = player.stats.save.clusterFire.triggered
+                },
+                lifesteal = {
+                    triggered = player.stats.save.lifesteal.triggered,
+                    healed = player.stats.save.lifesteal.healed,
+                },
+                spikedCrystals = {
+                    enemiesKilled = player.stats.save.spikedCrystals.enemiesKilled,
+                    damageDealt = player.stats.save.spikedCrystals.damageDealt,
+                    spawned = player.stats.save.spikedCrystals.spawned
+                },
+                scatterFire = {
+                    damageDealt = player.stats.save.scatterFire.damageDealt,
+                    triggered = player.stats.save.scatterFire.triggered
+                },
+                burstFire = {
+                    damageDealt = player.stats.save.burstFire.damageDealt,
+                    triggered = player.stats.save.burstFire.triggered
+                },
+                iceDomain = {
+                    triggered = player.stats.save.iceDomain.triggered
+                },
+                magmaTouch = {
+                    enemiesKilled = player.stats.save.magmaTouch.enemiesKilled,
+                    damageDealt = player.stats.save.magmaTouch.damageDealt,
+                    spawned = player.stats.save.magmaTouch.spawned
+                },
+                lightningOrb = {
+                    enemiesKilled = player.stats.save.lightningOrb.enemiesKilled,
+                    damageDealt = player.stats.save.lightningOrb.damageDealt,
+                    spawned = player.stats.save.lightningOrb.spawned
+                },
+                JerelosBlessing = {
+                    triggered = player.stats.save.JerelosBlessing.triggered,
+                    healthRegenerated = player.stats.save.JerelosBlessing.healthRegenerated
+                },
+                supercritical = {
+                    triggered = player.stats.save.supercritical.triggered,
+                    damageDealt = player.stats.save.supercritical.damageDealt
+                },
+                disruptWave = {
+                    triggered = player.stats.save.disruptWave.triggered,
+                    damageDealt = player.stats.save.disruptWave.damageDealt,
+                    enemiesKilled = player.stats.save.disruptWave.enemiesKilled
+                }
             }
         },
 
@@ -229,7 +233,7 @@ function saveGame()
             theme = player.misc.theme
         },
         settings = {
-            particleMultiplierIndex = player.settings.particleMultiplier,
+            particleMultiplierIndex = player.settings.particleMultiplierIndex,
             waveSkipMessages = player.settings.waveSkipMessages,
             notation = player.settings.notation,
             tooltips = player.settings.tooltips,

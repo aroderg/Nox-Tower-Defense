@@ -139,7 +139,7 @@ function inHub_visual()
         love.graphics.printf("Stats", 1780, 61, 158, "center")
         love.graphics.setLineWidth(1)
         love.graphics.draw(img_discordLogo, 1710, 22, 0, 80/512, 80/512)
-        if not player.menu.settings and not player.menu.saveStats and not player.menu.rolledAbilityDisplay and not abilityFunctions.checkMenuDisplay() then
+        if not player.menu.settings and not player.menu.saveStats and not player.menu.rolledAbilityDisplay and not abilityFunctions.checkMenuDisplay() and player.settings.tooltips then
             tooltips.displayDiscordTooltip()
         end
         love.graphics.setColor(1, 1, 1, 1)
@@ -406,7 +406,7 @@ function inHub_visual()
                 love.graphics.setColor(1, 1, 1, 1)
                 love.graphics.printf(string.format("%dm %ds", (player.cooldowns.abilityAssembly_current - player.timers.abilityAssembly) / 60, (player.cooldowns.abilityAssembly_current - player.timers.abilityAssembly) % 60), 860, 325, 200, "center")
             end
-            if not abilityFunctions.checkMenuDisplay() and not player.menu.rolledAbilityDisplay and not player.menu.settings and not player.menu.saveStats then
+            if not abilityFunctions.checkMenuDisplay() and not player.menu.rolledAbilityDisplay and not player.menu.settings and not player.menu.saveStats and player.settings.tooltips then
                 tooltips.displayAbilityInfo()
             end
             for i,v in pairs(internalAbilities) do

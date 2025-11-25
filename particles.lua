@@ -105,7 +105,7 @@ function renderParticles()
         love.graphics.draw(killParticleAppearances[v.origin][1], v.x - killParticleAppearances[v.origin][2], v.y - killParticleAppearances[v.origin][2])
     end
     for i,v in ipairs(collapseParticles) do
-        local particleAlpha = player.settings.particleMultiplier == 1 and 0 or 1-v.timer_fade/v.fadeTime
+        local particleAlpha = player.settings.particleMultiplierIndex == 1 and 0 or 1-v.timer_fade/v.fadeTime
         love.graphics.setColor(1, 1, 1, particleAlpha)
         love.graphics.draw(img_particle_collapse, v.x - 6, v.y - 6)
     end

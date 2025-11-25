@@ -80,7 +80,7 @@ function abilityObjects.spikedCrystal.process(logicStep)
             if v.timer_explosion < v.timer_explosionDuration then
                 v.timer_explosion = v.timer_explosion + logicStep * gameplay.gameSpeed
             else
-                for i=1,8*settings_particleMultipliers[player.settings.particleMultiplier] do
+                for i=1,8*settings_particleMultipliers[player.settings.particleMultiplierIndex] do
                     createCrystalExplosionParticle(v.x + 11, v.y + 11)
                 end
                 table.remove(spikedCrystals, i)

@@ -899,7 +899,7 @@ function killEnemy(s, damageSource)
         centurion = 32,
         exploder = 16
         }
-    for i=1,particleAmount[ke.type] * settings_particleMultipliers[player.settings.particleMultiplier] or 0 do
+    for i=1,particleAmount[ke.type] * settings_particleMultipliers[player.settings.particleMultiplierIndex] or 0 do
         createKillParticle(ke.x + enemyOffsets[ke.type], ke.y + enemyOffsets[ke.type], ke.type)
     end
 
@@ -1345,11 +1345,11 @@ function love.draw()
         love.graphics.setFont(font_AfacadBold24)
         love.graphics.printf("Particles", 710, 300, 500, "center")
         love.graphics.setFont(font_Afacad20)
-        love.graphics.printf(string.format("%s (x%.2f)", settings_particleMultiplierNames[player.settings.particleMultiplier], settings_particleMultipliers[player.settings.particleMultiplier]), 710, 330, 500, "center")
-        if player.settings.particleMultiplier > 1 then
+        love.graphics.printf(string.format("%s (x%.2f)", settings_particleMultiplierNames[player.settings.particleMultiplierIndex], settings_particleMultipliers[player.settings.particleMultiplierIndex]), 710, 330, 500, "center")
+        if player.settings.particleMultiplierIndex > 1 then
             love.graphics.draw(img_button_arrowLeft, 820, 332)
         end
-        if player.settings.particleMultiplier < 8 then
+        if player.settings.particleMultiplierIndex < 8 then
             love.graphics.draw(img_button_arrowRight, 1076, 332)
         end
 
@@ -1606,7 +1606,7 @@ function love.update(dt)
                 }
             local iceDomainSpeedMultiplier = player.misc.iceDomainActive and 1 - levelingInfo[4].density[player.abilities.iceDomain.level + 1] / 100 or 1
             if v.burningTime > 0 and gameplay.gameSpeed > 0 then
-                for i=1,love.math.random(-4, 1) * settings_particleMultipliers[player.settings.particleMultiplier] do
+                for i=1,love.math.random(-4, 1) * settings_particleMultipliers[player.settings.particleMultiplierIndex] do
                     createBurnParticle(v.x, v.y, v.type)
                 end
             end
@@ -1716,7 +1716,7 @@ function love.update(dt)
             if v.timer_particle < v.particleFreq then
                 v.timer_particle = v.timer_particle + logicStep * gameplay.gameSpeed
             else
-                for i=1,love.math.random(1, 2) * settings_particleMultipliers[player.settings.particleMultiplier] do
+                for i=1,love.math.random(1, 2) * settings_particleMultipliers[player.settings.particleMultiplierIndex] do
                     createMeteorParticle(love.math.random(potentialParticlePos[1][1], potentialParticlePos[2][1]), love.math.random(potentialParticlePos[1][2], potentialParticlePos[2][2]))
                 end
                 v.timer_particle = 0
@@ -1989,10 +1989,10 @@ function love.mousepressed(x, y)
     end
 
     if player.menu.settings then
-        if x >= 820 and x <= 844 and y >= 332 and y <= 356 and player.settings.particleMultiplier > 1 then
-            player.settings.particleMultiplier = player.settings.particleMultiplier - 1
-        elseif x >= 1076 and x <= 1100 and y >= 332 and y <= 356 and player.settings.particleMultiplier < 8 then
-            player.settings.particleMultiplier = player.settings.particleMultiplier + 1
+        if x >= 820 and x <= 844 and y >= 332 and y <= 356 and player.settings.particleMultiplierIndex > 1 then
+            player.settings.particleMultiplierIndex = player.settings.particleMultiplierIndex - 1
+        elseif x >= 1076 and x <= 1100 and y >= 332 and y <= 356 and player.settings.particleMultiplierIndex < 8 then
+            player.settings.particleMultiplierIndex = player.settings.particleMultiplierIndex + 1
         end
 
         if x >= 820 and x <= 844 and y >= 412 and y <= 436 and player.settings.waveSkipMessages then
