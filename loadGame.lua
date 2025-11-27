@@ -193,21 +193,21 @@ function loadGame()
             resourceBonus = loadedData.upgrades.unlocks.resourceBonus or defaultPlayerState.upgrades.unlocks.resourceBonus
         },
         science = {
-            attackDamage = {level = loadedData.upgrades.attackDamage or defaultPlayerState.upgrades.science.attackDamage.level, cost = 1, value = 1},
-            attackSpeed = {level = loadedData.upgrades.attackSpeed or defaultPlayerState.upgrades.science.attackSpeed.level, cost = 1, value = 1},
-            critChance = {level = loadedData.upgrades.critChance or defaultPlayerState.upgrades.science.critChance.level, cost = 1, value = 1},
-            critFactor = {level = loadedData.upgrades.critFactor or defaultPlayerState.upgrades.science.critFactor.level, cost = 1, value = 1},
-            range = {level = loadedData.upgrades.range or defaultPlayerState.upgrades.science.range.level, cost = 1, value = 1},
-            clusterFireChance = {level = loadedData.upgrades.clusterFireChance or defaultPlayerState.upgrades.science.clusterFireChance.level, cost = 1, value = 1},
-            clusterFireTargets = {level = loadedData.upgrades.clusterFireTargets or defaultPlayerState.upgrades.science.clusterFireTargets.level, cost = 1, value = 1},
-            clusterFireEfficiency = {level = loadedData.upgrades.clusterFireEfficiency or defaultPlayerState.upgrades.science.clusterFireEfficiency.level, cost = 1, value = 1},
+            attackDamage = {level = loadedData.upgrades.science.attackDamage.level or defaultPlayerState.upgrades.science.attackDamage.level, cost = 1, value = 1},
+            attackSpeed = {level = loadedData.upgrades.science.attackSpeed.level or defaultPlayerState.upgrades.science.attackSpeed.level, cost = 1, value = 1},
+            critChance = {level = loadedData.upgrades.science.critChance.level or defaultPlayerState.upgrades.science.critChance.level, cost = 1, value = 1},
+            critFactor = {level = loadedData.upgrades.science.critFactor.level or defaultPlayerState.upgrades.science.critFactor.level, cost = 1, value = 1},
+            range = {level = loadedData.upgrades.science.range.level or defaultPlayerState.upgrades.science.range.level, cost = 1, value = 1},
+            clusterFireChance = {level = loadedData.upgrades.science.clusterFireChance.level or defaultPlayerState.upgrades.science.clusterFireChance.level, cost = 1, value = 1},
+            clusterFireTargets = {level = loadedData.upgrades.science.clusterFireTargets.level or defaultPlayerState.upgrades.science.clusterFireTargets.level, cost = 1, value = 1},
+            clusterFireEfficiency = {level = loadedData.upgrades.science.clusterFireEfficiency.level or defaultPlayerState.upgrades.science.clusterFireEfficiency.level, cost = 1, value = 1},
 
             health = {level = loadedData.upgrades.science.health.level or defaultPlayerState.upgrades.science.health.level, cost = 1, value = 1},
             regeneration = {level = loadedData.upgrades.science.regeneration.level or defaultPlayerState.upgrades.science.regeneration.level, cost = 1, value = 1},
             resistance = {level = loadedData.upgrades.science.resistance.level or defaultPlayerState.upgrades.science.resistance.level, cost = 1, value = 1},
             shieldCooldown = {level = loadedData.upgrades.science.shieldCooldown.level or defaultPlayerState.upgrades.science.shieldCooldown.level, cost = 1, value = 1},
             shieldDuration = {level = loadedData.upgrades.science.shieldDuration.level or defaultPlayerState.upgrades.science.shieldDuration.level, cost = 1, value = 1},
-            meteorAmount = {level = loadedData.upgrades.science.meteorAmount.level or defaultPlayerState.upgrades.science.meteorAmount.levelt, cost = 1, value = 1},
+            meteorAmount = {level = loadedData.upgrades.science.meteorAmount.level or defaultPlayerState.upgrades.science.meteorAmount.level, cost = 1, value = 1},
             meteorRPM = {level = loadedData.upgrades.science.meteorRPM.level or defaultPlayerState.upgrades.science.meteorRPM.level, cost = 1, value = 1},
             lifestealChance = {level = loadedData.upgrades.science.lifestealChance.level or defaultPlayerState.upgrades.science.lifestealChance.level, cost = 1, value = 1},
             lifestealPercent = {level = loadedData.upgrades.science.lifestealPercent.level or defaultPlayerState.upgrades.science.lifestealPercent.level, cost = 1, value = 1},
@@ -257,7 +257,7 @@ function loadGame()
         particleMultiplierIndex = loadedData.settings.particleMultiplierIndex or defaultPlayerState.settings.particleMultiplierIndex,
         waveSkipMessages = loadedData.settings.waveSkipMessages == nil and defaultPlayerState.settings.waveSkipMessages or loadedData.settings.waveSkipMessages,
         notation = loadedData.settings.notation or defaultPlayerState.settings.notation,
-        tooltips = loadedData.settings.tooltips == nil and defaultPlayerState.settings.waveSkipMessage or loadedData.settings.tooltips,
+        tooltips = loadedData.settings.tooltips == nil and defaultPlayerState.settings.tooltips or loadedData.settings.tooltips,
         volume = loadedData.settings.volume or defaultPlayerState.settings.volume
     }
     player.bestWaves = {d1 = loadedData.bestWaves.d1 or defaultPlayerState.bestWaves.d1, d2 = loadedData.bestWaves.d2 or defaultPlayerState.bestWaves.d2, d3 = loadedData.bestWaves.d3 or defaultPlayerState.bestWaves.d3, d4 = loadedData.bestWaves.d4 or defaultPlayerState.bestWaves.d4, d5 = loadedData.bestWaves.d5 or defaultPlayerState.bestWaves.d5}

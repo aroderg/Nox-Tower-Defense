@@ -98,7 +98,9 @@ function abilityFunctions.showInfo.draw(ability)
         love.graphics.setFont(font_Afacad24)
         love.graphics.setColor(1, 1, 1, 1)
         love.graphics.printf("Back", 910, 682, 100, "center")
-        tooltips.displayAbilityTags()
+        if player.settings.tooltips then
+            tooltips.displayAbilityTags()
+        end
     end
 end
 

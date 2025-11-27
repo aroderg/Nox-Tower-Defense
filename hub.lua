@@ -13,6 +13,9 @@ function orbital.update(shuffle)
         if username == nil then
             username = os.getenv("USER")
         end
+        if username == nil then
+            username = "Noxer"
+        end
         return username
     end
 

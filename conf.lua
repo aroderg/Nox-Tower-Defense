@@ -1,6 +1,6 @@
 function love.conf(t)
     gameVersion = "Aurora"
-    gameVersionSemantic = "1.1.2"
+    gameVersionSemantic = "1.1.3"
     t.version = "11.5"
     t.window.title = "NoxTD " .. gameVersionSemantic .. " " .. gameVersion
     t.window.fullscreen = false

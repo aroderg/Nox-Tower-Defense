@@ -1,3 +1,10 @@
+## NoxTD 1.1.3 Aurora
+### Nov 25th, 2025
+- Added Enemy Info screen.
+- Added the Disruptance Wave - Damage Dealt stat.
+- Changed resource assets for more accessibility.
+- Fixed username returning nil in one of the Orbitals.
+
 ## NoxTD 1.1.2 Aurora
 ### Oct 31st, 2025
 - Fixed Disruptance Wave Ability crashing the game when upgraded to level 10.
