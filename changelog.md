@@ -1,4 +1,4 @@
-## NoxTD 1.1.3 Aurora
+# NoxTD 1.1.3 Aurora
 ### Nov 25th, 2025
 - Added Enemy Info screen.
 - Added the Disruptance Wave - Damage Dealt stat.
