@@ -578,7 +578,7 @@ function resetRoundValues()
     enemyAttributes = {}
     --[[ Enemy properties ]]--
 
-    updateEnemyStats(gameplay.difficulty, gameplay.wave)
+    enemyFuncs.updateEnemyStats(gameplay.difficulty, gameplay.wave)
 
     --[[ Timers ]]--
     timers = {projectile = 0, enemy = 0, nextWave = 0, shieldActivation = 0, shieldActive = 0, waveSkip = 3, copperAdd = 2, silverAdd = 2, crystal = 0, magmaPool = 0, lightningOrb = 0, disruptWave = 0}

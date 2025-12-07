@@ -89,7 +89,7 @@ function abilityObjects.spikedCrystal.process(logicStep)
         for j,w in ipairs(enemiesOnField) do
             if v.x + 20 > w.x and v.x < w.x + size[w.type] and v.y + 20 > w.y and v.y < w.y + size[w.type] and player.tower.currentHealth > 0 and v.state == "alive" and math.dist(v.x + 11, v.y + 11, w.x + enemyOffsets[w.type], w.y + enemyOffsets[w.type]) < 48 then
                 local damage = player.tower.attackDamage * (levelingInfo[1].damage[player.abilities.spikedCrystals.level + 1] / 100)
-                damageEnemy(j, damage, false, false, "spikedCrystal")
+                enemyFuncs.damageEnemy(j, damage, false, false, "spikedCrystal")
                 v.state = "exploding"
             end
         end
@@ -141,7 +141,7 @@ function abilityObjects.magmaPool.process(logicStep)
             local w = enemiesOnField[j]
             if math.dist(v.x + 18, v.y + 18, w.x + size[w.type] / 2, w.y + size[w.type] / 2) < 16 + size[w.type] / 2 then
                 table.remove(magmaPools, i)
-                damageEnemy(j, player.tower.attackDamage * (levelingInfo[5].damage[player.abilities.magmaTouch.level + 1] / 100), false, false, "magmaPool")
+                enemyFuncs.damageEnemy(j, player.tower.attackDamage * (levelingInfo[5].damage[player.abilities.magmaTouch.level + 1] / 100), false, false, "magmaPool")
                 w.burningTime = 4.025
             end
         end
@@ -184,7 +184,7 @@ function abilityObjects.lightningOrb.process(logicStep)
         local v = lightningOrbs[i]
         v.x = v.x + math.cos(v.angle) * v.speed * logicStep * gameplay.gameSpeed
         v.y = v.y + math.sin(v.angle) * v.speed * logicStep * gameplay.gameSpeed
-        local farthestEnemy = findClosestEnemyInRange(v.x, v.y, v.range * 20)[#findClosestEnemyInRange(v.x, v.y, v.range * 20)]
+        local farthestEnemy = enemyFuncs.findClosestEnemyInRange(v.x, v.y, v.range * 20)[#enemyFuncs.findClosestEnemyInRange(v.x, v.y, v.range * 20)]
         if farthestEnemy and #lightningOrb_lasers < #lightningOrbs then
             abilityObjects.lightningOrb_laser.spawn(v.x, v.y, math.dist(v.x, v.y, farthestEnemy.x + enemyOffsets[farthestEnemy.type], farthestEnemy.y + enemyOffsets[farthestEnemy.type]), math.atan2(farthestEnemy.y + enemyOffsets[farthestEnemy.type] / 2 - v.y, farthestEnemy.x + enemyOffsets[farthestEnemy.type] / 2 - v.x))
         elseif not farthestEnemy then
@@ -224,7 +224,7 @@ end
 function abilityObjects.lightningOrb_laser.process(logicStep)
     local damagedEnemyIndex = 1
     for i,v in ipairs(lightningOrbs) do
-        local farthestEnemy = findClosestEnemyInRange(v.x, v.y, v.range * 20)[#findClosestEnemyInRange(v.x, v.y, v.range * 20)]
+        local farthestEnemy = enemyFuncs.findClosestEnemyInRange(v.x, v.y, v.range * 20)[#enemyFuncs.findClosestEnemyInRange(v.x, v.y, v.range * 20)]
         if farthestEnemy then
             for j,w in ipairs(enemiesOnField) do
                 if w == farthestEnemy then
@@ -233,7 +233,7 @@ function abilityObjects.lightningOrb_laser.process(logicStep)
                 end
             end
             if player.tower.currentHealth > 0 and gameplay.gameSpeed > 0 then
-                damageEnemy(damagedEnemyIndex, (levelingInfo[6].damage[player.abilities.lightningOrb.level + 1] / 100) * player.tower.attackDamage * logicStep * gameplay.gameSpeed, false, false, "lightningOrb")--damageEnemy(farthestEnemy, levelingInfo[6].damage[player.abilities.lightningOrb.level + 1] * 100 * logicStep * player.tower.attackDamage, false)
+                enemyFuncs.damageEnemy(damagedEnemyIndex, (levelingInfo[6].damage[player.abilities.lightningOrb.level + 1] / 100) * player.tower.attackDamage * logicStep * gameplay.gameSpeed, false, false, "lightningOrb")--enemyFuncs.damageEnemy(farthestEnemy, levelingInfo[6].damage[player.abilities.lightningOrb.level + 1] * 100 * logicStep * player.tower.attackDamage, false)
             end
         end
     end
