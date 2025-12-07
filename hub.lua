@@ -177,7 +177,7 @@ function inHub_visual()
         elseif hubSection == "Science" then
 
             love.graphics.setLineStyle("rough")
-            processUpgradeModule.reload()
+            upgradeModuleFuncs.load()
 
             local sectionTable = {"ATK", "VIT", "UTL"}
             for i,v in ipairs(sectionTable) do
@@ -185,9 +185,9 @@ function inHub_visual()
                 
                 for j,w in ipairs(upgradeModules["science"][section]) do
                     if upgradeModules["science"][section][j]["precedingUpgrade"] ~= false then
-                        processUpgradeModule.draw(upgradeModules["science"][section][j])
+                        upgradeModuleFuncs.draw(upgradeModules["science"][section][j])
                     else
-                        processUnlockPanel.draw(unlockPanels[upgradeModules["science"][section][j][14]])
+                        unlockPanelFuncs.draw(unlockPanels[upgradeModules["science"][section][j][14]])
                         break
                     end
                 end
@@ -565,21 +565,21 @@ function inHub_mouse(x, y)
                 local currentProcessedSection = upgradeSectionNames[i]
                 if currentProcessedSection == upgradeSectionNames[i] and not player.menu.saveStats then
                     for j,w in pairs(upgradeNames[currentProcessedSection]) do
-                        player.upgrades.science[upgradeNames[currentProcessedSection][j]].level, player.upgrades.science[upgradeNames[currentProcessedSection][j]].cost, player.tower[upgradeNames[currentProcessedSection][j]] = processUpgradeModule.upgrade(x, y, upgradeModules["science"][currentProcessedSection][j], reloadFormulae(upgradeModules["science"][currentProcessedSection][j][8] + 1)["science"][currentProcessedSection][j][1], reloadFormulae(upgradeModules["science"][currentProcessedSection][j][8] + 1)["science"][currentProcessedSection][j][2])
+                        player.upgrades.science[upgradeNames[currentProcessedSection][j]].level, player.upgrades.science[upgradeNames[currentProcessedSection][j]].cost, player.tower[upgradeNames[currentProcessedSection][j]] = upgradeModuleFuncs.upgrade(x, y, upgradeModules["science"][currentProcessedSection][j], upgradeModuleFuncs.reloadFormulae(upgradeModules["science"][currentProcessedSection][j][8] + 1)["science"][currentProcessedSection][j][1], upgradeModuleFuncs.reloadFormulae(upgradeModules["science"][currentProcessedSection][j][8] + 1)["science"][currentProcessedSection][j][2])
                     end
                 end
             end
 
             unlockPanelsPressed = 0
             if not player.menu.settings and not player.menu.saveStats then
-                player.upgrades.unlocks.crit = processUnlockPanel.clickCheck(x, y, unlockPanels["crit"])
-                player.upgrades.unlocks.range = processUnlockPanel.clickCheck(x, y, unlockPanels["range"])
-                player.upgrades.unlocks.clusterFire = processUnlockPanel.clickCheck(x, y, unlockPanels["clusterFire"])
-                player.upgrades.unlocks.resistance = processUnlockPanel.clickCheck(x, y, unlockPanels["resistance"])
-                player.upgrades.unlocks.shield = processUnlockPanel.clickCheck(x, y, unlockPanels["shield"])
-                player.upgrades.unlocks.meteor = processUnlockPanel.clickCheck(x, y, unlockPanels["meteor"])
-                player.upgrades.unlocks.lifesteal = processUnlockPanel.clickCheck(x, y, unlockPanels["lifesteal"])
-                player.upgrades.unlocks.resourceBonus = processUnlockPanel.clickCheck(x, y, unlockPanels["resourceBonus"])
+                player.upgrades.unlocks.crit = unlockPanelFuncs.clickCheck(x, y, unlockPanels["crit"])
+                player.upgrades.unlocks.range = unlockPanelFuncs.clickCheck(x, y, unlockPanels["range"])
+                player.upgrades.unlocks.clusterFire = unlockPanelFuncs.clickCheck(x, y, unlockPanels["clusterFire"])
+                player.upgrades.unlocks.resistance = unlockPanelFuncs.clickCheck(x, y, unlockPanels["resistance"])
+                player.upgrades.unlocks.shield = unlockPanelFuncs.clickCheck(x, y, unlockPanels["shield"])
+                player.upgrades.unlocks.meteor = unlockPanelFuncs.clickCheck(x, y, unlockPanels["meteor"])
+                player.upgrades.unlocks.lifesteal = unlockPanelFuncs.clickCheck(x, y, unlockPanels["lifesteal"])
+                player.upgrades.unlocks.resourceBonus = unlockPanelFuncs.clickCheck(x, y, unlockPanels["resourceBonus"])
             end
 
         elseif hubSection == "Nexus" then
@@ -616,11 +616,11 @@ function inHub_mouse(x, y)
                         player.upgrades.nexus[i].cost = 20 + (((v.currentLevel + 1) * (v.currentLevel)) / 2) * 5
                         player.upgrades.nexus[i].value = 1 + (v.currentLevel) * addendums[i]
                         player.stats.save.upgradesAcquired.nexus = player.stats.save.upgradesAcquired.nexus + 1
-                        player.tower.attackDamage = reloadFormulae(player.upgrades.science.attackDamage.level)["science"]["ATK"][1][2]
-                        player.tower.attackSpeed = reloadFormulae(player.upgrades.science.attackSpeed.level)["science"]["ATK"][2][2]
-                        player.tower.health = reloadFormulae(player.upgrades.science.health.level)["science"]["VIT"][1][2]
-                        player.tower.regeneration = reloadFormulae(player.upgrades.science.regeneration.level)["science"]["VIT"][2][2]
-                        processUpgradeModule.reload()
+                        player.tower.attackDamage = upgradeModuleFuncs.reloadFormulae(player.upgrades.science.attackDamage.level)["science"]["ATK"][1][2]
+                        player.tower.attackSpeed = upgradeModuleFuncs.reloadFormulae(player.upgrades.science.attackSpeed.level)["science"]["ATK"][2][2]
+                        player.tower.health = upgradeModuleFuncs.reloadFormulae(player.upgrades.science.health.level)["science"]["VIT"][1][2]
+                        player.tower.regeneration = upgradeModuleFuncs.reloadFormulae(player.upgrades.science.regeneration.level)["science"]["VIT"][2][2]
+                        upgradeModuleFuncs.load()
                         buffUpgraded = true
                     end
                 end
@@ -638,10 +638,10 @@ function inHub_mouse(x, y)
             --         player.upgrades.nexus.attackDamage.level = player.upgrades.nexus.attackDamage.level + 1
             --         player.upgrades.nexus.attackDamage.cost = 20 + ((player.upgrades.nexus.attackDamage.level * (player.upgrades.nexus.attackDamage.level - 1)) / 2) * 5
             --         player.upgrades.nexus.attackDamage.value = math.min(1 + (player.upgrades.nexus.attackDamage.level - 1) * 10/100, 5)
-            --         player.tower.attackDamage = reloadFormulae(player.upgrades.science.attackDamage.level)["science"]["ATK"][1][2]
+            --         player.tower.attackDamage = upgradeModuleFuncs.reloadFormulae(player.upgrades.science.attackDamage.level)["science"]["ATK"][1][2]
             --         player.stats.save.upgradesAcquired.nexus = player.stats.save.upgradesAcquired.nexus + 1
             --     end
-            --     processUpgradeModule.reload()
+            --     upgradeModuleFuncs.load()
             -- end
 
             -- --[[ Attack Speed stat buff ]]--
@@ -651,10 +651,10 @@ function inHub_mouse(x, y)
             --         player.upgrades.nexus.attackSpeed.level = player.upgrades.nexus.attackSpeed.level + 1
             --         player.upgrades.nexus.attackSpeed.cost = 20 + ((player.upgrades.nexus.attackSpeed.level * (player.upgrades.nexus.attackSpeed.level - 1)) / 2) * 5
             --         player.upgrades.nexus.attackSpeed.value = math.min(1 + (player.upgrades.nexus.attackSpeed.level - 1) * 4/100, 2)
-            --         player.tower.attackSpeed = reloadFormulae(player.upgrades.science.attackSpeed.level)["science"]["ATK"][2][2]
+            --         player.tower.attackSpeed = upgradeModuleFuncs.reloadFormulae(player.upgrades.science.attackSpeed.level)["science"]["ATK"][2][2]
             --         player.stats.save.upgradesAcquired.nexus = player.stats.save.upgradesAcquired.nexus + 1
             --     end
-            --     processUpgradeModule.reload()
+            --     upgradeModuleFuncs.load()
             -- end
 
             -- --[[ Health stat buff ]]--
@@ -664,10 +664,10 @@ function inHub_mouse(x, y)
             --         player.upgrades.nexus.health.level = player.upgrades.nexus.health.level + 1
             --         player.upgrades.nexus.health.cost = 20 + ((player.upgrades.nexus.health.level * (player.upgrades.nexus.health.level - 1)) / 2) * 5
             --         player.upgrades.nexus.health.value = math.min(1 + (player.upgrades.nexus.health.level - 1) * 10/100, 5)
-            --         player.tower.health = reloadFormulae(player.upgrades.science.health.level)["science"]["VIT"][1][2]
+            --         player.tower.health = upgradeModuleFuncs.reloadFormulae(player.upgrades.science.health.level)["science"]["VIT"][1][2]
             --         player.stats.save.upgradesAcquired.nexus = player.stats.save.upgradesAcquired.nexus + 1
             --     end
-            --     processUpgradeModule.reload()
+            --     upgradeModuleFuncs.load()
             -- end
 
             -- --[[ Regeneration stat buff ]]--
@@ -677,10 +677,10 @@ function inHub_mouse(x, y)
             --         player.upgrades.nexus.regeneration.level = player.upgrades.nexus.regeneration.level + 1
             --         player.upgrades.nexus.regeneration.cost = 20 + ((player.upgrades.nexus.regeneration.level * (player.upgrades.nexus.regeneration.level - 1)) / 2) * 5
             --         player.upgrades.nexus.regeneration.value = math.min(1 + (player.upgrades.nexus.regeneration.level - 1) * 10/100, 5)
-            --         player.tower.regeneration = reloadFormulae(player.upgrades.science.regeneration.level)["science"]["VIT"][2][2]
+            --         player.tower.regeneration = upgradeModuleFuncs.reloadFormulae(player.upgrades.science.regeneration.level)["science"]["VIT"][2][2]
             --         player.stats.save.upgradesAcquired.nexus = player.stats.save.upgradesAcquired.nexus + 1
             --     end
-            --     processUpgradeModule.reload()
+            --     upgradeModuleFuncs.load()
             -- end
 
             -- --[[ Ability Chance stat buff ]]--
@@ -692,7 +692,7 @@ function inHub_mouse(x, y)
             --         player.upgrades.nexus.abilityChance.value = math.min(1 + (player.upgrades.nexus.abilityChance.level - 1) * 2/100, 1.8)
             --         player.stats.save.upgradesAcquired.nexus = player.stats.save.upgradesAcquired.nexus + 1
             --     end
-            --     processUpgradeModule.reload()
+            --     upgradeModuleFuncs.load()
             -- end
 
             -- --[[ Ability Cooldown stat buff ]]--
@@ -704,7 +704,7 @@ function inHub_mouse(x, y)
             --         player.upgrades.nexus.abilityCooldown.value = math.min(1 + (player.upgrades.nexus.abilityCooldown.level - 1) * 1.2/100, 1.36)
             --         player.stats.save.upgradesAcquired.nexus = player.stats.save.upgradesAcquired.nexus + 1
             --     end
-            --     processUpgradeModule.reload()
+            --     upgradeModuleFuncs.load()
             -- end
 
             if x >= 1155 and x <= 1275 and y >= 615 and y <= 665 and not player.menu.settings then
@@ -720,7 +720,7 @@ function inHub_mouse(x, y)
                         player.modifiers.waveSkip.cost = (player.modifiers.waveSkip.level * (player.modifiers.waveSkip.level - 1)) / 2 + 4
                         player.modifiers.waveSkip.value = 4
                     end
-                processUpgradeModule.reload()
+                upgradeModuleFuncs.load()
                 end
             elseif x >= 1155 and x <= 1275 and y >= 755 and y <= 805 and not player.menu.settings then
                 if player.currencies.currentElectrum >= player.modifiers.hyperloop.cost and player.modifiers.hyperloop.level < 11 then
@@ -735,7 +735,7 @@ function inHub_mouse(x, y)
                         player.modifiers.hyperloop.cost = player.modifiers.hyperloop.level^2 - 2 * player.modifiers.hyperloop.level + 11
                         player.modifiers.hyperloop.value = 10
                     end
-                processUpgradeModule.reload()
+                upgradeModuleFuncs.load()
                 end
             elseif x >= 1155 and x <= 1275 and y >= 895 and y <= 945 and not player.menu.settings then
                 if player.currencies.currentElectrum >= player.modifiers.acceleration.cost and player.modifiers.acceleration.level < 20 then
@@ -750,7 +750,7 @@ function inHub_mouse(x, y)
                         player.modifiers.acceleration.cost = math.floor(5 * (2^(player.modifiers.acceleration.level))^0.21)
                         player.modifiers.acceleration.value = 0
                     end
-                processUpgradeModule.reload()
+                upgradeModuleFuncs.load()
                 end
             elseif x >= 1655 and x <= 1915 and y >= 465 and y <= 495 and not player.menu.settings and not player.menu.saveStats then
                 if player.idleTime >= 60 then
@@ -817,35 +817,35 @@ function inHub_mouse(x, y)
                     player.menu.abilities[v.internalName] = abilityFunctions.showInfo.process(x, y, abilityFunctions.calculateOffset(i) + 5, 530 + math.floor((i - 1) / 5) * 230, v)
                     player.abilities[v.internalName].level, player.abilities[v.internalName].amount = abilityFunctions.upgrade(x, y, v)
                 end
-                processUpgradeModule.reload()
+                upgradeModuleFuncs.load()
                 resetRoundValues()
                 player.tower = {
-                    attackDamage = reloadFormulae(player.upgrades.round.attackDamage.level)["science"]["ATK"][1][2],
-                    attackSpeed = reloadFormulae(player.upgrades.round.attackSpeed.level)["science"]["ATK"][2][2],
-                    critChance = reloadFormulae(player.upgrades.round.critChance.level)["science"]["ATK"][3][2],
-                    critFactor = reloadFormulae(player.upgrades.round.critFactor.level)["science"]["ATK"][4][2],
-                    range = reloadFormulae(player.upgrades.round.range.level)["science"]["ATK"][5][2],
-                    clusterFireChance = reloadFormulae(player.upgrades.round.clusterFireChance.level)["science"]["ATK"][6][2],
-                    clusterFireTargets = reloadFormulae(player.upgrades.round.clusterFireTargets.level)["science"]["ATK"][7][2],
-                    clusterFireEfficiency = reloadFormulae(player.upgrades.round.clusterFireEfficiency.level)["science"]["ATK"][8][2],
+                    attackDamage = upgradeModuleFuncs.reloadFormulae(player.upgrades.round.attackDamage.level)["science"]["ATK"][1][2],
+                    attackSpeed = upgradeModuleFuncs.reloadFormulae(player.upgrades.round.attackSpeed.level)["science"]["ATK"][2][2],
+                    critChance = upgradeModuleFuncs.reloadFormulae(player.upgrades.round.critChance.level)["science"]["ATK"][3][2],
+                    critFactor = upgradeModuleFuncs.reloadFormulae(player.upgrades.round.critFactor.level)["science"]["ATK"][4][2],
+                    range = upgradeModuleFuncs.reloadFormulae(player.upgrades.round.range.level)["science"]["ATK"][5][2],
+                    clusterFireChance = upgradeModuleFuncs.reloadFormulae(player.upgrades.round.clusterFireChance.level)["science"]["ATK"][6][2],
+                    clusterFireTargets = upgradeModuleFuncs.reloadFormulae(player.upgrades.round.clusterFireTargets.level)["science"]["ATK"][7][2],
+                    clusterFireEfficiency = upgradeModuleFuncs.reloadFormulae(player.upgrades.round.clusterFireEfficiency.level)["science"]["ATK"][8][2],
 
-                    health = reloadFormulae(player.upgrades.round.health.level)["science"]["VIT"][1][2],
-                    currentHealth = reloadFormulae(player.upgrades.round.health.level)["science"]["VIT"][1][2],
-                    regeneration = reloadFormulae(player.upgrades.round.regeneration.level)["science"]["VIT"][2][2],
-                    resistance = reloadFormulae(player.upgrades.round.resistance.level)["science"]["VIT"][3][2],
-                    shieldCooldown = reloadFormulae(player.upgrades.round.shieldCooldown.level)["science"]["VIT"][4][2],
-                    shieldDuration = reloadFormulae(player.upgrades.round.shieldDuration.level)["science"]["VIT"][5][2],
-                    meteorAmount = reloadFormulae(player.upgrades.round.meteorAmount.level)["science"]["VIT"][6][2],
-                    meteorRPM = reloadFormulae(player.upgrades.round.meteorRPM.level)["science"]["VIT"][7][2],
-                    lifestealChance = reloadFormulae(player.upgrades.round.lifestealChance.level)["science"]["VIT"][8][2],
-                    lifestealPercent = reloadFormulae(player.upgrades.round.lifestealPercent.level)["science"]["VIT"][9][2],
+                    health = upgradeModuleFuncs.reloadFormulae(player.upgrades.round.health.level)["science"]["VIT"][1][2],
+                    currentHealth = upgradeModuleFuncs.reloadFormulae(player.upgrades.round.health.level)["science"]["VIT"][1][2],
+                    regeneration = upgradeModuleFuncs.reloadFormulae(player.upgrades.round.regeneration.level)["science"]["VIT"][2][2],
+                    resistance = upgradeModuleFuncs.reloadFormulae(player.upgrades.round.resistance.level)["science"]["VIT"][3][2],
+                    shieldCooldown = upgradeModuleFuncs.reloadFormulae(player.upgrades.round.shieldCooldown.level)["science"]["VIT"][4][2],
+                    shieldDuration = upgradeModuleFuncs.reloadFormulae(player.upgrades.round.shieldDuration.level)["science"]["VIT"][5][2],
+                    meteorAmount = upgradeModuleFuncs.reloadFormulae(player.upgrades.round.meteorAmount.level)["science"]["VIT"][6][2],
+                    meteorRPM = upgradeModuleFuncs.reloadFormulae(player.upgrades.round.meteorRPM.level)["science"]["VIT"][7][2],
+                    lifestealChance = upgradeModuleFuncs.reloadFormulae(player.upgrades.round.lifestealChance.level)["science"]["VIT"][8][2],
+                    lifestealPercent = upgradeModuleFuncs.reloadFormulae(player.upgrades.round.lifestealPercent.level)["science"]["VIT"][9][2],
 
-                    copperPerWave = reloadFormulae(player.upgrades.round.copperPerWave.level)["science"]["UTL"][1][2],
-                    silverPerWave = reloadFormulae(player.upgrades.round.silverPerWave.level)["science"]["UTL"][2][2],
-                    copperBonus = reloadFormulae(player.upgrades.round.copperBonus.level)["science"]["UTL"][3][2],
-                    silverBonus = reloadFormulae(player.upgrades.round.silverBonus.level)["science"]["UTL"][4][2],
+                    copperPerWave = upgradeModuleFuncs.reloadFormulae(player.upgrades.round.copperPerWave.level)["science"]["UTL"][1][2],
+                    silverPerWave = upgradeModuleFuncs.reloadFormulae(player.upgrades.round.silverPerWave.level)["science"]["UTL"][2][2],
+                    copperBonus = upgradeModuleFuncs.reloadFormulae(player.upgrades.round.copperBonus.level)["science"]["UTL"][3][2],
+                    silverBonus = upgradeModuleFuncs.reloadFormulae(player.upgrades.round.silverBonus.level)["science"]["UTL"][4][2],
                 }
-                processUpgradeModule.reload()
+                upgradeModuleFuncs.load()
             end
             abilityFunctions.updateInternals()
         end

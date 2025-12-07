@@ -353,29 +353,29 @@ function loadGame()
     player.misc.theme = loadedData.misc.theme or player.misc.theme
 
     -- --[[ Set Science upgrade costs (in Silver) ]]--
-    player.upgrades.science.attackDamage.cost = reloadFormulae(player.upgrades.science.attackDamage.level)["science"]["ATK"][1][1]
-    player.upgrades.science.attackSpeed.cost = reloadFormulae(player.upgrades.science.attackSpeed.level)["science"]["ATK"][2][1]
-    player.upgrades.science.critChance.cost = reloadFormulae(player.upgrades.science.critChance.level)["science"]["ATK"][3][1]
-    player.upgrades.science.critFactor.cost = reloadFormulae(player.upgrades.science.critFactor.level)["science"]["ATK"][4][1]
-    player.upgrades.science.range.cost = reloadFormulae(player.upgrades.science.range.level)["science"]["ATK"][5][1]
-    player.upgrades.science.clusterFireChance.cost = reloadFormulae(player.upgrades.science.clusterFireChance.level)["science"]["ATK"][6][1]
-    player.upgrades.science.clusterFireTargets.cost = reloadFormulae(player.upgrades.science.clusterFireTargets.level)["science"]["ATK"][7][1]
-    player.upgrades.science.clusterFireEfficiency.cost = reloadFormulae(player.upgrades.science.clusterFireEfficiency.level)["science"]["ATK"][8][1]
+    player.upgrades.science.attackDamage.cost = upgradeModuleFuncs.reloadFormulae(player.upgrades.science.attackDamage.level)["science"]["ATK"][1][1]
+    player.upgrades.science.attackSpeed.cost = upgradeModuleFuncs.reloadFormulae(player.upgrades.science.attackSpeed.level)["science"]["ATK"][2][1]
+    player.upgrades.science.critChance.cost = upgradeModuleFuncs.reloadFormulae(player.upgrades.science.critChance.level)["science"]["ATK"][3][1]
+    player.upgrades.science.critFactor.cost = upgradeModuleFuncs.reloadFormulae(player.upgrades.science.critFactor.level)["science"]["ATK"][4][1]
+    player.upgrades.science.range.cost = upgradeModuleFuncs.reloadFormulae(player.upgrades.science.range.level)["science"]["ATK"][5][1]
+    player.upgrades.science.clusterFireChance.cost = upgradeModuleFuncs.reloadFormulae(player.upgrades.science.clusterFireChance.level)["science"]["ATK"][6][1]
+    player.upgrades.science.clusterFireTargets.cost = upgradeModuleFuncs.reloadFormulae(player.upgrades.science.clusterFireTargets.level)["science"]["ATK"][7][1]
+    player.upgrades.science.clusterFireEfficiency.cost = upgradeModuleFuncs.reloadFormulae(player.upgrades.science.clusterFireEfficiency.level)["science"]["ATK"][8][1]
 
-    player.upgrades.science.health.cost = reloadFormulae(player.upgrades.science.health.level)["science"]["VIT"][1][1]
-    player.upgrades.science.regeneration.cost = reloadFormulae(player.upgrades.science.regeneration.level)["science"]["VIT"][2][1]
-    player.upgrades.science.resistance.cost = reloadFormulae(player.upgrades.science.resistance.level)["science"]["VIT"][3][1]
-    player.upgrades.science.shieldCooldown.cost = reloadFormulae(player.upgrades.science.shieldCooldown.level)["science"]["VIT"][4][1]
-    player.upgrades.science.shieldDuration.cost = reloadFormulae(player.upgrades.science.shieldDuration.level)["science"]["VIT"][5][1]
-    player.upgrades.science.meteorAmount.cost = reloadFormulae(player.upgrades.science.meteorAmount.level)["science"]["VIT"][6][1]
-    player.upgrades.science.meteorRPM.cost = reloadFormulae(player.upgrades.science.meteorRPM.level)["science"]["VIT"][7][1]
-    player.upgrades.science.lifestealChance.cost = reloadFormulae(player.upgrades.science.lifestealChance.level)["science"]["VIT"][8][1]
-    player.upgrades.science.lifestealPercent.cost = reloadFormulae(player.upgrades.science.lifestealPercent.level)["science"]["VIT"][9][1]
+    player.upgrades.science.health.cost = upgradeModuleFuncs.reloadFormulae(player.upgrades.science.health.level)["science"]["VIT"][1][1]
+    player.upgrades.science.regeneration.cost = upgradeModuleFuncs.reloadFormulae(player.upgrades.science.regeneration.level)["science"]["VIT"][2][1]
+    player.upgrades.science.resistance.cost = upgradeModuleFuncs.reloadFormulae(player.upgrades.science.resistance.level)["science"]["VIT"][3][1]
+    player.upgrades.science.shieldCooldown.cost = upgradeModuleFuncs.reloadFormulae(player.upgrades.science.shieldCooldown.level)["science"]["VIT"][4][1]
+    player.upgrades.science.shieldDuration.cost = upgradeModuleFuncs.reloadFormulae(player.upgrades.science.shieldDuration.level)["science"]["VIT"][5][1]
+    player.upgrades.science.meteorAmount.cost = upgradeModuleFuncs.reloadFormulae(player.upgrades.science.meteorAmount.level)["science"]["VIT"][6][1]
+    player.upgrades.science.meteorRPM.cost = upgradeModuleFuncs.reloadFormulae(player.upgrades.science.meteorRPM.level)["science"]["VIT"][7][1]
+    player.upgrades.science.lifestealChance.cost = upgradeModuleFuncs.reloadFormulae(player.upgrades.science.lifestealChance.level)["science"]["VIT"][8][1]
+    player.upgrades.science.lifestealPercent.cost = upgradeModuleFuncs.reloadFormulae(player.upgrades.science.lifestealPercent.level)["science"]["VIT"][9][1]
 
-    player.upgrades.science.copperPerWave.cost = reloadFormulae(player.upgrades.science.copperPerWave.level)["science"]["UTL"][1][1]
-    player.upgrades.science.silverPerWave.cost = reloadFormulae(player.upgrades.science.silverPerWave.level)["science"]["UTL"][2][1]
-    player.upgrades.science.copperBonus.cost = reloadFormulae(player.upgrades.science.copperBonus.level)["science"]["UTL"][3][1]
-    player.upgrades.science.silverBonus.cost = reloadFormulae(player.upgrades.science.silverBonus.level)["science"]["UTL"][4][1]
+    player.upgrades.science.copperPerWave.cost = upgradeModuleFuncs.reloadFormulae(player.upgrades.science.copperPerWave.level)["science"]["UTL"][1][1]
+    player.upgrades.science.silverPerWave.cost = upgradeModuleFuncs.reloadFormulae(player.upgrades.science.silverPerWave.level)["science"]["UTL"][2][1]
+    player.upgrades.science.copperBonus.cost = upgradeModuleFuncs.reloadFormulae(player.upgrades.science.copperBonus.level)["science"]["UTL"][3][1]
+    player.upgrades.science.silverBonus.cost = upgradeModuleFuncs.reloadFormulae(player.upgrades.science.silverBonus.level)["science"]["UTL"][4][1]
 
     --[[ Set Nexus upgrade costs (in Tokens) ]]--
     player.upgrades.nexus.attackDamage.cost = 20 + ((player.upgrades.nexus.attackDamage.level * (player.upgrades.nexus.attackDamage.level - 1)) / 2) * 5
@@ -513,30 +513,30 @@ function resetRoundValues()
 
     --[[ Tower properties ]]--
     player.tower = {
-        attackDamage = reloadFormulae(player.upgrades.round.attackDamage.level)["science"]["ATK"][1][2],
-        attackSpeed = reloadFormulae(player.upgrades.round.attackSpeed.level)["science"]["ATK"][2][2],
-        critChance = reloadFormulae(player.upgrades.round.critChance.level)["science"]["ATK"][3][2],
-        critFactor = reloadFormulae(player.upgrades.round.critFactor.level)["science"]["ATK"][4][2],
-        range = reloadFormulae(player.upgrades.round.range.level)["science"]["ATK"][5][2],
-        clusterFireChance = reloadFormulae(player.upgrades.round.clusterFireChance.level)["science"]["ATK"][6][2],
-        clusterFireTargets = reloadFormulae(player.upgrades.round.clusterFireTargets.level)["science"]["ATK"][7][2],
-        clusterFireEfficiency = reloadFormulae(player.upgrades.round.clusterFireEfficiency.level)["science"]["ATK"][8][2],
+        attackDamage = upgradeModuleFuncs.reloadFormulae(player.upgrades.round.attackDamage.level)["science"]["ATK"][1][2],
+        attackSpeed = upgradeModuleFuncs.reloadFormulae(player.upgrades.round.attackSpeed.level)["science"]["ATK"][2][2],
+        critChance = upgradeModuleFuncs.reloadFormulae(player.upgrades.round.critChance.level)["science"]["ATK"][3][2],
+        critFactor = upgradeModuleFuncs.reloadFormulae(player.upgrades.round.critFactor.level)["science"]["ATK"][4][2],
+        range = upgradeModuleFuncs.reloadFormulae(player.upgrades.round.range.level)["science"]["ATK"][5][2],
+        clusterFireChance = upgradeModuleFuncs.reloadFormulae(player.upgrades.round.clusterFireChance.level)["science"]["ATK"][6][2],
+        clusterFireTargets = upgradeModuleFuncs.reloadFormulae(player.upgrades.round.clusterFireTargets.level)["science"]["ATK"][7][2],
+        clusterFireEfficiency = upgradeModuleFuncs.reloadFormulae(player.upgrades.round.clusterFireEfficiency.level)["science"]["ATK"][8][2],
 
-        health = reloadFormulae(player.upgrades.round.health.level)["science"]["VIT"][1][2],
-        currentHealth = reloadFormulae(player.upgrades.round.health.level)["science"]["VIT"][1][2],
-        regeneration = reloadFormulae(player.upgrades.round.regeneration.level)["science"]["VIT"][2][2],
-        resistance = reloadFormulae(player.upgrades.round.resistance.level)["science"]["VIT"][3][2],
-        shieldCooldown = reloadFormulae(player.upgrades.round.shieldCooldown.level)["science"]["VIT"][4][2],
-        shieldDuration = reloadFormulae(player.upgrades.round.shieldDuration.level)["science"]["VIT"][5][2],
-        meteorAmount = reloadFormulae(player.upgrades.round.meteorAmount.level)["science"]["VIT"][6][2],
-        meteorRPM = reloadFormulae(player.upgrades.round.meteorRPM.level)["science"]["VIT"][7][2],
-        lifestealChance = reloadFormulae(player.upgrades.round.lifestealChance.level)["science"]["VIT"][8][2],
-        lifestealPercent = reloadFormulae(player.upgrades.round.lifestealPercent.level)["science"]["VIT"][9][2],
+        health = upgradeModuleFuncs.reloadFormulae(player.upgrades.round.health.level)["science"]["VIT"][1][2],
+        currentHealth = upgradeModuleFuncs.reloadFormulae(player.upgrades.round.health.level)["science"]["VIT"][1][2],
+        regeneration = upgradeModuleFuncs.reloadFormulae(player.upgrades.round.regeneration.level)["science"]["VIT"][2][2],
+        resistance = upgradeModuleFuncs.reloadFormulae(player.upgrades.round.resistance.level)["science"]["VIT"][3][2],
+        shieldCooldown = upgradeModuleFuncs.reloadFormulae(player.upgrades.round.shieldCooldown.level)["science"]["VIT"][4][2],
+        shieldDuration = upgradeModuleFuncs.reloadFormulae(player.upgrades.round.shieldDuration.level)["science"]["VIT"][5][2],
+        meteorAmount = upgradeModuleFuncs.reloadFormulae(player.upgrades.round.meteorAmount.level)["science"]["VIT"][6][2],
+        meteorRPM = upgradeModuleFuncs.reloadFormulae(player.upgrades.round.meteorRPM.level)["science"]["VIT"][7][2],
+        lifestealChance = upgradeModuleFuncs.reloadFormulae(player.upgrades.round.lifestealChance.level)["science"]["VIT"][8][2],
+        lifestealPercent = upgradeModuleFuncs.reloadFormulae(player.upgrades.round.lifestealPercent.level)["science"]["VIT"][9][2],
         
-        copperPerWave = reloadFormulae(player.upgrades.round.copperPerWave.level)["science"]["UTL"][1][2],
-        silverPerWave = reloadFormulae(player.upgrades.round.silverPerWave.level)["science"]["UTL"][2][2],
-        copperBonus = reloadFormulae(player.upgrades.round.copperBonus.level)["science"]["UTL"][3][2],
-        silverBonus = reloadFormulae(player.upgrades.round.silverBonus.level)["science"]["UTL"][4][2],
+        copperPerWave = upgradeModuleFuncs.reloadFormulae(player.upgrades.round.copperPerWave.level)["science"]["UTL"][1][2],
+        silverPerWave = upgradeModuleFuncs.reloadFormulae(player.upgrades.round.silverPerWave.level)["science"]["UTL"][2][2],
+        copperBonus = upgradeModuleFuncs.reloadFormulae(player.upgrades.round.copperBonus.level)["science"]["UTL"][3][2],
+        silverBonus = upgradeModuleFuncs.reloadFormulae(player.upgrades.round.silverBonus.level)["science"]["UTL"][4][2],
     }
 
     --[[ Gameplay properties ]]--
@@ -606,5 +606,5 @@ function resetRoundValues()
     sentryAlive = false
     centurionAlive = false
 
-    processUpgradeModule.reload()
+    upgradeModuleFuncs.load()
 end
