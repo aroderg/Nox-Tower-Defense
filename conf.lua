@@ -6,6 +6,7 @@ function love.conf(t)
     t.window.fullscreen = false
     t.window.width = 960
     t.window.height = 700
+    t.window.resizable = true
     t.console = true
     t.window.vsync = 1
 end

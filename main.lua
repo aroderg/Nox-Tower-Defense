@@ -333,7 +333,15 @@ end
 
 function love.draw()
     local screenScaling = math.min(love.graphics.getWidth() / 1920, love.graphics.getHeight() / 1080)
+    if love.graphics.getHeight() > love.graphics.getWidth() / 16 * 9 then
+        love.graphics.setScissor(0, love.graphics.getHeight() / 2 - love.graphics.getWidth() / 32 * 9, love.graphics.getWidth(), love.graphics.getWidth() / 16 * 9)
+        love.graphics.translate(0, love.graphics.getHeight() / 2 - love.graphics.getWidth() / 32 * 9)
+    elseif love.graphics.getWidth() > love.graphics.getHeight() * 16 / 9 then
+        love.graphics.setScissor(love.graphics.getWidth() / 2 - love.graphics.getHeight() * 16 / 18, 0, love.graphics.getHeight() * 16 / 9, love.graphics.getHeight())
+        love.graphics.translate(love.graphics.getWidth() / 2 - love.graphics.getHeight() * 16 / 18, 0)
+    end
     love.graphics.scale(screenScaling)
+    love.graphics.setDefaultFilter("linear")
     tooltips.general()
     if player.location == "round" then
         love.graphics.draw(accentColors[player.misc.theme].background, 0, 0)
