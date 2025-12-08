@@ -3,6 +3,9 @@ tooltips = {}
 function tooltips.general()
     if player.settings.tooltips then
         local mx, my = love.mouse.getPosition()
+        local screenScaling = math.min(love.graphics.getWidth() / 1920, love.graphics.getHeight() / 1080)
+        mx = mx / screenScaling
+        my = my / screenScaling
         function tooltips.appearance(width, height, desc, desc2)
             love.graphics.setColor(0.9, 0.9, 0.9, 1)
             love.graphics.rectangle("fill", mx, my - height - 2, width, height)

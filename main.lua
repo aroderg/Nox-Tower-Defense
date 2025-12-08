@@ -332,7 +332,8 @@ function skipWave(wavesSkipped)
 end
 
 function love.draw()
-    love.graphics.scale(love.graphics.getWidth() / 1920, love.graphics.getHeight() / 1080)
+    local screenScaling = math.min(love.graphics.getWidth() / 1920, love.graphics.getHeight() / 1080)
+    love.graphics.scale(screenScaling)
     tooltips.general()
     if player.location == "round" then
         love.graphics.draw(accentColors[player.misc.theme].background, 0, 0)
@@ -1206,8 +1207,9 @@ function love.update(dt)
 end
 
 function love.mousepressed(x, y)
-    x = x * (1920 / love.graphics.getWidth())
-    y = y * (1080 / love.graphics.getHeight())
+    local screenScaling = math.min(love.graphics.getWidth() / 1920, love.graphics.getHeight() / 1080)
+    x = x / screenScaling
+    y = y / screenScaling
     upgradeMenu_mouse_new(x, y)
 
     if player.tower.currentHealth > 0 then
