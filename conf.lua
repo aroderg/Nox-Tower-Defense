@@ -5,7 +5,7 @@ function love.conf(t)
     t.window.title = "NoxTD " .. gameVersionSemantic .. " " .. gameVersion
     t.window.fullscreen = false
     t.window.width = 960
-    t.window.height = 700
+    t.window.height = 540
     t.window.resizable = true
     t.console = true
     t.window.vsync = 1

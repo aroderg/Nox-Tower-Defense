@@ -1216,8 +1216,12 @@ end
 
 function love.mousepressed(x, y)
     local screenScaling = math.min(love.graphics.getWidth() / 1920, love.graphics.getHeight() / 1080)
-    x = x / screenScaling
-    y = y / screenScaling
+    if love.graphics.getHeight() > love.graphics.getWidth() / 16 * 9 then
+        y = y - (love.graphics.getHeight() / 2 - love.graphics.getWidth() / 32 * 9)
+    elseif love.graphics.getWidth() > love.graphics.getHeight() * 16 / 9 then
+        x = x - (love.graphics.getWidth() / 2 - love.graphics.getHeight() * 16 / 18)
+    end
+    x, y = x / screenScaling, y / screenScaling
     upgradeMenu_mouse_new(x, y)
 
     if player.tower.currentHealth > 0 then

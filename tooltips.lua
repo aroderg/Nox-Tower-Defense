@@ -4,8 +4,12 @@ function tooltips.general()
     if player.settings.tooltips then
         local mx, my = love.mouse.getPosition()
         local screenScaling = math.min(love.graphics.getWidth() / 1920, love.graphics.getHeight() / 1080)
-        mx = mx / screenScaling
-        my = my / screenScaling
+        if love.graphics.getHeight() > love.graphics.getWidth() / 16 * 9 then
+           my = my - (love.graphics.getHeight() / 2 - love.graphics.getWidth() / 32 * 9)
+        elseif love.graphics.getWidth() > love.graphics.getHeight() * 16 / 9 then
+            mx = mx - (love.graphics.getWidth() / 2 - love.graphics.getHeight() * 16 / 18)
+        end
+        mx, my = mx / screenScaling, my / screenScaling
         function tooltips.appearance(width, height, desc, desc2)
             love.graphics.setColor(0.9, 0.9, 0.9, 1)
             love.graphics.rectangle("fill", mx, my - height - 2, width, height)
