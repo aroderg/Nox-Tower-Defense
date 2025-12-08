@@ -332,6 +332,7 @@ function skipWave(wavesSkipped)
 end
 
 function love.draw()
+    love.graphics.scale(love.graphics.getWidth() / 1920, love.graphics.getHeight() / 1080)
     tooltips.general()
     if player.location == "round" then
         love.graphics.draw(accentColors[player.misc.theme].background, 0, 0)
@@ -699,6 +700,7 @@ function love.draw()
         love.graphics.print("gim: " .. tostring(player.menu.gameplayInfo), 5, 435)
         love.graphics.print("eim: " .. tostring(player.menu.enemyInfo), 5, 450)
     end
+    love.graphics.setScissor()
 end
 
 function love.update(dt)
@@ -1204,7 +1206,8 @@ function love.update(dt)
 end
 
 function love.mousepressed(x, y)
-
+    x = x * (1920 / love.graphics.getWidth())
+    y = y * (1080 / love.graphics.getHeight())
     upgradeMenu_mouse_new(x, y)
 
     if player.tower.currentHealth > 0 then
