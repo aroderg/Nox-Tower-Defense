@@ -3,9 +3,10 @@ function love.conf(t)
     gameVersionSemantic = "1.1.3"
     t.version = "11.5"
     t.window.title = "NoxTD " .. gameVersionSemantic .. " " .. gameVersion
-    t.window.fullscreen = false
-    t.window.width = 960
-    t.window.height = 540
+    t.window.icon = "assets/tower_nova.png"
+    t.window.fullscreen = true
+    t.window.width = 1280
+    t.window.height = 720
     t.window.resizable = true
     t.console = true
     t.window.vsync = 1

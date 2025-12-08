@@ -1171,10 +1171,17 @@ function love.update(dt)
         end
     end
     if love.mouse.isDown(1) then
-        local mcx, mcy = love.mouse.getPosition()
+        local mdx, mdy = love.mouse.getPosition()
+        local screenScaling = math.min(love.graphics.getWidth() / 1920, love.graphics.getHeight() / 1080)
+        if love.graphics.getHeight() > love.graphics.getWidth() / 16 * 9 then
+           mdy = mdy - (love.graphics.getHeight() / 2 - love.graphics.getWidth() / 32 * 9)
+        elseif love.graphics.getWidth() > love.graphics.getHeight() * 16 / 9 then
+            mdx = mdx - (love.graphics.getWidth() / 2 - love.graphics.getHeight() * 16 / 18)
+        end
+        mdx, mdy = mdx / screenScaling, mdy / screenScaling
         if player.menu.settings then
-            if mcx >= 835 and mcx <= 1085 and mcy >= 670 and mcy <= 682 then
-                player.settings.volume = math.floor((mcx - 835) / 250 * 200) / 200
+            if mdx >= 835 and mdx <= 1085 and mdy >= 670 and mdy <= 682 then
+                player.settings.volume = math.floor((mdx - 835) / 250 * 200) / 200
                 -- audioST_Echoes:setVolume(1 * player.settings.volume^2)
             end
         end
@@ -1375,6 +1382,9 @@ function love.keypressed(key)
             end
             player.menu.saveStats = not player.menu.saveStats
         end
+    end
+    if key == "f11" then
+        love.window.setFullscreen(not love.window.getFullscreen())
     end
 end
 
