@@ -1,8 +1,9 @@
-local hubSections = {"Main", "Science", "Nexus", "Abilities"}
+local hubSections = {"Main", "Science", "Nexus", "Abilities", "Shops"}
 local rolledClass
 local rolledInternalAbility
 local rolledAbility
 local abilitiesFromRolledClass = {}
+local DAILY_CYCLE_DURATION = 22 * 60 * 60
 orbital = {}
 
 --- Update all the Orbitals displayed in the Hub.
@@ -78,7 +79,7 @@ function inHub_visual()
         end
         love.graphics.draw(accentColors[player.misc.theme].background, 0, 0)
 
-        local hubColors = {{0.65, 0.5, 0}, {0, 0.65, 0.3}, {0.5, 0, 0.6}, {0.8, 0.2, 0.2}}
+        local hubColors = {{0.65, 0.5, 0}, {0, 0.65, 0.3}, {0.5, 0, 0.6}, {0.8, 0.2, 0.2}, {0.15, 0.25, 0.6}}
         for i=1,#hubSections do
             love.graphics.setColor(hubColors[i])
             love.graphics.rectangle("fill", 0, (1080 / #hubSections) * (i - 1), 30, 1080 / #hubSections)
@@ -113,14 +114,15 @@ function inHub_visual()
             "View and analyze your tower's initial properties and other statistics.",
             "Upgrade your tower's initial properties and unlock new upgrades to push your limits even further.",
             "Unlock unique modifiers and get powerful stat buffs.",
-            "Get passive and active abilities to use in battles and other challenges."
+            "Get passive and active abilities to use in battles and other challenges.",
+            "Buy, sell, and exchange items."
         }
         for i=1,#hubSections do
             if hubSection == hubSections[i] then
                 love.graphics.setFont(font_AfacadBold48)
-                love.graphics.printf(hubSections[i], 810, 50, 300, "center")
+                love.graphics.printf(hubSections[i], 810, 20, 300, "center")
                 love.graphics.setFont(font_Afacad20)
-                love.graphics.printf(hubLore[i], 760, 120, 400, "center")
+                love.graphics.printf(hubLore[i], 760, 80, 400, "center")
             end
         end
 
@@ -149,7 +151,7 @@ function inHub_visual()
         
         if hubSection == "Main" then
             love.graphics.setFont(font_Afacad16)
-            love.graphics.printf({{0, 1, 1, 0.4}, "(" .. orbital.update() .. ")"}, 1024, 82, 700, "left")
+            love.graphics.printf({{0, 1, 1, 0.4}, "(" .. orbital.update() .. ")"}, 1024, 47, 700, "left")
             love.graphics.setFont(font_AfacadSemiBold28)
             love.graphics.printf(string.format("Difficulty %d", player.difficulty.difficulty), 810, 738, 300, "center")
             local bestWaves = {player.bestWaves.d1, player.bestWaves.d2, player.bestWaves.d3, player.bestWaves.d4, player.bestWaves.d5}
@@ -502,6 +504,10 @@ function inHub_visual()
                 love.graphics.setFont(font_Afacad24)
                 love.graphics.printf("Back", 920, 646, 80, "center")
             end
+        elseif hubSection == "Shops" then
+            local untilDailyReset = (daily.endTime - socket.gettime())
+            love.graphics.setFont(font_AfacadBold24)
+            love.graphics.printf(string.format("Until daily update: %dh %dm", math.floor(untilDailyReset / 3600), math.floor(untilDailyReset % 3600 / 60)), 760, 180, 400, "center")
         end
     end
 end

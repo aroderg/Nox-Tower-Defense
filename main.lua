@@ -1,8 +1,11 @@
 function love.load()
+    love.profiler = require('profile') 
+  love.profiler.start()
     lume = require "lume"
     require "technical"
     require "upgradeAndUnlockModules"
     require "loadGame"
+    require "daily"
     require "saveGame"
     require "towers"
     require "towerInfo"
@@ -216,6 +219,8 @@ function love.load()
     resetRoundValues()
     towers.reload()
     upgradeModuleFuncs.load()
+    daily.init()
+    love.frame = 0
 end
 
 function math.dist(x1,y1, x2,y2) return ((x2-x1)^2+(y2-y1)^2)^0.5 end
@@ -523,7 +528,7 @@ function love.draw()
             love.graphics.printf("Enemy Info", 870, 792, 180, "center")
             love.graphics.setFont(font_Afacad20)
             love.graphics.printf({{1, 1, 1, 1}, "Enemy spawn cap: ", {1, 0.8, 0.5, 1}, string.format("%d", enemyAttributes.waveCap)}, 710, 730, 500, "center")
-            love.graphics.printf({{1, 1, 1, 1}, "Enemy spawn wrate: ", {1, 0.8, 0.5, 1}, string.format("%.1f", enemyAttributes.spawnRate), {1, 1, 1, 1}, "/s"}, 710, 755, 500, "center")
+            love.graphics.printf({{1, 1, 1, 1}, "Enemy spawn rate: ", {1, 0.8, 0.5, 1}, string.format("%.1f", enemyAttributes.spawnRate), {1, 1, 1, 1}, "/s"}, 710, 755, 500, "center")
             love.graphics.draw(img_button_arrowRight_big, 1210, 522)
             if player.settings.tooltips then
                 tooltips.displayGameplayInfo()
@@ -710,6 +715,7 @@ function love.draw()
         love.graphics.print("eim: " .. tostring(player.menu.enemyInfo), 5, 450)
     end
     love.graphics.setScissor()
+    love.graphics.print(love.report or "Please wait...")
 end
 
 function love.update(dt)
@@ -1219,6 +1225,12 @@ function love.update(dt)
         player.storedGains.silver = player.storedGains.silver + player.idleGains.silver
         player.storedGains.gold = player.storedGains.gold + player.idleGains.gold
     end
+    daily.update(dt)
+    love.frame = love.frame + 1
+  if love.frame%100 == 0 then
+    love.report = love.profiler.report(20)
+    love.profiler.reset()
+  end
 end
 
 function love.mousepressed(x, y)
