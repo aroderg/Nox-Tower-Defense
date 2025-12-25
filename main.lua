@@ -1,6 +1,6 @@
 function love.load()
-    love.profiler = require('profile') 
-  love.profiler.start()
+    -- love.profiler = require('profile') 
+    -- love.profiler.start()
     lume = require "lume"
     require "technical"
     require "upgradeAndUnlockModules"
@@ -220,7 +220,7 @@ function love.load()
     towers.reload()
     upgradeModuleFuncs.load()
     daily.init()
-    love.frame = 0
+    -- love.frame = 0
 end
 
 function math.dist(x1,y1, x2,y2) return ((x2-x1)^2+(y2-y1)^2)^0.5 end
@@ -715,7 +715,7 @@ function love.draw()
         love.graphics.print("eim: " .. tostring(player.menu.enemyInfo), 5, 450)
     end
     love.graphics.setScissor()
-    love.graphics.print(love.report or "Please wait...")
+    -- love.graphics.print(love.report or "Please wait...")
 end
 
 function love.update(dt)
@@ -1226,11 +1226,11 @@ function love.update(dt)
         player.storedGains.gold = player.storedGains.gold + player.idleGains.gold
     end
     daily.update(dt)
-    love.frame = love.frame + 1
-  if love.frame%100 == 0 then
-    love.report = love.profiler.report(20)
-    love.profiler.reset()
-  end
+--     love.frame = love.frame + 1
+--   if love.frame%100 == 0 then
+--     love.report = love.profiler.report(20)
+--     love.profiler.reset()
+--   end
 end
 
 function love.mousepressed(x, y)
