@@ -506,9 +506,11 @@ function inHub_visual()
                 love.graphics.printf("Back", 920, 646, 80, "center")
             end
         elseif hubSection == "Shops" then
-            local untilDailyReset = (daily.endTime - socket.gettime())
+            local untilDailyReset = (daily.day.endTime - socket.gettime())
+            local untilWeeklyReset = (daily.week.endTime - socket.gettime())
             love.graphics.setFont(font_AfacadBold24)
             love.graphics.printf(string.format("Until daily update: %dh %dm", math.floor(untilDailyReset / 3600), math.floor(untilDailyReset % 3600 / 60)), 760, 180, 400, "center")
+            love.graphics.printf(string.format("Until weekly update: %dd %dh %dm", math.floor(untilWeeklyReset / 86400), math.floor(untilWeeklyReset % 86400 / 3600), math.floor(untilWeeklyReset % 3600 / 60)), 760, 210, 400, "center")
         end
     end
 end
