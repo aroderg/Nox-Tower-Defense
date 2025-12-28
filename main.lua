@@ -6,6 +6,7 @@ function love.load()
     require "upgradeAndUnlockModules"
     require "loadGame"
     require "daily"
+    require "dropTable"
     require "saveGame"
     require "towers"
     require "towerInfo"

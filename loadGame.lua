@@ -417,6 +417,7 @@ function loadGame()
         player.misc.abilityAssembling = true
     end
     player.idleGains.silver, player.idleGains.gold = reloadIdleGains()
+    player.activeTrades = {}
 
     accentColors = {
         main = {

@@ -206,15 +206,15 @@ function inHub_visual()
             love.graphics.rectangle("fill", 1650, 100, 150, 200, 4, 4)
             love.graphics.setColor(1, 1, 1, 1)
             love.graphics.rectangle("line", 1650, 100, 150, 200, 4, 4)
-            love.graphics.draw(img_currency_silver, 1660, 110)
+            love.graphics.draw(img_currency_silver, 1659, 110)
             love.graphics.draw(img_currency_gold, 1759, 110)
             love.graphics.setFont(font_Vera16)
             love.graphics.printf("600", 1655, 140, 40, "center")
             love.graphics.printf("3", 1755, 140, 40, "center")
             love.graphics.line(1676, 160, 1725, 190)
             love.graphics.line(1775, 160, 1725, 190)
-            love.graphics.line(1725, 190, 1725, 200)
-            love.graphics.draw(img_currency_electrum, 1709, 200)
+            love.graphics.line(1725, 190, 1725, 207)
+            love.graphics.draw(img_currency_electrum, 1709, 205)
             love.graphics.print("1", 1720, 230)
             love.graphics.rectangle("line", 1655, 265, 140, 30)
             love.graphics.setFont(font_Afacad20)
@@ -506,11 +506,40 @@ function inHub_visual()
                 love.graphics.printf("Back", 920, 646, 80, "center")
             end
         elseif hubSection == "Shops" then
-            local untilDailyReset = (daily.day.endTime - socket.gettime())
-            local untilWeeklyReset = (daily.week.endTime - socket.gettime())
+            local nowTime = socket.gettime()
+            local untilDailyReset = (daily.day.endTime - nowTime)
+            local untilWeeklyReset = (daily.week.endTime - nowTime)
             love.graphics.setFont(font_AfacadBold24)
             love.graphics.printf(string.format("Until daily update: %dh %dm", math.floor(untilDailyReset / 3600), math.floor(untilDailyReset % 3600 / 60)), 760, 180, 400, "center")
             love.graphics.printf(string.format("Until weekly update: %dd %dh %dm", math.floor(untilWeeklyReset / 86400), math.floor(untilWeeklyReset % 86400 / 3600), math.floor(untilWeeklyReset % 3600 / 60)), 760, 210, 400, "center")
+            love.graphics.setFont(font_AfacadBold32)
+            love.graphics.printf("Daily Shop", 760, 270, 400, "center")
+            local resourceImages = {
+                token = img_currency_token,
+                electrum = img_currency_electrum,
+                gold = img_currency_gold,
+                silver = img_currency_silver,
+            }
+            love.math.setRandomSeed(math.floor(nowTime / 86400))
+            for i=1,3 do
+                local panelX = 735 + (i - 1) % 3 * 150
+                love.graphics.setLineStyle("smooth")
+                love.graphics.setLineWidth(2)
+                love.graphics.setColor(0, 0, 0, 0.5)
+                love.graphics.rectangle("fill", panelX, 320, 150, 200, 3, 3)
+                love.graphics.setColor(1, 1, 1, 1)
+                love.graphics.rectangle("line", panelX, 320, 150, 200, 3, 3)
+                love.graphics.draw(resourceImages[player.activeTrades[i].sellCurrency], panelX + 59, 330, 0, 32/32)
+                love.graphics.setFont(font_Vera16)
+                love.graphics.printf(player.activeTrades[i].sellAmount, panelX, 360, 150, "center")
+                love.graphics.line(panelX + 75, 380, panelX + 75, 425)
+                love.graphics.draw(resourceImages[player.activeTrades[i].buyCurrency], panelX + 59, 425, 0, 32/32)
+                love.graphics.setFont(font_Vera16)
+                love.graphics.printf(player.activeTrades[i].buyAmount, panelX, 455, 150, "center")
+                love.graphics.rectangle("line", panelX + 5, 485, 140, 30)
+                love.graphics.setFont(font_Afacad20)
+                love.graphics.printf("Trade", panelX, 485, 150, "center")
+            end
         end
     end
 end
