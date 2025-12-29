@@ -14,7 +14,10 @@ function daily.init()
         {sellCurrency = "token", buyCurrency = "silver", sellAmount = 50, buyAmount = 16000, weight = 1},
     }
     for i=1,3 do
-        player.activeTrades[i] = dropTable.draw(trades)
+        player.activeDailyTrades[i] = dropTable.draw(trades)
+    end
+    for i=1,4 do
+        player.activeWeeklyTrades[i] = dropTable.draw(trades)
     end
 end
 
