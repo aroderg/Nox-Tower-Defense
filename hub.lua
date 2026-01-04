@@ -905,6 +905,17 @@ function inHub_mouse(x, y)
                 upgradeModuleFuncs.load()
             end
             abilityFunctions.updateInternals()
+        elseif hubSection == "Shops" then
+            for i=1,3 do
+                if x >= 740 + (i - 1) * 150 and x <= 740 + (i - 1) * 150 + 140 and y >= 485 and y <= 515 and player.activeDailyTrades[i].active then
+                    local trade = player.activeDailyTrades[i]
+                    if player.currencies.currentTokens >= player.activeDailyTrades[i].sellAmount then
+                        player.activeDailyTrades[i].active = false
+                        player.currencies.currentTokens = player.currencies.currentTokens - trade.sellAmount
+                        player.currencies["current" .. string.gsub(trade.buyCurrency, "^%l", string.upper)] = player.currencies["current" .. string.gsub(trade.buyCurrency, "^%l", string.upper)] + trade.buyAmount
+                    end
+                end
+            end
         end
     if x >= 1800 and x <= 1918 and y >= 22 and y <= 54 and not player.menu.settings and not abilityFunctions.checkMenuDisplay() and not player.menu.rolledAbilityDisplay and not player.menu.saveStats then
         player.menu.settings = true

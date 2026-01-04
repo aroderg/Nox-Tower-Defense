@@ -9,9 +9,9 @@ function daily.init()
     daily.week.startTime = nowTime - math.floor(nowTime % WEEKLY_CYCLE_DURATION)
     daily.week.endTime = daily.week.startTime + WEEKLY_CYCLE_DURATION
     local trades = {
-        {sellCurrency = "token", buyCurrency = "electrum", sellAmount = 100, buyAmount = 25, weight = 1},
-        {sellCurrency = "token", buyCurrency = "gold", sellAmount = 80, buyAmount = 50, weight = 1},
-        {sellCurrency = "token", buyCurrency = "silver", sellAmount = 50, buyAmount = 16000, weight = 1},
+        {sellCurrency = "token", buyCurrency = "electrum", sellAmount = 100, buyAmount = 25, weight = 1, active = true},
+        {sellCurrency = "token", buyCurrency = "gold", sellAmount = 80, buyAmount = 50, weight = 1, active = true},
+        {sellCurrency = "token", buyCurrency = "silver", sellAmount = 50, buyAmount = 16000, weight = 1, active = true},
     }
     for i=1,3 do
         player.activeDailyTrades[i] = dropTable.draw(trades)
