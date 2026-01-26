@@ -909,8 +909,8 @@ function inHub_mouse(x, y)
             for i=1,3 do
                 if x >= 740 + (i - 1) * 150 and x <= 740 + (i - 1) * 150 + 140 and y >= 485 and y <= 515 and player.activeDailyTrades[i].active then
                     local trade = player.activeDailyTrades[i]
-                    if player.currencies.currentTokens >= player.activeDailyTrades[i].sellAmount then
-                        player.activeDailyTrades[i].active = false
+                    if player.currencies.currentTokens >= trade.sellAmount then
+                        trade.active = false
                         player.currencies.currentTokens = player.currencies.currentTokens - trade.sellAmount
                         player.currencies["current" .. string.gsub(trade.buyCurrency, "^%l", string.upper)] = player.currencies["current" .. string.gsub(trade.buyCurrency, "^%l", string.upper)] + trade.buyAmount
                     end

@@ -29,3 +29,11 @@ function technical.findItemInList(item, list)
     end
     return itemFound
 end
+
+function technical.copyTable(toCopy)
+    local new = {}
+    for k, v in pairs(toCopy) do
+        new[k] = v
+    end
+    return new
+end
