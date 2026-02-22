@@ -5,6 +5,7 @@ function saveGame()
         currentGold = player.currencies.currentGold,
         currentElectrum = player.currencies.currentElectrum,
         currentTokens = player.currencies.currentTokens,
+        currentJade = player.currencies.currentJade,
         idleGains = {silver = player.idleGains.silver, gold = player.idleGains.gold},
         timeModified = socket.gettime(),
         idleTime = player.idleTime,

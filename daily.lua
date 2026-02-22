@@ -18,7 +18,8 @@ function daily.init()
         table.insert(player.activeDailyTrades, technical.copyTable(trade))
     end
     for i=1,4 do
-        table.insert(player.activeWeeklyTrades, dropTable.draw(trades))
+        local trade = dropTable.draw(trades)
+        table.insert(player.activeWeeklyTrades, technical.copyTable(trade))
     end
 end
 

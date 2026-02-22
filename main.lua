@@ -3,6 +3,7 @@ function love.load()
     -- love.profiler.start()
     lume = require "lume"
     require "technical"
+    require "notations"
     require "upgradeAndUnlockModules"
     require "loadGame"
     require "daily"
@@ -14,7 +15,6 @@ function love.load()
     require "particles"
     require "tooltips"
     require "gameOver"
-    require "notations"
     require "abilityObjects"
     require "abilityFunctions"
     require "enemy"
@@ -41,6 +41,7 @@ function love.load()
         img_currency_electrum = love.graphics.newImage("assets/currency_electrum.png")
         img_currency_token = love.graphics.newImage("assets/currency_token.png")
         img_currency_token_big = love.graphics.newImage("assets/currency_token_big.png")
+        img_currency_jade = love.graphics.newImage("assets/currency_jade.png")
 
         --Tower objects
         img_tower_main = love.graphics.newImage("assets/tower_main.png")
@@ -1398,6 +1399,10 @@ function love.keypressed(key)
     end
     if key == "f11" then
         love.window.setFullscreen(not love.window.getFullscreen())
+    end
+    if key == "f1" then
+        local path = love.filesystem.getSaveDirectory()
+        love.system.openURL("file://" .. path)
     end
 end
 

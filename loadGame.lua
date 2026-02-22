@@ -27,7 +27,7 @@ function loadGame()
         cooldowns = {electrum = 24, tokens = 600, abilityAssembly_min = 400, abilityAssembly_max = 800, abilityAssembly_current = 600},
         timers = {electrum = 0, tokens = 600, abilityAssembly = 0},
         canClaim = {tokens = true, electrum = true, ability = true},
-        currencies = {currentSilver = 0, currentGold = 0, currentElectrum = 0, currentTokens = 0},
+        currencies = {currentSilver = 0, currentGold = 0, currentElectrum = 0, currentTokens = 0, currentJade = 0},
         idleGains = {silver = 0, gold = 0}, -- Idle Gains per minute.
         idleTimeCap = 21600,
         idleTime = 0, -- Idle Time in seconds.
@@ -167,6 +167,7 @@ function loadGame()
         currentGold = loadedData.currentGold or defaultPlayerState.currencies.currentGold,
         currentElectrum = loadedData.currentElectrum or defaultPlayerState.currencies.currentElectrum,
         currentTokens = loadedData.currentTokens or defaultPlayerState.currencies.currentTokens,
+        currentJade = loadedData.currentJade or defaultPlayerState.currencies.currentJade,
     }
 
     player.idleTimeCap = player.idleTimeCap or 21600

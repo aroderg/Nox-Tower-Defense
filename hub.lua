@@ -33,8 +33,8 @@ function orbital.update(shuffle)
         "Nice to meet you, " .. getUsername() .. ".",
         "Defending the tower again, are we?",
         player.currencies.currentElectrum .. " Electrum? What will you do with it?",
-        string.format("%d Silver... I'd just assume you found some floating debris.", player.currencies.currentSilver),
-        string.format("%d Gold... That is something pirates would be jealous of.", player.currencies.currentGold),
+        string.format("%s Silver... I'd just assume you found some floating debris.", notations.convertToLetterNotation(player.currencies.currentSilver)),
+        string.format("%s Gold... That is something pirates would be jealous of.", notations.convertToLetterNotation(player.currencies.currentGold)),
         player.currencies.currentTokens .. " Tokens could be enough for a Nexus upgrade.",
         "Running low on resources?",
         "Look at that, a bright Aurora out there all by herself!",
@@ -106,6 +106,8 @@ function inHub_visual()
         love.graphics.printf(string.format("%s", notations.convertToLetterNotation(player.currencies.currentElectrum, "brief")), 1844, 181, 100, "left")
         love.graphics.draw(img_currency_token, 1810, 206)
         love.graphics.printf(string.format("%s", notations.convertToLetterNotation(player.currencies.currentTokens, "brief")), 1844, 213, 100, "left")
+        love.graphics.draw(img_currency_jade, 1810, 238)
+        love.graphics.printf(string.format("%s", notations.convertToLetterNotation(player.currencies.currentJade, "brief")), 1844, 245, 100, "left")
 
         love.graphics.setColor(1, 1, 1, 1)
         love.graphics.setLineStyle("smooth")
@@ -529,6 +531,8 @@ function inHub_visual()
                 love.graphics.rectangle("fill", panelX, 320, 150, 200, 3, 3)
                 love.graphics.setColor(1, 1, 1, 1)
                 love.graphics.rectangle("line", panelX, 320, 150, 200, 3, 3)
+                local bodyAlpha = player.activeDailyTrades[i].active and 1 or 0.5
+                love.graphics.setColor(1, 1, 1, bodyAlpha)
                 love.graphics.draw(resourceImages[player.activeDailyTrades[i].sellCurrency], panelX + 59, 330, 0, 32/32)
                 love.graphics.setFont(font_Vera16)
                 love.graphics.printf(player.activeDailyTrades[i].sellAmount, panelX, 360, 150, "center")
@@ -537,9 +541,10 @@ function inHub_visual()
                 love.graphics.printf(notations.convertToLetterNotation(player.activeDailyTrades[i].buyAmount), panelX, 455, 150, "center")
                 love.graphics.rectangle("line", panelX + 5, 485, 140, 30)
                 love.graphics.setFont(font_Afacad20)
-                love.graphics.printf("Trade", panelX, 485, 150, "center")
+                love.graphics.printf(player.activeDailyTrades[i].active and "Trade" or "Traded!", panelX, 485, 150, "center")
             end
             love.graphics.setFont(font_AfacadBold32)
+            love.graphics.setColor(1, 1, 1, 1)
             love.graphics.printf("Weekly Shop", 760, 570, 400, "center")
             for i=1,4 do
                 local panelX = 660 + (i - 1) % 4 * 150
@@ -549,6 +554,8 @@ function inHub_visual()
                 love.graphics.rectangle("fill", panelX, 620, 150, 200, 3, 3)
                 love.graphics.setColor(1, 1, 1, 1)
                 love.graphics.rectangle("line", panelX, 620, 150, 200, 3, 3)
+                local bodyAlpha = player.activeWeeklyTrades[i].active and 1 or 0.5
+                love.graphics.setColor(1, 1, 1, bodyAlpha)
                 love.graphics.draw(resourceImages[player.activeWeeklyTrades[i].sellCurrency], panelX + 59, 630, 0, 32/32)
                 love.graphics.setFont(font_Vera16)
                 love.graphics.printf(player.activeWeeklyTrades[i].sellAmount, panelX, 660, 150, "center")
@@ -557,7 +564,7 @@ function inHub_visual()
                 love.graphics.printf(notations.convertToLetterNotation(player.activeWeeklyTrades[i].buyAmount), panelX, 755, 150, "center")
                 love.graphics.rectangle("line", panelX + 5, 785, 140, 30)
                 love.graphics.setFont(font_Afacad20)
-                love.graphics.printf("Trade", panelX, 785, 150, "center")
+                love.graphics.printf(player.activeWeeklyTrades[i].active and "Trade" or "Traded!", panelX, 785, 150, "center")
             end
         end
     end
@@ -911,6 +918,18 @@ function inHub_mouse(x, y)
                     local trade = player.activeDailyTrades[i]
                     if player.currencies.currentTokens >= trade.sellAmount then
                         trade.active = false
+                        player.currencies.currentJade = player.currencies.currentJade + 1
+                        player.currencies.currentTokens = player.currencies.currentTokens - trade.sellAmount
+                        player.currencies["current" .. string.gsub(trade.buyCurrency, "^%l", string.upper)] = player.currencies["current" .. string.gsub(trade.buyCurrency, "^%l", string.upper)] + trade.buyAmount
+                    end
+                end
+            end
+            for i=1,4 do
+                if x >= 665 + (i - 1) * 150 and x <= 665 + (i - 1) * 150 + 140 and y >= 785 and y <= 815 and player.activeWeeklyTrades[i].active then
+                    local trade = player.activeWeeklyTrades[i]
+                    if player.currencies.currentTokens >= trade.sellAmount then
+                        trade.active = false
+                        player.currencies.currentJade = player.currencies.currentJade + 4
                         player.currencies.currentTokens = player.currencies.currentTokens - trade.sellAmount
                         player.currencies["current" .. string.gsub(trade.buyCurrency, "^%l", string.upper)] = player.currencies["current" .. string.gsub(trade.buyCurrency, "^%l", string.upper)] + trade.buyAmount
                     end
