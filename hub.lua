@@ -919,6 +919,9 @@ function inHub_mouse(x, y)
                     if player.currencies.currentTokens >= trade.sellAmount then
                         trade.active = false
                         player.currencies.currentJade = player.currencies.currentJade + 1
+                        if not player.activeDailyTrades[1].active and not player.activeDailyTrades[2].active and not player.activeDailyTrades[3].active then
+                            player.currencies.currentJade = player.currencies.currentJade + 3
+                        end
                         player.currencies.currentTokens = player.currencies.currentTokens - trade.sellAmount
                         player.currencies["current" .. string.gsub(trade.buyCurrency, "^%l", string.upper)] = player.currencies["current" .. string.gsub(trade.buyCurrency, "^%l", string.upper)] + trade.buyAmount
                     end
@@ -930,6 +933,9 @@ function inHub_mouse(x, y)
                     if player.currencies.currentTokens >= trade.sellAmount then
                         trade.active = false
                         player.currencies.currentJade = player.currencies.currentJade + 4
+                        if not player.activeWeeklyTrades[1].active and not player.activeWeeklyTrades[2].active and not player.activeWeeklyTrades[3].active and not player.activeWeeklyTrades[4].active then
+                            player.currencies.currentJade = player.currencies.currentJade + 15
+                        end
                         player.currencies.currentTokens = player.currencies.currentTokens - trade.sellAmount
                         player.currencies["current" .. string.gsub(trade.buyCurrency, "^%l", string.upper)] = player.currencies["current" .. string.gsub(trade.buyCurrency, "^%l", string.upper)] + trade.buyAmount
                     end
