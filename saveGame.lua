@@ -239,6 +239,11 @@ function saveGame()
             notation = player.settings.notation,
             tooltips = player.settings.tooltips,
             volume = player.settings.volume
+        },
+        tradesBought = {
+            daily = {not player.activeDailyTrades[1].active, not player.activeDailyTrades[2].active, not player.activeDailyTrades[3].active},
+            weekly = {not player.activeWeeklyTrades[1].active, not player.activeWeeklyTrades[2].active, not player.activeWeeklyTrades[3].active, not player.activeWeeklyTrades[4].active},
+            seed = daily.day.startTime
         }
     }
 

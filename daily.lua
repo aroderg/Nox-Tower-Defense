@@ -13,13 +13,20 @@ function daily.init()
         {sellCurrency = "token", buyCurrency = "gold", sellAmount = 80, buyAmount = 50, weight = 1, active = true},
         {sellCurrency = "token", buyCurrency = "silver", sellAmount = 50, buyAmount = 16000, weight = 1, active = true},
     }
+    love.math.setRandomSeed(nowTime - math.floor(nowTime % DAILY_CYCLE_DURATION))
     for i=1,3 do
         local trade = dropTable.draw(trades)
         table.insert(player.activeDailyTrades, technical.copyTable(trade))
+        if player.tradesBought.daily[i] then
+            player.activeDailyTrades[i].active = false
+        end
     end
     for i=1,4 do
         local trade = dropTable.draw(trades)
         table.insert(player.activeWeeklyTrades, technical.copyTable(trade))
+        if player.tradesBought.weekly[i] then
+            player.activeWeeklyTrades[i].active = false
+        end
     end
 end
 
