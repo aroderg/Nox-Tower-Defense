@@ -420,7 +420,7 @@ function loadGame()
     player.idleGains.silver, player.idleGains.gold = reloadIdleGains()
     player.activeDailyTrades = {}
     player.activeWeeklyTrades = {}
-    if socket.gettime() - math.floor(socket.gettime() % (24 * 60 * 60)) == loadedData.tradesBought.seed then
+    if math.floor(socket.gettime() / (24 * 60 * 60)) * (24 * 60 * 60) ~= loadedData.tradesBought.seed then
         player.tradesBought = {daily = {false, false, false}, weekly = {false, false, false, false}}
     else
         player.tradesBought = loadedData.tradesBought

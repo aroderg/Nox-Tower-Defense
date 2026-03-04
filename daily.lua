@@ -1,13 +1,16 @@
 daily = {day = {}, week = {}}
 
 function daily.init()
-    local DAILY_CYCLE_DURATION = 24 * 60 * 60 -- 24 HOURS
-    local WEEKLY_CYCLE_DURATION = 7 * 24 * 60 * 60 -- 168 HOURS
+    local DAILY_CYCLE_DURATION = 24 * 60 * 60 --24 HOURS
+    local WEEKLY_CYCLE_DURATION = 7 * 24 * 60 * 60 --168 HOURS
+    local WEEK_OFFSET = 3 * DAILY_CYCLE_DURATION 
     local nowTime = socket.gettime()
-    daily.day.startTime = nowTime - math.floor(nowTime % DAILY_CYCLE_DURATION)
+    daily.day.startTime = math.floor(nowTime / DAILY_CYCLE_DURATION) * DAILY_CYCLE_DURATION
     daily.day.endTime = daily.day.startTime + DAILY_CYCLE_DURATION
-    daily.week.startTime = nowTime - math.floor(nowTime % WEEKLY_CYCLE_DURATION)
+    local adjustedTime = nowTime - WEEK_OFFSET
+    daily.week.startTime = (math.floor(adjustedTime / WEEKLY_CYCLE_DURATION) * WEEKLY_CYCLE_DURATION) + WEEK_OFFSET
     daily.week.endTime = daily.week.startTime + WEEKLY_CYCLE_DURATION
+
     local trades = {
         {sellCurrency = "token", buyCurrency = "electrum", sellAmount = 100, buyAmount = 25, weight = 1, active = true},
         {sellCurrency = "token", buyCurrency = "gold", sellAmount = 80, buyAmount = 50, weight = 1, active = true},
