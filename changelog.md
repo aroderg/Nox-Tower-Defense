@@ -1,12 +1,14 @@
 # NoxTD 1.2 Interstellar
 ### March ??, 2026
-- Added Trading.
-    - 3 daily Trades, 4 weekly Trades.
-    - Awards Jade each trade.
-        - 1 Jade per daily Trade.
-        - 4 Jade per weekly Trade.
-        - 3 more Jade if all daily Trades are completed.
-        - 15 more Jade if all weekly Trades are completed.
+- Added Trades.
+    - 3 Trades daily, 4 Trades weekly.
+    - Each trade awards a specific amount of Jade.
+        - 1 per daily Trade.
+        - 4 per weekly Trade.
+        - 3 more if all daily Trades are completed.
+        - 15 more if all weekly Trades are completed.
+
+    
 
 ## NoxTD 1.1.3 Aurora
 ### Nov 25th, 2025
