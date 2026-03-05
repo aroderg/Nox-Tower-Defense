@@ -395,7 +395,8 @@ function loadGame()
         abilities = {},
         saveStats = false,
         rolledAbilityDisplay = false,
-        debugInfo = false
+        debugInfo = false,
+        shopSection = "Trading"
     }
 
     abilityFunctions.updateLeveling()

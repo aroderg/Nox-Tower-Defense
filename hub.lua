@@ -511,65 +511,75 @@ function inHub_visual()
             local nowTime = socket.gettime()
             local untilDailyReset = (daily.day.endTime - nowTime)
             local untilWeeklyReset = (daily.week.endTime - nowTime)
-            love.graphics.setLineWidth(1)
+            love.graphics.setLineWidth(2)
             love.graphics.setFont(font_Afacad24)
+            love.graphics.setColor(accentColors[player.misc.theme].buttons)
+            love.graphics.rectangle("fill", 830, 135, 120, 40, 2, 2)
+            love.graphics.setColor(accentColors[player.misc.theme].buttonOutlines)
             love.graphics.rectangle("line", 830, 135, 120, 40, 2, 2)
-            love.graphics.printf("Trades", 830, 138, 120, "center")
+            love.graphics.setColor(1, 1, 1, 1)
+            love.graphics.printf("Trading", 830, 138, 120, "center")
+            love.graphics.setColor(accentColors[player.misc.theme].buttons)
+            love.graphics.rectangle("fill", 970, 135, 120, 40, 2, 2)
+            love.graphics.setColor(accentColors[player.misc.theme].buttonOutlines)
             love.graphics.rectangle("line", 970, 135, 120, 40, 2, 2)
+            love.graphics.setColor(1, 1, 1, 1)
             love.graphics.printf("Jade Shop", 970, 138, 120, "center")
-            love.graphics.setFont(font_AfacadBold24)
-            love.graphics.printf(string.format("Until daily update: %dh %dm", math.floor(untilDailyReset / 3600), math.floor(untilDailyReset % 3600 / 60)), 760, 210, 400, "center")
-            love.graphics.printf(string.format("Until weekly update: %dd %dh %dm", math.floor(untilWeeklyReset / 86400), math.floor(untilWeeklyReset % 86400 / 3600), math.floor(untilWeeklyReset % 3600 / 60)), 760, 240, 400, "center")
-            love.graphics.setFont(font_AfacadBold32)
-            love.graphics.printf("Daily Shop", 760, 300, 400, "center")
             local resourceImages = {
                 token = img_currency_token,
                 electrum = img_currency_electrum,
                 gold = img_currency_gold,
                 silver = img_currency_silver,
             }
-            for i=1,3 do
-                local panelX = 735 + (i - 1) % 3 * 150
-                love.graphics.setLineStyle("smooth")
-                love.graphics.setLineWidth(2)
-                love.graphics.setColor(0, 0, 0, 0.5)
-                love.graphics.rectangle("fill", panelX, 350, 150, 200, 3, 3)
+            if player.menu.shopSection == "Trading" then
+                love.graphics.setFont(font_AfacadBold24)
+                love.graphics.printf(string.format("Until daily update: %dh %dm", math.floor(untilDailyReset / 3600), math.floor(untilDailyReset % 3600 / 60)), 760, 210, 400, "center")
+                love.graphics.printf(string.format("Until weekly update: %dd %dh %dm", math.floor(untilWeeklyReset / 86400), math.floor(untilWeeklyReset % 86400 / 3600), math.floor(untilWeeklyReset % 3600 / 60)), 760, 240, 400, "center")
+                love.graphics.setFont(font_AfacadBold32)
+                love.graphics.printf("Daily Shop", 760, 300, 400, "center")
+                for i=1,3 do
+                    local panelX = 735 + (i - 1) % 3 * 150
+                    love.graphics.setLineStyle("smooth")
+                    love.graphics.setLineWidth(2)
+                    love.graphics.setColor(0, 0, 0, 0.5)
+                    love.graphics.rectangle("fill", panelX, 350, 150, 200, 3, 3)
+                    love.graphics.setColor(1, 1, 1, 1)
+                    love.graphics.rectangle("line", panelX, 350, 150, 200, 3, 3)
+                    local bodyAlpha = player.activeDailyTrades[i].active and 1 or 0.5
+                    love.graphics.setColor(1, 1, 1, bodyAlpha)
+                    love.graphics.draw(resourceImages[player.activeDailyTrades[i].sellCurrency], panelX + 59, 360, 0, 32/32)
+                    love.graphics.setFont(font_Vera16)
+                    love.graphics.printf(player.activeDailyTrades[i].sellAmount, panelX, 390, 150, "center")
+                    love.graphics.line(panelX + 75, 410, panelX + 75, 455)
+                    love.graphics.draw(resourceImages[player.activeDailyTrades[i].buyCurrency], panelX + 59, 455, 0, 32/32)
+                    love.graphics.printf(notations.convertToLetterNotation(player.activeDailyTrades[i].buyAmount), panelX, 485, 150, "center")
+                    love.graphics.rectangle("line", panelX + 5, 515, 140, 30)
+                    love.graphics.setFont(font_Afacad20)
+                    love.graphics.printf(player.activeDailyTrades[i].active and "Trade" or "Traded!", panelX, 515, 150, "center")
+                end
+                love.graphics.setFont(font_AfacadBold32)
                 love.graphics.setColor(1, 1, 1, 1)
-                love.graphics.rectangle("line", panelX, 350, 150, 200, 3, 3)
-                local bodyAlpha = player.activeDailyTrades[i].active and 1 or 0.5
-                love.graphics.setColor(1, 1, 1, bodyAlpha)
-                love.graphics.draw(resourceImages[player.activeDailyTrades[i].sellCurrency], panelX + 59, 360, 0, 32/32)
-                love.graphics.setFont(font_Vera16)
-                love.graphics.printf(player.activeDailyTrades[i].sellAmount, panelX, 390, 150, "center")
-                love.graphics.line(panelX + 75, 410, panelX + 75, 455)
-                love.graphics.draw(resourceImages[player.activeDailyTrades[i].buyCurrency], panelX + 59, 455, 0, 32/32)
-                love.graphics.printf(notations.convertToLetterNotation(player.activeDailyTrades[i].buyAmount), panelX, 485, 150, "center")
-                love.graphics.rectangle("line", panelX + 5, 515, 140, 30)
-                love.graphics.setFont(font_Afacad20)
-                love.graphics.printf(player.activeDailyTrades[i].active and "Trade" or "Traded!", panelX, 515, 150, "center")
-            end
-            love.graphics.setFont(font_AfacadBold32)
-            love.graphics.setColor(1, 1, 1, 1)
-            love.graphics.printf("Weekly Shop", 760, 590, 400, "center")
-            for i=1,4 do
-                local panelX = 660 + (i - 1) % 4 * 150
-                love.graphics.setLineStyle("smooth")
-                love.graphics.setLineWidth(2)
-                love.graphics.setColor(0, 0, 0, 0.5)
-                love.graphics.rectangle("fill", panelX, 640, 150, 200, 3, 3)
-                love.graphics.setColor(1, 1, 1, 1)
-                love.graphics.rectangle("line", panelX, 640, 150, 200, 3, 3)
-                local bodyAlpha = player.activeWeeklyTrades[i].active and 1 or 0.5
-                love.graphics.setColor(1, 1, 1, bodyAlpha)
-                love.graphics.draw(resourceImages[player.activeWeeklyTrades[i].sellCurrency], panelX + 59, 650, 0, 32/32)
-                love.graphics.setFont(font_Vera16)
-                love.graphics.printf(player.activeWeeklyTrades[i].sellAmount, panelX, 680, 150, "center")
-                love.graphics.line(panelX + 75, 700, panelX + 75, 745)
-                love.graphics.draw(resourceImages[player.activeWeeklyTrades[i].buyCurrency], panelX + 59, 745, 0, 32/32)
-                love.graphics.printf(notations.convertToLetterNotation(player.activeWeeklyTrades[i].buyAmount), panelX, 775, 150, "center")
-                love.graphics.rectangle("line", panelX + 5, 805, 140, 30)
-                love.graphics.setFont(font_Afacad20)
-                love.graphics.printf(player.activeWeeklyTrades[i].active and "Trade" or "Traded!", panelX, 805, 150, "center")
+                love.graphics.printf("Weekly Shop", 760, 590, 400, "center")
+                for i=1,4 do
+                    local panelX = 660 + (i - 1) % 4 * 150
+                    love.graphics.setLineStyle("smooth")
+                    love.graphics.setLineWidth(2)
+                    love.graphics.setColor(0, 0, 0, 0.5)
+                    love.graphics.rectangle("fill", panelX, 640, 150, 200, 3, 3)
+                    love.graphics.setColor(1, 1, 1, 1)
+                    love.graphics.rectangle("line", panelX, 640, 150, 200, 3, 3)
+                    local bodyAlpha = player.activeWeeklyTrades[i].active and 1 or 0.5
+                    love.graphics.setColor(1, 1, 1, bodyAlpha)
+                    love.graphics.draw(resourceImages[player.activeWeeklyTrades[i].sellCurrency], panelX + 59, 650, 0, 32/32)
+                    love.graphics.setFont(font_Vera16)
+                    love.graphics.printf(player.activeWeeklyTrades[i].sellAmount, panelX, 680, 150, "center")
+                    love.graphics.line(panelX + 75, 700, panelX + 75, 745)
+                    love.graphics.draw(resourceImages[player.activeWeeklyTrades[i].buyCurrency], panelX + 59, 745, 0, 32/32)
+                    love.graphics.printf(notations.convertToLetterNotation(player.activeWeeklyTrades[i].buyAmount), panelX, 775, 150, "center")
+                    love.graphics.rectangle("line", panelX + 5, 805, 140, 30)
+                    love.graphics.setFont(font_Afacad20)
+                    love.graphics.printf(player.activeWeeklyTrades[i].active and "Trade" or "Traded!", panelX, 805, 150, "center")
+                end
             end
         end
     end
@@ -918,31 +928,38 @@ function inHub_mouse(x, y)
             end
             abilityFunctions.updateInternals()
         elseif hubSection == "Shops" then
-            for i=1,3 do
-                if x >= 740 + (i - 1) * 150 and x <= 740 + (i - 1) * 150 + 140 and y >= 515 and y <= 545 and player.activeDailyTrades[i].active then
-                    local trade = player.activeDailyTrades[i]
-                    if player.currencies.currentTokens >= trade.sellAmount then
-                        trade.active = false
-                        player.currencies.currentJade = player.currencies.currentJade + 1
-                        if not player.activeDailyTrades[1].active and not player.activeDailyTrades[2].active and not player.activeDailyTrades[3].active then
-                            player.currencies.currentJade = player.currencies.currentJade + 3
+            if x >= 830 and x <= 950 and y >= 135 and y <= 175 and not player.menu.settings then
+                player.menu.shopSection = "Trading"
+            elseif x >= 970 and x <= 1090 and y >= 135 and y <= 175 and not player.menu.settings then
+                player.menu.shopSection = "Jade Shop"
+            end
+            if player.menu.shopSection == "Trading" then
+                for i=1,3 do
+                    if x >= 740 + (i - 1) * 150 and x <= 740 + (i - 1) * 150 + 140 and y >= 515 and y <= 545 and player.activeDailyTrades[i].active then
+                        local trade = player.activeDailyTrades[i]
+                        if player.currencies.currentTokens >= trade.sellAmount then
+                            trade.active = false
+                            player.currencies.currentJade = player.currencies.currentJade + 1
+                            if not player.activeDailyTrades[1].active and not player.activeDailyTrades[2].active and not player.activeDailyTrades[3].active then
+                                player.currencies.currentJade = player.currencies.currentJade + 3
+                            end
+                            player.currencies.currentTokens = player.currencies.currentTokens - trade.sellAmount
+                            player.currencies["current" .. string.gsub(trade.buyCurrency, "^%l", string.upper)] = player.currencies["current" .. string.gsub(trade.buyCurrency, "^%l", string.upper)] + trade.buyAmount
                         end
-                        player.currencies.currentTokens = player.currencies.currentTokens - trade.sellAmount
-                        player.currencies["current" .. string.gsub(trade.buyCurrency, "^%l", string.upper)] = player.currencies["current" .. string.gsub(trade.buyCurrency, "^%l", string.upper)] + trade.buyAmount
                     end
                 end
-            end
-            for i=1,4 do
-                if x >= 665 + (i - 1) * 150 and x <= 665 + (i - 1) * 150 + 140 and y >= 805 and y <= 835 and player.activeWeeklyTrades[i].active then
-                    local trade = player.activeWeeklyTrades[i]
-                    if player.currencies.currentTokens >= trade.sellAmount then
-                        trade.active = false
-                        player.currencies.currentJade = player.currencies.currentJade + 4
-                        if not player.activeWeeklyTrades[1].active and not player.activeWeeklyTrades[2].active and not player.activeWeeklyTrades[3].active and not player.activeWeeklyTrades[4].active then
-                            player.currencies.currentJade = player.currencies.currentJade + 15
+                for i=1,4 do
+                    if x >= 665 + (i - 1) * 150 and x <= 665 + (i - 1) * 150 + 140 and y >= 805 and y <= 835 and player.activeWeeklyTrades[i].active then
+                        local trade = player.activeWeeklyTrades[i]
+                        if player.currencies.currentTokens >= trade.sellAmount then
+                            trade.active = false
+                            player.currencies.currentJade = player.currencies.currentJade + 4
+                            if not player.activeWeeklyTrades[1].active and not player.activeWeeklyTrades[2].active and not player.activeWeeklyTrades[3].active and not player.activeWeeklyTrades[4].active then
+                                player.currencies.currentJade = player.currencies.currentJade + 15
+                            end
+                            player.currencies.currentTokens = player.currencies.currentTokens - trade.sellAmount
+                            player.currencies["current" .. string.gsub(trade.buyCurrency, "^%l", string.upper)] = player.currencies["current" .. string.gsub(trade.buyCurrency, "^%l", string.upper)] + trade.buyAmount
                         end
-                        player.currencies.currentTokens = player.currencies.currentTokens - trade.sellAmount
-                        player.currencies["current" .. string.gsub(trade.buyCurrency, "^%l", string.upper)] = player.currencies["current" .. string.gsub(trade.buyCurrency, "^%l", string.upper)] + trade.buyAmount
                     end
                 end
             end
