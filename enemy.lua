@@ -346,7 +346,7 @@ function enemyFuncs.updateEnemyStats(difficulty, wave)
     local pendingEnemies = 0
     local tankSpawnChance = 0
     local swiftSpawnChance = 0
-    local exploderSpawnChance = 100
+    local exploderSpawnChance = 0
     if difficulty == 1 then
         --[[ Set stats for Level 0 enemies ]]--
         enemyAttributes.spawnRate = 0.5 + (math.floor(0.3 * math.sqrt(0.1 * wave) * 10) / 10)

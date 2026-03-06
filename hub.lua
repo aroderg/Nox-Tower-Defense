@@ -141,10 +141,10 @@ function inHub_visual()
         love.graphics.rectangle("fill", 1800, 62, 118, 32)
         love.graphics.setColor(accentColors[player.misc.theme].buttonOutlines)
         love.graphics.setLineWidth(2)
-        love.graphics.rectangle("line", 1800, 62, 118, 32, 2, 2)
+        love.graphics.rectangle("line", 1800, 61, 118, 32, 2, 2)
         love.graphics.setFont(font_Afacad24)
         love.graphics.setColor(1, 1, 1, 1)
-        love.graphics.printf("Stats", 1780, 61, 158, "center")
+        love.graphics.printf("Stats", 1780, 60, 158, "center")
         love.graphics.setLineWidth(1)
         love.graphics.draw(img_discordLogo, 1710, 22, 0, 80/512, 80/512)
         if not player.menu.settings and not player.menu.saveStats and not player.menu.rolledAbilityDisplay and not abilityFunctions.checkMenuDisplay() and player.settings.tooltips then
@@ -967,7 +967,7 @@ function inHub_mouse(x, y)
     if x >= 1800 and x <= 1918 and y >= 22 and y <= 54 and not player.menu.settings and not abilityFunctions.checkMenuDisplay() and not player.menu.rolledAbilityDisplay and not player.menu.saveStats then
         player.menu.settings = true
     end
-    if x >= 1800 and x <= 1918 and y >= 62 and y <= 94 and not player.menu.settings and not abilityFunctions.checkMenuDisplay() and not player.menu.rolledAbilityDisplay and not player.menu.saveStats then
+    if x >= 1800 and x <= 1918 and y >= 61 and y <= 93 and not player.menu.settings and not abilityFunctions.checkMenuDisplay() and not player.menu.rolledAbilityDisplay and not player.menu.saveStats then
         player.menu.saveStats = true
     end
     if x >= 1710 and x <= 1790 and y >= 31 and y <= 93 and not player.menu.settings and not abilityFunctions.checkMenuDisplay() and not player.menu.rolledAbilityDisplay and not player.menu.saveStats then

@@ -81,6 +81,13 @@ function loadGame()
                 regeneration = {level = 1, cost = 1, value = 1},
                 abilityChance = {level = 1, cost = 1, value = 1},
                 abilityCooldown = {level = 1, cost = 1, value = 1},
+            },
+
+            jade = {
+                extraction = {level = 1, cost = 1, value = 1},
+                metamorphism = {level = 1, cost = 1, value = 1},
+                autobroker = {level = 1, cost = 1, value = 1},
+                silverGain = {level = 1, cost = 1, value = 1}
             }
         },
         modifiers = {
@@ -129,7 +136,8 @@ function loadGame()
             supercritical = {unlocked = false, level = 0, equipped = false, amount = 0},
             disruptWave = {unlocked = false, level = 0, equipped = false, amount = 0}
         },
-        misc = {abilityAssembling = false, tokensRefundable = true, theme = "aurora", currentOrbital = love.math.random(1, 40)}
+        misc = {abilityAssembling = false, tokensRefundable = true, theme = "aurora", currentOrbital = love.math.random(1, 40)},
+        tradesBought = {daily = {false, false, false}, weekly = {false, false, false, false}, seed = 0}
     }
 
     local loadedData = nil
@@ -226,6 +234,12 @@ function loadGame()
             regeneration = {level = loadedData.upgrades.nexus.regeneration.level or defaultPlayerState.upgrades.nexus.regeneration, cost = 1},
             abilityChance = {level = loadedData.upgrades.nexus.abilityChance.level or defaultPlayerState.upgrades.nexus.abilityChance, cost = 1},
             abilityCooldown = {level = loadedData.upgrades.nexus.abilityCooldown.level or defaultPlayerState.upgrades.nexus.abilityCooldown, cost = 1},
+        },
+        jade = {
+            extraction = {level = loadedData.upgrades.jade.extraction.level or defaultPlayerState.upgrades.jade.extraction, cost = 1, value = 1},
+            metamorphism = {level = loadedData.upgrades.jade.metamorphism.level or defaultPlayerState.upgrades.jade.metamorphism, cost = 1, value = 1},
+            autobroker = {level = loadedData.upgrades.jade.autobroker.level or defaultPlayerState.upgrades.jade.autobroker, cost = 1, value = 1},
+            silverGain = {level = loadedData.upgrades.jade.silverGain.level or defaultPlayerState.upgrades.jade.silverGain, cost = 1, value = 1}
         }
     }
     player.upgrades.nexus.attackDamage.value = math.min(1 + (player.upgrades.nexus.attackDamage.level - 1) * 10/100, 5)
@@ -421,10 +435,12 @@ function loadGame()
     player.idleGains.silver, player.idleGains.gold = reloadIdleGains()
     player.activeDailyTrades = {}
     player.activeWeeklyTrades = {}
-    if math.floor(socket.gettime() / (24 * 60 * 60)) * (24 * 60 * 60) ~= loadedData.tradesBought.seed then
-        player.tradesBought = {daily = {false, false, false}, weekly = {false, false, false, false}}
-    else
-        player.tradesBought = loadedData.tradesBought
+    if love.filesystem.getInfo("SAVEFILE.sav") then
+        if math.floor(socket.gettime() / (24 * 60 * 60)) * (24 * 60 * 60) ~= loadedData.tradesBought.seed then
+            player.tradesBought = {daily = {false, false, false}, weekly = {false, false, false, false}}
+        else
+            player.tradesBought = loadedData.tradesBought
+        end
     end
 
     accentColors = {
