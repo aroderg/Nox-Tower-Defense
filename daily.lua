@@ -12,9 +12,12 @@ function daily.init()
     daily.week.endTime = daily.week.startTime + WEEKLY_CYCLE_DURATION
 
     local trades = {
-        {sellCurrency = "token", buyCurrency = "electrum", sellAmount = 100, buyAmount = 25, weight = 1, active = true},
-        {sellCurrency = "token", buyCurrency = "gold", sellAmount = 80, buyAmount = 50, weight = 1, active = true},
+        {sellCurrency = "token", buyCurrency = "electrum", sellAmount = 100, buyAmount = 15, weight = 1, active = true},
+        {sellCurrency = "token", buyCurrency = "gold", sellAmount = 80, buyAmount = 40, weight = 1, active = true},
         {sellCurrency = "token", buyCurrency = "silver", sellAmount = 50, buyAmount = 16000, weight = 1, active = true},
+        {sellCurrency = "token", buyCurrency = "electrum", sellAmount = 80, buyAmount = 10, weight = 2, active = true},
+        {sellCurrency = "token", buyCurrency = "gold", sellAmount = 15, buyAmount = 6, weight = 2, active = true},
+        {sellCurrency = "token", buyCurrency = "silver", sellAmount = 30, buyAmount = 9000, weight = 2, active = true},
     }
     love.math.setRandomSeed(nowTime - math.floor(nowTime % DAILY_CYCLE_DURATION))
     for i=1,3 do
