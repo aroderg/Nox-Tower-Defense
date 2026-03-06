@@ -93,10 +93,10 @@ function inHub_visual()
         end
 
         love.graphics.setColor(0, 0, 0, 0.5)
-        love.graphics.rectangle("fill", 1800, 100, 119, 200, 4, 4)
+        love.graphics.rectangle("fill", 1800, 100, 119, 180, 3, 3)
         love.graphics.setColor(1, 1, 1, 1)
         love.graphics.setLineWidth(2)
-        love.graphics.rectangle("line", 1800, 100, 119, 200, 4, 4)
+        love.graphics.rectangle("line", 1800, 100, 119, 180, 3, 3)
         love.graphics.setFont(font_Vera16)
         love.graphics.draw(img_currency_silver, 1810, 110)
         love.graphics.printf(string.format("%s", notations.convertToLetterNotation(player.currencies.currentSilver, "brief")), 1844, 117, 100, "left")
