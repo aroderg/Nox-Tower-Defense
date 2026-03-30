@@ -57,8 +57,8 @@ function saveGame()
                 silverBonus = {level = player.upgrades.science.silverBonus.level}
             },
             jade = {
-                extraction = {level = player.upgrades.jade.extraction.level},
-                metamorphism = {level = player.upgrades.jade.metamorphism.level},
+                jadeBonus = {level = player.upgrades.jade.jadeBonus.level},
+                jadePerLogin = {level = player.upgrades.jade.jadePerLogin.level},
                 autobroker = {level = player.upgrades.jade.autobroker.level},
                 silverGain = {level = player.upgrades.jade.silverGain.level}
             }

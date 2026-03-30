@@ -580,6 +580,12 @@ function inHub_visual()
                     love.graphics.setFont(font_Afacad20)
                     love.graphics.printf(player.activeWeeklyTrades[i].active and "Trade" or "Traded!", panelX, 805, 150, "center")
                 end
+            elseif player.menu.shopSection == "Jade Shop" then
+                love.graphics.setLineWidth(1)
+                love.graphics.setLineStyle("rough")
+                for i,v in pairs(upgradeModules.jade) do
+                    upgradeModuleFuncs.draw(v)
+                end
             end
         end
     end

@@ -65,6 +65,11 @@ function upgradeModuleFuncs.load()
                 {"Copper Bonus", 965, 840, 350, 60, player.tower.copperBonus, player.upgrades.science.copperBonus.cost, player.upgrades.science.copperBonus.level, "science", 451, "precise2", "x", nil, ["precedingUpgrade"] = player.upgrades.unlocks.resourceBonus, "resourceBonus"}, --Copper Bonus Science Upgrade
                 {"Silver Bonus", 1325, 840, 350, 60, player.tower.silverBonus, player.upgrades.science.silverBonus.cost, player.upgrades.science.silverBonus.level, "science", 301, "precise2", "x", nil, ["precedingUpgrade"] = player.upgrades.unlocks.resourceBonus, "resourceBonus"} --Silver Bonus Science Upgrade
             }
+        },
+        jade = {
+            {"Jade Bonus", 485, 220, 310, 60, player.upgrades.jade.jadeBonus.value, player.upgrades.jade.jadeBonus.cost, player.upgrades.jade.jadeBonus.level, "jade", 6, "precise", "x", nil, ["precedingUpgrade"] = 0}, --Jade Bonus Jade upgrade
+            {"Jade/Login", 805, 220, 310, 60, player.upgrades.jade.jadePerLogin.value, player.upgrades.jade.jadePerLogin.cost, player.upgrades.jade.jadePerLogin.level, "jade", 2, "brief", nil, nil, ["precedingUpgrade"] = 0}, --Jade/Login Jade upgrade
+            {"Auto-broker", 1125, 220, 310, 60, player.upgrades.jade.autobroker.value, player.upgrades.jade.autobroker.cost, player.upgrades.jade.autobroker.level, "jade", 2, "brief", nil, nil, ["precedingUpgrade"] = 0}, --Auto-broker Jade upgrade
         }
     }
 
@@ -196,6 +201,8 @@ function upgradeModuleFuncs.draw(module)
         local buttonXY = {attributes.width - 90 - 3, 3}
         if module == upgradeModules["round"]["ATK"][5] or module == upgradeModules["science"]["ATK"][5] then
             love.graphics.print(string.format("%s: %s%s%s", attributes.name or "Upgrade Name", attributes.prefix or "", notations.convertToLetterNotation(attributes.value / 20, attributes.precision), "u", attributes.suffix or ""), attributes.ux + 5, attributes.uy + ((attributes.height - buttonXY[2] * 2) / 2) - 11)
+        elseif module == upgradeModules["jade"][3] then
+            love.graphics.print(string.format("%s: %s", attributes.name or "Upgrade Name", attributes.level == 2 and "Unlocked" or "Locked", attributes.suffix or ""), attributes.ux + 5, attributes.uy + ((attributes.height - buttonXY[2] * 2) / 2) - 11)
         else
             love.graphics.print(string.format("%s: %s%s%s", attributes.name or "Upgrade Name", attributes.prefix or "", notations.convertToLetterNotation(attributes.value, attributes.precision), attributes.suffix or ""), attributes.ux + 5, attributes.uy + ((attributes.height - buttonXY[2] * 2) / 2) - 11)
         end
@@ -218,9 +225,16 @@ function upgradeModuleFuncs.draw(module)
                 else
                     love.graphics.setColor(1, 0.5, 0.5, 1)
                 end
-            else
+            elseif attributes.type == "science" then
                 love.graphics.draw(img_currency_silver, attributes.ux + buttonXY[1] + 2, attributes.uy + (attributes.height - buttonXY[2] * 2 - 15) / 2, 0, 20/32)
                 if player.currencies.currentSilver >= attributes.cost then
+                    love.graphics.setColor(1, 1, 1, 1)
+                else
+                    love.graphics.setColor(1, 0.5, 0.5, 1)
+                end
+            elseif attributes.type == "jade" then
+                love.graphics.draw(img_currency_jade, attributes.ux + buttonXY[1] + 2, attributes.uy + (attributes.height - buttonXY[2] * 2 - 15) / 2, 0, 20/32)
+                if player.currencies.currentJade >= attributes.cost then
                     love.graphics.setColor(1, 1, 1, 1)
                 else
                     love.graphics.setColor(1, 0.5, 0.5, 1)

@@ -453,10 +453,10 @@ function love.draw()
         --[[ Print currency balances for Copper, Silver and Gold ]]--
         love.graphics.setColor(0, 0, 0, 0.5)
         love.graphics.setLineStyle("smooth")
-        love.graphics.rectangle("fill", 11, 11, 119, 215, 4, 4)
+        love.graphics.rectangle("fill", 11, 11, 119, 215, 3, 3)
         love.graphics.setColor(1, 1, 1, 1)
         love.graphics.setLineWidth(2)
-        love.graphics.rectangle("line", 11, 11, 119, 215, 4, 4)
+        love.graphics.rectangle("line", 11, 11, 119, 215, 3, 3)
         love.graphics.setFont(font_Vera16)
         love.graphics.draw(img_currency_copper, 18, 21)
         love.graphics.printf(string.format("%s", notations.convertToLetterNotation(player.currencies.currentCopper, "brief")), 52, 28, 100, "left")
@@ -1405,6 +1405,9 @@ function love.keypressed(key)
     if key == "f1" then
         local path = love.filesystem.getSaveDirectory()
         love.system.openURL("file://" .. path)
+    end
+    if key == "f10" then
+        love.system.openURL("file://" .. love.filesystem.getSaveDirectory())
     end
 end
 

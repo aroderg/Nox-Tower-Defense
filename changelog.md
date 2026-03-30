@@ -1,4 +1,4 @@
-# NoxTD 1.2 Interstellar
+# NoxTD 1.2 Polaris
 ### March ??, 2026
 - Added Trades.
     - 3 Trades daily, 4 Trades weekly.

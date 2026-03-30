@@ -84,8 +84,8 @@ function loadGame()
             },
 
             jade = {
-                extraction = {level = 1, cost = 1, value = 1},
-                metamorphism = {level = 1, cost = 1, value = 1},
+                jadeBonus = {level = 1, cost = 1, value = 1},
+                jadePerLogin = {level = 1, cost = 1, value = 1},
                 autobroker = {level = 1, cost = 1, value = 1},
                 silverGain = {level = 1, cost = 1, value = 1}
             }
@@ -236,8 +236,8 @@ function loadGame()
             abilityCooldown = {level = loadedData.upgrades.nexus.abilityCooldown.level or defaultPlayerState.upgrades.nexus.abilityCooldown, cost = 1},
         },
         jade = {
-            extraction = {level = loadedData.upgrades.jade.extraction.level or defaultPlayerState.upgrades.jade.extraction, cost = 1, value = 1},
-            metamorphism = {level = loadedData.upgrades.jade.metamorphism.level or defaultPlayerState.upgrades.jade.metamorphism, cost = 1, value = 1},
+            jadeBonus = {level = loadedData.upgrades.jade.jadeBonus.level or defaultPlayerState.upgrades.jade.jadeBonus, cost = 1, value = 1},
+            jadePerLogin = {level = loadedData.upgrades.jade.jadePerLogin.level or defaultPlayerState.upgrades.jade.jadePerLogin, cost = 1, value = 1},
             autobroker = {level = loadedData.upgrades.jade.autobroker.level or defaultPlayerState.upgrades.jade.autobroker, cost = 1, value = 1},
             silverGain = {level = loadedData.upgrades.jade.silverGain.level or defaultPlayerState.upgrades.jade.silverGain, cost = 1, value = 1}
         }
@@ -565,7 +565,7 @@ function resetRoundValues()
     }
 
     --[[ Gameplay properties ]]--
-    gameplay = {difficulty = player.difficulty.difficulty, wave = 1.8, gameSpeed = player.maxGameSpeed}
+    gameplay = {difficulty = player.difficulty.difficulty, wave = 1, gameSpeed = player.maxGameSpeed}
     misc = {
         copperBuffer = 0,
         silverBuffer = 0,
