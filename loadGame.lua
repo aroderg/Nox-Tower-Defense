@@ -105,7 +105,7 @@ function loadGame()
                 goldEarned = 0,
                 wavesSkipped = 0,
                 projectilesFired = 0,
-                upgradesAcquired = {science = 0, nexus = 0},
+                upgradesAcquired = {science = 0, nexus = 0, jade = 0},
                 wavesBeaten = 0,
                 clusterFire = {triggered = 0},
                 lifesteal = {triggered = 0, healed = 0},
@@ -294,7 +294,8 @@ function loadGame()
     }
     player.stats.save.upgradesAcquired = {
         science = loadedData.stats.save.upgradesAcquired.science or defaultPlayerState.stats.save.upgradesAcquired.science,
-        nexus = loadedData.stats.save.upgradesAcquired.nexus or defaultPlayerState.stats.save.upgradesAcquired.nexus
+        nexus = loadedData.stats.save.upgradesAcquired.nexus or defaultPlayerState.stats.save.upgradesAcquired.nexus,
+        jade = loadedData.stats.save.upgradesAcquired.jade or defaultPlayerState.stats.save.upgradesAcquired.jade
     }
     player.stats.save.spikedCrystals = {
         enemiesKilled = loadedData.stats.save.spikedCrystals.enemiesKilled or defaultPlayerState.stats.save.spikedCrystals.enemiesKilled,
@@ -391,6 +392,14 @@ function loadGame()
     player.upgrades.science.silverPerWave.cost = upgradeModuleFuncs.reloadFormulae(player.upgrades.science.silverPerWave.level)["science"]["UTL"][2][1]
     player.upgrades.science.copperBonus.cost = upgradeModuleFuncs.reloadFormulae(player.upgrades.science.copperBonus.level)["science"]["UTL"][3][1]
     player.upgrades.science.silverBonus.cost = upgradeModuleFuncs.reloadFormulae(player.upgrades.science.silverBonus.level)["science"]["UTL"][4][1]
+
+    player.upgrades.jade.jadeBonus.cost = upgradeModuleFuncs.reloadFormulae(player.upgrades.jade.jadeBonus.level)["jade"][1][1]
+    player.upgrades.jade.jadePerLogin.cost = upgradeModuleFuncs.reloadFormulae(player.upgrades.jade.jadePerLogin.level)["jade"][2][1]
+    player.upgrades.jade.autobroker.cost = upgradeModuleFuncs.reloadFormulae(player.upgrades.jade.autobroker.level)["jade"][3][1]
+
+    player.upgrades.jade.jadeBonus.value = upgradeModuleFuncs.reloadFormulae(player.upgrades.jade.jadeBonus.level)["jade"][1][2]
+    player.upgrades.jade.jadePerLogin.value = upgradeModuleFuncs.reloadFormulae(player.upgrades.jade.jadePerLogin.level)["jade"][2][2]
+    player.upgrades.jade.autobroker.value = upgradeModuleFuncs.reloadFormulae(player.upgrades.jade.autobroker.level)["jade"][3][2]
 
     --[[ Set Nexus upgrade costs (in Tokens) ]]--
     player.upgrades.nexus.attackDamage.cost = 20 + ((player.upgrades.nexus.attackDamage.level * (player.upgrades.nexus.attackDamage.level - 1)) / 2) * 5

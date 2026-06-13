@@ -716,82 +716,6 @@ function inHub_mouse(x, y)
                 buffUpgraded = false
             end
 
-            -- --[[ Attack Damage stat buff ]]--
-            -- if x >= 490 and x <= 630 and y >= 405 and y <= 445 and not player.menu.settings then
-            --     if player.currencies.currentTokens >= player.upgrades.nexus.attackDamage.cost and player.upgrades.nexus.attackDamage.level < 41 then
-            --         player.currencies.currentTokens = player.currencies.currentTokens - player.upgrades.nexus.attackDamage.cost
-            --         player.upgrades.nexus.attackDamage.level = player.upgrades.nexus.attackDamage.level + 1
-            --         player.upgrades.nexus.attackDamage.cost = 20 + ((player.upgrades.nexus.attackDamage.level * (player.upgrades.nexus.attackDamage.level - 1)) / 2) * 5
-            --         player.upgrades.nexus.attackDamage.value = math.min(1 + (player.upgrades.nexus.attackDamage.level - 1) * 10/100, 5)
-            --         player.tower.attackDamage = upgradeModuleFuncs.reloadFormulae(player.upgrades.science.attackDamage.level)["science"]["ATK"][1][2]
-            --         player.stats.save.upgradesAcquired.nexus = player.stats.save.upgradesAcquired.nexus + 1
-            --     end
-            --     upgradeModuleFuncs.load()
-            -- end
-
-            -- --[[ Attack Speed stat buff ]]--
-            -- if x >= 650 and x <= 790 and y >= 405 and y <= 445 and not player.menu.settings then
-            --     if player.currencies.currentTokens >= player.upgrades.nexus.attackSpeed.cost and player.upgrades.nexus.attackSpeed.level < 26 then
-            --         player.currencies.currentTokens = player.currencies.currentTokens - player.upgrades.nexus.attackSpeed.cost
-            --         player.upgrades.nexus.attackSpeed.level = player.upgrades.nexus.attackSpeed.level + 1
-            --         player.upgrades.nexus.attackSpeed.cost = 20 + ((player.upgrades.nexus.attackSpeed.level * (player.upgrades.nexus.attackSpeed.level - 1)) / 2) * 5
-            --         player.upgrades.nexus.attackSpeed.value = math.min(1 + (player.upgrades.nexus.attackSpeed.level - 1) * 4/100, 2)
-            --         player.tower.attackSpeed = upgradeModuleFuncs.reloadFormulae(player.upgrades.science.attackSpeed.level)["science"]["ATK"][2][2]
-            --         player.stats.save.upgradesAcquired.nexus = player.stats.save.upgradesAcquired.nexus + 1
-            --     end
-            --     upgradeModuleFuncs.load()
-            -- end
-
-            -- --[[ Health stat buff ]]--
-            -- if x >= 810 and x <= 950 and y >= 405 and y <= 445 and not player.menu.settings then
-            --     if player.currencies.currentTokens >= player.upgrades.nexus.health.cost and player.upgrades.nexus.health.level < 41 then
-            --         player.currencies.currentTokens = player.currencies.currentTokens - player.upgrades.nexus.health.cost
-            --         player.upgrades.nexus.health.level = player.upgrades.nexus.health.level + 1
-            --         player.upgrades.nexus.health.cost = 20 + ((player.upgrades.nexus.health.level * (player.upgrades.nexus.health.level - 1)) / 2) * 5
-            --         player.upgrades.nexus.health.value = math.min(1 + (player.upgrades.nexus.health.level - 1) * 10/100, 5)
-            --         player.tower.health = upgradeModuleFuncs.reloadFormulae(player.upgrades.science.health.level)["science"]["VIT"][1][2]
-            --         player.stats.save.upgradesAcquired.nexus = player.stats.save.upgradesAcquired.nexus + 1
-            --     end
-            --     upgradeModuleFuncs.load()
-            -- end
-
-            -- --[[ Regeneration stat buff ]]--
-            -- if x >= 970 and x <= 1110 and y >= 405 and y <= 445 and not player.menu.settings then
-            --     if player.currencies.currentTokens >= player.upgrades.nexus.regeneration.cost and player.upgrades.nexus.regeneration.level < 41 then
-            --         player.currencies.currentTokens = player.currencies.currentTokens - player.upgrades.nexus.regeneration.cost
-            --         player.upgrades.nexus.regeneration.level = player.upgrades.nexus.regeneration.level + 1
-            --         player.upgrades.nexus.regeneration.cost = 20 + ((player.upgrades.nexus.regeneration.level * (player.upgrades.nexus.regeneration.level - 1)) / 2) * 5
-            --         player.upgrades.nexus.regeneration.value = math.min(1 + (player.upgrades.nexus.regeneration.level - 1) * 10/100, 5)
-            --         player.tower.regeneration = upgradeModuleFuncs.reloadFormulae(player.upgrades.science.regeneration.level)["science"]["VIT"][2][2]
-            --         player.stats.save.upgradesAcquired.nexus = player.stats.save.upgradesAcquired.nexus + 1
-            --     end
-            --     upgradeModuleFuncs.load()
-            -- end
-
-            -- --[[ Ability Chance stat buff ]]--
-            -- if x >= 1130 and x <= 1270 and y >= 405 and y <= 445 and not player.menu.settings then
-            --     if player.currencies.currentTokens >= player.upgrades.nexus.abilityChance.cost and player.upgrades.nexus.abilityChance.level < 41 then
-            --         player.currencies.currentTokens = player.currencies.currentTokens - player.upgrades.nexus.abilityChance.cost
-            --         player.upgrades.nexus.abilityChance.level = player.upgrades.nexus.abilityChance.level + 1
-            --         player.upgrades.nexus.abilityChance.cost = 20 + ((player.upgrades.nexus.abilityChance.level * (player.upgrades.nexus.abilityChance.level - 1)) / 2) * 5
-            --         player.upgrades.nexus.abilityChance.value = math.min(1 + (player.upgrades.nexus.abilityChance.level - 1) * 2/100, 1.8)
-            --         player.stats.save.upgradesAcquired.nexus = player.stats.save.upgradesAcquired.nexus + 1
-            --     end
-            --     upgradeModuleFuncs.load()
-            -- end
-
-            -- --[[ Ability Cooldown stat buff ]]--
-            -- if x >= 1290 and x <= 1430 and y >= 405 and y <= 445 and not player.menu.settings then
-            --     if player.currencies.currentTokens >= player.upgrades.nexus.abilityCooldown.cost and player.upgrades.nexus.abilityCooldown.level < 41 then
-            --         player.currencies.currentTokens = player.currencies.currentTokens - player.upgrades.nexus.regeneration.cost
-            --         player.upgrades.nexus.abilityCooldown.level = player.upgrades.nexus.abilityCooldown.level + 1
-            --         player.upgrades.nexus.abilityCooldown.cost = 20 + ((player.upgrades.nexus.abilityCooldown.level * (player.upgrades.nexus.abilityCooldown.level - 1)) / 2) * 5
-            --         player.upgrades.nexus.abilityCooldown.value = math.min(1 + (player.upgrades.nexus.abilityCooldown.level - 1) * 1.2/100, 1.36)
-            --         player.stats.save.upgradesAcquired.nexus = player.stats.save.upgradesAcquired.nexus + 1
-            --     end
-            --     upgradeModuleFuncs.load()
-            -- end
-
             if x >= 1155 and x <= 1275 and y >= 615 and y <= 665 and not player.menu.settings then
                 if player.currencies.currentElectrum >= player.modifiers.waveSkip.cost and player.modifiers.waveSkip.level < 10 then
                     if player.modifiers.waveSkip.unlocked then
@@ -967,6 +891,12 @@ function inHub_mouse(x, y)
                             player.currencies["current" .. string.gsub(trade.buyCurrency, "^%l", string.upper)] = player.currencies["current" .. string.gsub(trade.buyCurrency, "^%l", string.upper)] + trade.buyAmount
                         end
                     end
+                end
+            elseif player.menu.shopSection == "Jade Shop" then
+                local upgradeNames = {"jadeBonus", "jadePerLogin", "autobroker"}
+                for i=1,3 do
+                    player.upgrades.jade[upgradeNames[i]].level, player.upgrades.jade[upgradeNames[i]].cost, player.upgrades.jade[upgradeNames[i]].value = upgradeModuleFuncs.upgrade(x, y, upgradeModules["jade"][i], upgradeModuleFuncs.reloadFormulae(player.upgrades["jade"][upgradeNames[i]].level + 1)["jade"][i][1], upgradeModuleFuncs.reloadFormulae(player.upgrades["jade"][upgradeNames[i]].level + 1)["jade"][i][2])
+                    upgradeModuleFuncs.load()
                 end
             end
         end

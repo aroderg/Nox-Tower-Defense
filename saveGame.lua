@@ -106,7 +106,8 @@ function saveGame()
                 projectilesFired = player.stats.save.projectilesFired,
                 upgradesAcquired = {
                     science = player.stats.save.upgradesAcquired.science,
-                    nexus = player.stats.save.upgradesAcquired.nexus
+                    nexus = player.stats.save.upgradesAcquired.nexus,
+                    jade = player.stats.save.upgradesAcquired.jade
                 },
                 wavesBeaten = player.stats.save.wavesBeaten,
                 clusterFire = {

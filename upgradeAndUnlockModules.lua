@@ -167,6 +167,12 @@ function upgradeModuleFuncs.reloadFormulae(x, z)
                 {(0.4 * (x - 1))^1.9 + 8, math.min(1 + 0.02 * (x - 1), 10)}, --Copper Bonus Science Upgrade
                 {0.4 * x^2 + x + 8.6, math.min(1 + 0.01 * (x - 1), 4)} --Silver Bonus Science Upgrade
             }
+        },
+        jade = {
+            {5 * x ^ 2 + 15 * x + 30, 1 + (x - 1) * 0.1}, --Jade Bonus Jade Upgrade
+            {120 + 240 * (x - 1), x - 1}, --Jade/Login Upgrade
+            {485, 1}, --Auto-broker Jade Upgrade
+            {20 + 5 * x, 1 + (x - 1) * 0.04} --Silver Gain Jade Upgrade
         }
     }
     return upgradeModuleFormulae
@@ -210,6 +216,8 @@ function upgradeModuleFuncs.draw(module)
         if attributes.type == "round" and player.currencies.currentCopper >= attributes.cost and attributes.level < attributes.maxLevel then
             love.graphics.setColor(0.05, 0.35, 0.45, 1)
         elseif attributes.type == "science" and player.currencies.currentSilver >= attributes.cost and attributes.level < attributes.maxLevel then
+            love.graphics.setColor(0.05, 0.35, 0.45, 1)
+        elseif attributes.type == "jade" and player.currencies.currentJade >= attributes.cost and attributes.level < attributes.maxLevel then
             love.graphics.setColor(0.05, 0.35, 0.45, 1)
         else
             love.graphics.setColor(0.03, 0.2, 0.25)
@@ -266,7 +274,7 @@ function upgradeModuleFuncs.upgrade(x, y, module, costFormula, valueFormula)
         maxLevel = module[10],
         precedingUpgrade = module.precedingUpgrade
     }
-    local buttonXY = {257, 3}
+    local buttonXY = {257 - (350 - attributes.width), 3}
     if x >= attributes.ux + buttonXY[1] and x <= attributes.ux + attributes.width - 3 and y >= attributes.uy + buttonXY[2] and y <= attributes.uy + attributes.height - 3 and attributes.level < attributes.maxLevel and attributes.precedingUpgrade ~= false then
         if attributes.type == "round" then
             if player.currencies.currentCopper >= math.floor(attributes.cost) then
@@ -303,6 +311,18 @@ function upgradeModuleFuncs.upgrade(x, y, module, costFormula, valueFormula)
                 attributes.cost = math.floor(costFormula)
                 attributes.value = valueFormula
                 player.stats.save.upgradesAcquired.science = player.stats.save.upgradesAcquired.science + 1
+            end
+
+        elseif attributes.type == "jade" then
+            if player.currencies.currentJade >= math.floor(attributes.cost) then
+                local ub = audio_upgrade_bought:clone()
+                ub:setVolume(1 * player.settings.volume^2)
+                ub:play()
+                player.currencies.currentJade = player.currencies.currentJade - math.floor(attributes.cost)
+                attributes.level = attributes.level + 1
+                attributes.cost = math.floor(costFormula)
+                attributes.value = valueFormula
+                player.stats.save.upgradesAcquired.jade = player.stats.save.upgradesAcquired.jade + 1
             end
         end
     end
