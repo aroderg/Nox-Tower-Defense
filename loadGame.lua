@@ -136,7 +136,7 @@ function loadGame()
             supercritical = {unlocked = false, level = 0, equipped = false, amount = 0},
             disruptWave = {unlocked = false, level = 0, equipped = false, amount = 0}
         },
-        misc = {abilityAssembling = false, tokensRefundable = true, theme = "aurora", currentOrbital = love.math.random(1, 40)},
+        misc = {abilityAssembling = false, tokensRefundable = true, theme = "aurora", currentOrbital = love.math.random(1, 40), jadeBuffer = 0},
         tradesBought = {daily = {false, false, false}, weekly = {false, false, false, false}, seed = 0}
     }
 
@@ -175,7 +175,7 @@ function loadGame()
         currentGold = loadedData.currentGold or defaultPlayerState.currencies.currentGold,
         currentElectrum = loadedData.currentElectrum or defaultPlayerState.currencies.currentElectrum,
         currentTokens = loadedData.currentTokens or defaultPlayerState.currencies.currentTokens,
-        currentJade = loadedData.currentJade or defaultPlayerState.currencies.currentJade,
+        currentJade = loadedData.currentJade or defaultPlayerState.currencies.currentJade
     }
 
     player.idleTimeCap = player.idleTimeCap or 21600
@@ -364,7 +364,8 @@ function loadGame()
         }
     end
     player.misc = {
-        abilityAssembling = (loadedData.timers.abilityAssembly > 0 and loadedData.timers.abilityAssembly < loadedData.cooldowns.abilityAssembly_current), currentOrbital = love.math.random(1, 40)
+        abilityAssembling = (loadedData.timers.abilityAssembly > 0 and loadedData.timers.abilityAssembly < loadedData.cooldowns.abilityAssembly_current), currentOrbital = love.math.random(1, 40),
+        jadeBuffer = 0
     }
     player.misc.theme = loadedData.misc.theme or player.misc.theme
 
