@@ -238,7 +238,9 @@ function saveGame()
 
         misc = {
             abilityAssembling = player.misc.abilityAssembling,
-            theme = player.misc.theme
+            theme = player.misc.theme,
+            silverBuffer = player.misc.silverBuffer,
+            jadeBuffer = player.misc.jadeBuffer
         },
         settings = {
             particleMultiplierIndex = player.settings.particleMultiplierIndex,

@@ -136,7 +136,7 @@ function loadGame()
             supercritical = {unlocked = false, level = 0, equipped = false, amount = 0},
             disruptWave = {unlocked = false, level = 0, equipped = false, amount = 0}
         },
-        misc = {abilityAssembling = false, tokensRefundable = true, theme = "aurora", currentOrbital = love.math.random(1, 40), jadeBuffer = 0},
+        misc = {abilityAssembling = false, tokensRefundable = true, theme = "aurora", currentOrbital = love.math.random(1, 40), silverBuffer = 0, jadeBuffer = 0},
         tradesBought = {daily = {false, false, false}, weekly = {false, false, false, false}, seed = 0}
     }
 
@@ -365,7 +365,8 @@ function loadGame()
     end
     player.misc = {
         abilityAssembling = (loadedData.timers.abilityAssembly > 0 and loadedData.timers.abilityAssembly < loadedData.cooldowns.abilityAssembly_current), currentOrbital = love.math.random(1, 40),
-        jadeBuffer = 0
+        silverBuffer = loadedData.misc.silverBuffer or defaultPlayerState.misc.silverBuffer,
+        jadeBuffer = loadedData.misc.jadeBuffer or defaultPlayerState.misc.jadeBuffer
     }
     player.misc.theme = loadedData.misc.theme or player.misc.theme
 

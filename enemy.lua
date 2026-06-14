@@ -233,11 +233,11 @@ function enemyFuncs.killEnemy(s, damageSource)
         player.stats.battle.copperEarned = player.stats.battle.copperEarned + copperEarned
 
         local oldSilverAmount = player.currencies.currentSilver
-        misc.silverBuffer = misc.silverBuffer + (player.tower.silverBonus % 1) * silver[ke.type] * difficultyMultipliers[gameplay.difficulty]
+        player.misc.silverBuffer = player.misc.silverBuffer + (player.tower.silverBonus % 1) * silver[ke.type] * difficultyMultipliers[gameplay.difficulty]
         player.currencies.currentSilver = player.currencies.currentSilver + math.floor(player.tower.silverBonus) * silver[ke.type] * difficultyMultipliers[gameplay.difficulty]
-        if misc.silverBuffer >= 1 then
-            player.currencies.currentSilver = player.currencies.currentSilver + math.floor(misc.silverBuffer)
-            misc.silverBuffer = misc.silverBuffer - math.floor(misc.silverBuffer)
+        if player.misc.silverBuffer >= 1 then
+            player.currencies.currentSilver = player.currencies.currentSilver + math.floor(player.misc.silverBuffer)
+            player.misc.silverBuffer = player.misc.silverBuffer - math.floor(player.misc.silverBuffer)
         end
         local newSilverAmount = player.currencies.currentSilver
         local silverEarned = newSilverAmount - oldSilverAmount
