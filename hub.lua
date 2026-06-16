@@ -146,11 +146,6 @@ function inHub_visual()
         love.graphics.setColor(1, 1, 1, 1)
         love.graphics.printf("Stats", 1780, 60, 158, "center")
         love.graphics.setLineWidth(1)
-        love.graphics.draw(img_discordLogo, 1710, 22, 0, 80/512, 80/512)
-        if not player.menu.settings and not player.menu.saveStats and not player.menu.rolledAbilityDisplay and not abilityFunctions.checkMenuDisplay() and player.settings.tooltips then
-            tooltips.displayDiscordTooltip()
-        end
-        love.graphics.setColor(1, 1, 1, 1)
         
         if hubSection == "Main" then
             love.graphics.setFont(font_Afacad16)
@@ -914,9 +909,6 @@ function inHub_mouse(x, y)
     end
     if x >= 1800 and x <= 1918 and y >= 61 and y <= 93 and not player.menu.settings and not abilityFunctions.checkMenuDisplay() and not player.menu.rolledAbilityDisplay and not player.menu.saveStats then
         player.menu.saveStats = true
-    end
-    if x >= 1710 and x <= 1790 and y >= 31 and y <= 93 and not player.menu.settings and not abilityFunctions.checkMenuDisplay() and not player.menu.rolledAbilityDisplay and not player.menu.saveStats then
-        love.system.openURL("https://discord.gg/V576eHJQH3")
     end
     elseif player.menu.saveStats then
         if x >= 910 and x <= 1010 and y >= 780 and y <= 820 then

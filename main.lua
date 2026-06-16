@@ -159,7 +159,6 @@ function love.load()
 
         --Miscere
         img_exploder_aoe = love.graphics.newImage("assets/exploder_aoe_big.png")
-        img_discordLogo = love.graphics.newImage("assets/discord.png")
     end
 
     --- Reloads all fonts.
@@ -1397,9 +1396,6 @@ function love.keypressed(key)
     if key == "f1" then
         local path = love.filesystem.getSaveDirectory()
         love.system.openURL("file://" .. path)
-    end
-    if key == "f10" then
-        love.system.openURL("file://" .. love.filesystem.getSaveDirectory())
     end
 end
 

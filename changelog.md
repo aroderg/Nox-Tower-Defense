@@ -7,8 +7,12 @@
         - 4 per weekly Trade.
         - 3 more if all daily Trades are completed.
         - 15 more if all weekly Trades are completed.
+- Added Jade and Jade upgrades.
+    - Jade Bonus increases amount of Jade gained by +x0.1% per level.
+    - Jade/Login awards Jade every day you log in.
+    - Auto-broker autoaccepts a random trade every day.
+    - Silver Gain increases Silver from battles.
 
-    
 
 ## NoxTD 1.1.3 Aurora
 ### Nov 25th, 2025
