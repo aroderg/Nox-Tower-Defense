@@ -305,21 +305,16 @@ function skipWave(wavesSkipped)
     local oldCopperAmount = player.currencies.currentCopper
     misc.copperBuffer = misc.copperBuffer + player.tower.copperBonus * player.tower.copperPerWave * wavesSkipped
     player.currencies.currentCopper = player.currencies.currentCopper + math.floor(player.tower.copperBonus) * player.tower.copperPerWave * wavesSkipped
-    if misc.copperBuffer >= 1 then
-        player.currencies.currentCopper = player.currencies.currentCopper + math.floor(misc.copperBuffer)
-        misc.copperBuffer = misc.copperBuffer - math.floor(misc.copperBuffer)
-    end
+    player.currencies.currentCopper = player.currencies.currentCopper + math.floor(misc.copperBuffer)
+    misc.copperBuffer = misc.copperBuffer - math.floor(misc.copperBuffer)
     local newCopperAmount = player.currencies.currentCopper
     local copperEarned = newCopperAmount - oldCopperAmount
     player.stats.battle.copperEarned = player.stats.battle.copperEarned + copperEarned
 
     local oldSilverAmount = player.currencies.currentSilver
     player.misc.silverBuffer = player.misc.silverBuffer + player.tower.silverBonus * player.tower.silverPerWave * wavesSkipped
-    player.currencies.currentSilver = player.currencies.currentSilver + math.floor(player.tower.silverBonus) * player.tower.silverPerWave * wavesSkipped
-    if player.misc.silverBuffer >= 1 then
-        player.currencies.currentSilver = player.currencies.currentSilver + math.floor(player.misc.silverBuffer)
-        player.misc.silverBuffer = player.misc.silverBuffer - math.floor(player.misc.silverBuffer)
-    end
+    player.currencies.currentSilver = player.currencies.currentSilver + math.floor(player.misc.silverBuffer)
+    player.misc.silverBuffer = player.misc.silverBuffer - math.floor(player.misc.silverBuffer)
     local newSilverAmount = player.currencies.currentSilver
     local silverEarned = newSilverAmount - oldSilverAmount
     player.stats.battle.silverEarned = player.stats.battle.silverEarned + silverEarned
@@ -443,7 +438,7 @@ function love.draw()
             end
             if player.misc.silverAddedMessage then
                 love.graphics.setFont(font_Afacad16)
-                love.graphics.print({{1, 1, 1, 1}, "+", {0.94, 0.97, 0.95}, notations.convertToLetterNotation(math.floor(player.tower.silverPerWave * player.tower.silverBonus * difficultyMultipliers[gameplay.difficulty]), "brief")}, 123, 148)
+                love.graphics.print({{1, 1, 1, 1}, "+", {0.94, 0.97, 0.95}, notations.convertToLetterNotation(math.floor(player.tower.silverPerWave * player.tower.silverBonus * difficultyMultipliers[gameplay.difficulty] * player.upgrades.jade.silverGain.value), "brief")}, 123, 148)
             end
         end
         love.graphics.draw(img_button_pause, 1870, 10)
@@ -1029,12 +1024,9 @@ function love.update(dt)
                     player.misc.copperAddedMessage = true
 
                     local oldSilverAmount = player.currencies.currentSilver
-                    player.misc.silverBuffer = player.misc.silverBuffer + player.tower.silverBonus * (player.tower.silverPerWave % 1) * difficultyMultipliers[gameplay.difficulty]
-                    player.currencies.currentSilver = player.currencies.currentSilver + math.floor(player.tower.silverBonus) * player.tower.silverPerWave * difficultyMultipliers[gameplay.difficulty]
-                    if player.misc.silverBuffer >= 1 then
-                        player.currencies.currentSilver = player.currencies.currentSilver + math.floor(player.misc.silverBuffer)
-                        player.misc.silverBuffer = player.misc.silverBuffer - math.floor(player.misc.silverBuffer)
-                    end
+                    player.misc.silverBuffer = player.misc.silverBuffer + player.tower.silverBonus * player.tower.silverPerWave * difficultyMultipliers[gameplay.difficulty] * player.upgrades.jade.silverGain.value
+                    player.currencies.currentSilver = player.currencies.currentSilver + math.floor(player.misc.silverBuffer)
+                    player.misc.silverBuffer = player.misc.silverBuffer - math.floor(player.misc.silverBuffer)
                     local newSilverAmount = player.currencies.currentSilver
                     local silverEarned = newSilverAmount - oldSilverAmount
                     player.stats.battle.silverEarned = player.stats.battle.silverEarned + silverEarned

@@ -583,8 +583,13 @@ function inHub_visual()
             elseif player.menu.shopSection == "Jade Shop" then
                 love.graphics.setLineWidth(1)
                 love.graphics.setLineStyle("rough")
-                for i,v in pairs(upgradeModules.jade) do
-                    upgradeModuleFuncs.draw(v)
+                love.graphics.setFont(font_AfacadBold32)
+                love.graphics.printf("Jade Upgrades", 760, 210, 400, "center")
+                for i=1,3 do
+                    upgradeModuleFuncs.draw(upgradeModules.jade[i])
+                end
+                for i=4,4 do
+                    upgradeModuleFuncs.draw(upgradeModules.jade[i])
                 end
             end
         end
@@ -626,7 +631,7 @@ function inHub_mouse(x, y)
                 towers.reload()
                 gameOver = false
                 player.menu.paused = false
-                gameplay.gameSpeed = player.maxGameSpeed
+                gameplay.gameSpeed = player.maxGameSpeed + 4
                 -- audioST_Echoes:setVolume(1 * player.settings.volume^2)
                 -- audioST_Echoes:play()
             end
@@ -897,8 +902,8 @@ function inHub_mouse(x, y)
                     end
                 end
             elseif player.menu.shopSection == "Jade Shop" then
-                local upgradeNames = {"jadeBonus", "jadePerLogin", "autobroker"}
-                for i=1,3 do
+                local upgradeNames = {"jadeBonus", "jadePerLogin", "autobroker", "silverGain"}
+                for i=1,4 do
                     player.upgrades.jade[upgradeNames[i]].level, player.upgrades.jade[upgradeNames[i]].cost, player.upgrades.jade[upgradeNames[i]].value = upgradeModuleFuncs.upgrade(x, y, upgradeModules["jade"][i], upgradeModuleFuncs.reloadFormulae(player.upgrades["jade"][upgradeNames[i]].level + 1)["jade"][i][1], upgradeModuleFuncs.reloadFormulae(player.upgrades["jade"][upgradeNames[i]].level + 1)["jade"][i][2])
                     upgradeModuleFuncs.load()
                 end

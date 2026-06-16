@@ -398,6 +398,7 @@ function loadGame()
     player.upgrades.jade.jadeBonus.cost = upgradeModuleFuncs.reloadFormulae(player.upgrades.jade.jadeBonus.level)["jade"][1][1]
     player.upgrades.jade.jadePerLogin.cost = upgradeModuleFuncs.reloadFormulae(player.upgrades.jade.jadePerLogin.level)["jade"][2][1]
     player.upgrades.jade.autobroker.cost = upgradeModuleFuncs.reloadFormulae(player.upgrades.jade.autobroker.level)["jade"][3][1]
+    player.upgrades.jade.silverGain.cost = upgradeModuleFuncs.reloadFormulae(player.upgrades.jade.autobroker.level)["jade"][4][1]
 
     player.upgrades.jade.jadeBonus.value = upgradeModuleFuncs.reloadFormulae(player.upgrades.jade.jadeBonus.level)["jade"][1][2]
     player.upgrades.jade.jadePerLogin.value = upgradeModuleFuncs.reloadFormulae(player.upgrades.jade.jadePerLogin.level)["jade"][2][2]
