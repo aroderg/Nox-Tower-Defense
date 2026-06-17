@@ -11,7 +11,7 @@
     - Jade Bonus increases amount of Jade gained by +x0.1% per level.
     - Jade/Login awards Jade every day you log in.
     - Auto-broker autoaccepts a random trade every day.
-    - Silver Gain increases Silver from battles.
+    - Silver Gain increases Silver obtained in battles.
 
 
 ## NoxTD 1.1.3 Aurora

@@ -67,10 +67,10 @@ function upgradeModuleFuncs.load()
             }
         },
         jade = {
-            {"Jade Bonus", 485, 260, 310, 60, player.upgrades.jade.jadeBonus.value, player.upgrades.jade.jadeBonus.cost, player.upgrades.jade.jadeBonus.level, "jade", 6, "precise", "x", nil, ["precedingUpgrade"] = 0}, --Jade Bonus Jade upgrade
-            {"Jade/Login", 805, 260, 310, 60, player.upgrades.jade.jadePerLogin.value, player.upgrades.jade.jadePerLogin.cost, player.upgrades.jade.jadePerLogin.level, "jade", 2, "brief", nil, nil, ["precedingUpgrade"] = 0}, --Jade/Login Jade upgrade
-            {"Auto-broker", 1125, 260, 310, 60, player.upgrades.jade.autobroker.value, player.upgrades.jade.autobroker.cost, player.upgrades.jade.autobroker.level, "jade", 2, "brief", nil, nil, ["precedingUpgrade"] = 0}, --Auto-broker Jade upgrade
-            {"Silver Gain", 805, 360, 310, 60, player.upgrades.jade.silverGain.value, player.upgrades.jade.silverGain.cost, player.upgrades.jade.silverGain.level, "jade", 25, "precise2", "x", nil, ["precedingUpgrade"] = 0}, --Silver Gain Jade upgrade
+            {"Jade Bonus", 325, 260, 310, 60, player.upgrades.jade.jadeBonus.value, player.upgrades.jade.jadeBonus.cost, player.upgrades.jade.jadeBonus.level, "jade", 6, "precise", "x", nil, ["precedingUpgrade"] = 0}, --Jade Bonus Jade upgrade
+            {"Jade/Login", 645, 260, 310, 60, player.upgrades.jade.jadePerLogin.value, player.upgrades.jade.jadePerLogin.cost, player.upgrades.jade.jadePerLogin.level, "jade", 2, "brief", nil, nil, ["precedingUpgrade"] = 0}, --Jade/Login Jade upgrade
+            {"Auto-broker", 965, 260, 310, 60, player.upgrades.jade.autobroker.value, player.upgrades.jade.autobroker.cost, player.upgrades.jade.autobroker.level, "jade", 2, "brief", nil, nil, ["precedingUpgrade"] = 0}, --Auto-broker Jade upgrade
+            {"Silver Gain", 1285, 260, 310, 60, player.upgrades.jade.silverGain.value, player.upgrades.jade.silverGain.cost, player.upgrades.jade.silverGain.level, "jade", 25, "precise2", "x", nil, ["precedingUpgrade"] = 0}, --Silver Gain Jade upgrade
         }
     }
 

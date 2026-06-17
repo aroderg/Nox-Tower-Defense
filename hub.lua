@@ -580,16 +580,14 @@ function inHub_visual()
                 love.graphics.setLineStyle("rough")
                 love.graphics.setFont(font_AfacadBold32)
                 love.graphics.printf("Jade Upgrades", 760, 210, 400, "center")
-                for i=1,3 do
-                    upgradeModuleFuncs.draw(upgradeModules.jade[i])
-                end
-                for i=4,4 do
+                for i=1,4 do
                     upgradeModuleFuncs.draw(upgradeModules.jade[i])
                 end
             end
         end
     end
 end
+
 function refreshNexusBuffs()
     return {
         attackDamage = {name = "Attack Damage", maxLevel = 41, currentLevel = player.upgrades.nexus.attackDamage.level, cost = player.upgrades.nexus.attackDamage.cost, value = player.upgrades.nexus.attackDamage.value},
