@@ -28,6 +28,7 @@ function statsMenus.savefile.draw()
         "Projectiles Fired",
         "Science Upgrades",
         "Nexus Upgrades",
+        "Jade Upgrades",
         "Waves Defeated",
         "Cluster Fire - Triggered",
         "Lifesteal - Triggered",
@@ -63,6 +64,7 @@ function statsMenus.savefile.draw()
         {player.stats.save.projectilesFired, "brief"},
         {player.stats.save.upgradesAcquired.science, "brief"},
         {player.stats.save.upgradesAcquired.nexus, "brief"},
+        {player.stats.save.upgradesAcquired.jade, "brief"},
         {player.stats.save.wavesBeaten, "brief"},
 
         {player.stats.save.clusterFire.triggered, "brief"},
@@ -302,8 +304,8 @@ function statsMenus.enemyInfo.draw()
 end
 
 function statsMenus.savefile.process(logicStep)
-    statTextScrollState = math.max(math.min(statTextScrollState + savefileVel.velx * logicStep, 0), 565-25*36)
-    statTextScrollState = math.max(math.min(statTextScrollState + savefileVel.vely * logicStep, 0), 565-25*36)
+    statTextScrollState = math.max(math.min(statTextScrollState + savefileVel.velx * logicStep, 0), 565-25*37)
+    statTextScrollState = math.max(math.min(statTextScrollState + savefileVel.vely * logicStep, 0), 565-25*37)
 
     -- Gradually reduce the velocity to create smooth scrolling effect.
     savefileVel.velx = savefileVel.velx - savefileVel.velx * math.min(logicStep * 7, 1)
