@@ -45,12 +45,30 @@ function daily.update(dt)
             player.currencies.currentJade = player.currencies.currentJade + math.floor(player.misc.jadeBuffer)
             player.misc.jadeBuffer = player.misc.jadeBuffer - math.floor(player.misc.jadeBuffer)
         end
+        if player.upgrades.jade.autobroker.level == 2 then
+            local tradesForAutobroker = {}
+            for i=1,3 do
+                if player.activeDailyTrades[i].active then
+                    table.insert(tradesForAutobroker, i)
+                end
+            end
+            if #tradesForAutobroker > 0 then
+                love.math.setRandomSeed(socket.gettime())
+                local randomIndex = love.math.random(1, #tradesForAutobroker)
+                local tradeIndex = tradesForAutobroker[randomIndex]
+                local trade = player.activeDailyTrades[tradeIndex]
+                trade.active = false
+                player.misc.jadeBuffer = player.misc.jadeBuffer + 1 * player.upgrades.jade.jadeBonus.value
+                if not player.activeDailyTrades[1].active and not player.activeDailyTrades[2].active and not player.activeDailyTrades[3].active then
+                    player.misc.jadeBuffer = player.misc.jadeBuffer + 3 * player.upgrades.jade.jadeBonus.value
+                end
+                player.currencies.currentJade = player.currencies.currentJade + math.floor(player.misc.jadeBuffer)
+                player.misc.jadeBuffer = player.misc.jadeBuffer - math.floor(player.misc.jadeBuffer)
+                player.currencies.currentTokens = player.currencies.currentTokens - trade.sellAmount
+                player.currencies["current" .. string.gsub(trade.buyCurrency, "^%l", string.upper)] = player.currencies["current" .. string.gsub(trade.buyCurrency, "^%l", string.upper)] + trade.buyAmount
+            end
+        end
     elseif currentTime >= daily.week.endTime then
         daily.init()
-        if player.upgrades.jade.jadePerLogin.level == 2 then
-            player.misc.jadeBuffer = player.misc.jadeBuffer + 1 * player.upgrades.jade.jadeBonus.value
-            player.currencies.currentJade = player.currencies.currentJade + math.floor(player.misc.jadeBuffer)
-            player.misc.jadeBuffer = player.misc.jadeBuffer - math.floor(player.misc.jadeBuffer)
-        end
     end
 end
