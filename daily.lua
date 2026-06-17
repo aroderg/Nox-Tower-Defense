@@ -10,7 +10,6 @@ function daily.init()
     local adjustedTime = nowTime - WEEK_OFFSET
     daily.week.startTime = (math.floor(adjustedTime / WEEKLY_CYCLE_DURATION) * WEEKLY_CYCLE_DURATION) + WEEK_OFFSET
     daily.week.endTime = daily.week.startTime + WEEKLY_CYCLE_DURATION
-
     local trades = {
         {sellCurrency = "token", buyCurrency = "electrum", sellAmount = 100, buyAmount = 15, weight = 1, active = true},
         {sellCurrency = "token", buyCurrency = "gold", sellAmount = 80, buyAmount = 40, weight = 1, active = true},
@@ -27,6 +26,7 @@ function daily.init()
             player.activeDailyTrades[i].active = false
         end
     end
+    love.math.setRandomSeed(nowTime - math.floor(nowTime % WEEKLY_CYCLE_DURATION))
     for i=1,4 do
         local trade = dropTable.draw(trades)
         table.insert(player.activeWeeklyTrades, technical.copyTable(trade))
@@ -40,7 +40,17 @@ function daily.update(dt)
     local currentTime = socket.gettime()
     if currentTime >= daily.day.endTime then
         daily.init()
+        if player.upgrades.jade.jadePerLogin.level == 2 then
+            player.misc.jadeBuffer = player.misc.jadeBuffer + 1 * player.upgrades.jade.jadeBonus.value
+            player.currencies.currentJade = player.currencies.currentJade + math.floor(player.misc.jadeBuffer)
+            player.misc.jadeBuffer = player.misc.jadeBuffer - math.floor(player.misc.jadeBuffer)
+        end
     elseif currentTime >= daily.week.endTime then
         daily.init()
+        if player.upgrades.jade.jadePerLogin.level == 2 then
+            player.misc.jadeBuffer = player.misc.jadeBuffer + 1 * player.upgrades.jade.jadeBonus.value
+            player.currencies.currentJade = player.currencies.currentJade + math.floor(player.misc.jadeBuffer)
+            player.misc.jadeBuffer = player.misc.jadeBuffer - math.floor(player.misc.jadeBuffer)
+        end
     end
 end

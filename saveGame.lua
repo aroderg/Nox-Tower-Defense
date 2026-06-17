@@ -252,7 +252,8 @@ function saveGame()
         tradesBought = {
             daily = {not player.activeDailyTrades[1].active, not player.activeDailyTrades[2].active, not player.activeDailyTrades[3].active},
             weekly = {not player.activeWeeklyTrades[1].active, not player.activeWeeklyTrades[2].active, not player.activeWeeklyTrades[3].active, not player.activeWeeklyTrades[4].active},
-            seed = daily.day.startTime
+            dailySeed = daily.day.startTime,
+            weeklySeed = daily.week.startTime,
         }
     }
 

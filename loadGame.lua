@@ -137,7 +137,7 @@ function loadGame()
             disruptWave = {unlocked = false, level = 0, equipped = false, amount = 0}
         },
         misc = {abilityAssembling = false, tokensRefundable = true, theme = "aurora", currentOrbital = love.math.random(1, 40), silverBuffer = 0, jadeBuffer = 0},
-        tradesBought = {daily = {false, false, false}, weekly = {false, false, false, false}, seed = 0}
+        tradesBought = {daily = {false, false, false}, weekly = {false, false, false, false}, dailySeed = 0, weeklySeed = 0}
     }
 
     local loadedData = nil
@@ -448,8 +448,10 @@ function loadGame()
     player.activeDailyTrades = {}
     player.activeWeeklyTrades = {}
     if love.filesystem.getInfo("SAVEFILE.sav") then
-        if math.floor(socket.gettime() / (24 * 60 * 60)) * (24 * 60 * 60) ~= loadedData.tradesBought.seed then
-            player.tradesBought = {daily = {false, false, false}, weekly = {false, false, false, false}}
+        if math.floor(socket.gettime() / (24 * 60 * 60)) * (24 * 60 * 60) ~= loadedData.tradesBought.dailySeed then
+            player.tradesBought.daily = {false, false, false}
+        elseif math.floor(socket.gettime() / (7 * 24 * 60 * 60)) * (7 * 24 * 60 * 60) + 3 * 24 * 60 * 60 ~= loadedData.tradesBought.weeklySeed then
+            player.tradesBought.weekly = {false, false, false, false}
         else
             player.tradesBought = loadedData.tradesBought
         end
