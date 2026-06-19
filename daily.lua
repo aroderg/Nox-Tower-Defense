@@ -59,20 +59,22 @@ function daily.triggerUpgrades()
                     table.insert(tradesForAutobroker, i)
                 end
             end
-            love.math.setRandomSeed(socket.gettime())
-            local randomIndex = love.math.random(1, #tradesForAutobroker)
-            local tradeIndex = tradesForAutobroker[randomIndex]
-            local trade = player.activeDailyTrades[tradeIndex]
-            if player.currencies.currentTokens >= trade.sellAmount then
-                trade.active = false
-                player.misc.jadeBuffer = player.misc.jadeBuffer + 1 * player.upgrades.jade.jadeBonus.value
-                if not player.activeDailyTrades[1].active and not player.activeDailyTrades[2].active and not player.activeDailyTrades[3].active then
-                    player.misc.jadeBuffer = player.misc.jadeBuffer + 3 * player.upgrades.jade.jadeBonus.value
+            if #tradesForAutobroker > 0 then
+                love.math.setRandomSeed(socket.gettime())
+                local randomIndex = love.math.random(1, #tradesForAutobroker)
+                local tradeIndex = tradesForAutobroker[randomIndex]
+                local trade = player.activeDailyTrades[tradeIndex]
+                if player.currencies.currentTokens >= trade.sellAmount then
+                    trade.active = false
+                    player.misc.jadeBuffer = player.misc.jadeBuffer + 1 * player.upgrades.jade.jadeBonus.value
+                    if not player.activeDailyTrades[1].active and not player.activeDailyTrades[2].active and not player.activeDailyTrades[3].active then
+                        player.misc.jadeBuffer = player.misc.jadeBuffer + 3 * player.upgrades.jade.jadeBonus.value
+                    end
+                    player.currencies.currentJade = player.currencies.currentJade + math.floor(player.misc.jadeBuffer)
+                    player.misc.jadeBuffer = player.misc.jadeBuffer - math.floor(player.misc.jadeBuffer)
+                    player.currencies.currentTokens = player.currencies.currentTokens - trade.sellAmount
+                    player.currencies["current" .. string.gsub(trade.buyCurrency, "^%l", string.upper)] = player.currencies["current" .. string.gsub(trade.buyCurrency, "^%l", string.upper)] + trade.buyAmount
                 end
-                player.currencies.currentJade = player.currencies.currentJade + math.floor(player.misc.jadeBuffer)
-                player.misc.jadeBuffer = player.misc.jadeBuffer - math.floor(player.misc.jadeBuffer)
-                player.currencies.currentTokens = player.currencies.currentTokens - trade.sellAmount
-                player.currencies["current" .. string.gsub(trade.buyCurrency, "^%l", string.upper)] = player.currencies["current" .. string.gsub(trade.buyCurrency, "^%l", string.upper)] + trade.buyAmount
             end
         end
     end
