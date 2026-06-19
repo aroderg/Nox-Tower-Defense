@@ -448,13 +448,18 @@ function loadGame()
     player.idleGains.silver, player.idleGains.gold = reloadIdleGains()
     player.activeDailyTrades = {}
     player.activeWeeklyTrades = {}
+    player.tradesBought.dailySeed = loadedData.tradesBought.dailySeed
+    player.tradesBought.weeklySeed = loadedData.tradesBought.weeklySeed
     if love.filesystem.getInfo("SAVEFILE.sav") then
         if math.floor(socket.gettime() / (24 * 60 * 60)) * (24 * 60 * 60) ~= loadedData.tradesBought.dailySeed then
-            player.tradesBought.daily = {false, false, false}
-        elseif math.floor(socket.gettime() / (7 * 24 * 60 * 60)) * (7 * 24 * 60 * 60) + 3 * 24 * 60 * 60 ~= loadedData.tradesBought.weeklySeed then
+            player.tradesBought.daily = {true, false, false}
+        else
+            player.tradesBought.daily = loadedData.tradesBought.daily
+        end
+        if math.floor(socket.gettime() / (7 * 24 * 60 * 60)) * (7 * 24 * 60 * 60) + 4 * 24 * 60 * 60 ~= loadedData.tradesBought.weeklySeed then
             player.tradesBought.weekly = {false, false, false, false}
         else
-            player.tradesBought = loadedData.tradesBought
+            player.tradesBought.weekly = loadedData.tradesBought.weekly
         end
     end
 
