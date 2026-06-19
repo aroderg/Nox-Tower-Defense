@@ -452,7 +452,7 @@ function loadGame()
     player.tradesBought.weeklySeed = loadedData.tradesBought.weeklySeed
     if love.filesystem.getInfo("SAVEFILE.sav") then
         if math.floor(socket.gettime() / (24 * 60 * 60)) * (24 * 60 * 60) ~= loadedData.tradesBought.dailySeed then
-            player.tradesBought.daily = {true, false, false}
+            player.tradesBought.daily = {false, false, false}
         else
             player.tradesBought.daily = loadedData.tradesBought.daily
         end

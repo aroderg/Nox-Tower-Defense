@@ -223,6 +223,7 @@ function love.load()
     daily.init()
     print(player.tradesBought.dailySeed .. "," .. math.floor(socket.gettime() / (24 * 60 * 60)) * (24 * 60 * 60) .. "," .. daily.day.startTime)
     print(player.tradesBought.weeklySeed .. "," .. math.floor(socket.gettime() / (7 * 24 * 60 * 60)) * (7 * 24 * 60 * 60) - 4 * 24 * 60 * 60 .. "," .. daily.week.startTime)
+    daily.triggerUpgrades()
     -- love.frame = 0
 end
 
