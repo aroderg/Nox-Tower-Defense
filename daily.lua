@@ -40,6 +40,7 @@ function daily.update(dt)
     local currentTime = socket.gettime()
     if currentTime >= daily.day.endTime then
         daily.init()
+        daily.triggerUpgrades()
     elseif currentTime >= daily.week.endTime then
         daily.init()
     end
