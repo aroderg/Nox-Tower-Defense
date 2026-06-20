@@ -583,6 +583,7 @@ function inHub_visual()
                 for i=1,4 do
                     upgradeModuleFuncs.draw(upgradeModules.jade[i])
                 end
+                tooltips.displayJadeUpgrade()
             end
         end
     end

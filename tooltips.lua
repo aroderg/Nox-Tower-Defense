@@ -161,5 +161,20 @@ function tooltips.general()
                 end
             end
         end
+
+        local jadeUpgradeTooltips = {
+            {325, 260, 214, 60, 330, 40, "What incoming Jade from all sources is multiplied by.", string.format("Level: %d/%s", player.upgrades.jade.jadeBonus.level, 6)},
+            {645, 260, 214, 60, 360, 40, "How much Jade is automatically awarded each daily login.", string.format("Level: %d/%s", player.upgrades.jade.jadePerLogin.level, 2)},
+            {965, 260, 214, 60, 370, 40, "Automatically finishes a random daily trade each daily login.", string.format("Level: %d/%s", player.upgrades.jade.autobroker.level, 2)},
+            {1285, 260, 214, 60, 140, 40, "Increases Silver gains.", string.format("Level: %d/%s", player.upgrades.jade.silverGain.level, 26)},
+        }
+
+        function tooltips.displayJadeUpgrade()
+            for i,v in ipairs(jadeUpgradeTooltips) do
+                if tooltips.hoverCheck(jadeUpgradeTooltips[i][1], jadeUpgradeTooltips[i][2], jadeUpgradeTooltips[i][3], jadeUpgradeTooltips[i][4]) then
+                    tooltips.appearance(jadeUpgradeTooltips[i][5], jadeUpgradeTooltips[i][6], jadeUpgradeTooltips[i][7], jadeUpgradeTooltips[i][8])
+                end
+            end
+        end
     end
 end
