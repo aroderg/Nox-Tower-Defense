@@ -307,7 +307,6 @@ function skipWave(wavesSkipped)
 
     local oldCopperAmount = player.currencies.currentCopper
     misc.copperBuffer = misc.copperBuffer + player.tower.copperBonus * player.tower.copperPerWave * wavesSkipped
-    player.currencies.currentCopper = player.currencies.currentCopper + math.floor(player.tower.copperBonus) * player.tower.copperPerWave * wavesSkipped
     player.currencies.currentCopper = player.currencies.currentCopper + math.floor(misc.copperBuffer)
     misc.copperBuffer = misc.copperBuffer - math.floor(misc.copperBuffer)
     local newCopperAmount = player.currencies.currentCopper
@@ -315,7 +314,7 @@ function skipWave(wavesSkipped)
     player.stats.battle.copperEarned = player.stats.battle.copperEarned + copperEarned
 
     local oldSilverAmount = player.currencies.currentSilver
-    player.misc.silverBuffer = player.misc.silverBuffer + player.tower.silverBonus * player.tower.silverPerWave * wavesSkipped
+    player.misc.silverBuffer = player.misc.silverBuffer + player.tower.silverPerWave * player.tower.silverBonus * wavesSkipped * difficultyMultipliers[gameplay.difficulty] * player.upgrades.jade.silverGain.value
     player.currencies.currentSilver = player.currencies.currentSilver + math.floor(player.misc.silverBuffer)
     player.misc.silverBuffer = player.misc.silverBuffer - math.floor(player.misc.silverBuffer)
     local newSilverAmount = player.currencies.currentSilver
@@ -680,10 +679,10 @@ function love.draw()
     love.graphics.printf("v" .. gameVersionSemantic .. " - " .. love.timer.getFPS() .. "fps, " .. player.debug.memUsage .. "KB, " .. player.debug.UPS .. "ups", 1643, 0, 220, "right")
     if player.menu.debugInfo then
         love.graphics.setColor(0, 0, 0, 0.8)
-        love.graphics.rectangle("fill", 0, 0, 170, 470)
+        love.graphics.rectangle("fill", 0, 0, 170, 485)
         love.graphics.setColor(1, 1, 1, 0.25)
         love.graphics.setLineWidth(1)
-        love.graphics.rectangle("line", -1, -1, 171, 471)
+        love.graphics.rectangle("line", -1, -1, 171, 486)
         love.graphics.setColor(1, 1, 1, 1)
         love.graphics.print("pjc: " .. #projectilesOnField, 5, 0)
         love.graphics.print("enc: " .. #enemiesOnField, 5, 15)
@@ -704,17 +703,18 @@ function love.draw()
 
         love.graphics.print("cbf: " .. misc.copperBuffer, 5, 270)
         love.graphics.print("sbf: " .. player.misc.silverBuffer, 5, 285)
+        love.graphics.print("jbf: " .. player.misc.jadeBuffer, 5, 300)
 
-        love.graphics.print("cpw: " .. player.tower.copperPerWave * player.tower.copperBonus, 5, 315)
-        love.graphics.print("spw: " .. player.tower.silverPerWave * player.tower.silverBonus * difficultyMultipliers[player.difficulty.difficulty], 5, 330)
-        love.graphics.print("dt: " .. love.timer.getDelta(), 5, 345)
-        love.graphics.print("lst: " .. logicStep, 5, 360)
+        love.graphics.print("cpw: " .. player.tower.copperPerWave * player.tower.copperBonus, 5, 330)
+        love.graphics.print("spw: " .. player.tower.silverPerWave * player.tower.silverBonus * difficultyMultipliers[player.difficulty.difficulty], 5, 345)
+        love.graphics.print("dt: " .. love.timer.getDelta(), 5, 360)
+        love.graphics.print("lst: " .. logicStep, 5, 375)
 
-        love.graphics.print("bsm: " .. tostring(player.menu.battleStats), 5, 390)
-        love.graphics.print("ssm: " .. tostring(player.menu.saveStats), 5, 405)
-        love.graphics.print("stm: " .. tostring(player.menu.settings), 5, 420)
-        love.graphics.print("gim: " .. tostring(player.menu.gameplayInfo), 5, 435)
-        love.graphics.print("eim: " .. tostring(player.menu.enemyInfo), 5, 450)
+        love.graphics.print("bsm: " .. tostring(player.menu.battleStats), 5, 405)
+        love.graphics.print("ssm: " .. tostring(player.menu.saveStats), 5, 420)
+        love.graphics.print("stm: " .. tostring(player.menu.settings), 5, 435)
+        love.graphics.print("gim: " .. tostring(player.menu.gameplayInfo), 5, 450)
+        love.graphics.print("eim: " .. tostring(player.menu.enemyInfo), 5, 465)
     end
     love.graphics.setScissor()
     -- love.graphics.print(love.report or "Please wait...")
@@ -799,12 +799,14 @@ function love.update(dt)
                 timers.enemy = 0
                 if enemyAttributes.pendingEnemies > 0 then
                     local amountOfSpawns = 1
-                    if player.abilities.enemyBalancing.equipped and love.math.random() < (levelingInfo[13].enemyAmount[player.abilities.enemyBalancing.level + 1] - 1) then
+                    local doubleSpawnRnd = love.math.random()
+                    if player.abilities.enemyBalancing.equipped and doubleSpawnRnd < (levelingInfo[13].enemyAmount[player.abilities.enemyBalancing.level + 1] - 1) then
                         amountOfSpawns = 2
                     end
                     for i=1,math.min(amountOfSpawns, enemyAttributes.pendingEnemies) do
                         enemyFuncs.createEnemy(enemyAttributes.health, enemyAttributes.speed, 1, enemyAttributes.attackDamage)
                         enemyAttributes.pendingEnemies = enemyAttributes.pendingEnemies - 1
+                        print(technical.loggedString("spawned enemies: " .. amountOfSpawns .. " - double spawn: " .. doubleSpawnRnd .. ""))
                     end
                 end
             end
@@ -1021,8 +1023,8 @@ function love.update(dt)
                     timers.nextWave = 0
 
                     local oldCopperAmount = player.currencies.currentCopper
-                    misc.copperBuffer = misc.copperBuffer + player.tower.copperBonus * (player.tower.copperPerWave % 1)
-                    player.currencies.currentCopper = player.currencies.currentCopper + math.floor(player.tower.copperBonus) * player.tower.copperPerWave
+                    misc.copperBuffer = misc.copperBuffer + player.tower.copperBonus * player.tower.copperPerWave * wavesSkipped
+                    player.currencies.currentCopper = player.currencies.currentCopper + math.floor(misc.copperBuffer)
                     if misc.copperBuffer >= 1 then
                         player.currencies.currentCopper = player.currencies.currentCopper + math.floor(misc.copperBuffer)
                         misc.copperBuffer = misc.copperBuffer - math.floor(misc.copperBuffer)
@@ -1033,7 +1035,7 @@ function love.update(dt)
                     player.misc.copperAddedMessage = true
 
                     local oldSilverAmount = player.currencies.currentSilver
-                    player.misc.silverBuffer = player.misc.silverBuffer + player.tower.silverBonus * player.tower.silverPerWave * difficultyMultipliers[gameplay.difficulty] * player.upgrades.jade.silverGain.value
+                    player.misc.silverBuffer = player.misc.silverBuffer + player.tower.silverPerWave * player.tower.silverBonus * difficultyMultipliers[gameplay.difficulty] * player.upgrades.jade.silverGain.value
                     player.currencies.currentSilver = player.currencies.currentSilver + math.floor(player.misc.silverBuffer)
                     player.misc.silverBuffer = player.misc.silverBuffer - math.floor(player.misc.silverBuffer)
                     local newSilverAmount = player.currencies.currentSilver

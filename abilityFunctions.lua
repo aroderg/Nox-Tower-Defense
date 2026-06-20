@@ -250,7 +250,7 @@ function abilityFunctions.updateLeveling()
         {
             --| ENEMY BALANCING - LEVELS FROM 0 to 6 |--
             copperGain =        {1.25, 1.3, 1.4,  1.5, 1.6,  1.7,  1.8}, -- multiplier (1 = 100%)
-            enemyAmount =       {1.25, 1.3, 1.35, 1.4, 1.45, 1.50, 1.55}, -- multiplier (1 = 100%)
+            enemyAmount =       {1.25, 1.3, 1.35, 1.4, 1.45, 1.50, 1.55}, -- acts as a chance to spawn double enemies (1 = 0%, 2 = 100%)
             levelRequirements = {1,    2,   3,    4,   6,    8,    10}
         }
     }

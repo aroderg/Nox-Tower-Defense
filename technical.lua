@@ -37,3 +37,8 @@ function technical.copyTable(toCopy)
     end
     return new
 end
+
+function technical.loggedString(String)
+    local curTime = os.date("%X")
+    return "[" .. curTime .. "]" .. " " .. String;
+end
