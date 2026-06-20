@@ -798,8 +798,14 @@ function love.update(dt)
             else
                 timers.enemy = 0
                 if enemyAttributes.pendingEnemies > 0 then
-                    enemyFuncs.createEnemy(enemyAttributes.health, enemyAttributes.speed, 1, enemyAttributes.attackDamage)
-                    enemyAttributes.pendingEnemies = enemyAttributes.pendingEnemies - 1
+                    local amountOfSpawns = 1
+                    if player.abilities.enemyBalancing.equipped and love.math.random() < (levelingInfo[13].enemyAmount[player.abilities.enemyBalancing.level + 1] - 1) then
+                        amountOfSpawns = 2
+                    end
+                    for i=1,math.min(amountOfSpawns, enemyAttributes.pendingEnemies) do
+                        enemyFuncs.createEnemy(enemyAttributes.health, enemyAttributes.speed, 1, enemyAttributes.attackDamage)
+                        enemyAttributes.pendingEnemies = enemyAttributes.pendingEnemies - 1
+                    end
                 end
             end
             enemyFuncs.findClosestEnemyInRange(960, 540, player.tower.range)
