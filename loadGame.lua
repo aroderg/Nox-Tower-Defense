@@ -134,7 +134,8 @@ function loadGame()
             sniperKit = {unlocked = false, level = 0, equipped = false, amount = 0},
             tankKit = {unlocked = false, level = 0, equipped = false, amount = 0},
             supercritical = {unlocked = false, level = 0, equipped = false, amount = 0},
-            disruptWave = {unlocked = false, level = 0, equipped = false, amount = 0}
+            disruptWave = {unlocked = false, level = 0, equipped = false, amount = 0},
+            enemyBalancing = {unlocked = false, level = 0, equipped = false, amount = 0}
         },
         misc = {abilityAssembling = false, tokensRefundable = true, theme = "aurora", currentOrbital = love.math.random(1, 40), silverBuffer = 0, jadeBuffer = 0},
         tradesBought = {daily = {false, false, false}, weekly = {false, false, false, false}, dailySeed = 0, weeklySeed = 0}
@@ -341,7 +342,7 @@ function loadGame()
         equipped = 0,
         maxEquipped = 1
     }
-    local abilityNames = {"spikedCrystals", "scatterFire", "burstFire", "iceDomain", "magmaTouch", "lightningOrb", "JerelosBlessing", "berserkerKit", "sniperKit", "tankKit", "supercritical", "disruptWave"}
+    local abilityNames = {"spikedCrystals", "scatterFire", "burstFire", "iceDomain", "magmaTouch", "lightningOrb", "JerelosBlessing", "berserkerKit", "sniperKit", "tankKit", "supercritical", "disruptWave", "enemyBalancing"}
     for i,v in ipairs(abilityNames) do
         if not loadedData.abilities[abilityNames[i]] then
             loadedData.abilities[abilityNames[i]] = {

@@ -227,7 +227,7 @@ function abilityFunctions.updateLeveling()
         },
         {
             --| TANK KIT - LEVELS FROM 0 to 6 |--
-            attackDamageDecrease =  30, -- %
+            attackDamageDecrease = 30, -- %
             attackSpeedDecrease =  10, -- %
             healthStatsIncrease =  {15, 18,   21,   24,  27,  30,   36}, -- %
             resistanceIncrease =   {1,  2.05, 3.15, 4.3, 5.5, 6.75, 7.05}, -- %
@@ -246,6 +246,12 @@ function abilityFunctions.updateLeveling()
             frequency =         8, -- seconds
             damage =            {15, 18, 21, 25, 29, 36, 45, 56, 69, 85, 105, 135, 180}, -- %
             levelRequirements = {1,  1,  1,  1,  1,  2,  2,  3,  5,  7,  9,   12,  15}
+        },
+        {
+            --| ENEMY BALANCING - LEVELS FROM 0 to 6 |--
+            copperGain =        {1.25, 1.3, 1.4,  1.5, 1.6,  1.7,  1.8}, -- multiplier (1 = 100%)
+            enemyAmount =       {1.25, 1.3, 1.35, 1.4, 1.45, 1.50, 1.55}, -- multiplier (1 = 100%)
+            levelRequirements = {1,    2,   3,    4,   6,    8,    10}
         }
     }
 end
@@ -444,8 +450,23 @@ function abilityFunctions.updateInternals()
             class = "B",
             nextLevelRequirement = levelingInfo[12].levelRequirements[player.abilities.disruptWave.level + 1],
             levelRequirements = levelingInfo[12].levelRequirements
+        },
+        {
+            name = "Enemy Balancing",
+            internalName = "enemyBalancing",
+            effect = {{1, 1, 1, 1}, "Increase the amount enemies spawned by x", {0.98, 0.75, 0.38}, levelingInfo[13].enemyAmount[player.abilities.enemyBalancing.level + 1], {1, 1, 1, 1}, " and Copper gained from them by x", {0, 0.9, 1}, levelingInfo[13].copperGain[player.abilities.enemyBalancing.level + 1], {1, 1, 1}, "."},
+            tags = {condition = "None", role = "Passive", AoE = false, category = "UTL"},
+            frequency = 1,
+            level = player.abilities.enemyBalancing.level,
+            preview = img_ability_preview_enemyBalancing,
+            equipped = player.abilities.enemyBalancing.equipped,
+            unlocked = player.abilities.enemyBalancing.unlocked,
+            menu = player.menu.abilities.enemyBalancing,
+            amount = player.abilities.enemyBalancing.amount,
+            class = "A",
+            nextLevelRequirement = levelingInfo[13].levelRequirements[player.abilities.enemyBalancing.level + 1],
+            levelRequirements = levelingInfo[13].levelRequirements
         }
-        
     }
 
     abilityClasses = {"D", "C", "B", "A"}

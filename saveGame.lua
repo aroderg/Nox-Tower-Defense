@@ -233,6 +233,12 @@ function saveGame()
                 level = player.abilities.disruptWave.level,
                 equipped = player.abilities.disruptWave.equipped,
                 amount = player.abilities.disruptWave.amount
+            },
+            enemyBalancing = {
+                unlocked = player.abilities.enemyBalancing.unlocked,
+                level = player.abilities.enemyBalancing.level,
+                equipped = player.abilities.enemyBalancing.equipped,
+                amount = player.abilities.enemyBalancing.amount
             }
         },
 

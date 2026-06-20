@@ -134,6 +134,7 @@ function love.load()
         img_ability_preview_tankKit = love.graphics.newImage("assets/ability_preview_tankKit.png")
         img_ability_preview_supercritical = love.graphics.newImage("assets/ability_preview_supercritical.png")
         img_ability_preview_disruptWave = love.graphics.newImage("assets/ability_preview_disruptWave.png")
+        img_ability_preview_enemyBalancing = love.graphics.newImage("assets/ability_preview_enemyBalancing.png")
 
         --Audio
         audio_enemy_kill = love.audio.newSource("assets/audio/enemy_kill.wav", "static")
