@@ -222,23 +222,18 @@ function enemyFuncs.killEnemy(s, damageSource)
 
     if damageSource ~= "exploder" then
         local oldCopperAmount = player.currencies.currentCopper
-        misc.copperBuffer = misc.copperBuffer + (player.tower.copperBonus % 1) * copper[ke.type]
-        player.currencies.currentCopper = player.currencies.currentCopper + math.floor(player.tower.copperBonus) * copper[ke.type]
-        if misc.copperBuffer >= 1 then
-            player.currencies.currentCopper = player.currencies.currentCopper + math.floor(misc.copperBuffer)
-            misc.copperBuffer = misc.copperBuffer - math.floor(misc.copperBuffer)
-        end
+        local EBboost = player.abilities.enemyBalancing.equipped and levelingInfo[13].copperGain[player.abilities.enemyBalancing.level + 1] or 1
+        misc.copperBuffer = misc.copperBuffer + copper[ke.type] * player.tower.copperBonus * EBboost
+        player.currencies.currentCopper = player.currencies.currentCopper + math.floor(misc.copperBuffer)
+        misc.copperBuffer = misc.copperBuffer - math.floor(misc.copperBuffer)
         local newCopperAmount = player.currencies.currentCopper
         local copperEarned = newCopperAmount - oldCopperAmount
         player.stats.battle.copperEarned = player.stats.battle.copperEarned + copperEarned
 
         local oldSilverAmount = player.currencies.currentSilver
-        player.misc.silverBuffer = player.misc.silverBuffer + (player.tower.silverBonus % 1) * silver[ke.type] * difficultyMultipliers[gameplay.difficulty]
-        player.currencies.currentSilver = player.currencies.currentSilver + math.floor(player.tower.silverBonus) * silver[ke.type] * difficultyMultipliers[gameplay.difficulty]
-        if player.misc.silverBuffer >= 1 then
-            player.currencies.currentSilver = player.currencies.currentSilver + math.floor(player.misc.silverBuffer)
-            player.misc.silverBuffer = player.misc.silverBuffer - math.floor(player.misc.silverBuffer)
-        end
+        player.misc.silverBuffer = player.misc.silverBuffer + silver[ke.type] * player.tower.silverBonus * difficultyMultipliers[gameplay.difficulty]
+        player.currencies.currentSilver = player.currencies.currentSilver + math.floor(player.misc.silverBuffer)
+        player.misc.silverBuffer = player.misc.silverBuffer - math.floor(player.misc.silverBuffer)
         local newSilverAmount = player.currencies.currentSilver
         local silverEarned = newSilverAmount - oldSilverAmount
         player.stats.battle.silverEarned = player.stats.battle.silverEarned + silverEarned
