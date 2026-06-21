@@ -222,8 +222,8 @@ function love.load()
     towers.reload()
     upgradeModuleFuncs.load()
     daily.init()
-    print(player.tradesBought.dailySeed .. "," .. math.floor(socket.gettime() / (24 * 60 * 60)) * (24 * 60 * 60) .. "," .. daily.day.startTime)
-    print(player.tradesBought.weeklySeed .. "," .. math.floor(socket.gettime() / (7 * 24 * 60 * 60)) * (7 * 24 * 60 * 60) - 4 * 24 * 60 * 60 .. "," .. daily.week.startTime)
+    -- print(player.tradesBought.dailySeed .. "," .. math.floor(socket.gettime() / (24 * 60 * 60)) * (24 * 60 * 60) .. "," .. daily.day.startTime)
+    -- print(player.tradesBought.weeklySeed .. "," .. math.floor(socket.gettime() / (7 * 24 * 60 * 60)) * (7 * 24 * 60 * 60) + 3 * 24 * 60 * 60 .. "," .. daily.week.startTime)
     daily.triggerUpgrades()
     -- love.frame = 0
 end
@@ -806,7 +806,7 @@ function love.update(dt)
                     for i=1,math.min(amountOfSpawns, enemyAttributes.pendingEnemies) do
                         enemyFuncs.createEnemy(enemyAttributes.health, enemyAttributes.speed, 1, enemyAttributes.attackDamage)
                         enemyAttributes.pendingEnemies = enemyAttributes.pendingEnemies - 1
-                        print(technical.loggedString("spawned enemies: " .. amountOfSpawns .. " - double spawn: " .. doubleSpawnRnd .. ""))
+                        -- print(technical.loggedString("spawned enemies: " .. amountOfSpawns .. " - double spawn: " .. doubleSpawnRnd .. ""))
                     end
                 end
             end
