@@ -306,6 +306,7 @@ function skipWave(wavesSkipped)
     gameplay.wave = gameplay.wave + wavesSkipped
 
     local oldCopperAmount = player.currencies.currentCopper
+    local oldSilverAmount = player.currencies.currentSilver
     local silverEquivTrigger = love.math.random() * 100
     misc.copperBuffer = misc.copperBuffer + player.tower.copperBonus * player.tower.copperPerWave * wavesSkipped
     player.currencies.currentCopper = player.currencies.currentCopper + math.floor(misc.copperBuffer)
@@ -313,14 +314,13 @@ function skipWave(wavesSkipped)
         player.currencies.currentSilver = player.currencies.currentSilver + math.floor(misc.copperBuffer)
     end
     misc.copperBuffer = misc.copperBuffer - math.floor(misc.copperBuffer)
-    local newCopperAmount = player.currencies.currentCopper
-    local copperEarned = newCopperAmount - oldCopperAmount
     player.stats.battle.copperEarned = player.stats.battle.copperEarned + copperEarned
 
-    local oldSilverAmount = player.currencies.currentSilver
     player.misc.silverBuffer = player.misc.silverBuffer + player.tower.silverPerWave * player.tower.silverBonus * wavesSkipped * difficultyMultipliers[gameplay.difficulty] * player.upgrades.jade.silverGain.value
     player.currencies.currentSilver = player.currencies.currentSilver + math.floor(player.misc.silverBuffer)
     player.misc.silverBuffer = player.misc.silverBuffer - math.floor(player.misc.silverBuffer)
+    local newCopperAmount = player.currencies.currentCopper
+    local copperEarned = newCopperAmount - oldCopperAmount
     local newSilverAmount = player.currencies.currentSilver
     local silverEarned = newSilverAmount - oldSilverAmount
     player.stats.battle.silverEarned = player.stats.battle.silverEarned + silverEarned
@@ -1027,6 +1027,7 @@ function love.update(dt)
                     timers.nextWave = 0
 
                     local oldCopperAmount = player.currencies.currentCopper
+                    local oldSilverAmount = player.currencies.currentSilver
                     local silverEquivTrigger = love.math.random() * 100
                     misc.copperBuffer = misc.copperBuffer + player.tower.copperPerWave * player.tower.copperBonus
                     player.currencies.currentCopper = player.currencies.currentCopper + math.floor(misc.copperBuffer)
@@ -1034,15 +1035,14 @@ function love.update(dt)
                         player.currencies.currentSilver = player.currencies.currentSilver + math.floor(misc.copperBuffer)
                     end
                     misc.copperBuffer = misc.copperBuffer - math.floor(misc.copperBuffer)
-                    local newCopperAmount = player.currencies.currentCopper
-                    local copperEarned = newCopperAmount - oldCopperAmount
                     player.stats.battle.copperEarned = player.stats.battle.copperEarned + copperEarned
                     player.misc.copperAddedMessage = true
 
-                    local oldSilverAmount = player.currencies.currentSilver
                     player.misc.silverBuffer = player.misc.silverBuffer + player.tower.silverPerWave * player.tower.silverBonus * difficultyMultipliers[gameplay.difficulty] * player.upgrades.jade.silverGain.value
                     player.currencies.currentSilver = player.currencies.currentSilver + math.floor(player.misc.silverBuffer)
                     player.misc.silverBuffer = player.misc.silverBuffer - math.floor(player.misc.silverBuffer)
+                    local newCopperAmount = player.currencies.currentCopper
+                    local copperEarned = newCopperAmount - oldCopperAmount
                     local newSilverAmount = player.currencies.currentSilver
                     local silverEarned = newSilverAmount - oldSilverAmount
                     player.stats.battle.silverEarned = player.stats.battle.silverEarned + silverEarned
