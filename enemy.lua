@@ -223,8 +223,12 @@ function enemyFuncs.killEnemy(s, damageSource)
     if damageSource ~= "exploder" then
         local oldCopperAmount = player.currencies.currentCopper
         local EBboost = player.abilities.enemyBalancing.equipped and levelingInfo[13].copperGain[player.abilities.enemyBalancing.level + 1] or 1
+        local silverEquivTrigger = love.math.random() * 100
         misc.copperBuffer = misc.copperBuffer + copper[ke.type] * player.tower.copperBonus * EBboost
         player.currencies.currentCopper = player.currencies.currentCopper + math.floor(misc.copperBuffer)
+        if silverEquivTrigger < player.upgrades.jade.silverEquivalent.value then
+            player.currencies.currentSilver = player.currencies.currentSilver + math.floor(misc.copperBuffer)
+        end
         misc.copperBuffer = misc.copperBuffer - math.floor(misc.copperBuffer)
         local newCopperAmount = player.currencies.currentCopper
         local copperEarned = newCopperAmount - oldCopperAmount

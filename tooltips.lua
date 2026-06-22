@@ -167,6 +167,7 @@ function tooltips.general()
             {645, 260, 214, 60, 360, 40, "How much Jade is automatically awarded each daily login.", string.format("Level: %d/%s", player.upgrades.jade.jadePerLogin.level, 2)},
             {965, 260, 214, 60, 370, 40, "Automatically finishes a random daily trade each daily login.", string.format("Level: %d/%s", player.upgrades.jade.autobroker.level, 2)},
             {1285, 260, 214, 60, 140, 40, "Increases Silver gain.", string.format("Level: %d/%s", player.upgrades.jade.silverGain.level, 26)},
+            {325, 330, 214, 60, 390, 40, "Chance to gain an equal amount of Silver upon gaining Copper.", string.format("Level: %d/%s", player.upgrades.jade.silverEquivalent.level, 16)},
         }
 
         function tooltips.displayJadeUpgrade()

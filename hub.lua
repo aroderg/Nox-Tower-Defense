@@ -580,7 +580,7 @@ function inHub_visual()
                 love.graphics.setLineStyle("rough")
                 love.graphics.setFont(font_AfacadBold32)
                 love.graphics.printf("Jade Upgrades", 760, 210, 400, "center")
-                for i=1,4 do
+                for i=1,5 do
                     upgradeModuleFuncs.draw(upgradeModules.jade[i])
                 end
                 tooltips.displayJadeUpgrade()
@@ -896,8 +896,8 @@ function inHub_mouse(x, y)
                     end
                 end
             elseif player.menu.shopSection == "Jade Shop" then
-                local upgradeNames = {"jadeBonus", "jadePerLogin", "autobroker", "silverGain"}
-                for i=1,4 do
+                local upgradeNames = {"jadeBonus", "jadePerLogin", "autobroker", "silverGain", "silverEquivalent"}
+                for i=1,5 do
                     player.upgrades.jade[upgradeNames[i]].level, player.upgrades.jade[upgradeNames[i]].cost, player.upgrades.jade[upgradeNames[i]].value = upgradeModuleFuncs.upgrade(x, y, upgradeModules["jade"][i], upgradeModuleFuncs.reloadFormulae(player.upgrades["jade"][upgradeNames[i]].level + 1)["jade"][i][1], upgradeModuleFuncs.reloadFormulae(player.upgrades["jade"][upgradeNames[i]].level + 1)["jade"][i][2])
                     upgradeModuleFuncs.load()
                 end

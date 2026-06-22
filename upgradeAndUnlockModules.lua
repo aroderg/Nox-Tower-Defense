@@ -71,6 +71,7 @@ function upgradeModuleFuncs.load()
             {"Jade/Login", 645, 260, 310, 60, player.upgrades.jade.jadePerLogin.value, player.upgrades.jade.jadePerLogin.cost, player.upgrades.jade.jadePerLogin.level, "jade", 2, "brief", nil, nil, ["precedingUpgrade"] = 0}, --Jade/Login Jade upgrade
             {"Auto-broker", 965, 260, 310, 60, player.upgrades.jade.autobroker.value, player.upgrades.jade.autobroker.cost, player.upgrades.jade.autobroker.level, "jade", 2, "brief", nil, nil, ["precedingUpgrade"] = 0}, --Auto-broker Jade upgrade
             {"Silver Gain", 1285, 260, 310, 60, player.upgrades.jade.silverGain.value, player.upgrades.jade.silverGain.cost, player.upgrades.jade.silverGain.level, "jade", 26, "precise2", "x", nil, ["precedingUpgrade"] = 0}, --Silver Gain Jade upgrade
+            {"Silver Equivalent", 325, 330, 310, 60, player.upgrades.jade.silverEquivalent.value, player.upgrades.jade.silverEquivalent.cost, player.upgrades.jade.silverEquivalent.level, "jade", 16, "precise", nil, "%", ["precedingUpgrade"] = 0}, --Silver Equivalent Jade upgrade
         }
     }
 
@@ -173,7 +174,8 @@ function upgradeModuleFuncs.reloadFormulae(x, z)
             {5 * x ^ 2 + 15 * x + 30, 1 + (x - 1) * 0.1}, --Jade Bonus Jade Upgrade
             {120 + 240 * (x - 1), x - 1}, --Jade/Login Upgrade
             {485, 1}, --Auto-broker Jade Upgrade
-            {20 + 5 * x, 1 + (x - 1) * 0.04} --Silver Gain Jade Upgrade
+            {20 + 5 * x, 1 + (x - 1) * 0.04}, --Silver Gain Jade Upgrade
+            {19 + x^1.8, (x - 1) * 0.4} --Silver Equivalent Jade Upgrade
         }
     }
     return upgradeModuleFormulae

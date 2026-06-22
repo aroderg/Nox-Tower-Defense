@@ -306,8 +306,12 @@ function skipWave(wavesSkipped)
     gameplay.wave = gameplay.wave + wavesSkipped
 
     local oldCopperAmount = player.currencies.currentCopper
+    local silverEquivTrigger = love.math.random() * 100
     misc.copperBuffer = misc.copperBuffer + player.tower.copperBonus * player.tower.copperPerWave * wavesSkipped
     player.currencies.currentCopper = player.currencies.currentCopper + math.floor(misc.copperBuffer)
+    if silverEquivTrigger < player.upgrades.jade.silverEquivalent.value then
+        player.currencies.currentSilver = player.currencies.currentSilver + math.floor(misc.copperBuffer)
+    end
     misc.copperBuffer = misc.copperBuffer - math.floor(misc.copperBuffer)
     local newCopperAmount = player.currencies.currentCopper
     local copperEarned = newCopperAmount - oldCopperAmount
@@ -1023,12 +1027,13 @@ function love.update(dt)
                     timers.nextWave = 0
 
                     local oldCopperAmount = player.currencies.currentCopper
-                    misc.copperBuffer = misc.copperBuffer + player.tower.copperBonus * player.tower.copperPerWave * wavesSkipped
+                    local silverEquivTrigger = love.math.random() * 100
+                    misc.copperBuffer = misc.copperBuffer + player.tower.copperPerWave * player.tower.copperBonus
                     player.currencies.currentCopper = player.currencies.currentCopper + math.floor(misc.copperBuffer)
-                    if misc.copperBuffer >= 1 then
-                        player.currencies.currentCopper = player.currencies.currentCopper + math.floor(misc.copperBuffer)
-                        misc.copperBuffer = misc.copperBuffer - math.floor(misc.copperBuffer)
+                    if silverEquivTrigger < player.upgrades.jade.silverEquivalent.value then
+                        player.currencies.currentSilver = player.currencies.currentSilver + math.floor(misc.copperBuffer)
                     end
+                    misc.copperBuffer = misc.copperBuffer - math.floor(misc.copperBuffer)
                     local newCopperAmount = player.currencies.currentCopper
                     local copperEarned = newCopperAmount - oldCopperAmount
                     player.stats.battle.copperEarned = player.stats.battle.copperEarned + copperEarned

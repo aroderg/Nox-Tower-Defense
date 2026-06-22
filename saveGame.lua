@@ -60,7 +60,8 @@ function saveGame()
                 jadeBonus = {level = player.upgrades.jade.jadeBonus.level},
                 jadePerLogin = {level = player.upgrades.jade.jadePerLogin.level},
                 autobroker = {level = player.upgrades.jade.autobroker.level},
-                silverGain = {level = player.upgrades.jade.silverGain.level}
+                silverGain = {level = player.upgrades.jade.silverGain.level},
+                silverEquivalent = {level = player.upgrades.jade.silverEquivalent.level}
             }
         },
 

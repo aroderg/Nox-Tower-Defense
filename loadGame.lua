@@ -87,7 +87,8 @@ function loadGame()
                 jadeBonus = {level = 1, cost = 1, value = 1},
                 jadePerLogin = {level = 1, cost = 1, value = 1},
                 autobroker = {level = 1, cost = 1, value = 1},
-                silverGain = {level = 1, cost = 1, value = 1}
+                silverGain = {level = 1, cost = 1, value = 1},
+                silverEquivalent = {level = 1, cost = 1, value = 1}
             }
         },
         modifiers = {
@@ -240,7 +241,8 @@ function loadGame()
             jadeBonus = {level = loadedData.upgrades.jade.jadeBonus.level or defaultPlayerState.upgrades.jade.jadeBonus, cost = 1, value = 1},
             jadePerLogin = {level = loadedData.upgrades.jade.jadePerLogin.level or defaultPlayerState.upgrades.jade.jadePerLogin, cost = 1, value = 1},
             autobroker = {level = loadedData.upgrades.jade.autobroker.level or defaultPlayerState.upgrades.jade.autobroker, cost = 1, value = 1},
-            silverGain = {level = loadedData.upgrades.jade.silverGain.level or defaultPlayerState.upgrades.jade.silverGain, cost = 1, value = 1}
+            silverGain = {level = loadedData.upgrades.jade.silverGain.level or defaultPlayerState.upgrades.jade.silverGain, cost = 1, value = 1},
+            silverEquivalent = {level = loadedData.upgrades.jade.silverEquivalent.level or defaultPlayerState.upgrades.jade.silverEquivalent, cost = 1, value = 1}
         }
     }
     player.upgrades.nexus.attackDamage.value = math.min(1 + (player.upgrades.nexus.attackDamage.level - 1) * 10/100, 5)
@@ -400,11 +402,13 @@ function loadGame()
     player.upgrades.jade.jadePerLogin.cost = upgradeModuleFuncs.reloadFormulae(player.upgrades.jade.jadePerLogin.level)["jade"][2][1]
     player.upgrades.jade.autobroker.cost = upgradeModuleFuncs.reloadFormulae(player.upgrades.jade.autobroker.level)["jade"][3][1]
     player.upgrades.jade.silverGain.cost = upgradeModuleFuncs.reloadFormulae(player.upgrades.jade.silverGain.level)["jade"][4][1]
+    player.upgrades.jade.silverEquivalent.cost = upgradeModuleFuncs.reloadFormulae(player.upgrades.jade.silverEquivalent.level)["jade"][5][1]
 
     player.upgrades.jade.jadeBonus.value = upgradeModuleFuncs.reloadFormulae(player.upgrades.jade.jadeBonus.level)["jade"][1][2]
     player.upgrades.jade.jadePerLogin.value = upgradeModuleFuncs.reloadFormulae(player.upgrades.jade.jadePerLogin.level)["jade"][2][2]
     player.upgrades.jade.autobroker.value = upgradeModuleFuncs.reloadFormulae(player.upgrades.jade.autobroker.level)["jade"][3][2]
     player.upgrades.jade.silverGain.value = upgradeModuleFuncs.reloadFormulae(player.upgrades.jade.silverGain.level)["jade"][4][2]
+    player.upgrades.jade.silverEquivalent.value = upgradeModuleFuncs.reloadFormulae(player.upgrades.jade.silverEquivalent.level)["jade"][5][2]
 
     --[[ Set Nexus upgrade costs (in Tokens) ]]--
     player.upgrades.nexus.attackDamage.cost = 20 + ((player.upgrades.nexus.attackDamage.level * (player.upgrades.nexus.attackDamage.level - 1)) / 2) * 5
