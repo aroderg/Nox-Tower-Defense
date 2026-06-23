@@ -34,7 +34,6 @@ function abilityFunctions.showInfo.draw(ability)
         love.graphics.setLineStyle("smooth")
         love.graphics.setLineWidth(1)
         love.graphics.setFont(font_Afacad24)
-        love.graphics.setColor(1, 1, 1, 0.25 + 0.75 * (ability.unlocked and 1 or 0))
         love.graphics.draw(ability.preview, 885, 360)
         love.graphics.setFont(font_AfacadBold24)
         love.graphics.printf(ability.name, 810, 470, 300, "center")
@@ -153,7 +152,6 @@ end
 ---@param ay number The horizontal position of the Ability.
 ---@param ability table The Ability which menu is influenced.
 function abilityFunctions.showInfo.process(x, y, ax, ay, ability)
-    if ability.unlocked then
         if x >= ax and x <= ax + 70 and y >= ay and y <= ay + 25 and not ability.menu and not abilityFunctions.checkMenuDisplay() then
             return true
         end
@@ -162,7 +160,6 @@ function abilityFunctions.showInfo.process(x, y, ax, ay, ability)
         elseif ability.menu then
             return true
         end
-    end
 end
 
 function abilityFunctions.updateLeveling()
