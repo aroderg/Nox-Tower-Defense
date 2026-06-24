@@ -10,14 +10,7 @@ orbital = {}
 ---@param shuffle boolean Whether to change the random Orbital displayed.
 function orbital.update(shuffle)
     function getUsername()
-        local username = os.getenv("USERNAME")
-        if username == nil then
-            username = os.getenv("USER")
-        end
-        if username == nil then
-            username = "playername"
-        end
-        return username
+        return os.getenv("USERNAME") or os.getenv("USER") or "playername"
     end
 
     local orbitals = {
