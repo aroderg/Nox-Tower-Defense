@@ -8,11 +8,13 @@
         - 3 more if all daily Trades are completed.
         - 15 more if all weekly Trades are completed.
 - Added Jade and Jade upgrades.
-    - Jade Bonus increases amount of Jade gained by +x0.1% per level.
+    - Jade Bonus increases amount of Jade gained by +x0.1 per level.
     - Jade/Login awards Jade every day you log in.
     - Auto-broker autoaccepts a random trade every day.
     - Silver Gain increases Silver obtained in battles.
-
+    - Silver Equivalent grants a chance to gain the same amount of Silver when upon gaining Copper.
+- Added Enemy Balancing ability, which increases both the amount of enemies spawned and Copper dropped from them.
+- Moved the in-battle resource HUD.
 
 ## NoxTD 1.1.3 Aurora
 ### Nov 25th, 2025

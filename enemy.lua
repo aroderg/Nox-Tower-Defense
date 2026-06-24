@@ -346,6 +346,7 @@ function enemyFuncs.updateEnemyStats(difficulty, wave)
     local tankSpawnChance = 0
     local swiftSpawnChance = 0
     local exploderSpawnChance = 0
+    local EBboost = player.abilities.enemyBalancing.equipped and levelingInfo[13].enemyAmount[player.abilities.enemyBalancing.level + 1] or 1
     if difficulty == 1 then
         --[[ Set stats for Level 0 enemies ]]--
         enemyAttributes.spawnRate = 0.5 + (math.floor(0.3 * math.sqrt(0.1 * wave) * 10) / 10)
@@ -395,6 +396,7 @@ function enemyFuncs.updateEnemyStats(difficulty, wave)
     gameplay.waveCooldown = waveCooldowns[gameplay.difficulty]
     player.stats.wave.enemiesKilled = 0
     enemyAttributes.speed = 70
+    pendingEnemies = math.floor(pendingEnemies * EBboost)
     enemyAttributes.pendingEnemies = pendingEnemies
     enemyAttributes.waveCap = pendingEnemies
     enemyAttributes.spawn.tank = tankSpawnChance

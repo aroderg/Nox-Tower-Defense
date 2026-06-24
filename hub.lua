@@ -29,6 +29,7 @@ function orbital.update(shuffle)
         string.format("%s Silver... I'd just assume you found some floating debris.", notations.convertToLetterNotation(player.currencies.currentSilver)),
         string.format("%s Gold... That is something pirates would be jealous of.", notations.convertToLetterNotation(player.currencies.currentGold)),
         player.currencies.currentTokens .. " Tokens could be enough for a Nexus upgrade.",
+        "Why not check your Jade Shop, since you have " .. player.currencies.currentJade .. " Jade?",
         "Running low on resources?",
         "Look at that, a bright Aurora out there all by herself!",
         "Ever wondered why they are called Meteors?",
@@ -41,19 +42,24 @@ function orbital.update(shuffle)
         "If you like offense, try the Berserker Kit. If you like defense, try the Tank Kit.",
         "Don't waste your offline time! It caps at 6 hours.",
         "Don't forget to check all the themes in the Settings.",
-        "The Lifesteal upgrade can really save a run sometimes.",
+        "The Lifesteal upgrades can really save a run sometimes.",
         "The Hub looks great with the " .. settings_themeNames[player.misc.theme] .. " theme. Check the others out!",
         "Disruptance Wave is great for crowd control.",
         love.system.getOS() .. " user?",
-        "The harder the difficulty, the better the Silver Multiplier!",
-        "Pressing Escape while in a wave? That's the instant pause button now.",
+        "The harder the difficulty, the higher the Silver Multiplier!",
+        "Pressing Escape while in a battle? That's the instant pause button now.",
         "If you see an Ability border glowing orange, it's maxed. Time to celebrate!",
-        "It's not truly idle if you're not gaining Silver, right?",
+        "It's not truly idle if you're not gaining Silver passively, right?",
         "Built with LOVE2d. We hope you enjoy it!",
         "A lone tower against the cosmos. That's the Nox way.",
         "Feeling impatient? Wave Skip Chance can get you through quickly.",
         "You can open Settings and Stats right from the Hub, too.",
-        "It's so jolly right now."
+        "Pssst.. there's an upgrade that gives you Silver in addition to Copper.",
+        "Splitting enemies coming Soon(TM).",
+        "Spawning more enemies just to get more loot? That's clever.",
+        "All daily trades done? Here's 3 extra Jade!",
+        "The grind never ends, it just loops back to the start.",
+        "That tower probably got killed in hundreds of runs just to be stronger."
     }
     player.misc.currentOrbital = shuffle and love.math.random(1, #orbitals) or player.misc.currentOrbital
     return orbitals[player.misc.currentOrbital]

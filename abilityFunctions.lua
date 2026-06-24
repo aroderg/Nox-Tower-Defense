@@ -451,7 +451,7 @@ function abilityFunctions.updateInternals()
         {
             name = "Enemy Balancing",
             internalName = "enemyBalancing",
-            effect = {{1, 1, 1, 1}, "Increase the amount enemies spawned by x", {0.98, 0.75, 0.38}, levelingInfo[13].enemyAmount[player.abilities.enemyBalancing.level + 1], {1, 1, 1, 1}, " and Copper gained from them by x", {0, 0.9, 1}, levelingInfo[13].copperGain[player.abilities.enemyBalancing.level + 1], {1, 1, 1}, "."},
+            effect = {{1, 1, 1, 1}, "Increase the amount of enemies spawned by x", {0.98, 0.75, 0.38}, levelingInfo[13].enemyAmount[player.abilities.enemyBalancing.level + 1], {1, 1, 1, 1}, " and Copper gained from them by x", {0, 0.9, 1}, levelingInfo[13].copperGain[player.abilities.enemyBalancing.level + 1], {1, 1, 1}, "."},
             tags = {condition = "None", role = "Passive", AoE = false, category = "UTL"},
             frequency = 1,
             level = player.abilities.enemyBalancing.level,
