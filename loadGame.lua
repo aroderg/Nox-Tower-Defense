@@ -344,7 +344,7 @@ function loadGame()
         equipped = 0,
         maxEquipped = 1
     }
-    local abilityNames = {"spikedCrystals", "scatterFire", "burstFire", "iceDomain", "magmaTouch", "lightningOrb", "JerelosBlessing", "berserkerKit", "sniperKit", "tankKit", "supercritical", "disruptWave", "enemyBalancing"}
+    local abilityNames = {"spikedCrystals", "scatterFire", "burstFire", "iceDomain", "magmaTouch", "lightningOrb", "JerelosBlessing", "berserkerKit", "sniperKit", "tankKit", "supercritical", "disruptWave", "enemyBalancing", "waveDash"}
     for i,v in ipairs(abilityNames) do
         if not loadedData.abilities[abilityNames[i]] then
             loadedData.abilities[abilityNames[i]] = {

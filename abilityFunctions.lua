@@ -249,6 +249,12 @@ function abilityFunctions.updateLeveling()
             copperGain =        {1.25, 1.3, 1.4,  1.5, 1.6,  1.7,  1.8}, -- multiplier (1 = 100%)
             enemyAmount =       {1.25, 1.3, 1.35, 1.4, 1.45, 1.50, 1.55}, -- acts as a chance to spawn double enemies (1 = 0%, 2 = 100%)
             levelRequirements = {1,    2,   3,    4,   6,    8,    10}
+        },
+        {
+            --| WAVE DASH - LEVELS FROM 0 to 8 |--
+            waveSkipChanceIncrease = {0.8,  1.6,  2.4,  3.2,  4,    4.5,  5,   6,    7.5}, -- %
+            waveSkipRewardIncrease = {1.06, 1.09, 1.12, 1.14, 1.16, 1.18, 1.2, 1.22, 1.25}, -- multiplier (1 = 100%)
+            levelRequirements =      {1,    1,    2,    3,    3,    4,    5,   6,    8}
         }
     }
 end
@@ -463,6 +469,22 @@ function abilityFunctions.updateInternals()
             class = "A",
             nextLevelRequirement = levelingInfo[13].levelRequirements[player.abilities.enemyBalancing.level + 1],
             levelRequirements = levelingInfo[13].levelRequirements
+        },
+        {
+            name = "Wave Dash",
+            internalName = "waveDash",
+            effect = {{1, 1, 1, 1}, "Increase Wave Skip chance by ", {0, 0.6, 1}, levelingInfo[14].waveSkipChanceIncrease[player.abilities.waveDash.level + 1], {1, 1, 1, 1}, "% and Copper and Silver from skipped waves by x", {0, 0.25, 1}, levelingInfo[14].waveSkipRewardIncrease[player.abilities.waveDash.level + 1], {1, 1, 1}, "."},
+            tags = {condition = "Wave Finish", role = "Passive", AoE = false, category = "UTL"},
+            frequency = 1,
+            level = player.abilities.waveDash.level,
+            preview = img_ability_preview_enemyBalancing,
+            equipped = player.abilities.waveDash.equipped,
+            unlocked = player.abilities.waveDash.unlocked,
+            menu = player.menu.abilities.waveDash,
+            amount = player.abilities.waveDash.amount,
+            class = "B",
+            nextLevelRequirement = levelingInfo[14].levelRequirements[player.abilities.waveDash.level + 1],
+            levelRequirements = levelingInfo[14].levelRequirements
         }
     }
 

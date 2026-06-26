@@ -240,6 +240,12 @@ function saveGame()
                 level = player.abilities.enemyBalancing.level,
                 equipped = player.abilities.enemyBalancing.equipped,
                 amount = player.abilities.enemyBalancing.amount
+            },
+            waveDash = {
+                unlocked = player.abilities.waveDash.unlocked,
+                level = player.abilities.waveDash.level,
+                equipped = player.abilities.waveDash.equipped,
+                amount = player.abilities.waveDash.amount
             }
         },
 
