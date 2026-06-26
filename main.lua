@@ -135,6 +135,7 @@ function love.load()
         img_ability_preview_supercritical = love.graphics.newImage("assets/ability_preview_supercritical.png")
         img_ability_preview_disruptWave = love.graphics.newImage("assets/ability_preview_disruptWave.png")
         img_ability_preview_enemyBalancing = love.graphics.newImage("assets/ability_preview_enemyBalancing.png")
+        img_ability_preview_waveDash = love.graphics.newImage("assets/ability_preview_waveDash.png")
 
         --Audio
         audio_enemy_kill = love.audio.newSource("assets/audio/enemy_kill.wav", "static")
@@ -309,14 +310,14 @@ function skipWave(wavesSkipped)
     local oldCopperAmount = player.currencies.currentCopper
     local oldSilverAmount = player.currencies.currentSilver
     local silverEquivTrigger = love.math.random() * 100
-    misc.copperBuffer = misc.copperBuffer + player.tower.copperBonus * player.tower.copperPerWave * wavesSkipped
+    misc.copperBuffer = misc.copperBuffer + player.tower.copperBonus * player.tower.copperPerWave * wavesSkipped * levelingInfo[14].waveSkipRewardIncrease[player.abilities.waveDash.level + 1]
     player.currencies.currentCopper = player.currencies.currentCopper + math.floor(misc.copperBuffer)
     if silverEquivTrigger < player.upgrades.jade.silverEquivalent.value then
         player.currencies.currentSilver = player.currencies.currentSilver + math.floor(misc.copperBuffer)
     end
     misc.copperBuffer = misc.copperBuffer - math.floor(misc.copperBuffer)
 
-    player.misc.silverBuffer = player.misc.silverBuffer + player.tower.silverPerWave * player.tower.silverBonus * wavesSkipped * difficultyMultipliers[gameplay.difficulty] * player.upgrades.jade.silverGain.value
+    player.misc.silverBuffer = player.misc.silverBuffer + player.tower.silverPerWave * player.tower.silverBonus * wavesSkipped * difficultyMultipliers[gameplay.difficulty] * player.upgrades.jade.silverGain.value * levelingInfo[14].waveSkipRewardIncrease[player.abilities.waveDash.level + 1]
     player.currencies.currentSilver = player.currencies.currentSilver + math.floor(player.misc.silverBuffer)
     player.misc.silverBuffer = player.misc.silverBuffer - math.floor(player.misc.silverBuffer)
 
@@ -332,9 +333,14 @@ function skipWave(wavesSkipped)
         player.misc.waveSkipMessage = true
     end
 
-    local JerelosBlessingRegen = love.math.random() * 100
-    if JerelosBlessingRegen <= levelingInfo[7].regenChance[player.abilities.JerelosBlessing.level + 1] and gameplay.gameSpeed > 0 then
+    local JerelosBlessingRegen = player.abilities.JerelosBlessing.equipped and love.math.random() * 100 or 101
+    if JerelosBlessingRegen <= levelingInfo[7].regenChance[player.abilities.JerelosBlessing.level + 1] * player.upgrades.nexus.abilityChance.value then
+        local healthGap = player.tower.health - player.tower.currentHealth
         player.tower.currentHealth = player.tower.health
+        player.stats.battle.JerelosBlessing.triggered = player.stats.battle.JerelosBlessing.triggered + 1
+        player.stats.save.JerelosBlessing.triggered = player.stats.save.JerelosBlessing.triggered + 1
+        player.stats.battle.JerelosBlessing.healthRegenerated = player.stats.battle.JerelosBlessing.healthRegenerated + healthGap
+        player.stats.save.JerelosBlessing.healthRegenerated = player.stats.save.JerelosBlessing.healthRegenerated + healthGap
     end
 
     player.stats.battle.wavesSkipped = player.stats.battle.wavesSkipped + wavesSkipped
@@ -443,11 +449,11 @@ function love.draw()
             end
             if player.misc.copperAddedMessage then
                 love.graphics.setFont(font_AfacadBold18)
-                love.graphics.print({{1, 1, 1, 1}, "+ ", {0.92, 0.45, 0.26}, notations.convertToLetterNotation(math.floor(player.tower.copperPerWave * player.tower.copperBonus), "brief")}, 135, 24)
+                love.graphics.print({{1, 1, 1, 1}, "+ ", {0.92, 0.45, 0.26}, notations.convertToLetterNotation(math.floor(player.tower.copperPerWave * player.tower.copperBonus * levelingInfo[14].waveSkipRewardIncrease[player.abilities.waveDash.level + 1]), "brief")}, 135, 24)
             end
             if player.misc.silverAddedMessage then
                 love.graphics.setFont(font_AfacadBold18)
-                love.graphics.print({{1, 1, 1, 1}, "+ ", {0.94, 0.97, 0.95}, notations.convertToLetterNotation(math.floor(player.tower.silverPerWave * player.tower.silverBonus * difficultyMultipliers[gameplay.difficulty] * player.upgrades.jade.silverGain.value), "brief")}, 135, 56)
+                love.graphics.print({{1, 1, 1, 1}, "+ ", {0.94, 0.97, 0.95}, notations.convertToLetterNotation(math.floor(player.tower.silverPerWave * player.tower.silverBonus * difficultyMultipliers[gameplay.difficulty] * player.upgrades.jade.silverGain.value * levelingInfo[14].waveSkipRewardIncrease[player.abilities.waveDash.level + 1]), "brief")}, 135, 56)
             end
         end
         love.graphics.draw(img_button_pause, 1870, 10)
@@ -1032,7 +1038,7 @@ function love.update(dt)
                     local oldCopperAmount = player.currencies.currentCopper
                     local oldSilverAmount = player.currencies.currentSilver
                     local silverEquivTrigger = love.math.random() * 100
-                    misc.copperBuffer = misc.copperBuffer + player.tower.copperPerWave * player.tower.copperBonus
+                    misc.copperBuffer = misc.copperBuffer + player.tower.copperPerWave * player.tower.copperBonus * levelingInfo[14].waveSkipRewardIncrease[player.abilities.waveDash.level + 1]
                     player.currencies.currentCopper = player.currencies.currentCopper + math.floor(misc.copperBuffer)
                     if silverEquivTrigger < player.upgrades.jade.silverEquivalent.value then
                         player.currencies.currentSilver = player.currencies.currentSilver + math.floor(misc.copperBuffer)
@@ -1041,7 +1047,7 @@ function love.update(dt)
                     
                     player.misc.copperAddedMessage = true
 
-                    player.misc.silverBuffer = player.misc.silverBuffer + player.tower.silverPerWave * player.tower.silverBonus * difficultyMultipliers[gameplay.difficulty] * player.upgrades.jade.silverGain.value
+                    player.misc.silverBuffer = player.misc.silverBuffer + player.tower.silverPerWave * player.tower.silverBonus * difficultyMultipliers[gameplay.difficulty] * player.upgrades.jade.silverGain.value * levelingInfo[14].waveSkipRewardIncrease[player.abilities.waveDash.level + 1]
                     player.currencies.currentSilver = player.currencies.currentSilver + math.floor(player.misc.silverBuffer)
                     player.misc.silverBuffer = player.misc.silverBuffer - math.floor(player.misc.silverBuffer)
 
@@ -1056,11 +1062,13 @@ function love.update(dt)
 
                     gameplay.wave = gameplay.wave + 1
                     player.stats.save.wavesBeaten = player.stats.save.wavesBeaten + 1
-                    local waveSkip = love.math.random() * 100
-                    while waveSkip <= player.modifiers.waveSkip.value do
+                    local waveSkipRnd = love.math.random() * 100
+                    local waveSkipChance = player.modifiers.waveSkip.value + levelingInfo[14].waveSkipChanceIncrease[player.abilities.waveDash.level + 1]
+                    print(waveSkipChance)
+                    while waveSkipRnd <= waveSkipChance do
                         wavesSkipped = wavesSkipped + 1
-                        local waveSkip = love.math.random() * 100
-                        if waveSkip > player.modifiers.waveSkip.value then
+                        local waveSkipRnd = love.math.random() * 100
+                        if waveSkipRnd > waveSkipChance then
                             break
                         end
                     end

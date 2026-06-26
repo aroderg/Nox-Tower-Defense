@@ -477,7 +477,7 @@ function abilityFunctions.updateInternals()
             tags = {condition = "Wave Finish", role = "Passive", AoE = false, category = "UTL"},
             frequency = 1,
             level = player.abilities.waveDash.level,
-            preview = img_ability_preview_enemyBalancing,
+            preview = img_ability_preview_waveDash,
             equipped = player.abilities.waveDash.equipped,
             unlocked = player.abilities.waveDash.unlocked,
             menu = player.menu.abilities.waveDash,
