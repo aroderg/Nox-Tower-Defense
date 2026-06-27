@@ -32,6 +32,7 @@ function love.load()
         img_background_eclipse = love.graphics.newImage("assets/background_eclipse.png")
         img_background_nova = love.graphics.newImage("assets/background_nova.png")
         img_background_aurora = love.graphics.newImage("assets/background_aurora.png")
+        img_background_polaris = love.graphics.newImage("assets/background_polaris.png")
         --img_background_interstellar = love.graphics.newImage("assets/background_interstellar.png")
 
         --Currencies
@@ -210,10 +211,11 @@ function love.load()
         stellar = "Stellar",
         eclipse = "Eclipse",
         nova = "Nova",
-        aurora = "Aurora"
+        aurora = "Aurora",
+        polaris = "Polaris"
     }
     settings_themes = {
-        "main", "stellar", "eclipse", "nova", "aurora"
+        "main", "stellar", "eclipse", "nova", "aurora", "polaris"
     }
     enemyFuncs.load()
     settings_particleMultipliers = {0, 0.25, 0.75, 1, 1.5, 2, 3, 5}
@@ -674,7 +676,7 @@ function love.draw()
         if player.misc.theme ~= settings_themes[1] then
             love.graphics.draw(img_button_arrowLeft, 820, 732)
         end
-        if player.misc.theme ~= settings_themes[5] then
+        if player.misc.theme ~= settings_themes[6] then
             love.graphics.draw(img_button_arrowRight, 1076, 732)
         end
 
@@ -1334,7 +1336,7 @@ function love.mousepressed(x, y)
         end
         if x >= 820 and x <= 844 and y >= 732 and y <= 756 and player.misc.theme ~= settings_themes[1] then
             player.misc.theme = settings_themes[themeIndex - 1]
-        elseif x >= 1076 and x <= 1100 and y >= 732 and y <= 756 and player.misc.theme ~= settings_themes[5] then
+        elseif x >= 1076 and x <= 1100 and y >= 732 and y <= 756 and player.misc.theme ~= settings_themes[6] then
             player.misc.theme = settings_themes[themeIndex + 1]
         end
 

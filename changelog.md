@@ -1,5 +1,5 @@
 # NoxTD 1.2 Polaris
-### March ??, 2026
+### July ??, 2026
 - Added Trades.
     - 3 Trades daily, 4 Trades weekly.
     - Each trade awards a specific amount of Jade.
@@ -13,8 +13,10 @@
     - Auto-broker autoaccepts a random trade every day.
     - Silver Gain increases Silver obtained in battles.
     - Silver Equivalent grants a chance to gain the same amount of Silver when upon gaining Copper.
-- Added Enemy Balancing ability, which increases both the amount of enemies spawned and Copper dropped from them.
-- Moved the in-battle resource HUD.
+- Added 2 Abilities: Enemy Balancing and Wave Dash.
+    - Enemy Balancing increases both the amount of enemies spawned and Copper dropped from them.
+    - Wave Dash increases the Wave Skip chance and additionally grants more Copper and Silver.
+- Moved the in-battle resource HUD and added an outline to it.
 
 ## NoxTD 1.1.3 Aurora
 ### Nov 25th, 2025

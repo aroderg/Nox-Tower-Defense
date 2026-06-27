@@ -494,6 +494,7 @@ function abilityFunctions.updateInternals()
     equipSlotRequirements = {
         {difficulty = 1, wave = 50},
         {difficulty = 1, wave = 100},
+        {difficulty = 1, wave = 200},
         {difficulty = 2, wave = 100},
         {difficulty = 2, wave = 200},
         {difficulty = 3, wave = 50},

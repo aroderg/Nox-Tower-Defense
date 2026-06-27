@@ -508,6 +508,14 @@ function loadGame()
             upgradeModule = {0.13, 0, 0.2},
             menus = {0.16, 0, 0.19, 1},
             background = love.graphics.newImage("assets/background_aurora.png")
+        },
+        polaris = {
+            buttons = {0.20, 0, 0.38, 1},
+            buttonOutlines = {0.62, 0.27, 0.79, 1},
+            towerInfo = {0.14, 0, 0.19},
+            upgradeModule = {0.1, 0, 0.15},
+            menus = {0.08, 0.04, 0.11, 1},
+            background = love.graphics.newImage("assets/background_polaris.png")
         }
     }
 
