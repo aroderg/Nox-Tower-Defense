@@ -457,11 +457,11 @@ function love.draw()
             end
             if player.misc.copperAddedMessage then
                 love.graphics.setFont(font_AfacadBold18)
-                love.graphics.print({{1, 1, 1, 1}, "+ ", {0.92, 0.45, 0.26}, notations.convertToLetterNotation(math.floor(player.tower.copperPerWave * player.tower.copperBonus * levelingInfo[14].waveSkipRewardIncrease[player.abilities.waveDash.level + 1]), "brief")}, 135, 24)
+                love.graphics.print({{1, 1, 1, 1}, "+ ", {0.92, 0.45, 0.26}, notations.convertToLetterNotation(math.floor(player.tower.copperPerWave * player.tower.copperBonus), "brief")}, 135, 24)
             end
             if player.misc.silverAddedMessage then
                 love.graphics.setFont(font_AfacadBold18)
-                love.graphics.print({{1, 1, 1, 1}, "+ ", {0.94, 0.97, 0.95}, notations.convertToLetterNotation(math.floor(player.tower.silverPerWave * player.tower.silverBonus * difficultyMultipliers[gameplay.difficulty] * player.upgrades.jade.silverGain.value * levelingInfo[14].waveSkipRewardIncrease[player.abilities.waveDash.level + 1]), "brief")}, 135, 56)
+                love.graphics.print({{1, 1, 1, 1}, "+ ", {0.94, 0.97, 0.95}, notations.convertToLetterNotation(math.floor(player.tower.silverPerWave * player.tower.silverBonus * difficultyMultipliers[gameplay.difficulty] * player.upgrades.jade.silverGain.value), "brief")}, 135, 56)
             end
         end
         love.graphics.draw(img_button_pause, 1870, 10)
@@ -1046,7 +1046,7 @@ function love.update(dt)
                     local oldCopperAmount = player.currencies.currentCopper
                     local oldSilverAmount = player.currencies.currentSilver
                     local silverEquivTrigger = love.math.random() * 100
-                    misc.copperBuffer = misc.copperBuffer + player.tower.copperPerWave * player.tower.copperBonus * levelingInfo[14].waveSkipRewardIncrease[player.abilities.waveDash.level + 1]
+                    misc.copperBuffer = misc.copperBuffer + player.tower.copperPerWave * player.tower.copperBonus
                     player.currencies.currentCopper = player.currencies.currentCopper + math.floor(misc.copperBuffer)
                     if silverEquivTrigger < player.upgrades.jade.silverEquivalent.value then
                         player.currencies.currentSilver = player.currencies.currentSilver + math.floor(misc.copperBuffer)
@@ -1055,7 +1055,7 @@ function love.update(dt)
                     
                     player.misc.copperAddedMessage = true
 
-                    player.misc.silverBuffer = player.misc.silverBuffer + player.tower.silverPerWave * player.tower.silverBonus * difficultyMultipliers[gameplay.difficulty] * player.upgrades.jade.silverGain.value * levelingInfo[14].waveSkipRewardIncrease[player.abilities.waveDash.level + 1]
+                    player.misc.silverBuffer = player.misc.silverBuffer + player.tower.silverPerWave * player.tower.silverBonus * difficultyMultipliers[gameplay.difficulty] * player.upgrades.jade.silverGain.value
                     player.currencies.currentSilver = player.currencies.currentSilver + math.floor(player.misc.silverBuffer)
                     player.misc.silverBuffer = player.misc.silverBuffer - math.floor(player.misc.silverBuffer)
 
