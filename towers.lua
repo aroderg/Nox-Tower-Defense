@@ -139,4 +139,30 @@ function towers.reload()
             end
         end
     end
+
+    --- Polaris tower display & processing.
+    --- @param i boolean The "mode" of the tower, true for processing, false for rendering.
+    function towers.polaris(i, logicStep)
+        local maxFrames = 160
+        local changeRate = 10
+        local startDelay = 0
+        if player.tower.currentHealth > 0 then
+            if startDelayTimer < startDelay then
+                if i then
+                    startDelayTimer = startDelayTimer + logicStep
+                else
+                    love.graphics.draw(img_tower_polaris_base, 928, 508)
+                end
+            else
+                if i then
+                    frameExact = frameExact + logicStep * changeRate
+                    frame = math.floor(frameExact)
+                end
+                love.graphics.draw(img_tower_polaris_base, 928, 508)
+                love.graphics.draw(img_tower_polaris_medium, 928, 508)
+                love.graphics.setColor(1, 1, 1, 0.5 + math.sin((frame - 0.5 * maxFrames) / (maxFrames / math.pi)) * 0.5)
+                love.graphics.draw(img_tower_polaris_inner, 928, 508)
+            end
+        end
+    end
 end

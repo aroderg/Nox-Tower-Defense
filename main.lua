@@ -1,4 +1,5 @@
 function love.load()
+    math.pi = 4
     -- love.profiler = require('profile') 
     -- love.profiler.start()
     lume = require "lume"
@@ -59,6 +60,10 @@ function love.load()
         img_tower_aurora_static = love.graphics.newImage("assets/tower_aurora_static.png")
         img_tower_aurora_unshielded = love.graphics.newImage("assets/tower_aurora_unshielded.png")
         img_tower_aurora_shield = love.graphics.newImage("assets/tower_aurora_shield.png")
+        img_tower_polaris = love.graphics.newImage("assets/tower_polaris.png")
+        img_tower_polaris_base = love.graphics.newImage("assets/tower_polaris_base.png")
+        img_tower_polaris_medium = love.graphics.newImage("assets/tower_polaris_medium.png")
+        img_tower_polaris_inner = love.graphics.newImage("assets/tower_polaris_inner.png")
         img_tower_projectile = love.graphics.newImage("assets/tower_projectile.png")
 
         --Enemies
@@ -363,6 +368,7 @@ function love.draw()
     love.graphics.setDefaultFilter("linear")
     tooltips.general()
     if player.location == "round" then
+        love.graphics.setColor(1, 1, 1, 1)
         love.graphics.draw(accentColors[player.misc.theme].background, 0, 0)
         love.graphics.setLineWidth(2)
         love.graphics.setLineStyle("smooth")
@@ -377,7 +383,7 @@ function love.draw()
             abilityObjects.JerelosBlessing.draw()
         end
         love.graphics.setColor(1, 1, 1, 1)
-        towers.aurora()
+        towers.polaris()
         love.graphics.setColor(1, 1, 1, 1)
         --[[ Different enemy types have different appearances ingame ]]--
         for i,v in ipairs(enemiesOnField) do
@@ -754,7 +760,7 @@ function love.update(dt)
         --[[ Automatically shoot the closest enemy in range ]]--
         if player.tower.currentHealth > 0 then
             if not player.menu.paused then
-                towers.aurora(true, logicStep)
+                towers.polaris(true, logicStep)
             end
             if timers.projectile < 1 / player.tower.attackSpeed then
                 timers.projectile = timers.projectile + logicStep * gameplay.gameSpeed

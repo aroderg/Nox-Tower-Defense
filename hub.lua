@@ -624,7 +624,7 @@ function inHub_mouse(x, y)
                 towers.reload()
                 gameOver = false
                 player.menu.paused = false
-                gameplay.gameSpeed = player.maxGameSpeed + 4
+                gameplay.gameSpeed = player.maxGameSpeed
                 -- audioST_Echoes:setVolume(1 * player.settings.volume^2)
                 -- audioST_Echoes:play()
             end
