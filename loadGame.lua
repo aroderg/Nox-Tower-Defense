@@ -605,7 +605,9 @@ function resetRoundValues()
         copperAtStart = player.currencies.currentCopper,
         silverAtStart = player.currencies.currentSilver,
         goldAtStart = player.currencies.currentGold,
-        JerelosBlessingVisuals = {vines = love.math.random(1, 4), waves = love.math.random(1, 4)}
+        JerelosBlessingVisuals = {vines = love.math.random(1, 4), waves = love.math.random(1, 4)},
+        copperAdded = 0,
+        silverAdded = 0
     }
     player.stats.battle = {
         gameTime = 0,

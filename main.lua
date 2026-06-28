@@ -1,5 +1,4 @@
 function love.load()
-    math.pi = 4
     -- love.profiler = require('profile') 
     -- love.profiler.start()
     lume = require "lume"
@@ -322,7 +321,6 @@ function skipWave(wavesSkipped)
     if silverEquivTrigger < player.upgrades.jade.silverEquivalent.value then
         player.currencies.currentSilver = player.currencies.currentSilver + math.floor(misc.copperBuffer)
     end
-    misc.copperBuffer = misc.copperBuffer - math.floor(misc.copperBuffer)
 
     player.misc.silverBuffer = player.misc.silverBuffer + player.tower.silverPerWave * player.tower.silverBonus * wavesSkipped * difficultyMultipliers[gameplay.difficulty] * player.upgrades.jade.silverGain.value * levelingInfo[14].waveSkipRewardIncrease[player.abilities.waveDash.level + 1]
     player.currencies.currentSilver = player.currencies.currentSilver + math.floor(player.misc.silverBuffer)
@@ -335,6 +333,11 @@ function skipWave(wavesSkipped)
     player.stats.battle.copperEarned = player.stats.battle.copperEarned + copperEarned
     player.stats.battle.silverEarned = player.stats.battle.silverEarned + silverEarned
     player.stats.save.silverEarned = player.stats.save.silverEarned + silverEarned
+
+    misc.copperAdded = misc.copperAdded + copperEarned
+    misc.silverAdded = misc.copperAdded + silverEarned
+    player.misc.copperAddedMessage = true
+    player.misc.silverAddedMessage = true
 
     if wavesSkipped > 0 then
         player.misc.waveSkipMessage = true
@@ -353,6 +356,19 @@ function skipWave(wavesSkipped)
     player.stats.battle.wavesSkipped = player.stats.battle.wavesSkipped + wavesSkipped
     player.stats.save.wavesSkipped = player.stats.save.wavesSkipped + wavesSkipped
     timers.waveSkip = 0
+end
+
+--- Display the "+ n" bold texts near the in-battle resource HUD.
+---@param type string Currency to display the addition of.
+---@param n number How much currency to display.
+function displayAddedMessages(type, n)
+    if type == "copper" then
+        love.graphics.setFont(font_AfacadBold18)
+        love.graphics.print({{1, 1, 1, 1}, "+ ", {0.92, 0.45, 0.26}, notations.convertToLetterNotation(misc.copperAdded, "brief")}, 135, 24)
+    elseif type == "silver" then
+        love.graphics.setFont(font_AfacadBold18)
+        love.graphics.print({{1, 1, 1, 1}, "+ ", {0.94, 0.97, 0.95}, notations.convertToLetterNotation(misc.silverAdded, "brief")}, 135, 56)
+    end
 end
 
 function love.draw()
@@ -449,19 +465,14 @@ function love.draw()
             if player.misc.waveSkipMessage then
                 love.graphics.setColor(1, 1, 1, 1)
                 love.graphics.setFont(font_Afacad20)
-                if not player.menu.upgrades then
-                    love.graphics.printf({{1, 1, 1, 1}, "Skipped ", {0.35, 1, 0.75, 1}, string.format("%d ", wavesSkipped), {1, 1, 1, 1}, "wave", {1, 1, 1, 1}, string.format("%s!", wavesSkipped > 1 and "s" or "")}, 1690, 920, 220, "center")
-                else
-                    love.graphics.printf({{1, 1, 1, 1}, "Skipped ", {0.35, 1, 0.75, 1}, string.format("%d ", wavesSkipped), {1, 1, 1, 1}, "wave", {1, 1, 1, 1}, string.format("%s!", wavesSkipped > 1 and "s" or "")}, 1690, 690, 220, "center")
-                end
+                local posY = player.menu.upgrades and 690 or 920
+                love.graphics.printf({{1, 1, 1, 1}, "Skipped ", {0.35, 1, 0.75, 1}, string.format("%d ", wavesSkipped), {1, 1, 1, 1}, "wave", {1, 1, 1, 1}, string.format("%s!", wavesSkipped > 1 and "s" or "")}, 1690, posY, 220, "center")
             end
             if player.misc.copperAddedMessage then
-                love.graphics.setFont(font_AfacadBold18)
-                love.graphics.print({{1, 1, 1, 1}, "+ ", {0.92, 0.45, 0.26}, notations.convertToLetterNotation(math.floor(player.tower.copperPerWave * player.tower.copperBonus), "brief")}, 135, 24)
+                displayAddedMessages("copper", misc.copperAdded)
             end
             if player.misc.silverAddedMessage then
-                love.graphics.setFont(font_AfacadBold18)
-                love.graphics.print({{1, 1, 1, 1}, "+ ", {0.94, 0.97, 0.95}, notations.convertToLetterNotation(math.floor(player.tower.silverPerWave * player.tower.silverBonus * difficultyMultipliers[gameplay.difficulty] * player.upgrades.jade.silverGain.value), "brief")}, 135, 56)
+                displayAddedMessages("silver", misc.silverAdded)
             end
         end
         love.graphics.draw(img_button_pause, 1870, 10)
@@ -1052,8 +1063,6 @@ function love.update(dt)
                         player.currencies.currentSilver = player.currencies.currentSilver + math.floor(misc.copperBuffer)
                     end
                     misc.copperBuffer = misc.copperBuffer - math.floor(misc.copperBuffer)
-                    
-                    player.misc.copperAddedMessage = true
 
                     player.misc.silverBuffer = player.misc.silverBuffer + player.tower.silverPerWave * player.tower.silverBonus * difficultyMultipliers[gameplay.difficulty] * player.upgrades.jade.silverGain.value
                     player.currencies.currentSilver = player.currencies.currentSilver + math.floor(player.misc.silverBuffer)
@@ -1066,6 +1075,10 @@ function love.update(dt)
                     player.stats.battle.copperEarned = player.stats.battle.copperEarned + copperEarned
                     player.stats.battle.silverEarned = player.stats.battle.silverEarned + silverEarned
                     player.stats.save.silverEarned = player.stats.save.silverEarned + silverEarned
+
+                    misc.copperAdded = misc.copperAdded + copperEarned
+                    misc.silverAdded = misc.copperAdded + silverEarned
+                    player.misc.copperAddedMessage = true
                     player.misc.silverAddedMessage = true
 
                     gameplay.wave = gameplay.wave + 1
@@ -1089,7 +1102,9 @@ function love.update(dt)
                         player.stats.battle.JerelosBlessing.healthRegenerated = player.stats.battle.JerelosBlessing.healthRegenerated + healthGap
                         player.stats.save.JerelosBlessing.healthRegenerated = player.stats.save.JerelosBlessing.healthRegenerated + healthGap
                     end
-                    skipWave(wavesSkipped)
+                    if wavesSkipped > 0 then
+                        skipWave(wavesSkipped)
+                    end
                     enemyFuncs.updateEnemyStats(gameplay.difficulty, gameplay.wave)
                 end
             end
@@ -1111,12 +1126,14 @@ function love.update(dt)
         else
             timers.copperAdd = 0
             player.misc.copperAddedMessage = false
+            misc.copperAdded = 0
         end
         if player.misc.silverAddedMessage and timers.silverAdd < 2 then
             timers.silverAdd = timers.silverAdd + logicStep
         else
             timers.silverAdd = 0
             player.misc.silverAddedMessage = false
+            misc.silverAdded = 0
         end
 
         if player.upgrades.unlocks.shield then
