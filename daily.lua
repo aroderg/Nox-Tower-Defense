@@ -1,6 +1,8 @@
 daily = {day = {}, week = {}}
 
-function daily.init()
+--- Initialize daily & weekly start & end times and populate trades table with preset trade drop table
+---@param keepTradeStates boolean Whether to set trades to be all active (false) or keep them in the same state as they are in the savefile.
+function daily.init(keepTradeStates)
     local DAILY_CYCLE_DURATION = 24 * 60 * 60 --24 HOURS
     local WEEKLY_CYCLE_DURATION = 7 * 24 * 60 * 60 --168 HOURS
     local WEEK_OFFSET = 3 * DAILY_CYCLE_DURATION
@@ -22,7 +24,9 @@ function daily.init()
     for i=1,3 do
         local trade = dropTable.draw(trades)
         table.insert(player.activeDailyTrades, technical.copyTable(trade))
-        if player.tradesBought.daily[i] then
+        if player.tradesBought.daily[i] and not keepTradeStates then
+            player.activeDailyTrades[i].active = false
+        else
             player.activeDailyTrades[i].active = false
         end
     end
@@ -30,8 +34,10 @@ function daily.init()
     for i=1,4 do
         local trade = dropTable.draw(trades)
         table.insert(player.activeWeeklyTrades, technical.copyTable(trade))
-        if player.tradesBought.weekly[i] then
+        if player.tradesBought.weekly[i] and not keepTradeStates then
             player.activeWeeklyTrades[i].active = false
+        else
+            player.activeWeeklyTrades[i].active = true
         end
     end
 end
