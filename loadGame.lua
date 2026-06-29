@@ -138,7 +138,7 @@ function loadGame()
             disruptWave = {unlocked = false, level = 0, equipped = false, amount = 0},
             enemyBalancing = {unlocked = false, level = 0, equipped = false, amount = 0}
         },
-        misc = {abilityAssembling = false, tokensRefundable = true, theme = "aurora", currentOrbital = love.math.random(1, 39), silverBuffer = 0, jadeBuffer = 0},
+        misc = {abilityAssembling = false, tokensRefundable = true, theme = "aurora", currentOrbital = love.math.random(1, 46), silverBuffer = 0, jadeBuffer = 0},
         tradesBought = {daily = {false, false, false}, weekly = {false, false, false, false}, dailySeed = 0, weeklySeed = 0}
     }
 
@@ -367,7 +367,7 @@ function loadGame()
         }
     end
     player.misc = {
-        abilityAssembling = (loadedData.timers.abilityAssembly > 0 and loadedData.timers.abilityAssembly < loadedData.cooldowns.abilityAssembly_current), currentOrbital = love.math.random(1, 39),
+        abilityAssembling = (loadedData.timers.abilityAssembly > 0 and loadedData.timers.abilityAssembly < loadedData.cooldowns.abilityAssembly_current), currentOrbital = love.math.random(1, 46),
         silverBuffer = loadedData.misc.silverBuffer or defaultPlayerState.misc.silverBuffer,
         jadeBuffer = loadedData.misc.jadeBuffer or defaultPlayerState.misc.jadeBuffer
     }
