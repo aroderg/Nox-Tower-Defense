@@ -28,6 +28,7 @@ function daily.init(keepTradeStates)
             player.activeDailyTrades[i].active = false
         else
             player.activeDailyTrades[i].active = false
+            player.tradesBought.daily[i] = false
         end
     end
     love.math.setRandomSeed(nowTime - math.floor(nowTime % WEEKLY_CYCLE_DURATION))
@@ -38,6 +39,7 @@ function daily.init(keepTradeStates)
             player.activeWeeklyTrades[i].active = false
         else
             player.activeWeeklyTrades[i].active = true
+            player.tradesBought.weekly[i] = false
         end
     end
 end
@@ -45,10 +47,10 @@ end
 function daily.update(dt)
     local currentTime = socket.gettime()
     if currentTime >= daily.day.endTime then
-        daily.init()
+        daily.init(false)
         daily.triggerUpgrades()
     elseif currentTime >= daily.week.endTime then
-        daily.init()
+        daily.init(false)
     end
 end
 
