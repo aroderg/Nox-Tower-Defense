@@ -12,17 +12,20 @@ function daily.init(keepTradeStates)
     local adjustedTime = nowTime - WEEK_OFFSET
     daily.week.startTime = (math.floor(adjustedTime / WEEKLY_CYCLE_DURATION) * WEEKLY_CYCLE_DURATION) + WEEK_OFFSET
     daily.week.endTime = daily.week.startTime + WEEKLY_CYCLE_DURATION
-    local trades = {
-        {sellCurrency = "token", buyCurrency = "electrum", sellAmount = 100, buyAmount = 15, weight = 1, active = true},
-        {sellCurrency = "token", buyCurrency = "gold", sellAmount = 80, buyAmount = 40, weight = 1, active = true},
-        {sellCurrency = "token", buyCurrency = "silver", sellAmount = 50, buyAmount = 16000, weight = 1, active = true},
-        {sellCurrency = "token", buyCurrency = "electrum", sellAmount = 80, buyAmount = 10, weight = 2, active = true},
-        {sellCurrency = "token", buyCurrency = "gold", sellAmount = 15, buyAmount = 6, weight = 2, active = true},
-        {sellCurrency = "token", buyCurrency = "silver", sellAmount = 30, buyAmount = 9000, weight = 2, active = true},
+    local possibleTrades = {
+        {sellCurrency = "token", buyCurrency = "electrum", sellAmount = 600, buyAmount = 95, weight = 3, active = true},
+        {sellCurrency = "token", buyCurrency = "gold", sellAmount = 400, buyAmount = 250, weight = 3, active = true},
+        {sellCurrency = "token", buyCurrency = "silver", sellAmount = 480, buyAmount = 160000, weight = 3, active = true},
+        {sellCurrency = "token", buyCurrency = "electrum", sellAmount = 100, buyAmount = 15, weight = 11, active = true},
+        {sellCurrency = "token", buyCurrency = "gold", sellAmount = 80, buyAmount = 40, weight = 11, active = true},
+        {sellCurrency = "token", buyCurrency = "silver", sellAmount = 50, buyAmount = 16000, weight = 11, active = true},
+        {sellCurrency = "token", buyCurrency = "electrum", sellAmount = 80, buyAmount = 10, weight = 22, active = true},
+        {sellCurrency = "token", buyCurrency = "gold", sellAmount = 15, buyAmount = 6, weight = 22, active = true},
+        {sellCurrency = "token", buyCurrency = "silver", sellAmount = 30, buyAmount = 9000, weight = 22, active = true},
     }
     love.math.setRandomSeed(nowTime - math.floor(nowTime % DAILY_CYCLE_DURATION))
     for i=1,3 do
-        local trade = dropTable.draw(trades)
+        local trade = dropTable.draw(possibleTrades)
         table.insert(player.activeDailyTrades, technical.copyTable(trade))
         if player.tradesBought.daily[i] and keepTradeStates then
             player.activeDailyTrades[i].active = false
@@ -33,7 +36,7 @@ function daily.init(keepTradeStates)
     end
     love.math.setRandomSeed(nowTime - math.floor(nowTime % WEEKLY_CYCLE_DURATION))
     for i=1,4 do
-        local trade = dropTable.draw(trades)
+        local trade = dropTable.draw(possibleTrades)
         table.insert(player.activeWeeklyTrades, technical.copyTable(trade))
         if player.tradesBought.weekly[i] and keepTradeStates then
             player.activeWeeklyTrades[i].active = false
