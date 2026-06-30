@@ -24,10 +24,10 @@ function daily.init(keepTradeStates)
     for i=1,3 do
         local trade = dropTable.draw(trades)
         table.insert(player.activeDailyTrades, technical.copyTable(trade))
-        if player.tradesBought.daily[i] and not keepTradeStates then
+        if player.tradesBought.daily[i] and keepTradeStates then
             player.activeDailyTrades[i].active = false
         else
-            player.activeDailyTrades[i].active = false
+            player.activeDailyTrades[i].active = true
             player.tradesBought.daily[i] = false
         end
     end
@@ -35,7 +35,7 @@ function daily.init(keepTradeStates)
     for i=1,4 do
         local trade = dropTable.draw(trades)
         table.insert(player.activeWeeklyTrades, technical.copyTable(trade))
-        if player.tradesBought.weekly[i] and not keepTradeStates then
+        if player.tradesBought.weekly[i] and keepTradeStates then
             player.activeWeeklyTrades[i].active = false
         else
             player.activeWeeklyTrades[i].active = true
