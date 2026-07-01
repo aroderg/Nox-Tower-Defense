@@ -111,6 +111,10 @@ function saveGame()
                     jade = player.stats.save.upgradesAcquired.jade
                 },
                 wavesBeaten = player.stats.save.wavesBeaten,
+                idleGains = {
+                    silverCollected = player.stats.save.idleGains.silverCollected,
+                    goldCollected = player.stats.save.idleGains.goldCollected
+                },
                 clusterFire = {
                     triggered = player.stats.save.clusterFire.triggered
                 },

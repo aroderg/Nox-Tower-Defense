@@ -761,10 +761,12 @@ function inHub_mouse(x, y)
                 end
             elseif x >= 1655 and x <= 1915 and y >= 465 and y <= 495 and not player.menu.settings and not player.menu.saveStats then
                 if player.idleTime >= 60 then
-                    player.currencies.currentSilver = player.currencies.currentSilver + player.storedGains.silver
-                    player.stats.save.silverEarned = player.stats.save.silverEarned + player.storedGains.silver
+                    player.currencies.currentSilver = player.currencies.currentSilver + math.floor(player.storedGains.silver)
+                    player.stats.save.silverEarned = player.stats.save.silverEarned + math.floor(player.storedGains.silver)
+                    player.stats.save.idleGains.silverCollected = player.stats.save.idleGains.silverCollected + math.floor(player.storedGains.silver)
                     player.currencies.currentGold = player.currencies.currentGold + math.floor(player.storedGains.gold)
                     player.stats.save.goldEarned = player.currencies.currentGold + math.floor(player.storedGains.gold)
+                    player.stats.save.idleGains.goldCollected = player.stats.save.idleGains.goldCollected + math.floor(player.storedGains.gold)
                     player.storedGains.silver = 0
                     player.storedGains.gold = player.storedGains.gold % 1
                     player.idleTime = player.idleTime % 60

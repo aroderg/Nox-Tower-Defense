@@ -118,7 +118,8 @@ function loadGame()
                 lightningOrb = {enemiesKilled = 0, damageDealt = 0, spawned = 0},
                 JerelosBlessing = {triggered = 0, healthRegenerated = 0},
                 supercritical = {triggered = 0, damageDealt = 0},
-                disruptWave = {triggered = 0, damageDealt = 0, enemiesKilled = 0}
+                disruptWave = {triggered = 0, damageDealt = 0, enemiesKilled = 0},
+                idleGains = {silverCollected = 0, goldCollected = 0}
             },
         },
         abilities = {
@@ -288,6 +289,11 @@ function loadGame()
     player.stats.save.wavesSkipped = loadedData.stats.wavesSkipped or defaultPlayerState.stats.save.wavesSkipped
     player.stats.save.projectilesFired = loadedData.stats.projectilesFired or defaultPlayerState.stats.save.projectilesFired
     player.stats.save.wavesBeaten = loadedData.stats.wavesBeaten or defaultPlayerState.stats.save.wavesBeaten
+    player.stats.save.idleGains =
+    {
+        silverCollected = loadedData.stats.save.idleGains.silverCollected or defaultPlayerState.stats.save.idleGains.silverCollected,
+        goldCollected = loadedData.stats.save.idleGains.goldCollected or defaultPlayerState.stats.save.idleGains.goldCollected,
+    }
     player.stats.save.clusterFire = {
         triggered = loadedData.stats.save.clusterFire.triggered or defaultPlayerState.stats.save.clusterFire.triggered,
     }
