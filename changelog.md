@@ -16,7 +16,9 @@
 - Added 2 Abilities: Enemy Balancing and Wave Dash.
     - Enemy Balancing increases both the amount of enemies spawned and Copper dropped from them.
     - Wave Dash increases the Wave Skip chance and additionally grants more Copper and Silver.
-- Moved the in-battle resource HUD and added an outline to it.
+- Moved the in-battle resource HUD slightly and added an outline to it.
+- Allowed for viewing Ability info without having the Ability unlocked.
+- Removed the link to my Discord server.
 
 ## NoxTD 1.1.3 Aurora
 ### Nov 25th, 2025

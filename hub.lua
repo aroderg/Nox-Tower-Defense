@@ -7,8 +7,8 @@ local DAILY_CYCLE_DURATION = 22 * 60 * 60
 orbital = {}
 
 --- Update all the Orbitals displayed in the Hub.
----@param shuffle boolean Whether to change the random Orbital displayed.
-function orbital.update(shuffle)
+---@param reroll boolean Whether to change the random Orbital displayed.
+function orbital.update(reroll)
     function getUsername()
         return os.getenv("USERNAME") or os.getenv("USER") or "playername"
     end
@@ -50,7 +50,7 @@ function orbital.update(shuffle)
         "Pressing Escape while in a battle? That's the instant pause button now.",
         "If you see an Ability border glowing orange, it's maxed. Time to celebrate!",
         "It's not truly idle if you're not gaining Silver passively, right?",
-        "Built with LOVE2d. We hope you enjoy it!",
+        "Built with LOVE2d. I hope you enjoy it!",
         "A lone tower against the cosmos. That's the Nox way.",
         "Feeling impatient? Wave Skip Chance can get you through quickly.",
         "You can open Settings and Stats right from the Hub, too.",
@@ -59,9 +59,16 @@ function orbital.update(shuffle)
         "Spawning more enemies just to get more loot? That's clever.",
         "All daily trades done? Here's 3 extra Jade!",
         "The grind never ends, it just loops back to the start.",
-        "That tower probably got killed in hundreds of runs just to be stronger."
+        "That tower has probably collapsed hundreds of times just to be stronger.",
+        "Enhance your wave skips with the Wave Dash ability!",
+        "Also try The Perfect Tower 2!",
+        "Also try Project: Cooldown!",
+        "Also try The Tower - Idle Tower Defense!",
+        "Also try Infinitode 2!",
+        "Also try touching gras- actually nevermind stay here please.."
     }
-    player.misc.currentOrbital = shuffle and love.math.random(1, #orbitals) or player.misc.currentOrbital
+    love.math.setRandomSeed(socket.gettime())
+    player.misc.currentOrbital = reroll and 48 or player.misc.currentOrbital
     return orbitals[player.misc.currentOrbital]
 end
 
@@ -148,7 +155,7 @@ function inHub_visual()
         
         if hubSection == "Main" then
             love.graphics.setFont(font_Afacad16)
-            love.graphics.printf({{0, 1, 1, 0.4}, "(" .. orbital.update() .. ")"}, 1024, 47, 700, "left")
+            love.graphics.printf({{0, 1, 1, 0.4}, "(" .. orbital.update(false) .. ")"}, 1024, 47, 700, "left")
             love.graphics.setFont(font_AfacadSemiBold28)
             love.graphics.printf(string.format("Difficulty %d", player.difficulty.difficulty), 810, 738, 300, "center")
             local bestWaves = {player.bestWaves.d1, player.bestWaves.d2, player.bestWaves.d3, player.bestWaves.d4, player.bestWaves.d5}
@@ -617,7 +624,6 @@ function inHub_mouse(x, y)
         if hubSection == "Main" then
             if x >= 860 and x <= 1060 and y >= 900 and y <= 980 and not player.menu.settings then
                 player.location = "round"
-                orbital.update(true)
                 player.difficulty.difficulty = player.difficulty.difficulty
                 roundUpgradeSection = "ATK"
                 resetRoundValues()

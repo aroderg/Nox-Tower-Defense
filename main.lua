@@ -233,6 +233,7 @@ function love.load()
     -- print(player.tradesBought.dailySeed .. "," .. math.floor(socket.gettime() / (24 * 60 * 60)) * (24 * 60 * 60) .. "," .. daily.day.startTime)
     -- print(player.tradesBought.weeklySeed .. "," .. math.floor(socket.gettime() / (7 * 24 * 60 * 60)) * (7 * 24 * 60 * 60) + 3 * 24 * 60 * 60 .. "," .. daily.week.startTime)
     daily.triggerUpgrades()
+    orbital.update(true)
     -- love.frame = 0
 end
 
@@ -1400,6 +1401,7 @@ function love.mousepressed(x, y)
             resetRoundValues()
             upgradeModuleFuncs.load()
             player.idleGains.silver, player.idleGains.gold = reloadIdleGains()
+            orbital.update(true)
         end
     end
 
