@@ -155,7 +155,7 @@ function inHub_visual()
         
         if hubSection == "Main" then
             love.graphics.setFont(font_Afacad16)
-            love.graphics.printf({{0, 1, 1, 0.4}, "(" .. orbital.update(false) .. ")"}, 1024, 47, 700, "left")
+            love.graphics.printf({{0, 1, 1, 0.6}, "(" .. orbital.update(false) .. ")"}, 1024, 47, 700, "left")
             love.graphics.setFont(font_AfacadSemiBold28)
             love.graphics.printf(string.format("Difficulty %d", player.difficulty.difficulty), 810, 738, 300, "center")
             local bestWaves = {player.bestWaves.d1, player.bestWaves.d2, player.bestWaves.d3, player.bestWaves.d4, player.bestWaves.d5}
