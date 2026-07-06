@@ -1,5 +1,5 @@
 # NoxTD 1.2 Polaris
-### July 7th, 2026
+### Jul 7th, 2026
 - Added Trades.
     - 3 Trades daily, 4 Trades weekly.
     - Each trade awards a specific amount of Jade.
