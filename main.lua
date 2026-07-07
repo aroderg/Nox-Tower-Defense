@@ -454,7 +454,7 @@ function love.draw()
         towerInfo_visual()
         if player.misc.iceDomainActive then
             love.graphics.setColor(1, 1, 1, levelingInfo[4].density[player.abilities.iceDomain.level + 1] / 100)
-            love.graphics.draw(img_ice_domain, 960 - player.tower.range, 540 - player.tower.range, 0, (player.tower.range * 2 + 42) / 1080)
+            love.graphics.draw(img_ice_domain, 960 - player.tower.range, 540 - player.tower.range, 0, (player.tower.range * 2) / 1024)
         end
         love.graphics.setColor(1, 1, 1, 1)
         if sentryAlive then
@@ -1086,7 +1086,6 @@ function love.update(dt)
                     player.stats.save.wavesBeaten = player.stats.save.wavesBeaten + 1
                     local waveSkipRnd = love.math.random() * 100
                     local waveSkipChance = player.modifiers.waveSkip.value + levelingInfo[14].waveSkipChanceIncrease[player.abilities.waveDash.level + 1]
-                    print(waveSkipChance)
                     while waveSkipRnd <= waveSkipChance do
                         wavesSkipped = wavesSkipped + 1
                         local waveSkipRnd = love.math.random() * 100
