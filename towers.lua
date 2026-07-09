@@ -158,7 +158,11 @@ function towers.reload()
                     frameExact = frameExact + logicStep * changeRate
                     frame = math.floor(frameExact)
                 end
-                love.graphics.draw(img_tower_polaris_base, 928, 508)
+                if not shieldActive then
+                    love.graphics.draw(img_tower_polaris_base, 928, 508)
+                else
+                    love.graphics.draw(img_tower_polaris_shield, 928, 508)
+                end
                 love.graphics.draw(img_tower_polaris_medium, 928, 508)
                 love.graphics.setColor(1, 1, 1, 0.5 + math.sin((frame - 0.5 * maxFrames) / (maxFrames / math.pi)) * 0.5)
                 love.graphics.draw(img_tower_polaris_inner, 928, 508)

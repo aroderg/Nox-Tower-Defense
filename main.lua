@@ -63,6 +63,7 @@ function love.load()
         img_tower_polaris_base = love.graphics.newImage("assets/tower_polaris_base.png")
         img_tower_polaris_medium = love.graphics.newImage("assets/tower_polaris_medium.png")
         img_tower_polaris_inner = love.graphics.newImage("assets/tower_polaris_inner.png")
+        img_tower_polaris_shield = love.graphics.newImage("assets/tower_polaris_shield.png")
         img_tower_projectile = love.graphics.newImage("assets/tower_projectile.png")
 
         --Enemies
