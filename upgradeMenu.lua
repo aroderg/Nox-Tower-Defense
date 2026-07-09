@@ -8,15 +8,15 @@ function drawUpgradeMenu()
         love.graphics.setColor(1, 1, 1, 1)
         love.graphics.rectangle("line", 860, 750, 200, 52, 2, 2)
         love.graphics.setColor(1, 1, 1, 1)
-        love.graphics.setFont(font_VeraBold16)
-        love.graphics.printf("Upgrades", 860, 767, 200, "center")
+        love.graphics.setFont(font_AfacadBold20)
+        love.graphics.printf("Upgrades", 860, 763, 200, "center")
         love.graphics.setLineStyle("rough")
         love.graphics.setLineWidth(1)
         love.graphics.setColor(0, 0, 0, 0.5)
         love.graphics.rectangle("fill", 0, 800, 1920, 280)
         love.graphics.setColor(1, 1, 1, 1)
-        love.graphics.setFont(font_VeraBold24)
-        love.graphics.print("Upgrades", 10, 810)
+        love.graphics.setFont(font_AfacadBold28)
+        love.graphics.print("Upgrades", 10, 804)
         love.graphics.setFont(font_Afacad24)
 
         if roundUpgradeSection == "ATK" then
@@ -24,7 +24,7 @@ function drawUpgradeMenu()
         end
         love.graphics.setLineStyle("smooth")
         love.graphics.rectangle("line", 1789, 801, 100, 40, 2, 2)
-        love.graphics.printf("ATK", 1789, 803, 100, "center")
+        love.graphics.printf("ATK", 1789, 800, 100, "center")
         love.graphics.setColor(0.8, 0.35, 0, 1)
         love.graphics.rectangle("fill", 1890, 800, 30, 93)
         love.graphics.setColor(1, 1, 1, 1)
@@ -49,7 +49,7 @@ function drawUpgradeMenu()
         love.graphics.rectangle("fill", 1890, 986, 30, 93)
 
         love.graphics.setLineStyle("rough")
-        love.graphics.setFont(font_VeraBold18)
+        love.graphics.setFont(font_AfacadBold20)
 
         local sectionColors = {
             ATK = {0.8, 0.35, 0, 1},
@@ -57,7 +57,7 @@ function drawUpgradeMenu()
             UTL = {0, 0.8, 0.4, 1}
         }
             love.graphics.setColor(sectionColors[roundUpgradeSection])
-            love.graphics.print("(" .. roundUpgradeSection .. ")", 145, 816)
+            love.graphics.print("(" .. roundUpgradeSection .. ")", 120, 812)
 
             for i,v in ipairs(upgradeModules["round"][roundUpgradeSection]) do
                 upgradeModuleFuncs.draw(upgradeModules["round"][roundUpgradeSection][i])
@@ -75,8 +75,8 @@ function drawUpgradeMenu()
         love.graphics.setColor(1, 1, 1, 1)
         love.graphics.rectangle("line", 860, 1030, 200, 52, 2, 2)
         love.graphics.setColor(1, 1, 1, 1)
-        love.graphics.setFont(font_VeraBold16)
-        love.graphics.printf("Upgrades", 860, 1047, 200, "center")
+        love.graphics.setFont(font_AfacadBold20)
+        love.graphics.printf("Upgrades", 860, 1042, 200, "center")
         love.graphics.setLineStyle("rough")
         love.graphics.setLineWidth(1)
     end

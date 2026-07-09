@@ -606,7 +606,7 @@ function resetRoundValues()
     }
 
     --[[ Gameplay properties ]]--
-    gameplay = {difficulty = player.difficulty.difficulty, wave = 1, gameSpeed = player.maxGameSpeed}
+    gameplay = {difficulty = player.difficulty.difficulty, wave = 100, gameSpeed = player.maxGameSpeed}
     misc = {
         copperBuffer = 0,
         silverBuffer = 0,
