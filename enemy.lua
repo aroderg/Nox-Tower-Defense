@@ -282,18 +282,16 @@ function enemyFuncs.killEnemy(s, damageSource)
         table.insert(exploderAoEs, exploderAoE)
     end
     player.stats.wave.enemiesKilled = player.stats.wave.enemiesKilled + 1
-    if damageSource == "spikedCrystal" then
-        player.stats.battle.spikedCrystals.enemiesKilled = player.stats.battle.spikedCrystals.enemiesKilled + 1
-        player.stats.save.spikedCrystals.enemiesKilled = player.stats.save.spikedCrystals.enemiesKilled + 1
-    elseif damageSource == "magmaPool" then
-        player.stats.battle.magmaTouch.enemiesKilled = player.stats.battle.magmaTouch.enemiesKilled + 1
-        player.stats.save.magmaTouch.enemiesKilled = player.stats.save.magmaTouch.enemiesKilled + 1
-    elseif damageSource == "lightningOrb" then
-        player.stats.battle.lightningOrb.enemiesKilled = player.stats.battle.lightningOrb.enemiesKilled + 1
-        player.stats.save.lightningOrb.enemiesKilled = player.stats.save.lightningOrb.enemiesKilled + 1
-    elseif damageSource == "disruptWave" then
-        player.stats.battle.disruptWave.enemiesKilled = player.stats.battle.disruptWave.enemiesKilled + 1
-        player.stats.save.disruptWave.enemiesKilled = player.stats.save.disruptWave.enemiesKilled + 1
+    local dmgSourceToStat = {
+        spikedCrystal = "spikedCrystals",
+        magmaPool = "magmaTouch",
+        lightningOrb = "lightningOrb",
+        disruptWave = "disruptWave"
+    }
+    if dmgSourceToStat[damageSource] then
+        local statToModify = dmgSourceToStat[damageSource]
+        player.stats.battle[statToModify].enemiesKilled = player.stats.battle[statToModify].enemiesKilled + 1
+        player.stats.save[statToModify].enemiesKilled = player.stats.save[statToModify].enemiesKilled + 1
     end
     table.remove(enemiesOnField, s)
 end
@@ -331,7 +329,7 @@ function enemyFuncs.damageEnemy(s, damage, crit, superCrit, damageSource)
     de.currentHP = de.currentHP - damage
     if de.type == "sentry" then
         sentryCurrentHP = de.currentHP
-    elseif type == "centurion" then
+    elseif de.type == "centurion" then
         centurionCurrentHP = de.currentHP
     end
     if de.currentHP <= 0 then
