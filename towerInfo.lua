@@ -1,7 +1,7 @@
 --- Draw the tower and enemy stats and misc. info while in a battle.
 function towerInfo_visual()
     -- Determine the Y offset based on whether the upgrades menu is open
-    local yOffset = player.menu.upgrades and 720 or 950
+    local yOffset = player.menu.upgrades and 719 or 999
 
     --[[ Print out tower info ]]--
     love.graphics.setColor(accentColors[player.misc.theme].towerInfo)

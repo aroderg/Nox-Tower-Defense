@@ -477,9 +477,9 @@ function love.draw()
                 displayAddedMessages("silver", misc.silverAdded)
             end
         end
-        love.graphics.draw(img_button_pause, 1870, 10)
+        love.graphics.draw(img_button_pause, 1870, 11)
         love.graphics.setLineWidth(2)
-        love.graphics.rectangle("line", 1870, 10, 40, 40, 2, 2)
+        love.graphics.rectangle("line", 1870, 11, 40, 40, 2, 2)
         love.graphics.setColor(1, 1, 1, 1)
         --[[ Print currency balances for Copper, Silver and Gold ]]--
         love.graphics.setColor(0, 0, 0, 0.5)
@@ -1296,13 +1296,13 @@ function love.mousepressed(x, y)
 
     if player.tower.currentHealth > 0 then
         --[[ Open/close upgrade menu ]]--
-        if x >= 860 and x <= 1060 and y >= 1030 and y <= 1080 and not player.menu.upgrades and not player.menu.paused and not player.menu.gameplayInfo and not player.menu.battleStats and player.location == "round" then
+        if x >= 860 and x <= 1060 and y >= 1000 and y <= 1070 and not player.menu.upgrades and not player.menu.paused and not player.menu.gameplayInfo and not player.menu.battleStats and player.location == "round" then
             player.menu.upgrades = true
-        elseif x >= 860 and x <= 1060 and y >= 750 and y <= 800 and player.menu.upgrades and not player.menu.paused and not player.menu.gameplayInfo and not player.menu.battleStats and player.location == "round" then
+        elseif x >= 860 and x <= 1060 and y >= 720 and y <= 790 and player.menu.upgrades and not player.menu.paused and not player.menu.gameplayInfo and not player.menu.battleStats and player.location == "round" then
             player.menu.upgrades = false
         end
 
-        if x >= 1870 and x <= 1910 and y >= 10 and y <= 50 and not player.menu.paused and not player.menu.gameplayInfo and not player.menu.battleStats and player.location == "round" then
+        if x >= 1870 and x <= 1910 and y >= 11 and y <= 51 and not player.menu.paused and not player.menu.gameplayInfo and not player.menu.battleStats and player.location == "round" then
             gameplay.gameSpeed = 0
             player.menu.paused = true
         end
