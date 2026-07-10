@@ -317,18 +317,16 @@ function enemyFuncs.damageEnemy(s, damage, crit, superCrit, damageSource)
         player.stats.save.supercritical.triggered = player.stats.save.supercritical.triggered + 1
         player.stats.save.supercritical.damageDealt = player.stats.save.supercritical.damageDealt + math.min(damage, de.currentHP)
     end
-    if damageSource == "spikedCrystal" then
-        player.stats.battle.spikedCrystals.damageDealt = player.stats.battle.spikedCrystals.damageDealt + math.min(damage, de.currentHP)
-        player.stats.save.spikedCrystals.damageDealt = player.stats.save.spikedCrystals.damageDealt + math.min(damage, de.currentHP)
-    elseif damageSource == "magmaPool" then
-        player.stats.battle.magmaTouch.damageDealt = player.stats.battle.magmaTouch.damageDealt + math.min(damage, de.currentHP)
-        player.stats.save.magmaTouch.damageDealt = player.stats.save.magmaTouch.damageDealt + math.min(damage, de.currentHP)
-    elseif damageSource == "lightningOrb" then
-        player.stats.battle.lightningOrb.damageDealt = player.stats.battle.lightningOrb.damageDealt + math.min(damage, de.currentHP)
-        player.stats.save.lightningOrb.damageDealt = player.stats.save.lightningOrb.damageDealt + math.min(damage, de.currentHP)
-    elseif damageSource == "disruptWave" then
-        player.stats.battle.disruptWave.damageDealt = player.stats.battle.disruptWave.damageDealt + math.min(damage, de.currentHP)
-        player.stats.save.disruptWave.damageDealt = player.stats.save.disruptWave.damageDealt + math.min(damage, de.currentHP)
+    local dmgSourceToStat = {
+        spikedCrystal = "spikedCrystals",
+        magmaPool = "magmaTouch",
+        lightningOrb = "lightningOrb",
+        disruptWave = "disruptWave"
+    }
+    if dmgSourceToStat[damageSource] then
+        local statToModify = dmgSourceToStat[damageSource]
+        player.stats.battle[statToModify].damageDealt = player.stats.battle[statToModify].damageDealt + math.min(damage, de.currentHP)
+        player.stats.save[statToModify].damageDealt = player.stats.save[statToModify].damageDealt + math.min(damage, de.currentHP)
     end
     de.currentHP = de.currentHP - damage
     if de.type == "sentry" then
