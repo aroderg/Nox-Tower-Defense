@@ -618,9 +618,9 @@ function inHub_mouse(x, y)
                 player.upgrades.unlocks.resourceBonus = unlockPanelFuncs.clickCheck(x, y, unlockPanels["resourceBonus"])
             end
 
-        elseif hubSection == "Nexus" then
+        elseif hubSection == "Nexus" and not player.menu.settings then
             --[[ If in Nexus, clicking the Alloy button starts the Electrum alloying process after spending 400 Silver and 2 Gold ]]--
-            if x >= 1655 and x <= 1795 and y >= 265 and y <= 295 and not player.menu.settings then
+            if x >= 1655 and x <= 1795 and y >= 265 and y <= 295 then
                 if player.currencies.currentSilver >= 600 and player.currencies.currentGold >= 3 and player.canClaim.electrum then
                     player.canClaim.electrum = false
                     player.timers.electrum = 0
@@ -630,7 +630,7 @@ function inHub_mouse(x, y)
             end
 
             --[[ Claiming tokens ]]--
-            if x >= 1455 and x <= 1645 and y >= 265 and y <= 295 and not player.menu.settings then
+            if x >= 1455 and x <= 1645 and y >= 265 and y <= 295 then
                 if player.canClaim.tokens then
                     player.currencies.currentTokens = player.currencies.currentTokens + 15
                     player.canClaim.tokens = false
@@ -645,7 +645,7 @@ function inHub_mouse(x, y)
             local currentProcessedNexusBuff = 1
             local buffUpgraded = false
             for i,v in pairs(refreshNexusBuffs()) do
-                if x >= buffGrid[i].x and x <= buffGrid[i].x + 140 and y >= buffGrid[i].y and y <= buffGrid[i].y + 40 and not player.menu.settings then
+                if x >= buffGrid[i].x and x <= buffGrid[i].x + 140 and y >= buffGrid[i].y and y <= buffGrid[i].y + 40 then
                     if player.currencies.currentTokens >= v.cost and v.currentLevel < v.maxLevel then
                         player.currencies.currentTokens = player.currencies.currentTokens - v.cost
                         player.upgrades.nexus[i].level = player.upgrades.nexus[i].level + 1
@@ -667,7 +667,7 @@ function inHub_mouse(x, y)
                 buffUpgraded = false
             end
 
-            if x >= 1155 and x <= 1275 and y >= 615 and y <= 665 and not player.menu.settings then
+            if x >= 1155 and x <= 1275 and y >= 615 and y <= 665 then
                 if player.currencies.currentElectrum >= player.modifiers.waveSkip.cost and player.modifiers.waveSkip.level < 10 then
                     if player.modifiers.waveSkip.unlocked then
                         player.currencies.currentElectrum = player.currencies.currentElectrum - player.modifiers.waveSkip.cost
@@ -682,7 +682,7 @@ function inHub_mouse(x, y)
                     end
                 upgradeModuleFuncs.load()
                 end
-            elseif x >= 1155 and x <= 1275 and y >= 755 and y <= 805 and not player.menu.settings then
+            elseif x >= 1155 and x <= 1275 and y >= 755 and y <= 805 then
                 if player.currencies.currentElectrum >= player.modifiers.hyperloop.cost and player.modifiers.hyperloop.level < 11 then
                     if player.modifiers.hyperloop.unlocked then
                         player.currencies.currentElectrum = player.currencies.currentElectrum - player.modifiers.hyperloop.cost
@@ -697,7 +697,7 @@ function inHub_mouse(x, y)
                     end
                 upgradeModuleFuncs.load()
                 end
-            elseif x >= 1155 and x <= 1275 and y >= 895 and y <= 945 and not player.menu.settings then
+            elseif x >= 1155 and x <= 1275 and y >= 895 and y <= 945 then
                 if player.currencies.currentElectrum >= player.modifiers.acceleration.cost and player.modifiers.acceleration.level < 20 then
                     if player.modifiers.acceleration.unlocked then
                         player.currencies.currentElectrum = player.currencies.currentElectrum - player.modifiers.acceleration.cost
@@ -712,7 +712,7 @@ function inHub_mouse(x, y)
                     end
                 upgradeModuleFuncs.load()
                 end
-            elseif x >= 1655 and x <= 1915 and y >= 465 and y <= 495 and not player.menu.settings and not player.menu.saveStats then
+            elseif x >= 1655 and x <= 1915 and y >= 465 and y <= 495 then
                 if player.idleTime >= 60 then
                     player.currencies.currentSilver = player.currencies.currentSilver + math.floor(player.storedGains.silver)
                     player.stats.save.silverEarned = player.stats.save.silverEarned + math.floor(player.storedGains.silver)
@@ -725,8 +725,8 @@ function inHub_mouse(x, y)
                     player.idleTime = player.idleTime % 60
                 end
             end
-        elseif hubSection == "Abilities" then
-            if x >= 1017 and x <= 1107 and y >= 253 and y <= 307 and not abilityFunctions.checkMenuDisplay() and not player.menu.rolledAbilityDisplay and not player.menu.settings then
+        elseif hubSection == "Abilities" and not player.menu.settings then
+            if x >= 1017 and x <= 1107 and y >= 253 and y <= 307 and not abilityFunctions.checkMenuDisplay() and not player.menu.rolledAbilityDisplay then
                 if player.currencies.currentTokens >= 60 then
                     if player.timers.abilityAssembly == 0 and not player.misc.abilityAssembling and not player.menu.settings then
                         player.currencies.currentTokens = player.currencies.currentTokens - 60
@@ -737,7 +737,7 @@ function inHub_mouse(x, y)
                         player.misc.tokensRefundable = true
                     end
                 end
-                if not player.misc.abilityAssembling and not player.menu.settings and player.timers.abilityAssembly >= player.cooldowns.abilityAssembly_current then
+                if not player.misc.abilityAssembling and player.timers.abilityAssembly >= player.cooldowns.abilityAssembly_current then
                     abilitiesFromRolledClass = {}
                     local rolledPercent = love.math.random() * 100
                     local chanceClassRange = {0, 0}
@@ -770,10 +770,10 @@ function inHub_mouse(x, y)
                     abilityFunctions.updateInternals()
                 end
             end
-            if x >= 920 and x <= 1000 and y >= 645 and y <= 680 and player.menu.rolledAbilityDisplay and not player.menu.settings then
+            if x >= 920 and x <= 1000 and y >= 645 and y <= 680 and player.menu.rolledAbilityDisplay then
                 player.menu.rolledAbilityDisplay = false
             end
-            if not player.menu.settings then
+            if not player.menu.rolledAbilityDisplay then
                 for i,v in pairs(internalAbilities) do
                     player.abilities[v.internalName].equipped = abilityFunctions.changeEquipState(x, y, abilityFunctions.calculateOffset(i) + 76, 530 + math.floor((i - 1) / 5) * 230, v)
                     player.menu.abilities[v.internalName] = abilityFunctions.showInfo.process(x, y, abilityFunctions.calculateOffset(i) + 5, 530 + math.floor((i - 1) / 5) * 230, v)
@@ -785,10 +785,10 @@ function inHub_mouse(x, y)
                 upgradeModuleFuncs.load()
             end
             abilityFunctions.updateInternals()
-        elseif hubSection == "Shops" then
-            if x >= 830 and x <= 950 and y >= 135 and y <= 175 and not player.menu.settings then
+        elseif hubSection == "Shops" and not player.menu.settings then
+            if x >= 830 and x <= 950 and y >= 135 and y <= 175 then
                 player.menu.shopSection = "Trading"
-            elseif x >= 970 and x <= 1090 and y >= 135 and y <= 175 and not player.menu.settings then
+            elseif x >= 970 and x <= 1090 and y >= 135 and y <= 175 then
                 player.menu.shopSection = "Jade Shop"
             end
             if player.menu.shopSection == "Trading" then

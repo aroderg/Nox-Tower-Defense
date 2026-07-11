@@ -471,7 +471,12 @@ function loadGame()
         else
             player.tradesBought.daily = loadedData.tradesBought.daily
         end
-        if math.floor(socket.gettime() / (7 * 24 * 60 * 60)) * (7 * 24 * 60 * 60) + 3 * 24 * 60 * 60 ~= loadedData.tradesBought.weeklySeed then
+        local nowTime = socket.gettime()
+        local weekDuration = 7 * 24 * 60 * 60
+        local weekOffset = 3 * 24 * 60 * 60
+        local currentWeeklySeed = (math.floor((nowTime - weekOffset) / weekDuration) * weekDuration) + weekOffset
+
+        if currentWeeklySeed ~= loadedData.tradesBought.weeklySeed then
             player.tradesBought.weekly = {false, false, false, false}
         else
             player.tradesBought.weekly = loadedData.tradesBought.weekly
