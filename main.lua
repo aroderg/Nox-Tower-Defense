@@ -234,6 +234,61 @@ function love.load()
     -- print(player.tradesBought.dailySeed .. "," .. math.floor(socket.gettime() / (24 * 60 * 60)) * (24 * 60 * 60) .. "," .. daily.day.startTime)
     -- print(player.tradesBought.weeklySeed .. "," .. math.floor(socket.gettime() / (7 * 24 * 60 * 60)) * (7 * 24 * 60 * 60) + 3 * 24 * 60 * 60 .. "," .. daily.week.startTime)
     daily.triggerUpgrades()
+    allOrbitals = {
+        "The space is waiting for you.",
+        "Novae stellae semper clare fulgent.", --Latin for "New stars always shine bright."
+        "Are we moving to other galaxies?",
+        "Neverending waves.",
+        "100% chance of alien invasion.",
+        "Lost in space, still going strong.",
+        "Spiraling up the upgrade path.",
+        "One tower should be enough.",
+        "Look, I'm an Orbital! So pretty!",
+        "Nice to meet you, " .. getUsername() .. ".",
+        "Defending the tower again, are we?",
+        player.currencies.currentElectrum .. " Electrum? What will you do with it?",
+        string.format("%s Silver... I'd just assume you found some floating debris.", notations.convertToLetterNotation(player.currencies.currentSilver)),
+        string.format("%s Gold... That is something pirates would be jealous of.", notations.convertToLetterNotation(player.currencies.currentGold)),
+        player.currencies.currentTokens .. " Tokens could be enough for a Nexus upgrade.",
+        "Why not check your Jade Shop, since you have " .. player.currencies.currentJade .. " Jade?",
+        "Running low on resources?",
+        "Look at that, a bright Aurora out there all by herself!",
+        "Ever wondered why they are called Meteors?",
+        "We found no use for space rocks.",
+        "Oh, you like tower defending, you're a tower defender O_O",
+        "Wave " .. player.bestWaves.d1 .. " is solid progress, let's see if you can go further.",
+        "Woah, you've cleared " .. player.stats.save.wavesBeaten .. " waves so far. Impressive!",
+        "They would prefer to connect sometime soon.",
+        "Those " .. (player.modifiers.acceleration.unlocked and "accelerated " or "") .. "space battles look gorgeous.",
+        "If you like offense, try the Berserker Kit. If you like defense, try the Tank Kit.",
+        "Don't waste your offline time! It caps at 6 hours.",
+        "Don't forget to check all the themes in the Settings.",
+        "The Lifesteal upgrades can really save a run sometimes.",
+        "The Hub looks great with the " .. settings_themeNames[player.misc.theme] .. " theme. Check the others out!",
+        "Disruptance Wave is great for crowd control.",
+        love.system.getOS() .. " user?",
+        "The harder the difficulty, the higher the Silver Multiplier!",
+        "Pressing Escape while in a battle? That's the instant pause button now.",
+        "If you see an Ability border glowing orange, it's maxed. Time to celebrate!",
+        "It's not truly idle if you're not gaining Silver passively, right?",
+        "Built with LOVE2d. I hope you enjoy it!",
+        "A lone tower against the cosmos. That's the Nox way.",
+        "Feeling impatient? Wave Skip Chance can get you through quickly.",
+        "You can open Settings and Stats right from the Hub, too.",
+        "Pssst.. there's an upgrade that gives you Silver in addition to Copper.",
+        "Splitting enemies coming Soon(TM).",
+        "Spawning more enemies just to get more loot? That's clever.",
+        "All daily trades done? Here's 3 extra Jade!",
+        "The grind never ends, it just loops back to the start.",
+        "That tower has probably collapsed hundreds of times just to be stronger.",
+        "Enhance your wave skips with the Wave Dash ability!",
+        "Also try The Perfect Tower 2!",
+        "Also try Project: Cooldown!",
+        "Also try The Tower - Idle Tower Defense!",
+        "Also try Infinitode 2!",
+        "Also try touching gras- actually nevermind stay here please.."
+    }
+    love.math.setRandomSeed(socket.gettime())
     orbital.update(true)
     -- love.frame = 0
 end
@@ -1292,6 +1347,9 @@ function love.update(dt)
 --     love.report = love.profiler.report(20)
 --     love.profiler.reset()
 --   end
+    if love.keyboard.isDown("t") then
+        orbital.update(true)
+    end
 end
 
 function love.mousepressed(x, y)
@@ -1411,6 +1469,7 @@ function love.mousepressed(x, y)
             resetRoundValues()
             upgradeModuleFuncs.load()
             player.idleGains.silver, player.idleGains.gold = reloadIdleGains()
+            love.math.setRandomSeed(socket.gettime())
             orbital.update(true)
         end
     end

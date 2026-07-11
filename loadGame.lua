@@ -17,6 +17,10 @@ function technical.deepMerge(toAlter, template)
     return toAlter
 end
 
+function getUsername()
+    return os.getenv("USERNAME") or os.getenv("USER") or "playername"
+end
+
 socket = require "socket"
 
 function loadGame()
@@ -532,8 +536,7 @@ function loadGame()
         currentUpdates = 0,
         UPS = 0
     }
-
-    player.misc.currentOrbital = 1
+    player.username = getUsername()
     --saveGame()
 end
 
