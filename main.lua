@@ -290,10 +290,40 @@ function love.load()
     }
     love.math.setRandomSeed(socket.gettime())
     orbital.update(true)
+    updateTowerStats()
     -- love.frame = 0
 end
 
 function math.dist(x1,y1, x2,y2) return ((x2-x1)^2+(y2-y1)^2)^0.5 end
+
+function updateTowerStats()
+    player.tower = {
+        attackDamage = upgradeModuleFuncs.reloadFormulae(player.upgrades.round.attackDamage.level)["science"]["ATK"][1][2],
+        attackSpeed = upgradeModuleFuncs.reloadFormulae(player.upgrades.round.attackSpeed.level)["science"]["ATK"][2][2],
+        critChance = upgradeModuleFuncs.reloadFormulae(player.upgrades.round.critChance.level)["science"]["ATK"][3][2],
+        critFactor = upgradeModuleFuncs.reloadFormulae(player.upgrades.round.critFactor.level)["science"]["ATK"][4][2],
+        range = upgradeModuleFuncs.reloadFormulae(player.upgrades.round.range.level)["science"]["ATK"][5][2],
+        clusterFireChance = upgradeModuleFuncs.reloadFormulae(player.upgrades.round.clusterFireChance.level)["science"]["ATK"][6][2],
+        clusterFireTargets = upgradeModuleFuncs.reloadFormulae(player.upgrades.round.clusterFireTargets.level)["science"]["ATK"][7][2],
+        clusterFireEfficiency = upgradeModuleFuncs.reloadFormulae(player.upgrades.round.clusterFireEfficiency.level)["science"]["ATK"][8][2],
+
+        health = upgradeModuleFuncs.reloadFormulae(player.upgrades.round.health.level)["science"]["VIT"][1][2],
+        currentHealth = upgradeModuleFuncs.reloadFormulae(player.upgrades.round.health.level)["science"]["VIT"][1][2],
+        regeneration = upgradeModuleFuncs.reloadFormulae(player.upgrades.round.regeneration.level)["science"]["VIT"][2][2],
+        resistance = upgradeModuleFuncs.reloadFormulae(player.upgrades.round.resistance.level)["science"]["VIT"][3][2],
+        shieldCooldown = upgradeModuleFuncs.reloadFormulae(player.upgrades.round.shieldCooldown.level)["science"]["VIT"][4][2],
+        shieldDuration = upgradeModuleFuncs.reloadFormulae(player.upgrades.round.shieldDuration.level)["science"]["VIT"][5][2],
+        meteorAmount = upgradeModuleFuncs.reloadFormulae(player.upgrades.round.meteorAmount.level)["science"]["VIT"][6][2],
+        meteorRPM = upgradeModuleFuncs.reloadFormulae(player.upgrades.round.meteorRPM.level)["science"]["VIT"][7][2],
+        lifestealChance = upgradeModuleFuncs.reloadFormulae(player.upgrades.round.lifestealChance.level)["science"]["VIT"][8][2],
+        lifestealPercent = upgradeModuleFuncs.reloadFormulae(player.upgrades.round.lifestealPercent.level)["science"]["VIT"][9][2],
+        
+        copperPerWave = upgradeModuleFuncs.reloadFormulae(player.upgrades.round.copperPerWave.level)["science"]["UTL"][1][2],
+        silverPerWave = upgradeModuleFuncs.reloadFormulae(player.upgrades.round.silverPerWave.level)["science"]["UTL"][2][2],
+        copperBonus = upgradeModuleFuncs.reloadFormulae(player.upgrades.round.copperBonus.level)["science"]["UTL"][3][2],
+        silverBonus = upgradeModuleFuncs.reloadFormulae(player.upgrades.round.silverBonus.level)["science"]["UTL"][4][2],
+    }
+end
 
 function reloadIdleGains()
     local silver = 0
