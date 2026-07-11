@@ -414,6 +414,7 @@ function inHub_visual()
             abilityFunctions.showInfo.draw(v)
         end
         if player.menu.rolledAbilityDisplay then
+            local abilityToDisplay = abilitiesFromRolledClass[rolledAbility]
             local roleColors = {
                 active = {0.98, 0.44, 0.24},
                 link = {0.5, 0.99, 0.52},
@@ -426,25 +427,23 @@ function inHub_visual()
             love.graphics.setColor(1, 1, 1, 1)
             love.graphics.setLineStyle("smooth")
             love.graphics.setLineWidth(1)
-            love.graphics.draw(abilitiesFromRolledClass[rolledAbility].preview, 675, 405)
+            love.graphics.draw(abilityToDisplay.preview, 675, 405)
             love.graphics.rectangle("line", 675, 405, 150, 100, 2, 2)
             love.graphics.rectangle("line", 660, 390, 600, 300, 2, 2)
             love.graphics.setFont(font_AfacadSemiBold24)
-            love.graphics.printf({{1, 1, 1, 1}, "Assembled: ", {0.75, 0.55, 1, 1}, abilitiesFromRolledClass[rolledAbility].name}, 825, 398, 435, "center")
+            love.graphics.printf({{1, 1, 1, 1}, "Assembled: ", {0.75, 0.55, 1, 1}, abilityToDisplay.name}, 825, 398, 435, "center")
             love.graphics.setFont(font_Afacad20)
-            love.graphics.printf(abilitiesFromRolledClass[rolledAbility].effect, 845, 435, 400, "left")
+            love.graphics.printf(abilityToDisplay.effect, 845, 435, 400, "left")
             local classColor =
-                abilitiesFromRolledClass[rolledAbility].class == "D" and {0.6, 0.5, 0.3, 1} or
-                abilitiesFromRolledClass[rolledAbility].class == "C" and {0.45, 0.66, 0.75, 1} or
-                abilitiesFromRolledClass[rolledAbility].class == "B" and {0.35, 0.8, 0.75, 1} or
-                abilitiesFromRolledClass[rolledAbility].class == "A" and {0.25, 0.9, 0.75, 1} or
+                abilityToDisplay.class == "D" and {0.6, 0.5, 0.3, 1} or
+                abilityToDisplay.class == "C" and {0.45, 0.66, 0.75, 1} or
+                abilityToDisplay.class == "B" and {0.35, 0.8, 0.75, 1} or
+                abilityToDisplay.class == "A" and {0.25, 0.9, 0.75, 1} or
                 {1, 1, 1, 1}
-            local amountColor =
-                abilitiesFromRolledClass[rolledAbility].amount < abilitiesFromRolledClass[rolledAbility].nextLevelRequirement - 1 and {1, 0.4, 0.35, 1} or
-                {0.35, 1, 0.5, 1}
-            love.graphics.printf({{1, 1, 1, 1}, "Class: ", classColor, abilitiesFromRolledClass[rolledAbility].class}, 675, 515, 150, "center")
-            love.graphics.printf({{1, 1, 1, 1}, "Amount: ", amountColor, abilitiesFromRolledClass[rolledAbility].amount + (abilitiesFromRolledClass[rolledAbility].unlocked and 1 or 0), {1, 1, 1, 1}, "/", {0.35, 1, 0.5, 1}, abilitiesFromRolledClass[rolledAbility].nextLevelRequirement}, 675, 535, 150, "center")
-            local roleTagColor = roleColors[(tostring(abilitiesFromRolledClass[rolledAbility].tags.role)):sub(1, 1):lower() .. (tostring(abilitiesFromRolledClass[rolledAbility].tags.role)):sub(2, -1)]
+            local amountColor = abilityToDisplay.amount + (abilityToDisplay.unlocked and 1 or 0) < abilityToDisplay.nextLevelRequirement and {1, 0.4, 0.35, 1} or {0.35, 1, 0.5, 1}
+            love.graphics.printf({{1, 1, 1, 1}, "Class: ", classColor, abilityToDisplay.class}, 675, 515, 150, "center")
+            love.graphics.printf({{1, 1, 1, 1}, "Amount: ", amountColor, abilityToDisplay.amount + (abilityToDisplay.unlocked and 1 or 0), {1, 1, 1, 1}, "/", {0.35, 1, 0.5, 1}, abilityToDisplay.nextLevelRequirement}, 675, 535, 150, "center")
+            local roleTagColor = roleColors[(tostring(abilityToDisplay.tags.role)):sub(1, 1):lower() .. (tostring(abilityToDisplay.tags.role)):sub(2, -1)]
             love.graphics.setColor(roleTagColor)
             love.graphics.rectangle("fill", 680, 485, 15, 15, 2, 2)
             love.graphics.setColor(1, 1, 1, 1)
