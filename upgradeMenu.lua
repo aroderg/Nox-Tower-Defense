@@ -87,42 +87,6 @@ end
 --- Process all button clicks while the Upgrade menu is opened in battle.
 ---@param x number Mouse cursor position (horizontal).
 ---@param y number Mouse cursor position (vertical).
-function upgradeMenu_mouse(x, y)
-    if player.menu.upgrades and not player.menu.paused and player.tower.currentHealth > 0 and not player.menu.gameplayInfo and not player.menu.battleStats then
-
-        local round = player.upgrades.round
-        local upgradeNames = {
-            ATK = {"attackDamage", "attackSpeed", "critChance", "critFactor", "range"},
-            VIT = {"health", "regeneration", "resistance", "shieldCooldown", "shieldDuration", "meteorAmount", "meteorRPM"},
-            UTL = {"copperPerWave", "silverPerWave", "copperBonus", "silverBonus"}
-        }
-        local upgradeSectionNames = {"ATK", "VIT", "UTL"}
-        for i=1,#upgradeSectionNames do
-            if roundUpgradeSection == upgradeSectionNames[i] then
-                for j=1,#upgradeNames[roundUpgradeSection] do
-                    if i == 2 and j == 1 then
-                        round[upgradeNames[roundUpgradeSection][j]].level, round[upgradeNames[roundUpgradeSection][j]].cost, player.tower.health = upgradeModuleFuncs.upgrade(x, y, upgradeModules["round"][roundUpgradeSection][j], upgradeModuleFuncs.reloadFormulae(upgradeModules["science"][roundUpgradeSection][j][8], upgradeModules["round"][roundUpgradeSection][j][8] + 1)["round"][roundUpgradeSection][j][1], upgradeModuleFuncs.reloadFormulae(upgradeModules["science"][roundUpgradeSection][j][8], upgradeModules["round"][roundUpgradeSection][j][8] + 1)["round"][roundUpgradeSection][j][2] * (player.abilities.JerelosBlessing.equipped and levelingInfo[7].healthIncrease[player.abilities.JerelosBlessing.level + 1] or 1))
-                    else
-                        round[upgradeNames[roundUpgradeSection][j]].level, round[upgradeNames[roundUpgradeSection][j]].cost, player.tower[upgradeNames[roundUpgradeSection][j]] = upgradeModuleFuncs.upgrade(x, y, upgradeModules["round"][roundUpgradeSection][j], upgradeModuleFuncs.reloadFormulae(upgradeModules["science"][roundUpgradeSection][j][8], upgradeModules["round"][roundUpgradeSection][j][8] + 1)["round"][roundUpgradeSection][j][1], upgradeModuleFuncs.reloadFormulae(upgradeModules["science"][roundUpgradeSection][j][8], upgradeModules["round"][roundUpgradeSection][j][8] + 1)["round"][roundUpgradeSection][j][2])
-                    end
-                end
-            end
-        end
-
-        -- Process upgrade section buttons and go to respective sections
-        if x >= 1890 and x <= 1920 and y >= 800 and y <= 893 then
-            roundUpgradeSection = "ATK"
-        elseif x >= 1890 and x <= 1920 and y >= 893 and y <= 986 then
-            roundUpgradeSection = "VIT"
-        elseif x >= 1890 and x <= 1920 and y >= 986 and y <= 1079 then
-            roundUpgradeSection = "UTL"
-        end
-    end
-end
-
---- Process all button clicks while the Upgrade menu is opened in battle.
----@param x number Mouse cursor position (horizontal).
----@param y number Mouse cursor position (vertical).
 function upgradeMenu_mouse_new(x, y)
     if player.menu.upgrades and not player.menu.paused and player.tower.currentHealth > 0 and not player.menu.gameplayInfo and not player.menu.battleStats then
 
@@ -154,12 +118,10 @@ function upgradeMenu_mouse_new(x, y)
         end
 
         -- Process upgrade section buttons and go to respective sections
-        if x >= 1890 and x <= 1920 and y >= 800 and y <= 893 then
-            roundUpgradeSection = "ATK"
-        elseif x >= 1890 and x <= 1920 and y >= 893 and y <= 986 then
-            roundUpgradeSection = "VIT"
-        elseif x >= 1890 and x <= 1920 and y >= 986 and y <= 1079 then
-            roundUpgradeSection = "UTL"
+        local sections = {"ATK", "VIT", "UTL"}
+        if x >= 1890 and x <= 1920 and y >= 800 and y <= 1079 then
+            local index = math.floor((y - 800) / 93) + 1
+            roundUpgradeSection = sections[index]
         end
     end
 end

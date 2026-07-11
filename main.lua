@@ -489,18 +489,28 @@ function love.draw()
         love.graphics.setLineWidth(2)
         love.graphics.rectangle("line", 11, 11, 119, 215, 3, 3)
         love.graphics.setFont(font_Afacad18)
-        love.graphics.draw(img_currency_copper, 18, 21)
-        love.graphics.printf(string.format("%s", notations.convertToLetterNotation(player.currencies.currentCopper, "brief")), 52, 25, 100, "left")
-        love.graphics.draw(img_currency_silver, 18, 53)
-        love.graphics.printf(string.format("%s", notations.convertToLetterNotation(player.currencies.currentSilver, "brief")), 52, 57, 100, "left")
-        love.graphics.draw(img_currency_gold, 18, 85)
-        love.graphics.printf(string.format("%s", notations.convertToLetterNotation(player.currencies.currentGold, "brief")), 52, 89, 100, "left")
-        love.graphics.draw(img_currency_electrum, 18, 117)
-        love.graphics.printf(string.format("%s", notations.convertToLetterNotation(player.currencies.currentElectrum, "brief")), 52, 121, 100, "left")
-        love.graphics.draw(img_currency_token, 18, 149)
-        love.graphics.printf(string.format("%s", notations.convertToLetterNotation(player.currencies.currentTokens, "brief")), 52, 153, 100, "left")
-        love.graphics.draw(img_currency_jade, 18, 181)
-        love.graphics.printf(string.format("%s", notations.convertToLetterNotation(player.currencies.currentJade, "brief")), 52, 185, 100, "left")
+        local currencyImages = {
+            img_currency_copper,
+            img_currency_silver,
+            img_currency_gold,
+            img_currency_electrum,
+            img_currency_token,
+            img_currency_jade
+        }
+        local currencyAmounts = {
+            player.currencies.currentCopper,
+            player.currencies.currentSilver,
+            player.currencies.currentGold,
+            player.currencies.currentElectrum,
+            player.currencies.currentTokens,
+            player.currencies.currentJade
+        }
+        for i=1,6 do
+            local currentImg = currencyImages[i]
+            local currentCurrency = currencyAmounts[i]
+            love.graphics.draw(currentImg, 18, 21 + 32 * (i - 1))
+            love.graphics.printf(string.format("%s", notations.convertToLetterNotation(currentCurrency, "brief")), 52, 25 + 32 * (i - 1), 100, "left")
+        end
         if #collapseParticles == 0 and player.tower.currentHealth <= 0 then
             menu_display_gameOver()
         end

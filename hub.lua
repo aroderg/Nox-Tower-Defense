@@ -104,16 +104,26 @@ function inHub_visual()
         love.graphics.setLineWidth(2)
         love.graphics.rectangle("line", 1800, 100, 119, 180, 3, 3)
         love.graphics.setFont(font_Afacad18)
-        love.graphics.draw(img_currency_silver, 1810, 110)
-        love.graphics.printf(string.format("%s", notations.convertToLetterNotation(player.currencies.currentSilver, "brief")), 1844, 114, 100, "left")
-        love.graphics.draw(img_currency_gold, 1810, 142)
-        love.graphics.printf(string.format("%s", notations.convertToLetterNotation(player.currencies.currentGold, "brief")), 1844, 146, 100, "left")
-        love.graphics.draw(img_currency_electrum, 1810, 174)
-        love.graphics.printf(string.format("%s", notations.convertToLetterNotation(player.currencies.currentElectrum, "brief")), 1844, 178, 100, "left")
-        love.graphics.draw(img_currency_token, 1810, 206)
-        love.graphics.printf(string.format("%s", notations.convertToLetterNotation(player.currencies.currentTokens, "brief")), 1844, 210, 100, "left")
-        love.graphics.draw(img_currency_jade, 1810, 238)
-        love.graphics.printf(string.format("%s", notations.convertToLetterNotation(player.currencies.currentJade, "brief")), 1844, 242, 100, "left")
+        local currencyImages = {
+            img_currency_silver,
+            img_currency_gold,
+            img_currency_electrum,
+            img_currency_token,
+            img_currency_jade
+        }
+        local currencyAmounts = {
+            player.currencies.currentSilver,
+            player.currencies.currentGold,
+            player.currencies.currentElectrum,
+            player.currencies.currentTokens,
+            player.currencies.currentJade
+        }
+        for i=1,5 do
+            local currentImg = currencyImages[i]
+            local currentCurrency = currencyAmounts[i]
+            love.graphics.draw(currentImg, 1810, 110 + 32 * (i - 1))
+            love.graphics.printf(string.format("%s", notations.convertToLetterNotation(currentCurrency, "brief")), 1844, 114 + 32 * (i - 1), 100, "left")
+        end
 
         love.graphics.setColor(1, 1, 1, 1)
         love.graphics.setLineStyle("smooth")
