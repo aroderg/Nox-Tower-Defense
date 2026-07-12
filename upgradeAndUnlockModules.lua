@@ -278,56 +278,58 @@ function upgradeModuleFuncs.upgrade(x, y, module, costFormula, valueFormula)
         precedingUpgrade = module.precedingUpgrade
     }
     local buttonXY = {257 - (350 - attributes.width), 3}
+    local upgradeSuccessful
     if x >= attributes.ux + buttonXY[1] and x <= attributes.ux + attributes.width - 3 and y >= attributes.uy + buttonXY[2] and y <= attributes.uy + attributes.height - 3 and attributes.level < attributes.maxLevel and attributes.precedingUpgrade ~= false then
-        if attributes.type == "round" then
-            if player.currencies.currentCopper >= math.floor(attributes.cost) then
-                local ub = audio_upgrade_bought:clone()
-                ub:setVolume(1 * player.settings.volume^2)
-                ub:play()
-                player.currencies.currentCopper = player.currencies.currentCopper - math.floor(attributes.cost)
-                attributes.level = attributes.level + 1
-                attributes.cost = math.floor(costFormula)
-                attributes.value = valueFormula
-                player.stats.battle.upgradesAcquired = player.stats.battle.upgradesAcquired + 1
-                if module == upgradeModules["round"]["VIT"][1] then
-                    local hpPercentage = player.tower.currentHealth / player.tower.health
-                    player.tower.currentHealth = attributes.value * math.min(hpPercentage, 1)
-                elseif module == upgradeModules["round"]["VIT"][6] then
-                    local offset = 0
-                    if player.tower.meteorAmount > 0 then
-                        offset = -1/2 * math.pi + meteors[1].angle
+        for i=1,player.misc.upgradeModifier do
+            if attributes.type == "round" then
+                if player.currencies.currentCopper >= math.floor(attributes.cost) then
+                    player.currencies.currentCopper = player.currencies.currentCopper - math.floor(attributes.cost)
+                    attributes.level = attributes.level + 1
+                    attributes.cost = math.floor(costFormula)
+                    attributes.value = valueFormula
+                    player.stats.battle.upgradesAcquired = player.stats.battle.upgradesAcquired + 1
+                    if module == upgradeModules["round"]["VIT"][1] then
+                        local hpPercentage = player.tower.currentHealth / player.tower.health
+                        player.tower.currentHealth = attributes.value * math.min(hpPercentage, 1)
+                    elseif module == upgradeModules["round"]["VIT"][6] then
+                        local offset = 0
+                        if player.tower.meteorAmount > 0 then
+                            offset = -1/2 * math.pi + meteors[1].angle
+                        end
+                        meteors = {}
+                        for i=1,attributes.value do
+                            createMeteor(((i-1) * (2 * math.pi) / attributes.value) - 0.5 * math.pi + offset)
+                        end
                     end
-                    meteors = {}
-                    for i=1,attributes.value do
-                        createMeteor(((i-1) * (2 * math.pi) / attributes.value) - 0.5 * math.pi + offset)
-                    end
+                    upgradeSuccessful = true
+                end
+
+            elseif attributes.type == "science" then
+                if player.currencies.currentSilver >= math.floor(attributes.cost) then
+                    player.currencies.currentSilver = player.currencies.currentSilver - math.floor(attributes.cost)
+                    attributes.level = attributes.level + 1
+                    attributes.cost = math.floor(costFormula)
+                    attributes.value = valueFormula
+                    player.stats.save.upgradesAcquired.science = player.stats.save.upgradesAcquired.science + 1
+                    upgradeSuccessful = true
+                end
+
+            elseif attributes.type == "jade" then
+                if player.currencies.currentJade >= math.floor(attributes.cost) then
+                    player.currencies.currentJade = player.currencies.currentJade - math.floor(attributes.cost)
+                    attributes.level = attributes.level + 1
+                    attributes.cost = math.floor(costFormula)
+                    attributes.value = valueFormula
+                    player.stats.save.upgradesAcquired.jade = player.stats.save.upgradesAcquired.jade + 1
+                    upgradeSuccessful = true
                 end
             end
-
-        elseif attributes.type == "science" then
-            if player.currencies.currentSilver >= math.floor(attributes.cost) then
-                local ub = audio_upgrade_bought:clone()
-                ub:setVolume(1 * player.settings.volume^2)
-                ub:play()
-                player.currencies.currentSilver = player.currencies.currentSilver - math.floor(attributes.cost)
-                attributes.level = attributes.level + 1
-                attributes.cost = math.floor(costFormula)
-                attributes.value = valueFormula
-                player.stats.save.upgradesAcquired.science = player.stats.save.upgradesAcquired.science + 1
-            end
-
-        elseif attributes.type == "jade" then
-            if player.currencies.currentJade >= math.floor(attributes.cost) then
-                local ub = audio_upgrade_bought:clone()
-                ub:setVolume(1 * player.settings.volume^2)
-                ub:play()
-                player.currencies.currentJade = player.currencies.currentJade - math.floor(attributes.cost)
-                attributes.level = attributes.level + 1
-                attributes.cost = math.floor(costFormula)
-                attributes.value = valueFormula
-                player.stats.save.upgradesAcquired.jade = player.stats.save.upgradesAcquired.jade + 1
-            end
         end
+    end
+    if upgradeSuccessful then
+        local ub = audio_upgrade_bought:clone()
+        ub:setVolume(1 * player.settings.volume^2)
+        ub:play()
     end
     return attributes.level, attributes.cost, attributes.value
 end

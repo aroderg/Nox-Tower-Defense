@@ -111,7 +111,7 @@ function upgradeMenu_mouse_new(x, y)
         for i=1,#upgradeSectionNames do
             if roundUpgradeSection == upgradeSectionNames[i] then
                 for j,w in pairs(upgradeNames[roundUpgradeSection]) do
-                    round[upgradeNames[roundUpgradeSection][j]].level, round[upgradeNames[roundUpgradeSection][j]].cost, player.tower[upgradeNames[roundUpgradeSection][j]] = upgradeModuleFuncs.upgrade(x, y, upgradeModules["round"][roundUpgradeSection][j], upgradeModuleFuncs.reloadFormulae(upgradeModules["science"][roundUpgradeSection][j][8], upgradeModules["round"][roundUpgradeSection][j][8] + 1)["round"][roundUpgradeSection][j][1], upgradeModuleFuncs.reloadFormulae(upgradeModules["science"][roundUpgradeSection][j][8], upgradeModules["round"][roundUpgradeSection][j][8] + 1)["round"][roundUpgradeSection][j][2])
+                    round[upgradeNames[roundUpgradeSection][j]].level, round[upgradeNames[roundUpgradeSection][j]].cost, player.tower[upgradeNames[roundUpgradeSection][j]] = upgradeModuleFuncs.upgrade(x, y, upgradeModules["round"][roundUpgradeSection][j], upgradeModuleFuncs.reloadFormulae(upgradeModules["science"][roundUpgradeSection][j][8], upgradeModules["round"][roundUpgradeSection][j][8] + player.misc.upgradeModifier)["round"][roundUpgradeSection][j][1], upgradeModuleFuncs.reloadFormulae(upgradeModules["science"][roundUpgradeSection][j][8], upgradeModules["round"][roundUpgradeSection][j][8] + player.misc.upgradeModifier)["round"][roundUpgradeSection][j][2])
                     upgradeModuleFuncs.load()
                 end
             end

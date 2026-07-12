@@ -1377,9 +1377,7 @@ function love.update(dt)
 --     love.report = love.profiler.report(20)
 --     love.profiler.reset()
 --   end
-    if love.keyboard.isDown("t") then
-        orbital.update(true)
-    end
+    player.misc.upgradeModifier = love.keyboard.isDown("lshift") and 10 or 1
 end
 
 function love.mousepressed(x, y)

@@ -601,7 +601,8 @@ function inHub_mouse(x, y)
                 local currentProcessedSection = upgradeSectionNames[i]
                 if not player.menu.saveStats then
                     for j,w in pairs(upgradeNames[currentProcessedSection]) do
-                        player.upgrades.science[upgradeNames[currentProcessedSection][j]].level, player.upgrades.science[upgradeNames[currentProcessedSection][j]].cost, player.tower[upgradeNames[currentProcessedSection][j]] = upgradeModuleFuncs.upgrade(x, y, upgradeModules["science"][currentProcessedSection][j], upgradeModuleFuncs.reloadFormulae(upgradeModules["science"][currentProcessedSection][j][8] + 1)["science"][currentProcessedSection][j][1], upgradeModuleFuncs.reloadFormulae(upgradeModules["science"][currentProcessedSection][j][8] + 1)["science"][currentProcessedSection][j][2])
+                        player.upgrades.science[upgradeNames[currentProcessedSection][j]].level, player.upgrades.science[upgradeNames[currentProcessedSection][j]].cost, player.tower[upgradeNames[currentProcessedSection][j]] = upgradeModuleFuncs.upgrade(x, y, upgradeModules["science"][currentProcessedSection][j], upgradeModuleFuncs.reloadFormulae(upgradeModules["science"][currentProcessedSection][j][8] + player.misc.upgradeModifier)["science"][currentProcessedSection][j][1], upgradeModuleFuncs.reloadFormulae(upgradeModules["science"][currentProcessedSection][j][8] + player.misc.upgradeModifier)["science"][currentProcessedSection][j][2])
+                        upgradeModuleFuncs.load()
                     end
                 end
             end
@@ -827,7 +828,7 @@ function inHub_mouse(x, y)
             elseif player.menu.shopSection == "Jade Shop" then
                 local upgradeNames = {"jadeBonus", "jadePerLogin", "autobroker", "silverGain", "silverEquivalent"}
                 for i=1,5 do
-                    player.upgrades.jade[upgradeNames[i]].level, player.upgrades.jade[upgradeNames[i]].cost, player.upgrades.jade[upgradeNames[i]].value = upgradeModuleFuncs.upgrade(x, y, upgradeModules["jade"][i], upgradeModuleFuncs.reloadFormulae(player.upgrades["jade"][upgradeNames[i]].level + 1)["jade"][i][1], upgradeModuleFuncs.reloadFormulae(player.upgrades["jade"][upgradeNames[i]].level + 1)["jade"][i][2])
+                    player.upgrades.jade[upgradeNames[i]].level, player.upgrades.jade[upgradeNames[i]].cost, player.upgrades.jade[upgradeNames[i]].value = upgradeModuleFuncs.upgrade(x, y, upgradeModules["jade"][i], upgradeModuleFuncs.reloadFormulae(player.upgrades["jade"][upgradeNames[i]].level + player.misc.upgradeModifier)["jade"][i][1], upgradeModuleFuncs.reloadFormulae(player.upgrades["jade"][upgradeNames[i]].level + player.misc.upgradeModifier)["jade"][i][2])
                     upgradeModuleFuncs.load()
                 end
             end
