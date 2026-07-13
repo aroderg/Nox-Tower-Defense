@@ -7,7 +7,7 @@ function enemyFuncs.load()
         table.insert(exploderAnimation, love.graphics.newQuad(i * 24, 0, 24, 24, 480, 24))
     end
     exploderAnimationFrame = 0
-    img_enemy_exploder = exploderAnimation[1]
+    imgs.enemies.exploder = exploderAnimation[1]
     enemyOffsets = {
         basic = 10,
         tank = 16,
@@ -347,7 +347,7 @@ function enemyFuncs.updateEnemyStats(difficulty, wave)
     local pendingEnemies = 0
     local tankSpawnChance = 0
     local swiftSpawnChance = 0
-    local exploderSpawnChance = 0
+    local exploderSpawnChance = 25
     local EBboost = player.abilities.enemyBalancing.equipped and levelingInfo[13].enemyAmount[player.abilities.enemyBalancing.level + 1] or 1
     if difficulty == 1 then
         --[[ Set stats for Level 0 enemies ]]--
@@ -355,8 +355,8 @@ function enemyFuncs.updateEnemyStats(difficulty, wave)
         pendingEnemies = 5 + math.floor(math.sqrt(6 * wave))
         enemyAttributes.health = (1.95 + 1/20 * (1.25 * wave)^2.5 - 0.037) * 1.2 ^ math.floor(wave / 100)
         enemyAttributes.attackDamage = (0.875 + wave^2.25 / 40 + 0.1 * wave^2) * 1.1 ^ math.floor(wave / 100)
-        tankSpawnChance = math.min(math.floor(math.log(wave^2, 10) * 100) / 100, 4)
-        swiftSpawnChance = math.min(math.floor(math.log(wave^3, 10) * 100) / 100, 6)
+        tankSpawnChance = 25--math.min(math.floor(math.log(wave^2, 10) * 100) / 100, 4)
+        swiftSpawnChance = 25--math.min(math.floor(math.log(wave^3, 10) * 100) / 100, 6)
     elseif difficulty == 2 then
         --[[ Set stats for Level α enemies ]]--
         enemyAttributes.spawnRate = 0.9 + (math.floor(0.12 * math.sqrt(wave) * 10)) / 10

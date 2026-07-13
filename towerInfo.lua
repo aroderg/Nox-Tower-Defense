@@ -21,7 +21,7 @@ function towerInfo_visual()
     love.graphics.setFont(font_AfacadBold20)
     love.graphics.printf(string.format("%s/%s", notations.convertToLetterNotation(player.tower.currentHealth, "precise"), notations.convertToLetterNotation(player.tower.health, "precise")), 10, yOffset + 38, 200, "center")
     
-    love.graphics.draw(img_icon_player_attack, 15, yOffset + 5)
+    love.graphics.draw(imgs.icons.player_attack, 15, yOffset + 5)
     love.graphics.setFont(font_Afacad20)
     love.graphics.printf(string.format("%s", notations.convertToLetterNotation(player.tower.attackDamage, "precise")), 42, yOffset + 2, 200, "left")
     love.graphics.setLineWidth(1)
@@ -33,10 +33,10 @@ function towerInfo_visual()
     love.graphics.setColor(1, 1, 1, 1)
     love.graphics.rectangle("line", 1690, yOffset, 220, 70)
     
-    love.graphics.draw(img_icon_enemy_health, 1695, yOffset + 5)
+    love.graphics.draw(imgs.icons.enemy_health, 1695, yOffset + 5)
     love.graphics.printf(string.format("%s", notations.convertToLetterNotation(enemyAttributes.health, "precise")), 1722, yOffset + 2, 200, "left")
     
-    love.graphics.draw(img_icon_enemy_attack, 1695, yOffset + 41)
+    love.graphics.draw(imgs.icons.enemy_attack, 1695, yOffset + 41)
     love.graphics.printf(string.format("%s", notations.convertToLetterNotation(enemyAttributes.attackDamage, "precise")), 1722, yOffset + 38, 200, "left")
 
     --[[ Print out gameplay info ]]--

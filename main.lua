@@ -2,6 +2,10 @@ function love.load()
     -- love.profiler = require('profile') 
     -- love.profiler.start()
     lume = require "lume"
+    require "assetLoad"
+    assetReload()
+    require "abilityObjects"
+    require "abilityFunctions"
     require "technical"
     require "notations"
     require "upgradeAndUnlockModules"
@@ -15,8 +19,6 @@ function love.load()
     require "particles"
     require "tooltips"
     require "gameOver"
-    require "abilityObjects"
-    require "abilityFunctions"
     require "enemy"
     loadGame()
     require "hub"
@@ -24,126 +26,8 @@ function love.load()
     hubSection = "Main"
     roundUpgradeSection = "ATK"
     background = "eclipse"
-    --- Reloads all images.
-    function assetReload()
-        --Backgrounds
-        img_background = love.graphics.newImage("assets/background.png")
-        img_background_stellar = love.graphics.newImage("assets/background_stellar.png")
-        img_background_eclipse = love.graphics.newImage("assets/background_eclipse.png")
-        img_background_nova = love.graphics.newImage("assets/background_nova.png")
-        img_background_aurora = love.graphics.newImage("assets/background_aurora.png")
-        img_background_polaris = love.graphics.newImage("assets/background_polaris.png")
-        --img_background_interstellar = love.graphics.newImage("assets/background_interstellar.png")
 
-        --Currencies
-        img_currency_copper = love.graphics.newImage("assets/currency_copper_new.png")
-        img_currency_silver = love.graphics.newImage("assets/currency_silver_new.png")
-        img_currency_gold = love.graphics.newImage("assets/currency_gold_new.png")
-        img_currency_electrum = love.graphics.newImage("assets/currency_electrum.png")
-        img_currency_token = love.graphics.newImage("assets/currency_token.png")
-        img_currency_token_big = love.graphics.newImage("assets/currency_token_big.png")
-        img_currency_jade = love.graphics.newImage("assets/currency_jade.png")
-
-        --Tower objects
-        img_tower_main = love.graphics.newImage("assets/tower_main.png")
-        img_tower_main_shielded = love.graphics.newImage("assets/tower_main_shielded.png")
-        img_tower_eclipse_sun = love.graphics.newImage("assets/tower_eclipse_sun.png")
-        img_tower_eclipse_sun2 = love.graphics.newImage("assets/tower_eclipse_sun2.png")
-        img_tower_eclipse_sun2_shielded = love.graphics.newImage("assets/tower_eclipse_sun2_shielded.png")
-        img_tower_eclipse_moon = love.graphics.newImage("assets/tower_eclipse_moon.png")
-        img_tower_eclipse_moon2 = love.graphics.newImage("assets/tower_eclipse_moon2.png")
-        img_tower_nova_static = love.graphics.newImage("assets/tower_nova_static.png")
-        img_tower_nova_outerLines = love.graphics.newImage("assets/tower_nova_outerLines.png")
-        img_tower_nova_branches = love.graphics.newImage("assets/tower_nova_branches.png")
-        img_tower_nova_shield = love.graphics.newImage("assets/tower_nova_shield.png")
-        img_tower_aurora_static = love.graphics.newImage("assets/tower_aurora_static.png")
-        img_tower_aurora_unshielded = love.graphics.newImage("assets/tower_aurora_unshielded.png")
-        img_tower_aurora_shield = love.graphics.newImage("assets/tower_aurora_shield.png")
-        img_tower_polaris = love.graphics.newImage("assets/tower_polaris.png")
-        img_tower_polaris_base = love.graphics.newImage("assets/tower_polaris_base.png")
-        img_tower_polaris_medium = love.graphics.newImage("assets/tower_polaris_medium.png")
-        img_tower_polaris_inner = love.graphics.newImage("assets/tower_polaris_inner.png")
-        img_tower_polaris_shield = love.graphics.newImage("assets/tower_polaris_shield.png")
-        img_tower_projectile = love.graphics.newImage("assets/tower_projectile.png")
-
-        --Enemies
-        img_enemy_basic = love.graphics.newImage("assets/enemy_basic.png")
-        img_enemy_tank = love.graphics.newImage("assets/enemy_tank.png")
-        img_enemy_swift = love.graphics.newImage("assets/enemy_swift.png")
-        img_enemy_sentry = love.graphics.newImage("assets/enemy_sentry.png")
-        img_enemy_centurion = love.graphics.newImage("assets/enemy_centurion.png")
-        img_enemy_exploder_static = love.graphics.newImage("assets/enemy_exploder_static.png")
-
-        --Icons
-        img_icon_enemy_health = love.graphics.newImage("assets/icon_enemy_health.png")
-        img_icon_enemy_attack = love.graphics.newImage("assets/icon_enemy_attack.png")
-        img_icon_player_attack = love.graphics.newImage("assets/icon_player_attack.png")
-
-        --Particles
-        img_particle_collapse = love.graphics.newImage("assets/particle_collapse.png")
-        img_particle_kill_enemy_basic = love.graphics.newImage("assets/particle_kill_enemy_basic.png")
-        img_particle_kill_enemy_tank = love.graphics.newImage("assets/particle_kill_enemy_tank.png")
-        img_particle_kill_enemy_swift = love.graphics.newImage("assets/particle_kill_enemy_swift.png")
-        img_particle_kill_enemy_sentry = love.graphics.newImage("assets/particle_kill_enemy_sentry.png")
-        img_particle_kill_enemy_centurion = love.graphics.newImage("assets/particle_kill_enemy_centurion.png")
-        img_particle_kill_enemy_exploder = love.graphics.newImage("assets/particle_kill_enemy_exploder.png")
-        img_particle_crystalExplosion = love.graphics.newImage("assets/particle_crystalExplosion.png")
-        img_particle_burn = love.graphics.newImage("assets/particle_burn.png")
-        img_particle_meteor = love.graphics.newImage("assets/particle_meteor.png")
-
-        --Buttons
-        img_button_pause = love.graphics.newImage("assets/button_pause.png")
-        img_button_arrowLeft = love.graphics.newImage("assets/button_arrowLeft.png")
-        img_button_arrowRight = love.graphics.newImage("assets/button_arrowRight.png")
-        img_button_arrowLeft_big = love.graphics.newImage("assets/button_arrowLeft_big.png")
-        img_button_arrowRight_big = love.graphics.newImage("assets/button_arrowRight_big.png")
-        img_button_questionMark = love.graphics.newImage("assets/button_questionMark.png")
-
-        img_meteor = love.graphics.newImage("assets/meteor.png")
-
-        --Ability objects
-        img_crystal = love.graphics.newImage("assets/crystal.png")
-        img_crystal_multilayered_l1 = love.graphics.newImage("assets/crystal_multilayered_l1.png")
-        img_crystal_multilayered_l2 = love.graphics.newImage("assets/crystal_multilayered_l2.png")
-        img_crystal_multilayered_l3 = love.graphics.newImage("assets/crystal_multilayered_l3.png")
-        img_crystal_aoe = love.graphics.newImage("assets/crystal_aoe.png")
-        img_rainforest = love.graphics.newImage("assets/rainforest.png")
-        img_ice_domain = love.graphics.newImage("assets/ice_domain.png")
-        img_magmaTouch_pool = love.graphics.newImage("assets/magmaTouch_pool.png")
-        img_lightningOrb = love.graphics.newImage("assets/lightningOrb.png")
-        img_lightningOrb_shadow = love.graphics.newImage("assets/lightningOrb_shadow.png")
-        img_lightningOrb_laser_var1 = love.graphics.newImage("assets/lightningOrb_laser_var1.png")
-        img_lightningOrb_laser_var2 = love.graphics.newImage("assets/lightningOrb_laser_var2.png")
-        img_lightningOrb_laser_var3 = love.graphics.newImage("assets/lightningOrb_laser_var3.png")
-        img_JerelosBlessing_vines_var1 = love.graphics.newImage("assets/JerelosBlessing_vines_var1.png")
-        img_JerelosBlessing_vines_var2 = love.graphics.newImage("assets/JerelosBlessing_vines_var2.png")
-        img_JerelosBlessing_vines_var3 = love.graphics.newImage("assets/JerelosBlessing_vines_var3.png")
-        img_JerelosBlessing_vines_var4 = love.graphics.newImage("assets/JerelosBlessing_vines_var4.png")
-        img_JerelosBlessing_water = love.graphics.newImage("assets/JerelosBlessing_water.png")
-        img_JerelosBlessing_waves_var1 = love.graphics.newImage("assets/JerelosBlessing_waves_var1.png")
-        img_JerelosBlessing_waves_var2 = love.graphics.newImage("assets/JerelosBlessing_waves_var2.png")
-        img_JerelosBlessing_waves_var3 = love.graphics.newImage("assets/JerelosBlessing_waves_var3.png")
-        img_JerelosBlessing_waves_var4 = love.graphics.newImage("assets/JerelosBlessing_waves_var4.png")
-        img_disruptWave = love.graphics.newImage("assets/disruptWave.png")
-
-        --Ability previews
-        img_ability_preview_spikedCrystals = love.graphics.newImage("assets/ability_preview_spikedCrystals.png")
-        img_ability_preview_scatterFire = love.graphics.newImage("assets/ability_preview_scatterFire.png")
-        img_ability_preview_burstFire = love.graphics.newImage("assets/ability_preview_burstFire.png")
-        img_ability_preview_rainforest = love.graphics.newImage("assets/ability_preview_rainforest.png")
-        img_ability_preview_iceDomain = love.graphics.newImage("assets/ability_preview_iceDomain.png")
-        img_ability_preview_magmaTouch = love.graphics.newImage("assets/ability_preview_magmaTouch.png")
-        img_ability_preview_lightningOrb = love.graphics.newImage("assets/ability_preview_lightningOrb.png")
-        img_ability_preview_JerelosBlessing = love.graphics.newImage("assets/ability_preview_JerelosBlessing.png")
-        img_ability_preview_berserkerKit = love.graphics.newImage("assets/ability_preview_berserkerKit.png")
-        img_ability_preview_sniperKit = love.graphics.newImage("assets/ability_preview_sniperKit.png")
-        img_ability_preview_tankKit = love.graphics.newImage("assets/ability_preview_tankKit.png")
-        img_ability_preview_supercritical = love.graphics.newImage("assets/ability_preview_supercritical.png")
-        img_ability_preview_disruptWave = love.graphics.newImage("assets/ability_preview_disruptWave.png")
-        img_ability_preview_enemyBalancing = love.graphics.newImage("assets/ability_preview_enemyBalancing.png")
-        img_ability_preview_waveDash = love.graphics.newImage("assets/ability_preview_waveDash.png")
-
-        --Audio
+    --Audio
         audio_enemy_kill = love.audio.newSource("assets/audio/enemy_kill.wav", "static")
         audio_enemy_kill_centurion = love.audio.newSource("assets/audio/enemy_kill_centurion.wav", "static")
         audio_enemy_kill_sentry = love.audio.newSource("assets/audio/enemy_kill_sentry.wav", "static")
@@ -158,16 +42,6 @@ function love.load()
         audio_rainforest_activation = love.audio.newSource("assets/audio/rainforest_activation.wav", "static")
         audio_lightningOrb_launch = love.audio.newSource("assets/audio/lightningOrb_launch.wav", "static")
         audio_upgrade_bought = love.audio.newSource("assets/audio/upgrade_bought.wav", "static")
-
-        --Music
-        -- audioST_Echoes = love.audio.newSource("assets/audio/Echoes.mp3", "stream")
-
-        --Quads
-        quads_enemy_exploder = love.graphics.newImage("assets/enemy_exploder_quads.png")
-
-        --Miscere
-        img_exploder_aoe = love.graphics.newImage("assets/exploder_aoe_big.png")
-    end
 
     --- Reloads all fonts.
     function fontReload()
@@ -225,7 +99,6 @@ function love.load()
     enemyFuncs.load()
     settings_particleMultipliers = {0, 0.25, 0.75, 1, 1.5, 2, 3, 5}
     difficultyMultipliers = {1, 1.4, 1.75, 2.1, 2.4}
-    assetReload()
     fontReload()
     resetRoundValues()
     towers.reload()
@@ -493,15 +366,15 @@ function love.draw()
             local x = math.floor(v.x * 4) / 4
             local y = math.floor(v.y * 4) / 4
             local enemyAssets = {
-                basic = img_enemy_basic,
-                tank = img_enemy_tank,
-                swift = img_enemy_swift,
-                sentry = img_enemy_sentry,
-                centurion = img_enemy_centurion,
-                exploder = img_enemy_exploder,
+                basic = imgs.enemies.basic,
+                tank = imgs.enemies.tank,
+                swift = imgs.enemies.swift,
+                sentry = imgs.enemies.sentry,
+                centurion = imgs.enemies.centurion,
+                exploder = imgs.enemies.exploder,
             }
             if v.type == "exploder" then
-                love.graphics.draw(quads_enemy_exploder, enemyAssets[v.type], x, y)
+                love.graphics.draw(imgs.misc.exploder_quads, enemyAssets[v.type], x, y)
             else
                 love.graphics.draw(enemyAssets[v.type], x, y)
             end
@@ -509,18 +382,17 @@ function love.draw()
         for i,v in ipairs(exploderAoEs) do
             local cs = math.min((v.timer / exploderExplodeTime)^0.5, 1)
             love.graphics.setColor(1, 1, 1, 1 - (v.timer / exploderExplodeTime))
-            love.graphics.draw(img_exploder_aoe, v.x + 12 - 108 * cs, v.y + 12 - 108 * cs, 0, cs, cs)
-            --love.graphics.draw(img_exploder_aoe, v.x, v.y, 0, cs, cs)
+            love.graphics.draw(imgs.misc.exploder_aoe, v.x + 12 - 108 * cs, v.y + 12 - 108 * cs, 0, cs, cs)
         end
         love.graphics.setColor(1, 1, 1, 1)
         for i,v in ipairs(projectilesOnField) do
-            love.graphics.draw(img_tower_projectile, v.x, v.y)
+            love.graphics.draw(imgs.towers.projectile, v.x, v.y)
         end
         love.graphics.setFont(font_VeraBold16)
         --[[ Display enemy and gameplay info ]]--
         --love.graphics.printf(string.format("Wave %d", gameplay_wave), 810, 1000, 300, "center")
         for i,v in ipairs(meteors) do
-            love.graphics.draw(img_meteor, v.x - 14, v.y - 14)
+            love.graphics.draw(imgs.misc.meteor, v.x - 14, v.y - 14)
         end
         if player.abilities.disruptWave.unlocked and player.abilities.disruptWave.equipped then
             local spreadTime = 0.4
@@ -529,7 +401,7 @@ function love.draw()
             local wavePosScale = math.min(timers.disruptWave, spreadTime) * (1/spreadTime)
             local fadeAlpha = math.min(math.max(timers.disruptWave - spreadTime, 0), fadeTime) * (0.8/fadeTime)
             love.graphics.setColor(1, 1, 1, player.stats.battle.gameTime > 1 and 0.8 - fadeAlpha or 0)
-            love.graphics.draw(img_disruptWave, 960 - player.tower.range * wavePosScale, 540 - player.tower.range * wavePosScale, 0, waveScale)
+            love.graphics.draw(imgs.abilities.disruptWave, 960 - player.tower.range * wavePosScale, 540 - player.tower.range * wavePosScale, 0, waveScale)
         end
         renderParticles()
         abilityObjects.spikedCrystal.draw()
@@ -540,7 +412,7 @@ function love.draw()
         towerInfo_visual()
         if player.misc.iceDomainActive then
             love.graphics.setColor(1, 1, 1, levelingInfo[4].density[player.abilities.iceDomain.level + 1] / 100)
-            love.graphics.draw(img_ice_domain, 960 - player.tower.range, 540 - player.tower.range, 0, (player.tower.range * 2) / 1024)
+            love.graphics.draw(imgs.abilities.ice_domain, 960 - player.tower.range, 540 - player.tower.range, 0, (player.tower.range * 2) / 1024)
         end
         love.graphics.setColor(1, 1, 1, 1)
         if sentryAlive then
@@ -562,7 +434,7 @@ function love.draw()
                 displayAddedMessages("silver", misc.silverAdded)
             end
         end
-        love.graphics.draw(img_button_pause, 1870, 11)
+        love.graphics.draw(imgs.buttons.pause, 1870, 11)
         love.graphics.setLineWidth(2)
         love.graphics.rectangle("line", 1870, 11, 40, 40, 2, 2)
         love.graphics.setColor(1, 1, 1, 1)
@@ -575,12 +447,12 @@ function love.draw()
         love.graphics.rectangle("line", 11, 11, 119, 215, 3, 3)
         love.graphics.setFont(font_Afacad18)
         local currencyImages = {
-            img_currency_copper,
-            img_currency_silver,
-            img_currency_gold,
-            img_currency_electrum,
-            img_currency_token,
-            img_currency_jade
+            imgs.currencies.copper,
+            imgs.currencies.silver,
+            imgs.currencies.gold,
+            imgs.currencies.electrum,
+            imgs.currencies.token,
+            imgs.currencies.jade
         }
         local currencyAmounts = {
             player.currencies.currentCopper,
@@ -622,7 +494,7 @@ function love.draw()
             local enemySize = {20, 32, 16, 44, 60, 24}
             local enemyStats = {
                 {"Enemy", "Health", "Damage/t", "Speed", "Chance"},
-                {img_enemy_basic, img_enemy_tank, img_enemy_swift, img_enemy_sentry, img_enemy_centurion, img_enemy_exploder_static},
+                {imgs.enemies.basic, imgs.enemies.tank, imgs.enemies.swift, imgs.enemies.sentry, imgs.enemies.centurion, imgs.enemies.exploder_static},
                 {enemyAttributes.health, enemyAttributes.health * 5, enemyAttributes.health * 0.75, enemyAttributes.health * (10 + math.floor((gameplay.wave - 10) / 10) * 2.5), enemyAttributes.health * 256, enemyAttributes.health},
                 {enemyAttributes.attackDamage, enemyAttributes.attackDamage * 1.2, enemyAttributes.attackDamage, enemyAttributes.attackDamage * 4, enemyAttributes.attackDamage * 10, enemyAttributes.attackDamage * 2.5},
                 {1, 0.9, 1.5, 0.75, 0.5},
@@ -659,7 +531,7 @@ function love.draw()
             love.graphics.setFont(font_Afacad20)
             love.graphics.printf({{1, 1, 1, 1}, "Enemy spawn cap: ", {1, 0.8, 0.5, 1}, string.format("%d", enemyAttributes.waveCap)}, 710, 730, 500, "center")
             love.graphics.printf({{1, 1, 1, 1}, "Enemy spawn rate: ", {1, 0.8, 0.5, 1}, string.format("%.1f", enemyAttributes.spawnRate), {1, 1, 1, 1}, "/s"}, 710, 755, 500, "center")
-            love.graphics.draw(img_button_arrowRight_big, 1210, 522)
+            love.graphics.draw(imgs.buttons.arrowRight_big, 1210, 522)
             if player.settings.tooltips then
                 tooltips.displayGameplayInfo()
             end
@@ -736,10 +608,10 @@ function love.draw()
         love.graphics.setFont(font_Afacad20)
         love.graphics.printf(string.format("%s (x%.2f)", settings_particleMultiplierNames[player.settings.particleMultiplierIndex], settings_particleMultipliers[player.settings.particleMultiplierIndex]), 710, 330, 500, "center")
         if player.settings.particleMultiplierIndex > 1 then
-            love.graphics.draw(img_button_arrowLeft, 820, 332)
+            love.graphics.draw(imgs.buttons.arrowLeft, 820, 332)
         end
         if player.settings.particleMultiplierIndex < 8 then
-            love.graphics.draw(img_button_arrowRight, 1076, 332)
+            love.graphics.draw(imgs.buttons.arrowRight, 1076, 332)
         end
 
         love.graphics.setFont(font_AfacadBold24)
@@ -747,9 +619,9 @@ function love.draw()
         love.graphics.setFont(font_Afacad20)
         love.graphics.printf(string.format("%s", not player.settings.waveSkipMessages and "Off" or player.settings.waveSkipMessages and "On"), 710, 410, 500, "center")
         if player.settings.waveSkipMessages then
-            love.graphics.draw(img_button_arrowLeft, 820, 412)
+            love.graphics.draw(imgs.buttons.arrowLeft, 820, 412)
         else
-            love.graphics.draw(img_button_arrowRight, 1076, 412)
+            love.graphics.draw(imgs.buttons.arrowRight, 1076, 412)
         end
 
         love.graphics.setFont(font_AfacadBold24)
@@ -757,10 +629,10 @@ function love.draw()
         love.graphics.setFont(font_Afacad20)
         love.graphics.printf(string.format("%s", player.settings.notation == settings_notationNames[1] and "KMBT" or player.settings.notation == settings_notationNames[2] and "Scientific" or "Alphabet"), 710, 490, 500, "center")
         if player.settings.notation ~= settings_notationNames[1] then
-            love.graphics.draw(img_button_arrowLeft, 820, 492)
+            love.graphics.draw(imgs.buttons.arrowLeft, 820, 492)
         end
         if player.settings.notation ~= settings_notationNames[3] then
-            love.graphics.draw(img_button_arrowRight, 1076, 492)
+            love.graphics.draw(imgs.buttons.arrowRight, 1076, 492)
         end
 
         love.graphics.setFont(font_AfacadBold24)
@@ -768,9 +640,9 @@ function love.draw()
         love.graphics.setFont(font_Afacad20)
         love.graphics.printf(string.format("%s", not player.settings.tooltips and "Off" or player.settings.tooltips and "On"), 710, 570, 500, "center")
         if player.settings.tooltips then
-            love.graphics.draw(img_button_arrowLeft, 820, 572)
+            love.graphics.draw(imgs.buttons.arrowLeft, 820, 572)
         else
-            love.graphics.draw(img_button_arrowRight, 1076, 572)
+            love.graphics.draw(imgs.buttons.arrowRight, 1076, 572)
         end
 
         love.graphics.setFont(font_AfacadBold24)
@@ -788,10 +660,10 @@ function love.draw()
         love.graphics.setFont(font_Afacad20)
         love.graphics.printf(settings_themeNames[player.misc.theme], 710, 730, 500, "center")
         if player.misc.theme ~= settings_themes[1] then
-            love.graphics.draw(img_button_arrowLeft, 820, 732)
+            love.graphics.draw(imgs.buttons.arrowLeft, 820, 732)
         end
         if player.misc.theme ~= settings_themes[6] then
-            love.graphics.draw(img_button_arrowRight, 1076, 732)
+            love.graphics.draw(imgs.buttons.arrowRight, 1076, 732)
         end
 
         love.graphics.setColor(accentColors[player.misc.theme].buttons)
@@ -864,7 +736,7 @@ function love.update(dt)
     if player.location == "round" then
         --[[ Update Exploders' animation ]]--
         exploderAnimationFrame = (exploderAnimationFrame + 14 * logicStep) % 11
-        img_enemy_exploder = exploderAnimation[math.floor(exploderAnimationFrame + 1)]
+        imgs.enemies.exploder = exploderAnimation[math.floor(exploderAnimationFrame + 1)]
         --[[ Automatically shoot the closest enemy in range ]]--
         if player.tower.currentHealth > 0 then
             if not player.menu.paused then

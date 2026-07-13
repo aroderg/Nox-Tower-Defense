@@ -34,18 +34,18 @@ function abilityObjects.spikedCrystal.draw()
     love.graphics.setColor(1, 1, 1, 1)
     for i,v in ipairs(spikedCrystals) do
         if v.state == "alive" then
-            love.graphics.draw(img_crystal_multilayered_l1, v.x + 11, v.y + 11, v.timer_lifespan / 5.75, 1, 1, 11, 11)
-            love.graphics.draw(img_crystal_multilayered_l2, v.x + 11, v.y + 11, v.timer_lifespan / 5.75, 1, 1, 11, 11)
-            love.graphics.draw(img_crystal_multilayered_l3, v.x + 11, v.y + 11, v.timer_lifespan / 5.75, 1, 1, 11, 11)
+            love.graphics.draw(imgs.abilities.crystal_l1, v.x + 11, v.y + 11, v.timer_lifespan / 5.75, 1, 1, 11, 11)
+            love.graphics.draw(imgs.abilities.crystal_l2, v.x + 11, v.y + 11, v.timer_lifespan / 5.75, 1, 1, 11, 11)
+            love.graphics.draw(imgs.abilities.crystal_l3, v.x + 11, v.y + 11, v.timer_lifespan / 5.75, 1, 1, 11, 11)
         else
             local cs = math.min(1 + v.timer_explosion * 7.5, 2)
             love.graphics.setColor(1, 1, 1, 1 - v.timer_explosion / 0.2)
-            love.graphics.draw(img_crystal_aoe, v.x + 11 - 24 * cs, v.y + 11 - 24 * cs, 0, cs * 0.75, cs * 0.75)
+            love.graphics.draw(imgs.abilities.crystal_aoe, v.x + 11 - 24 * cs, v.y + 11 - 24 * cs, 0, cs * 0.75, cs * 0.75)
             love.graphics.setColor(1, 1, 1, 1)
             love.graphics.setColor(1, 1, 1, 1 - v.timer_explosion / v.timer_explosionDuration)
-            love.graphics.draw(img_crystal_multilayered_l1, v.x + 11, v.y + 11, v.timer_explosion * 8, cs, 1, 11, 11)
-            love.graphics.draw(img_crystal_multilayered_l2, v.x + 11, v.y + 11, v.timer_explosion * 12, cs, 1, 11, 11)
-            love.graphics.draw(img_crystal_multilayered_l3, v.x + 11, v.y + 11, v.timer_explosion * 18, cs, 1, 11, 11)
+            love.graphics.draw(imgs.abilities.crystal_l1, v.x + 11, v.y + 11, v.timer_explosion * 8, cs, 1, 11, 11)
+            love.graphics.draw(imgs.abilities.crystal_l2, v.x + 11, v.y + 11, v.timer_explosion * 12, cs, 1, 11, 11)
+            love.graphics.draw(imgs.abilities.crystal_l3, v.x + 11, v.y + 11, v.timer_explosion * 18, cs, 1, 11, 11)
             love.graphics.setColor(1, 1, 1, 1)
         end
     end
@@ -121,7 +121,7 @@ end
 function abilityObjects.magmaPool.draw()
     for i,v in ipairs(magmaPools) do
         love.graphics.setColor(1, 1, 1, 1)
-        love.graphics.draw(img_magmaTouch_pool, v.x, v.y)
+        love.graphics.draw(imgs.abilities.magma_pool, v.x, v.y)
     end
 end
 
@@ -168,8 +168,8 @@ end
 function abilityObjects.lightningOrb.draw()
     for i,v in ipairs(lightningOrbs) do
         love.graphics.setColor(1, 1, 1, 1)
-        love.graphics.draw(img_lightningOrb_shadow, v.x - 24 - 9 * math.cos(v.angle), v.y - 24 - 9 * math.sin(v.angle))
-        love.graphics.draw(img_lightningOrb, v.x - 16, v.y - 16)
+        love.graphics.draw(imgs.abilities.lightningOrb_shadow, v.x - 24 - 9 * math.cos(v.angle), v.y - 24 - 9 * math.sin(v.angle))
+        love.graphics.draw(imgs.abilities.lightningOrb, v.x - 16, v.y - 16)
         love.graphics.setColor(0, 0.7, 0.45, 0.6)
         love.graphics.setLineStyle("smooth")
         love.graphics.setLineWidth(1)
@@ -210,9 +210,9 @@ end
 --- Draw all Lightning Orb Lasers and their variations.
 function abilityObjects.lightningOrb_laser.draw()
     local lightningOrb_laser_variations = {
-        img_lightningOrb_laser_var1,
-        img_lightningOrb_laser_var2,
-        img_lightningOrb_laser_var3
+        imgs.abilities.lightningOrb_laser1,
+        imgs.abilities.lightningOrb_laser2,
+        imgs.abilities.lightningOrb_laser3
     }
     for i,v in ipairs(lightningOrb_lasers) do
         love.graphics.draw(lightningOrb_laser_variations[v.var], v.x, v.y, v.angle, v.dist / 300, 1, 0, 8)
@@ -243,18 +243,18 @@ end
 function abilityObjects.JerelosBlessing.draw()
     love.graphics.setColor(1, 1, 1, 1)
     local waves = {
-        img_JerelosBlessing_waves_var1,
-        img_JerelosBlessing_waves_var2,
-        img_JerelosBlessing_waves_var3,
-        img_JerelosBlessing_waves_var4
+        imgs.abilities.waves1,
+        imgs.abilities.waves2,
+        imgs.abilities.waves3,
+        imgs.abilities.waves4
     }
     local vines = {
-        img_JerelosBlessing_vines_var1,
-        img_JerelosBlessing_vines_var2,
-        img_JerelosBlessing_vines_var3,
-        img_JerelosBlessing_vines_var4
+        imgs.abilities.vines1,
+        imgs.abilities.vines2,
+        imgs.abilities.vines3,
+        imgs.abilities.vines4
     }
-    love.graphics.draw(img_JerelosBlessing_water, 928, 508)
+    love.graphics.draw(imgs.abilities.water, 928, 508)
     love.graphics.draw(waves[misc.JerelosBlessingVisuals.waves], 928, 508)
     love.graphics.draw(vines[misc.JerelosBlessingVisuals.vines], 924, 504)
 end

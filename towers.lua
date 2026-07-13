@@ -8,9 +8,9 @@ function towers.reload()
     function towers.main()
         if player.tower.currentHealth > 0 then
             if not shieldActive then
-                love.graphics.draw(img_tower_main, 928, 508)
+                love.graphics.draw(imgs.towers.main, 928, 508)
             else
-                love.graphics.draw(img_tower_main_shielded, 928, 508)
+                love.graphics.draw(imgs.towers.main_shielded, 928, 508)
             end
         end
     end
@@ -26,16 +26,16 @@ function towers.reload()
                 if i then
                     startDelayTimer = startDelayTimer + logicStep
                 else
-                    love.graphics.draw(img_tower_eclipse_sun, 928, 508)
+                    love.graphics.draw(imgs.towers.eclipse_sun, 928, 508)
                 end
             else
                 if i then
                     frameExact = frameExact + logicStep * changeRate
                     frame = math.floor(frameExact)
                 else
-                    love.graphics.draw(img_tower_eclipse_sun, 928, 508)
+                    love.graphics.draw(imgs.towers.eclipse_sun, 928, 508)
                     love.graphics.setColor(1, 1, 1, 0.5 + math.sin((frame - 0.5 * maxFrames) / (maxFrames / math.pi)) * 0.5)
-                    love.graphics.draw(img_tower_eclipse_moon, 928, 508)
+                    love.graphics.draw(imgs.towers.eclipse_moon, 928, 508)
                     love.graphics.setColor(1, 1, 1, 1)
                 end
             end
@@ -55,9 +55,9 @@ function towers.reload()
                     startDelayTimer = startDelayTimer + logicStep
                 else
                     if not shieldActive then
-                        love.graphics.draw(img_tower_eclipse_sun2, 928, 508)
+                        love.graphics.draw(imgs.towers.eclipse_sun2, 928, 508)
                     else
-                        love.graphics.draw(img_tower_eclipse_sun2_shielded, 928, 508)
+                        love.graphics.draw(imgs.towers.eclipse_sun2_shielded, 928, 508)
                     end
                 end
             else
@@ -66,14 +66,14 @@ function towers.reload()
                     frame = math.floor(frameExact)
                 else
                     if not shieldActive then
-                        love.graphics.draw(img_tower_eclipse_sun2, 928, 508)
+                        love.graphics.draw(imgs.towers.eclipse_sun2, 928, 508)
                     else
-                        love.graphics.draw(img_tower_eclipse_sun2_shielded, 928, 508)
+                        love.graphics.draw(imgs.towers.eclipse_sun2_shielded, 928, 508)
                     end
-                    love.graphics.draw(img_tower_eclipse_moon2, 950 + math.sin(frame / (maxFrames / math.pi)) * 20, 530)
-                    love.graphics.draw(img_tower_eclipse_moon2, 950, 530 + math.sin(frame / (maxFrames / math.pi)) * 20)
-                    love.graphics.draw(img_tower_eclipse_moon2, 950, 530 - math.sin(frame / (maxFrames / math.pi)) * 20)
-                    love.graphics.draw(img_tower_eclipse_moon2, 950 - math.sin(frame / (maxFrames / math.pi)) * 20, 530)
+                    love.graphics.draw(imgs.towers.eclipse_moon2, 950 + math.sin(frame / (maxFrames / math.pi)) * 20, 530)
+                    love.graphics.draw(imgs.towers.eclipse_moon2, 950, 530 + math.sin(frame / (maxFrames / math.pi)) * 20)
+                    love.graphics.draw(imgs.towers.eclipse_moon2, 950, 530 - math.sin(frame / (maxFrames / math.pi)) * 20)
+                    love.graphics.draw(imgs.towers.eclipse_moon2, 950 - math.sin(frame / (maxFrames / math.pi)) * 20, 530)
                     love.graphics.setColor(1, 1, 1, 1)
                 end
             end
@@ -91,7 +91,7 @@ function towers.reload()
                 if i then
                     startDelayTimer = startDelayTimer + logicStep
                 else
-                    love.graphics.draw(img_tower_nova_static, 928, 508)
+                    love.graphics.draw(imgs.towers.nova_static, 928, 508)
                 end
             else
                 if i then
@@ -99,11 +99,11 @@ function towers.reload()
                     frame = math.floor(frameExact)
                 else
                     love.graphics.setColor(1, 1, 1, 1)
-                    love.graphics.draw(img_tower_nova_branches, 960, 540, -(frame*0.5/maxFrames) * 2 * math.pi, 1, 1, 32, 32)
-                    love.graphics.draw(img_tower_nova_outerLines, 960, 540, (frame/maxFrames) * 2 * math.pi, 1, 1, 32, 32)
-                    love.graphics.draw(img_tower_nova_static, 928, 508)
+                    love.graphics.draw(imgs.towers.nova_branches, 960, 540, -(frame*0.5/maxFrames) * 2 * math.pi, 1, 1, 32, 32)
+                    love.graphics.draw(imgs.towers.nova_outerLines, 960, 540, (frame/maxFrames) * 2 * math.pi, 1, 1, 32, 32)
+                    love.graphics.draw(imgs.towers.nova_static, 928, 508)
                     if shieldActive then
-                        love.graphics.draw(img_tower_nova_shield, 960, 540, (frame*0.28/maxFrames) * 2 * math.pi, 1, 1, 32, 32)
+                        love.graphics.draw(imgs.towers.nova_shield, 960, 540, (frame*0.28/maxFrames) * 2 * math.pi, 1, 1, 32, 32)
                     end
                 end
             end
@@ -121,7 +121,7 @@ function towers.reload()
                 if i then
                     startDelayTimer = startDelayTimer + logicStep
                 else
-                    love.graphics.draw(img_tower_aurora_static, 928, 508)
+                    love.graphics.draw(imgs.towers.aurora_static, 928, 508)
                 end
             else
                 if i then
@@ -129,12 +129,12 @@ function towers.reload()
                     frame = math.floor(frameExact)
                 end
                 love.graphics.setColor(1, 1, 1, 1)
-                love.graphics.draw(img_tower_aurora_static, 960, 540, math.cos(frame/maxFrames) * math.pi * 2, 1, 1, 32, 32)
+                love.graphics.draw(imgs.towers.aurora_static, 960, 540, math.cos(frame/maxFrames) * math.pi * 2, 1, 1, 32, 32)
                 love.graphics.setColor(1, 1, 1, 1)
                 if not shieldActive then
-                    love.graphics.draw(img_tower_aurora_unshielded, 928, 508)
+                    love.graphics.draw(imgs.towers.aurora_unshielded, 928, 508)
                 else
-                    love.graphics.draw(img_tower_aurora_shield, 928, 508)
+                    love.graphics.draw(imgs.towers.aurora_shield, 928, 508)
                 end
             end
         end
@@ -151,7 +151,7 @@ function towers.reload()
                 if i then
                     startDelayTimer = startDelayTimer + logicStep
                 else
-                    love.graphics.draw(img_tower_polaris_base, 928, 508)
+                    love.graphics.draw(imgs.towers.polaris_base, 928, 508)
                 end
             else
                 if i then
@@ -159,13 +159,13 @@ function towers.reload()
                     frame = math.floor(frameExact)
                 end
                 if not shieldActive then
-                    love.graphics.draw(img_tower_polaris_base, 928, 508)
+                    love.graphics.draw(imgs.towers.polaris_base, 928, 508)
                 else
-                    love.graphics.draw(img_tower_polaris_shield, 928, 508)
+                    love.graphics.draw(imgs.towers.polaris_shield, 928, 508)
                 end
-                love.graphics.draw(img_tower_polaris_medium, 928, 508)
+                love.graphics.draw(imgs.towers.polaris_medium, 928, 508)
                 love.graphics.setColor(1, 1, 1, 0.5 + math.sin((frame - 0.5 * maxFrames) / (maxFrames / math.pi)) * 0.5)
-                love.graphics.draw(img_tower_polaris_inner, 928, 508)
+                love.graphics.draw(imgs.towers.polaris_inner, 928, 508)
             end
         end
     end

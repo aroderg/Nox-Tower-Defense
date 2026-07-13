@@ -230,21 +230,21 @@ function upgradeModuleFuncs.draw(module)
         love.graphics.rectangle("line", attributes.ux + buttonXY[1], attributes.uy + buttonXY[2], attributes.width - buttonXY[1] - 3, attributes.height - buttonXY[2] * 2)
         if attributes.level < attributes.maxLevel then
             if attributes.type == "round" then
-                love.graphics.draw(img_currency_copper, attributes.ux + buttonXY[1] + 2, attributes.uy + (attributes.height - buttonXY[2] * 2 - 15) / 2, 0, 20/32)
+                love.graphics.draw(imgs.currencies.copper, attributes.ux + buttonXY[1] + 2, attributes.uy + (attributes.height - buttonXY[2] * 2 - 15) / 2, 0, 20/32)
                 if player.currencies.currentCopper >= attributes.cost then
                     love.graphics.setColor(1, 1, 1, 1)
                 else
                     love.graphics.setColor(1, 0.5, 0.5, 1)
                 end
             elseif attributes.type == "science" then
-                love.graphics.draw(img_currency_silver, attributes.ux + buttonXY[1] + 2, attributes.uy + (attributes.height - buttonXY[2] * 2 - 15) / 2, 0, 20/32)
+                love.graphics.draw(imgs.currencies.silver, attributes.ux + buttonXY[1] + 2, attributes.uy + (attributes.height - buttonXY[2] * 2 - 15) / 2, 0, 20/32)
                 if player.currencies.currentSilver >= attributes.cost then
                     love.graphics.setColor(1, 1, 1, 1)
                 else
                     love.graphics.setColor(1, 0.5, 0.5, 1)
                 end
             elseif attributes.type == "jade" then
-                love.graphics.draw(img_currency_jade, attributes.ux + buttonXY[1] + 2, attributes.uy + (attributes.height - buttonXY[2] * 2 - 15) / 2, 0, 20/32)
+                love.graphics.draw(imgs.currencies.jade, attributes.ux + buttonXY[1] + 2, attributes.uy + (attributes.height - buttonXY[2] * 2 - 15) / 2, 0, 20/32)
                 if player.currencies.currentJade >= attributes.cost then
                     love.graphics.setColor(1, 1, 1, 1)
                 else
@@ -362,7 +362,7 @@ function unlockPanelFuncs.draw(unlockPanel)
     love.graphics.rectangle("fill", attributes.ux + buttonXY[1], attributes.uy + buttonXY[2], attributes.width - buttonXY[1] - 3, attributes.height - buttonXY[2] * 2)
     love.graphics.setColor(1, 1, 1, 1)
     love.graphics.rectangle("line", attributes.ux + buttonXY[1], attributes.uy + buttonXY[2], attributes.width - buttonXY[1] - 3, attributes.height - buttonXY[2] * 2)
-    love.graphics.draw(img_currency_electrum, attributes.ux + buttonXY[1] + 4, attributes.uy + (attributes.height - buttonXY[2] * 2 - 15) / 2, 0, 20/32)
+    love.graphics.draw(imgs.currencies.electrum, attributes.ux + buttonXY[1] + 4, attributes.uy + (attributes.height - buttonXY[2] * 2 - 15) / 2, 0, 20/32)
     if player.currencies.currentElectrum >= attributes.cost then
         love.graphics.setColor(1, 1, 1, 1)
     else

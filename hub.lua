@@ -45,11 +45,11 @@ function inHub_visual()
     love.graphics.rectangle("line", 1800, 100, 119, 180, 3, 3)
     love.graphics.setFont(font_Afacad18)
     local currencyImages = {
-        img_currency_silver,
-        img_currency_gold,
-        img_currency_electrum,
-        img_currency_token,
-        img_currency_jade
+        imgs.currencies.silver,
+        imgs.currencies.gold,
+        imgs.currencies.electrum,
+        imgs.currencies.token,
+        imgs.currencies.jade
     }
     local currencyAmounts = {
         player.currencies.currentSilver,
@@ -115,10 +115,10 @@ function inHub_visual()
         love.graphics.setFont(font_Afacad18)
         love.graphics.printf({{1, 1, 1, 1}, "Silver Multiplier: ", {0.5, 1, 1, 1}, "x" .. difficultyMultipliers[player.difficulty.difficulty]}, 810, 799, 300, "center")
         if player.difficulty.difficulty > 1 then
-            love.graphics.draw(img_button_arrowLeft, 840, 746)
+            love.graphics.draw(imgs.buttons.arrowLeft, 840, 746)
         end
         if player.difficulty.difficulty < highestDiffUnlocked then
-            love.graphics.draw(img_button_arrowRight, 1056, 746)
+            love.graphics.draw(imgs.buttons.arrowRight, 1056, 746)
         end
         love.graphics.setColor(accentColors[player.misc.theme].buttons)
         love.graphics.rectangle("fill", 860, 900, 200, 80, 3, 3)
@@ -159,15 +159,15 @@ function inHub_visual()
         love.graphics.rectangle("fill", 1650, 100, 150, 200, 4, 4)
         love.graphics.setColor(1, 1, 1, 1)
         love.graphics.rectangle("line", 1650, 100, 150, 200, 4, 4)
-        love.graphics.draw(img_currency_silver, 1659, 110)
-        love.graphics.draw(img_currency_gold, 1759, 110)
+        love.graphics.draw(imgs.currencies.silver, 1659, 110)
+        love.graphics.draw(imgs.currencies.gold, 1759, 110)
         love.graphics.setFont(font_Afacad18)
         love.graphics.printf("600", 1655, 137, 40, "center")
         love.graphics.printf("3", 1755, 137, 40, "center")
         love.graphics.line(1676, 160, 1725, 190)
         love.graphics.line(1775, 160, 1725, 190)
         love.graphics.line(1725, 190, 1725, 207)
-        love.graphics.draw(img_currency_electrum, 1709, 205)
+        love.graphics.draw(imgs.currencies.electrum, 1709, 205)
         love.graphics.print("1", 1720, 230)
         love.graphics.rectangle("line", 1655, 265, 140, 30)
         love.graphics.setFont(font_Afacad20)
@@ -187,7 +187,7 @@ function inHub_visual()
         love.graphics.rectangle("line", 1450, 100, 200, 200, 4, 4)
         love.graphics.setFont(font_AfacadBold20)
         love.graphics.printf("Claim your tokens!", 1450, 100, 200, "center")
-        love.graphics.draw(img_currency_token_big, 1518, 136)
+        love.graphics.draw(imgs.currencies.token_big, 1518, 136)
         love.graphics.setFont(font_AfacadBold24)
         love.graphics.printf("15", 1500, 200, 100, "center")
         love.graphics.rectangle("line", 1455, 265, 190, 30)
@@ -231,7 +231,7 @@ function inHub_visual()
             love.graphics.rectangle("line", 730 + (i - 1) % 3 * 160, 295 + math.floor((i - 1) / 3) * 160, 140, 40)
             love.graphics.setFont(font_Afacad24)
             if v.currentLevel < v.maxLevel then
-                love.graphics.draw(img_currency_token, 735 + (i - 1) % 3 * 160, 300 + math.floor((i - 1) / 3) * 160)
+                love.graphics.draw(imgs.currencies.token, 735 + (i - 1) % 3 * 160, 300 + math.floor((i - 1) / 3) * 160)
                 love.graphics.print(v.cost, 767 + (i - 1) % 3 * 160, 299 + math.floor((i - 1) / 3) * 160)
             else
                 love.graphics.printf("Max", 730 + (i - 1) % 3 * 160, 299 + math.floor((i - 1) / 3) * 160, 140, "center")
@@ -281,7 +281,7 @@ function inHub_visual()
                 love.graphics.setFont(font_Afacad20)
                 love.graphics.printf(v.upgradeText, 1155, 589 + 140 * (i - 1), 120, "center")
                 if v.level < v.maxLevel then
-                    love.graphics.draw(img_currency_electrum, 1160, 630 + 140 * (i - 1), 0, 20/32)
+                    love.graphics.draw(imgs.currencies.electrum, 1160, 630 + 140 * (i - 1), 0, 20/32)
                     love.graphics.setFont(font_Afacad20)
                     love.graphics.print(notations.convertToLetterNotation(v.cost, "brief"), 1180, 626 + 140 * (i - 1))
                 else
@@ -290,7 +290,7 @@ function inHub_visual()
                 end
             else
                 love.graphics.printf("Unlock", 1155, 589 + 140 * (i - 1), 120, "center")
-                love.graphics.draw(img_currency_electrum, 1160, 630 + 140 * (i - 1), 0, 20/32)
+                love.graphics.draw(imgs.currencies.electrum, 1160, 630 + 140 * (i - 1), 0, 20/32)
                 love.graphics.print(notations.convertToLetterNotation(v.cost, "brief"), 1180, 626 + 140 * (i - 1))
             end
             love.graphics.setFont(font_Afacad20)
@@ -313,8 +313,8 @@ function inHub_visual()
         love.graphics.rectangle("fill", 1657, 330, (player.idleTime / player.idleTimeCap) * 253, 8)
         love.graphics.setFont(font_Afacad18)
         love.graphics.setColor(1, 1, 1, 1)
-        love.graphics.draw(img_currency_silver, 1657, 360)
-        love.graphics.draw(img_currency_gold, 1657, 392)
+        love.graphics.draw(imgs.currencies.silver, 1657, 360)
+        love.graphics.draw(imgs.currencies.gold, 1657, 392)
         love.graphics.printf(string.format("+%.2f/min -> %s", player.idleGains.silver, notations.convertToLetterNotation(player.storedGains.silver, "precise2")), 1691, 363, 300, "left")
         love.graphics.printf(string.format("+%.2f/min -> %.2f", player.idleGains.gold, player.storedGains.gold), 1691, 395, 300, "left")
         love.graphics.setLineStyle("rough")
@@ -325,7 +325,7 @@ function inHub_visual()
     elseif hubSection == "Abilities" then
         love.graphics.setFont(font_AfacadBold24)
         love.graphics.printf(string.format("Equipped: %d/%d", player.abilities.equipped, player.abilities.maxEquipped), 860, 200, 200, "center")
-        love.graphics.draw(img_button_questionMark, 1040, 205)
+        love.graphics.draw(imgs.buttons.questionMark, 1040, 205)
         love.graphics.setColor(accentColors[player.misc.theme].upgradeModule)
         love.graphics.rectangle("fill", 810, 250, 300, 60)
         love.graphics.setColor(1, 1, 1, 1)
@@ -343,7 +343,7 @@ function inHub_visual()
         love.graphics.setColor(1, 1, 1, 1)
         love.graphics.rectangle("line", 1017, 253, 90, 54)
         if not player.misc.abilityAssembling and player.timers.abilityAssembly == 0 then
-            love.graphics.draw(img_currency_token, 1021, 268, 0, 24/32)
+            love.graphics.draw(imgs.currencies.token, 1021, 268, 0, 24/32)
             love.graphics.print("60", 1045, 266)
         elseif player.misc.abilityAssembling and player.timers.abilityAssembly < player.cooldowns.abilityAssembly_current then
             love.graphics.setFont(font_Afacad16)
@@ -356,7 +356,7 @@ function inHub_visual()
         --love.graphics.print(tostring(player.misc.abilityAssembling), 100, 100)
         --love.graphics.print(tostring(player.canClaim.ability), 100, 130)
         --love.graphics.print(player.timers.abilityAssembly, 100, 160)
-        love.graphics.draw(img_button_questionMark, 1110, 268)
+        love.graphics.draw(imgs.buttons.questionMark, 1110, 268)
         if player.misc.abilityAssembling and player.timers.abilityAssembly < player.cooldowns.abilityAssembly_current then
             love.graphics.setColor(1, 0, 0, 1)
             love.graphics.rectangle("fill", 810, 320, 300, 8)
@@ -476,10 +476,10 @@ function inHub_visual()
         love.graphics.setColor(1, 1, 1, 1)
         love.graphics.printf("Jade Shop", 970, 138, 120, "center")
         local resourceImages = {
-            token = img_currency_token,
-            electrum = img_currency_electrum,
-            gold = img_currency_gold,
-            silver = img_currency_silver,
+            token = imgs.currencies.token,
+            electrum = imgs.currencies.electrum,
+            gold = imgs.currencies.gold,
+            silver = imgs.currencies.silver,
         }
         if player.menu.shopSection == "Trading" then
             love.graphics.setFont(font_AfacadBold24)

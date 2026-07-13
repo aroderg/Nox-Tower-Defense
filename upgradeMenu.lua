@@ -120,8 +120,8 @@ function upgradeMenu_mouse_new(x, y)
         -- Process upgrade section buttons and go to respective sections
         local sections = {"ATK", "VIT", "UTL"}
         if x >= 1890 and x <= 1920 and y >= 800 and y <= 1079 then
-            local index = math.floor((y - 800) / 93) + 1
-            roundUpgradeSection = sections[index]
+            local index = math.floor((y - 800) / 93)
+            roundUpgradeSection = sections[math.min(index + 1, 3)]
         end
     end
 end

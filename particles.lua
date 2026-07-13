@@ -92,12 +92,12 @@ end
 
 function renderParticles()
     local killParticleAppearances = {
-        basic = {img_particle_kill_enemy_basic, 4},
-        tank = {img_particle_kill_enemy_tank, 5},
-        swift = {img_particle_kill_enemy_swift, 3},
-        sentry = {img_particle_kill_enemy_sentry, 6},
-        centurion = {img_particle_kill_enemy_centurion, 8},
-        exploder = {img_particle_kill_enemy_exploder, 4},
+        basic = {imgs.particles.kill_basic, 4},
+        tank = {imgs.particles.kill_tank, 5},
+        swift = {imgs.particles.kill_swift, 3},
+        sentry = {imgs.particles.kill_sentry, 6},
+        centurion = {imgs.particles.kill_centurion, 8},
+        exploder = {imgs.particles.kill_exploder, 4},
     }
     --[[ Render the particles to be different depending on their origin ]]--
     for i,v in ipairs(killParticles) do
@@ -107,7 +107,7 @@ function renderParticles()
     for i,v in ipairs(collapseParticles) do
         local particleAlpha = player.settings.particleMultiplierIndex == 1 and 0 or 1-v.timer_fade/v.fadeTime
         love.graphics.setColor(1, 1, 1, particleAlpha)
-        love.graphics.draw(img_particle_collapse, v.x - 6, v.y - 6)
+        love.graphics.draw(imgs.particles.collapse, v.x - 6, v.y - 6)
     end
     love.graphics.setFont(font_Afacad16)
     for i,v in ipairs(hitTextParticles) do
@@ -117,15 +117,15 @@ function renderParticles()
     end
     for i,v in ipairs(meteorParticles) do
         love.graphics.setColor(1, 1, 1, 1-v.timer_fade/v.fadeTime)
-        love.graphics.draw(img_particle_meteor, v.x - 4, v.y - 4)
+        love.graphics.draw(imgs.particles.meteor, v.x - 4, v.y - 4)
     end
     for i,v in ipairs(crystalExplosionParticles) do
         love.graphics.setColor(1, 1, 1, 1-v.timer_fade/v.fadeTime)
-        love.graphics.draw(img_particle_crystalExplosion, v.x - 3, v.y - 3)
+        love.graphics.draw(imgs.particles.crystalExplosion, v.x - 3, v.y - 3)
     end
     for i,v in ipairs(burnParticles) do
         love.graphics.setColor(1, 1, 1, 0.2-(v.timer_fade/v.fadeTime)*0.2)
-        love.graphics.draw(img_particle_burn, v.x - 5, v.y - 5, 0, v.scale)
+        love.graphics.draw(imgs.particles.burn, v.x - 5, v.y - 5, 0, v.scale)
     end
 end
 
