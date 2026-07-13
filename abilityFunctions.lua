@@ -269,7 +269,7 @@ function abilityFunctions.updateInternals()
             tags = {condition = "Time", role = "Active", AoE = true, category = "VIT"},
             frequency = levelingInfo[1].frequency[player.abilities.spikedCrystals.level + 1] / player.upgrades.nexus.abilityCooldown.value,
             level = player.abilities.spikedCrystals.level,
-            preview = love.graphics.newImage("assets/tower_main.png"),
+            preview = imgs.previews.spikedCrystals,
             equipped = player.abilities.spikedCrystals.equipped,
             unlocked = player.abilities.spikedCrystals.unlocked,
             menu = player.menu.abilities.spikedCrystals,
