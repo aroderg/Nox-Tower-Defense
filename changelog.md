@@ -1,3 +1,15 @@
+## NoxTD 1.2.1 Polaris
+### ??? ??, 2026
+- Added an x10 purchase multiplier if the player is holding the Right Shift key.
+- Polaris tower has a visible shield while it is active.
+- Changed the Upgrade button and bossbars to match the theme colors.
+- Changed the default font in most places to Afacad Flux instead of Vera.
+- Moved Tower Info further down the screen.
+- Fixed Silver counting incorrectly in the Silver Added message.
+- Fixed the amount color being red in the rolled Ability menu even when the player had enough to enhance the Ability.
+- Fixed Ice Domain not being centered in the tower's range when active.
+- Various internal optimizations.
+
 # NoxTD 1.2 Polaris
 ### Jul 7th, 2026
 - Added Trades.

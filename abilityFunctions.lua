@@ -402,7 +402,7 @@ function abilityFunctions.updateInternals()
             unlocked = player.abilities.sniperKit.unlocked,
             menu = player.menu.abilities.sniperKit,
             amount = player.abilities.sniperKit.amount,
-            class = "B",
+            class = "C",
             nextLevelRequirement = levelingInfo[9].levelRequirements[player.abilities.sniperKit.level + 1],
             levelRequirements = levelingInfo[9].levelRequirements
         },
@@ -450,7 +450,7 @@ function abilityFunctions.updateInternals()
             unlocked = player.abilities.disruptWave.unlocked,
             menu = player.menu.abilities.disruptWave,
             amount = player.abilities.disruptWave.amount,
-            class = "B",
+            class = "C",
             nextLevelRequirement = levelingInfo[12].levelRequirements[player.abilities.disruptWave.level + 1],
             levelRequirements = levelingInfo[12].levelRequirements
         },

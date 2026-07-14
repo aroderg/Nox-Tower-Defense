@@ -127,6 +127,35 @@ function assetReload()
             imgs[i][j] = love.graphics.newImage("assets/" .. w)
         end
     end
+    local audioStrings = {
+        enemies = {
+            kill = "enemy_kill.wav",
+            kill_centurion = "enemy_kill_centurion.wav",
+            kill_sentry = "enemy_kill_sentry.wav",
+            exploder_explode = "exploder_explode.wav"
+        },
+        tower = {
+            scatterBurstFire = "tower_scatterFire-burstFire.wav",
+            damageTaken = "tower_damageTaken.wav",
+            damageAbsorbed = "tower_damageAbsorbed.wav",
+            collapse = "tower_collapse.wav",
+            fire = "tower_fire2.wav",
+            lifestealTrigger = "tower_lifesteal2.wav",
+        },
+        misc = {
+            crystal_explosion = "crystal_explode.wav",
+            rainforest_activation = "rainforest_activation.wav",
+            lightningOrb_launch = "lightningOrb_launch.wav",
+            upgradeBought = "upgrade_bought.wav"
+        }
+    }
+    audios = {}
+    for i,v in pairs(audioStrings) do
+        audios[i] = {}
+        for j,w in pairs(v) do
+            audios[i][j] = love.audio.newSource("assets/audio/" .. w, "static")
+        end
+    end
 end
 
 assetReload()

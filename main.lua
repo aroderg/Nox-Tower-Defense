@@ -27,22 +27,6 @@ function love.load()
     roundUpgradeSection = "ATK"
     background = "eclipse"
 
-    --Audio
-        audio_enemy_kill = love.audio.newSource("assets/audio/enemy_kill.wav", "static")
-        audio_enemy_kill_centurion = love.audio.newSource("assets/audio/enemy_kill_centurion.wav", "static")
-        audio_enemy_kill_sentry = love.audio.newSource("assets/audio/enemy_kill_sentry.wav", "static")
-        audio_enemy_kill_exploder = love.audio.newSource("assets/audio/exploder_explode.wav", "static")
-        audio_crystal_explosion = love.audio.newSource("assets/audio/crystal_explode.wav", "static")
-        audio_tower_scatterFire__burstFire = love.audio.newSource("assets/audio/tower_scatterFire-burstFire.wav", "static")
-        audio_tower_damageTaken = love.audio.newSource("assets/audio/tower_damageTaken.wav", "static")
-        audio_tower_damageAbsorbed = love.audio.newSource("assets/audio/tower_damageAbsorbed.wav", "static")
-        audio_tower_collapse = love.audio.newSource("assets/audio/tower_collapse.wav", "static")
-        audio_tower_fire = love.audio.newSource("assets/audio/tower_fire2.wav", "static")
-        audio_tower_lifestealTrigger = love.audio.newSource("assets/audio/tower_lifesteal2.wav", "static")
-        audio_rainforest_activation = love.audio.newSource("assets/audio/rainforest_activation.wav", "static")
-        audio_lightningOrb_launch = love.audio.newSource("assets/audio/lightningOrb_launch.wav", "static")
-        audio_upgrade_bought = love.audio.newSource("assets/audio/upgrade_bought.wav", "static")
-
     --- Reloads all fonts.
     function fontReload()
         --Vera Sans Font (regular)
@@ -272,6 +256,8 @@ end
 ---@param wavesSkipped number The amount of waves being skipped.
 function skipWave(wavesSkipped)
     gameplay.wave = gameplay.wave + wavesSkipped
+    misc.copperAdded = 0
+    misc.silverAdded = 0
 
     local oldCopperAmount = player.currencies.currentCopper
     local oldSilverAmount = player.currencies.currentSilver
@@ -295,7 +281,7 @@ function skipWave(wavesSkipped)
     player.stats.save.silverEarned = player.stats.save.silverEarned + silverEarned
 
     misc.copperAdded = misc.copperAdded + copperEarned
-    misc.silverAdded = misc.copperAdded + silverEarned
+    misc.silverAdded = misc.silverAdded + silverEarned
     player.misc.copperAddedMessage = true
     player.misc.silverAddedMessage = true
 
@@ -757,7 +743,7 @@ function love.update(dt)
                 if enemyFuncs.findClosestEnemyInRange(960, 540, player.tower.range)[1] then
                     timers.projectile = 0
                     if targetAmount == 1 then
-                        local f = audio_tower_fire:clone()
+                        local f = audios.tower.fire:clone()
                         f:setVolume(1 * player.settings.volume^2)
                         f:play()
                     end
@@ -771,7 +757,7 @@ function love.update(dt)
                         if scatterFireChance <= levelingInfo[2].frequency[player.abilities.scatterFire.level + 1] and player.abilities.scatterFire.unlocked and player.abilities.scatterFire.equipped then
                             local sx = love.math.random(50, 1870)
                             local sy = love.math.random(50, 1030)
-                            local sf = audio_tower_scatterFire__burstFire:clone()
+                            local sf = audios.tower.scatterBurstFire:clone()
                             sf:setVolume(1 * player.settings.volume^2)
                             sf:play()
                             for i=1,levelingInfo[2].quantity[player.abilities.scatterFire.level + 1] do
@@ -781,7 +767,7 @@ function love.update(dt)
                             player.stats.save.scatterFire.triggered = player.stats.save.scatterFire.triggered + 1
                         end
                         if burstFireChance <= levelingInfo[3].frequency[player.abilities.burstFire.level + 1] and player.abilities.burstFire.unlocked and player.abilities.burstFire.equipped then
-                            local bf = audio_tower_scatterFire__burstFire:clone()
+                            local bf = audios.tower.scatterBurstFire:clone()
                             bf:setVolume(1 * player.settings.volume^2)
                             bf:play()
                             for i=1,levelingInfo[3].quantity[player.abilities.burstFire.level + 1] do
@@ -852,7 +838,7 @@ function love.update(dt)
                         local oldHealth = player.tower.currentHealth
                         player.tower.currentHealth = math.min(player.tower.currentHealth + (math.min(damage, w.currentHP) * (player.tower.lifestealPercent / 100)), player.tower.health)
                         local healthGap = player.tower.currentHealth - oldHealth
-                        local ls = audio_tower_lifestealTrigger:clone()
+                        local ls = audios.tower.lifestealTrigger:clone()
                         ls:setVolume(1 * player.settings.volume^2)
                         ls:play()
                         player.stats.battle.lifesteal.triggered = player.stats.battle.lifesteal.triggered + 1
@@ -887,8 +873,8 @@ function love.update(dt)
             else
                 --[[ If an enemy is close enough, start attacking the tower ]]--
                 local damageReduction = not v.resistanceIgnore and 1 - player.tower.resistance / 100 or 1
-                local da = audio_tower_damageAbsorbed:clone()
-                local dk = audio_tower_damageTaken:clone()
+                local da = audios.tower.damageAbsorbed:clone()
+                local dk = audios.tower.damageTaken:clone()
                 if math.dist(v.x + enemyOffsets[v.type], v.y + enemyOffsets[v.type], 960, 540) < stopDistance[v.type] + 1 and player.tower.currentHealth > 0 and v.type ~= "exploder" then
                     v.timer_untilAttack = 0
                     if not v.shieldIgnore then
@@ -962,8 +948,8 @@ function love.update(dt)
             end
             if math.dist(v.x, v.y, 960, 540) <= 30 + (math.min(v.timer * 4, 0.75) * 108) then
                 local damageReduction = not v.resistanceIgnore and 1 - player.tower.resistance / 100 or 1
-                local da = audio_tower_damageAbsorbed:clone()
-                local dk = audio_tower_damageTaken:clone()
+                local da = audios.tower.damageAbsorbed:clone()
+                local dk = audios.tower.damageTaken:clone()
                 if not shieldActive then
                     player.tower.currentHealth = player.tower.currentHealth - enemyAttributes.attackDamage * 2.5 * damageReduction
                     player.stats.battle.damageTaken = player.stats.battle.damageTaken + enemyAttributes.attackDamage * 2.5 * damageReduction
@@ -1046,7 +1032,7 @@ function love.update(dt)
                     player.stats.save.silverEarned = player.stats.save.silverEarned + silverEarned
 
                     misc.copperAdded = misc.copperAdded + copperEarned
-                    misc.silverAdded = misc.copperAdded + silverEarned
+                    misc.silverAdded = misc.silverAdded + silverEarned
                     player.misc.copperAddedMessage = true
                     player.misc.silverAddedMessage = true
 

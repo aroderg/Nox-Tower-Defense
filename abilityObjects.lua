@@ -75,8 +75,8 @@ function abilityObjects.spikedCrystal.process(logicStep)
         }
         v.timer_lifespan = v.timer_lifespan + logicStep * gameplay.gameSpeed
         if v.state == "exploding" then
-            audio_crystal_explosion:setVolume(1 * player.settings.volume^2)
-            audio_crystal_explosion:play()
+            audios.misc.crystal_explosion:setVolume(1 * player.settings.volume^2)
+            audios.misc.crystal_explosion:play()
             if v.timer_explosion < v.timer_explosionDuration then
                 v.timer_explosion = v.timer_explosion + logicStep * gameplay.gameSpeed
             else
@@ -156,7 +156,7 @@ function abilityObjects.lightningOrb.spawn()
     lightningOrb.speed = 60
     lightningOrb.angle = love.math.random() * 2 * math.pi
     lightningOrb.range = levelingInfo[6].range[player.abilities.lightningOrb.level + 1]
-    local lo = audio_lightningOrb_launch:clone()
+    local lo = audios.misc.lightningOrb_launch:clone()
     lo:setVolume(1 * player.settings.volume^2)
     lo:play()
     player.stats.battle.lightningOrb.spawned = player.stats.battle.lightningOrb.spawned + 1

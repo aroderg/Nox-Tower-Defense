@@ -327,7 +327,7 @@ function upgradeModuleFuncs.upgrade(x, y, module, costFormula, valueFormula)
         end
     end
     if upgradeSuccessful then
-        local ub = audio_upgrade_bought:clone()
+        local ub = audios.misc.upgradeBought:clone()
         ub:setVolume(1 * player.settings.volume^2)
         ub:play()
     end

@@ -44,7 +44,7 @@ end
 function gameEnd()
     if not gameOver then
         gameplay.gameSpeed = 1
-        local tc = audio_tower_collapse:clone()
+        local tc = audios.tower.collapse:clone()
         tc:setVolume(1 * player.settings.volume^2)
         tc:play()
         for i=1,math.max(100*settings_particleMultipliers[player.settings.particleMultiplierIndex], 1) do

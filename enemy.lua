@@ -256,20 +256,20 @@ function enemyFuncs.killEnemy(s, damageSource)
     end
     if ke.type == "sentry" then
         sentryAlive = false
-        local s = audio_enemy_kill_sentry:clone()
+        local s = audios.enemies.kill_sentry:clone()
         s:setVolume(1 * player.settings.volume^2)
         s:play()
     elseif ke.type == "centurion" then
         centurionAlive = false
-        local c = audio_enemy_kill_centurion:clone()
+        local c = audios.enemies.kill_centurion:clone()
         c:setVolume(1 * player.settings.volume^2)
         c:play()
     elseif ke.type == "exploder" then
-        local e = audio_enemy_kill_exploder:clone()
+        local e = audios.enemies.exploder_explode:clone()
         e:setVolume(1 * player.settings.volume^2)
         e:play()
     else
-        local m = audio_enemy_kill:clone()
+        local m = audios.enemies.kill:clone()
         m:setVolume(1 * player.settings.volume^2)
         m:play()
     end
@@ -347,7 +347,7 @@ function enemyFuncs.updateEnemyStats(difficulty, wave)
     local pendingEnemies = 0
     local tankSpawnChance = 0
     local swiftSpawnChance = 0
-    local exploderSpawnChance = 25
+    local exploderSpawnChance = 0
     local EBboost = player.abilities.enemyBalancing.equipped and levelingInfo[13].enemyAmount[player.abilities.enemyBalancing.level + 1] or 1
     if difficulty == 1 then
         --[[ Set stats for Level 0 enemies ]]--
