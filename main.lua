@@ -453,33 +453,34 @@ function love.draw()
             for i=1,#enemyStats[1] do
                 love.graphics.printf(enemyStats[1][i], columnCenters[i] - wrapWidth / 2, rowCenters[1], wrapWidth, "center")
             end
+            love.graphics.setFont(fonts.Afacad.regular._20)
             for i=1,#enemyStats[2] do
                 love.graphics.draw(enemyStats[2][i], columnCenters[1] - 11, rowCenters[i+1], 0, 20 / enemySize[i])
-            end
-            love.graphics.setFont(fonts.Afacad.regular._20)
-            for j=1,#enemyStats[2] do
-                love.graphics.printf(notations.convertToLetterNotation(enemyStats[3][j], "precise"), columnCenters[2] - wrapWidth / 2, rowCenters[j+1] - 2, wrapWidth, "center")
-            end
-            for j=1,#enemyStats[2] do
-                love.graphics.printf(notations.convertToLetterNotation(enemyStats[4][j], "precise") .. (enemyStats[5][j] and string.format("/%.2fs", 1 / enemyStats[5][j]) or ""), columnCenters[3] - wrapWidth / 2, rowCenters[j+1] - 2, wrapWidth, "center")
-            end
-            for i=1,#enemyStats[2] do
                 love.graphics.printf(string.format("%.1fu", enemyStats[6][i]), columnCenters[4] - wrapWidth / 2, rowCenters[i+1] - 2, wrapWidth, "center")
-            end
-            for i=1,#enemyStats[2] do
                 love.graphics.printf(string.format("%.1f%%", enemyStats[7][i]), columnCenters[5] - wrapWidth / 2, rowCenters[i+1] - 2, wrapWidth, "center")
             end
+            for j=1,#enemyStats[2] do
+                love.graphics.printf(notations.convertToLetterNotation(enemyStats[3][j], "precise"), columnCenters[2] - wrapWidth / 2, rowCenters[j+1] - 2, wrapWidth, "center")
+                love.graphics.printf(notations.convertToLetterNotation(enemyStats[4][j], "precise") .. (enemyStats[5][j] and string.format("/%.2fs", 1 / enemyStats[5][j]) or ""), columnCenters[3] - wrapWidth / 2, rowCenters[j+1] - 2, wrapWidth, "center")
+            end
             love.graphics.setColor(accentColors[player.misc.theme].buttons)
-            love.graphics.rectangle("fill", 890, 790, 140, 40)
+            love.graphics.rectangle("fill", 815, 785, 140, 40)
             love.graphics.setColor(accentColors[player.misc.theme].buttonOutlines)
             love.graphics.setLineWidth(2)
-            love.graphics.rectangle("line", 890, 790, 140, 40, 2, 2)
+            love.graphics.rectangle("line", 815, 785, 140, 40, 2, 2)
             love.graphics.setFont(fonts.Afacad.regular._24)
             love.graphics.setColor(1, 1, 1, 1)
-            love.graphics.printf("Enemy Info", 870, 792, 180, "center")
+            love.graphics.printf("Enemy Info", 815, 787, 140, "center")
+            love.graphics.setColor(accentColors[player.misc.theme].buttons)
+            love.graphics.rectangle("fill", 965, 785, 140, 40)
+            love.graphics.setColor(accentColors[player.misc.theme].buttonOutlines)
+            love.graphics.setLineWidth(2)
+            love.graphics.rectangle("line", 965, 785, 140, 40, 2, 2)
+            love.graphics.setColor(1, 1, 1, 1)
+            love.graphics.printf("Back", 965, 787, 140, "center")
             love.graphics.setFont(fonts.Afacad.regular._20)
-            love.graphics.printf({{1, 1, 1, 1}, "Enemy spawn cap: ", {1, 0.8, 0.5, 1}, string.format("%d", enemyAttributes.waveCap)}, 710, 730, 500, "center")
-            love.graphics.printf({{1, 1, 1, 1}, "Enemy spawn rate: ", {1, 0.8, 0.5, 1}, string.format("%.1f", enemyAttributes.spawnRate), {1, 1, 1, 1}, "/s"}, 710, 755, 500, "center")
+            love.graphics.printf({{1, 1, 1, 1}, "Enemy spawn cap: ", {1, 0.8, 0.5, 1}, string.format("%d", enemyAttributes.waveCap)}, 710, 725, 500, "center")
+            love.graphics.printf({{1, 1, 1, 1}, "Enemy spawn rate: ", {1, 0.8, 0.5, 1}, string.format("%.1f", enemyAttributes.spawnRate), {1, 1, 1, 1}, "/s"}, 710, 750, 500, "center")
             love.graphics.draw(imgs.buttons.arrowRight_big, 1210, 522)
             if player.settings.tooltips then
                 tooltips.displayGameplayInfo()
@@ -1289,9 +1290,12 @@ function love.mousepressed(x, y)
             player.menu.gameplayInfo = false
             player.menu.battleStats = true
             statsMenus.resetScroll()
-        elseif x >= 890 and x <= 1030 and y >= 790 and y <= 830 and not player.menu.enemyInfo then
+        elseif x >= 815 and x <= 955 and y >= 785 and y <= 825 and not player.menu.enemyInfo then
             player.menu.enemyInfo = true
             statsMenus.resetScroll()
+        elseif x >= 965 and x <= 1105 and y >= 785 and y <= 825 and not player.menu.enemyInfo then
+            player.menu.gameplayInfo = false
+            gameplay.gameSpeed = player.maxGameSpeed
         elseif x >= 890 and x <= 1030 and y >= 820 and y <= 860 and player.menu.enemyInfo then
             player.menu.enemyInfo = false
         end
