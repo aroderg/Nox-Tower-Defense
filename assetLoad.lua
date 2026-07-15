@@ -156,6 +156,50 @@ function assetReload()
             audios[i][j] = love.audio.newSource("assets/audio/" .. w, "static")
         end
     end
+
+    local fontStrings = {
+        Afacad = {
+            regular = {
+                12, 16, 18, 20, 24, 28
+            },
+            medium = {
+                24
+            },
+            semibold = {
+                24, 28
+            },
+            bold = {
+                16, 18, 20, 24, 28, 32, 48
+            }
+        },
+        Vera = {
+            regular = {
+                12, 16
+            },
+            bold = {
+                16, 18, 24
+            }
+        }
+    }
+    local fontFoldersAndTypes = {
+        Afacad = {staticpart="AfacadFlux",folder="Afacad Flux",weights={regular="-Regular",medium="-Medium",semibold="-SemiBold",bold="-Bold"}},
+        Vera = {staticpart="Vera",folder="Vera",weights={regular="",bold="Bd"}}
+    }
+    fonts = {}
+    for i,v in pairs(fontStrings) do
+        for j,w in pairs(v) do
+            for k,x in pairs(w) do
+                local toIndex = "_" .. x
+                local curFont = fontFoldersAndTypes[i]
+                local folder = curFont.folder
+                local weight = curFont.weights[j]
+                local staticpart = curFont.staticpart
+                if not fonts[i] then fonts[i] = {} end
+                if not fonts[i][j] then fonts[i][j] = {} end
+                fonts[i][j][toIndex] = love.graphics.newFont("assets/fonts/" .. folder .. "/" .. staticpart .. weight .. ".ttf", x)
+            end
+        end
+    end
 end
 
 assetReload()

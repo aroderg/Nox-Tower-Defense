@@ -109,7 +109,7 @@ function renderParticles()
         love.graphics.setColor(1, 1, 1, particleAlpha)
         love.graphics.draw(imgs.particles.collapse, v.x - 6, v.y - 6)
     end
-    love.graphics.setFont(font_Afacad16)
+    love.graphics.setFont(fonts.Afacad.regular._16)
     for i,v in ipairs(hitTextParticles) do
         love.graphics.setColor(1, v.isCrit and 0.2 or 1, v.isCrit and 0.4 or 1, 1-v.timer_fade/v.fadeTime)
         --local hitText = v.isSupercrit and (string.format("%.1f (x%.2f)", v.damage, levelingInfo[11].supercriticalFactor[player.abilities.supercritical.level + 1])) or (v.damage)

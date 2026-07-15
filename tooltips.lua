@@ -18,7 +18,7 @@ function tooltips.general()
             love.graphics.setColor(0.15, 0.15, 0.15, 1)
             love.graphics.rectangle("line", mx, my - height - 2, width, height)
             love.graphics.setColor(0, 0, 0, 1)
-            love.graphics.setFont(font_Vera12)
+            love.graphics.setFont(fonts.Vera.regular._12)
             love.graphics.printf(desc, mx + 4, my - height, width, "left")
             if desc2 then
                 love.graphics.printf(desc2, mx + 4, my - height + 20, width, "left")
@@ -157,7 +157,7 @@ function tooltips.general()
                             totalTags = totalTags .. "Incompatible with: " .. totalIncompatibilities .. "\n"
                         end
                     end
-                    tooltips.appearance(250, font_Vera12:getHeight(totalTags) * table.len(v.tags) + 4, totalTags)
+                    tooltips.appearance(250, fonts.Vera.regular._12:getHeight(totalTags) * table.len(v.tags) + 4, totalTags)
                 end
             end
         end

@@ -206,7 +206,7 @@ function upgradeModuleFuncs.draw(module)
         love.graphics.setColor(0.1, 0.55, 0.98, 1)
         love.graphics.rectangle("line", attributes.ux, attributes.uy, attributes.width, attributes.height)
         love.graphics.setColor(1, 1, 1, 1)
-        love.graphics.setFont(font_Afacad20)
+        love.graphics.setFont(fonts.Afacad.regular._20)
         local buttonXY = {attributes.width - 90 - 3, 3}
         if module == upgradeModules["round"]["ATK"][5] or module == upgradeModules["science"]["ATK"][5] then
             love.graphics.print(string.format("%s: %s%s%s", attributes.name or "Upgrade Name", attributes.prefix or "", notations.convertToLetterNotation(attributes.value / 20, attributes.precision), "u", attributes.suffix or ""), attributes.ux + 5, attributes.uy + ((attributes.height - buttonXY[2] * 2) / 2) - 11)
@@ -350,7 +350,7 @@ function unlockPanelFuncs.draw(unlockPanel)
     love.graphics.rectangle("fill", attributes.ux, attributes.uy, attributes.width, attributes.height)
     love.graphics.setColor(0.1, 0.55, 0.98, 1)
     love.graphics.rectangle("line", attributes.ux, attributes.uy, attributes.width, attributes.height)
-    love.graphics.setFont(font_Afacad20)
+    love.graphics.setFont(fonts.Afacad.regular._20)
     love.graphics.setColor(1, 1, 1, 1)
     local buttonXY = {attributes.width - 90 - 3, 3}
     love.graphics.printf("Unlock " .. attributes.name .. " upgrades", attributes.ux, attributes.uy + ((attributes.height - buttonXY[2] * 2) / 2) - 11, attributes.width - buttonXY[2], "center")

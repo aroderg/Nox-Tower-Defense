@@ -18,11 +18,11 @@ function towerInfo_visual()
     
     love.graphics.setColor(1, 1, 1, 1)
     love.graphics.rectangle("line", 15, yOffset + 40, 190, 25, 2, 2)
-    love.graphics.setFont(font_AfacadBold20)
+    love.graphics.setFont(fonts.Afacad.bold._20)
     love.graphics.printf(string.format("%s/%s", notations.convertToLetterNotation(player.tower.currentHealth, "precise"), notations.convertToLetterNotation(player.tower.health, "precise")), 10, yOffset + 38, 200, "center")
     
     love.graphics.draw(imgs.icons.player_attack, 15, yOffset + 5)
-    love.graphics.setFont(font_Afacad20)
+    love.graphics.setFont(fonts.Afacad.regular._20)
     love.graphics.printf(string.format("%s", notations.convertToLetterNotation(player.tower.attackDamage, "precise")), 42, yOffset + 2, 200, "left")
     love.graphics.setLineWidth(1)
     love.graphics.setLineStyle("rough")

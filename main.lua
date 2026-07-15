@@ -1,12 +1,13 @@
 function love.load()
+    socket = require "socket"
     -- love.profiler = require('profile') 
     -- love.profiler.start()
     lume = require "lume"
+    require "technical"
     require "assetLoad"
     assetReload()
     require "abilityObjects"
     require "abilityFunctions"
-    require "technical"
     require "notations"
     require "upgradeAndUnlockModules"
     require "loadGame"
@@ -26,42 +27,6 @@ function love.load()
     hubSection = "Main"
     roundUpgradeSection = "ATK"
     background = "eclipse"
-
-    --- Reloads all fonts.
-    function fontReload()
-        --Vera Sans Font (regular)
-        font_Vera12 = love.graphics.newFont("assets/fonts/Vera/Vera.ttf", 12)
-        font_Vera16 = love.graphics.newFont("assets/fonts/Vera/Vera.ttf", 16)
-
-        --Vera Sans Font (bold)
-        font_VeraBold16 = love.graphics.newFont("assets/fonts/Vera/VeraBd.ttf", 16)
-        font_VeraBold18 = love.graphics.newFont("assets/fonts/Vera/VeraBd.ttf", 18)
-        font_VeraBold24 = love.graphics.newFont("assets/fonts/Vera/VeraBd.ttf", 24)
-
-        --Afacad Flux Font (regular)
-        font_Afacad12 = love.graphics.newFont("assets/fonts/Afacad Flux/AfacadFlux-Regular.ttf", 12)
-        font_Afacad16 = love.graphics.newFont("assets/fonts/Afacad Flux/AfacadFlux-Regular.ttf", 16)
-        font_Afacad18 = love.graphics.newFont("assets/fonts/Afacad Flux/AfacadFlux-Regular.ttf", 18)
-        font_Afacad20 = love.graphics.newFont("assets/fonts/Afacad Flux/AfacadFlux-Regular.ttf", 20)
-        font_Afacad24 = love.graphics.newFont("assets/fonts/Afacad Flux/AfacadFlux-Regular.ttf", 24)
-        font_Afacad28 = love.graphics.newFont("assets/fonts/Afacad Flux/AfacadFlux-Regular.ttf", 28)
-
-        --Afacad Flux Font (medium)
-        font_AfacadMedium24 = love.graphics.newFont("assets/fonts/Afacad Flux/AfacadFlux-Medium.ttf", 24)
-
-        --Afacad Flux Font (semi-bold)
-        font_AfacadSemiBold24 = love.graphics.newFont("assets/fonts/Afacad Flux/AfacadFlux-SemiBold.ttf", 24)
-        font_AfacadSemiBold28 = love.graphics.newFont("assets/fonts/Afacad Flux/AfacadFlux-SemiBold.ttf", 28)
-
-        --Afacad Flux Font (bold)
-        font_AfacadBold16 = love.graphics.newFont("assets/fonts/Afacad Flux/AfacadFlux-Bold.ttf", 16)
-        font_AfacadBold18 = love.graphics.newFont("assets/fonts/Afacad Flux/AfacadFlux-Bold.ttf", 18)
-        font_AfacadBold20 = love.graphics.newFont("assets/fonts/Afacad Flux/AfacadFlux-Bold.ttf", 20)
-        font_AfacadBold24 = love.graphics.newFont("assets/fonts/Afacad Flux/AfacadFlux-Bold.ttf", 24)
-        font_AfacadBold28 = love.graphics.newFont("assets/fonts/Afacad Flux/AfacadFlux-Bold.ttf", 28)
-        font_AfacadBold32 = love.graphics.newFont("assets/fonts/Afacad Flux/AfacadFlux-Bold.ttf", 32)
-        font_AfacadBold48 = love.graphics.newFont("assets/fonts/Afacad Flux/AfacadFlux-Bold.ttf", 48)
-    end
     --What range melee enemies can attack from at maximum
     TOWER_SIZE = 42
     --Maximum delta time, game slows down if FPS is lower than 1/MAX_STEP
@@ -83,7 +48,6 @@ function love.load()
     enemyFuncs.load()
     settings_particleMultipliers = {0, 0.25, 0.75, 1, 1.5, 2, 3, 5}
     difficultyMultipliers = {1, 1.4, 1.75, 2.1, 2.4}
-    fontReload()
     resetRoundValues()
     towers.reload()
     upgradeModuleFuncs.load()
@@ -308,11 +272,10 @@ end
 ---@param type string Currency to display the addition of.
 ---@param n number How much currency to display.
 function displayAddedMessages(type, n)
+    love.graphics.setFont(fonts.Afacad.bold._18)
     if type == "copper" then
-        love.graphics.setFont(font_AfacadBold18)
         love.graphics.print({{1, 1, 1, 1}, "+ ", {0.92, 0.45, 0.26}, notations.convertToLetterNotation(misc.copperAdded, "brief")}, 135, 24)
     elseif type == "silver" then
-        love.graphics.setFont(font_AfacadBold18)
         love.graphics.print({{1, 1, 1, 1}, "+ ", {0.94, 0.97, 0.95}, notations.convertToLetterNotation(misc.silverAdded, "brief")}, 135, 56)
     end
 end
@@ -340,7 +303,7 @@ function love.draw()
         love.graphics.setLineWidth(1.5)
         love.graphics.ellipse("line", 960, 540, TOWER_SIZE, TOWER_SIZE)
         love.graphics.setLineStyle("rough")
-        love.graphics.setFont(font_Vera16)
+        love.graphics.setFont(fonts.Vera.regular._16)
         if player.abilities.JerelosBlessing.equipped then
             abilityObjects.JerelosBlessing.draw()
         end
@@ -374,7 +337,7 @@ function love.draw()
         for i,v in ipairs(projectilesOnField) do
             love.graphics.draw(imgs.towers.projectile, v.x, v.y)
         end
-        love.graphics.setFont(font_VeraBold16)
+        love.graphics.setFont(fonts.Vera.bold._16)
         --[[ Display enemy and gameplay info ]]--
         --love.graphics.printf(string.format("Wave %d", gameplay_wave), 810, 1000, 300, "center")
         for i,v in ipairs(meteors) do
@@ -409,7 +372,7 @@ function love.draw()
         if player.settings.waveSkipMessages then
             if player.misc.waveSkipMessage then
                 love.graphics.setColor(1, 1, 1, 1)
-                love.graphics.setFont(font_Afacad20)
+                love.graphics.setFont(fonts.Afacad.regular._20)
                 local posY = player.menu.upgrades and 690 or 920
                 love.graphics.printf({{1, 1, 1, 1}, "Skipped ", {0.35, 1, 0.75, 1}, string.format("%d ", wavesSkipped), {1, 1, 1, 1}, "wave", {1, 1, 1, 1}, string.format("%s!", wavesSkipped > 1 and "s" or "")}, 1690, posY, 220, "center")
             end
@@ -431,7 +394,7 @@ function love.draw()
         love.graphics.setColor(1, 1, 1, 1)
         love.graphics.setLineWidth(2)
         love.graphics.rectangle("line", 11, 11, 119, 215, 3, 3)
-        love.graphics.setFont(font_Afacad18)
+        love.graphics.setFont(fonts.Afacad.regular._18)
         local currencyImages = {
             imgs.currencies.copper,
             imgs.currencies.silver,
@@ -465,9 +428,9 @@ function love.draw()
             love.graphics.rectangle("fill", 710, 240, 500, 600, 2, 2)
             love.graphics.setColor(1, 1, 1, 1)
             love.graphics.rectangle("line", 710, 240, 500, 600, 2, 2)
-            love.graphics.setFont(font_AfacadBold28)
+            love.graphics.setFont(fonts.Afacad.bold._28)
             love.graphics.printf(string.format("Gameplay Info - Wave %d", gameplay.wave), 710, 243, 500, "center")
-            love.graphics.setFont(font_AfacadBold20)
+            love.graphics.setFont(fonts.Afacad.bold._20)
             local columnCenters = {}
             for i=1,5 do
                 table.insert(columnCenters, 760 + (i - 1) * 100)
@@ -493,7 +456,7 @@ function love.draw()
             for i=1,#enemyStats[2] do
                 love.graphics.draw(enemyStats[2][i], columnCenters[1] - 11, rowCenters[i+1], 0, 20 / enemySize[i])
             end
-            love.graphics.setFont(font_Afacad20)
+            love.graphics.setFont(fonts.Afacad.regular._20)
             for j=1,#enemyStats[2] do
                 love.graphics.printf(notations.convertToLetterNotation(enemyStats[3][j], "precise"), columnCenters[2] - wrapWidth / 2, rowCenters[j+1] - 2, wrapWidth, "center")
             end
@@ -511,10 +474,10 @@ function love.draw()
             love.graphics.setColor(accentColors[player.misc.theme].buttonOutlines)
             love.graphics.setLineWidth(2)
             love.graphics.rectangle("line", 890, 790, 140, 40, 2, 2)
-            love.graphics.setFont(font_Afacad24)
+            love.graphics.setFont(fonts.Afacad.regular._24)
             love.graphics.setColor(1, 1, 1, 1)
             love.graphics.printf("Enemy Info", 870, 792, 180, "center")
-            love.graphics.setFont(font_Afacad20)
+            love.graphics.setFont(fonts.Afacad.regular._20)
             love.graphics.printf({{1, 1, 1, 1}, "Enemy spawn cap: ", {1, 0.8, 0.5, 1}, string.format("%d", enemyAttributes.waveCap)}, 710, 730, 500, "center")
             love.graphics.printf({{1, 1, 1, 1}, "Enemy spawn rate: ", {1, 0.8, 0.5, 1}, string.format("%.1f", enemyAttributes.spawnRate), {1, 1, 1, 1}, "/s"}, 710, 755, 500, "center")
             love.graphics.draw(imgs.buttons.arrowRight_big, 1210, 522)
@@ -536,7 +499,7 @@ function love.draw()
             love.graphics.setColor(1, 1, 1, 1)
             love.graphics.setLineWidth(1)
             love.graphics.rectangle("line", 710, 390, 500, 300, 3, 3)
-            love.graphics.setFont(font_AfacadBold32)
+            love.graphics.setFont(fonts.Afacad.bold._32)
             love.graphics.printf("Paused", 860, 400, 200, "center")
 
             love.graphics.setColor(accentColors[player.misc.theme].buttons)
@@ -544,7 +507,7 @@ function love.draw()
             love.graphics.setColor(accentColors[player.misc.theme].buttonOutlines)
             love.graphics.setLineWidth(2)
             love.graphics.rectangle("line", 890, 560, 140, 40, 2, 2)
-            love.graphics.setFont(font_Afacad24)
+            love.graphics.setFont(fonts.Afacad.regular._24)
             love.graphics.setColor(1, 1, 1, 1)
             love.graphics.printf("Settings", 870, 562, 180, "center")
 
@@ -553,7 +516,6 @@ function love.draw()
             love.graphics.setColor(accentColors[player.misc.theme].buttonOutlines)
             love.graphics.setLineWidth(2)
             love.graphics.rectangle("line", 810, 610, 140, 60, 2, 2)
-            love.graphics.setFont(font_Afacad24)
             love.graphics.setColor(1, 1, 1, 1)
             love.graphics.printf("Back to game", 810, 622, 140, "center")
 
@@ -562,7 +524,6 @@ function love.draw()
             love.graphics.setColor(accentColors[player.misc.theme].buttonOutlines)
             love.graphics.setLineWidth(2)
             love.graphics.rectangle("line", 970, 610, 140, 60, 2, 2)
-            love.graphics.setFont(font_Afacad24)
             love.graphics.setColor(1, 1, 1, 1)
             love.graphics.setColor(1, 0.2, 0.25, 1)
             love.graphics.printf("End Battle", 970, 622, 140, "center")
@@ -586,12 +547,12 @@ function love.draw()
         love.graphics.setLineWidth(1)
         love.graphics.rectangle("line", 710, 240, 500, 600, 3, 3)
         love.graphics.setColor(1, 1, 1, 1)
-        love.graphics.setFont(font_AfacadBold32)
+        love.graphics.setFont(fonts.Afacad.bold._32)
         love.graphics.printf("Settings", 860, 250, 200, "center")
 
-        love.graphics.setFont(font_AfacadBold24)
+        love.graphics.setFont(fonts.Afacad.bold._24)
         love.graphics.printf("Particles", 710, 300, 500, "center")
-        love.graphics.setFont(font_Afacad20)
+        love.graphics.setFont(fonts.Afacad.regular._20)
         love.graphics.printf(string.format("%s (x%.2f)", settings_particleMultiplierNames[player.settings.particleMultiplierIndex], settings_particleMultipliers[player.settings.particleMultiplierIndex]), 710, 330, 500, "center")
         if player.settings.particleMultiplierIndex > 1 then
             love.graphics.draw(imgs.buttons.arrowLeft, 820, 332)
@@ -600,9 +561,9 @@ function love.draw()
             love.graphics.draw(imgs.buttons.arrowRight, 1076, 332)
         end
 
-        love.graphics.setFont(font_AfacadBold24)
+        love.graphics.setFont(fonts.Afacad.bold._24)
         love.graphics.printf("Wave Skip Messages", 710, 380, 500, "center")
-        love.graphics.setFont(font_Afacad20)
+        love.graphics.setFont(fonts.Afacad.regular._20)
         love.graphics.printf(string.format("%s", not player.settings.waveSkipMessages and "Off" or player.settings.waveSkipMessages and "On"), 710, 410, 500, "center")
         if player.settings.waveSkipMessages then
             love.graphics.draw(imgs.buttons.arrowLeft, 820, 412)
@@ -610,9 +571,9 @@ function love.draw()
             love.graphics.draw(imgs.buttons.arrowRight, 1076, 412)
         end
 
-        love.graphics.setFont(font_AfacadBold24)
+        love.graphics.setFont(fonts.Afacad.bold._24)
         love.graphics.printf("Notation", 710, 460, 500, "center")
-        love.graphics.setFont(font_Afacad20)
+        love.graphics.setFont(fonts.Afacad.regular._20)
         love.graphics.printf(string.format("%s", player.settings.notation == settings_notationNames[1] and "KMBT" or player.settings.notation == settings_notationNames[2] and "Scientific" or "Alphabet"), 710, 490, 500, "center")
         if player.settings.notation ~= settings_notationNames[1] then
             love.graphics.draw(imgs.buttons.arrowLeft, 820, 492)
@@ -621,9 +582,9 @@ function love.draw()
             love.graphics.draw(imgs.buttons.arrowRight, 1076, 492)
         end
 
-        love.graphics.setFont(font_AfacadBold24)
+        love.graphics.setFont(fonts.Afacad.bold._24)
         love.graphics.printf("Tooltips", 710, 540, 500, "center")
-        love.graphics.setFont(font_Afacad20)
+        love.graphics.setFont(fonts.Afacad.regular._20)
         love.graphics.printf(string.format("%s", not player.settings.tooltips and "Off" or player.settings.tooltips and "On"), 710, 570, 500, "center")
         if player.settings.tooltips then
             love.graphics.draw(imgs.buttons.arrowLeft, 820, 572)
@@ -631,9 +592,9 @@ function love.draw()
             love.graphics.draw(imgs.buttons.arrowRight, 1076, 572)
         end
 
-        love.graphics.setFont(font_AfacadBold24)
+        love.graphics.setFont(fonts.Afacad.bold._24)
         love.graphics.printf("Volume", 710, 620, 500, "center")
-        love.graphics.setFont(font_Afacad20)
+        love.graphics.setFont(fonts.Afacad.regular._20)
         love.graphics.printf(math.floor(player.settings.volume * 100) .. "%", 710, 644, 500, "center")
         love.graphics.setColor(1, 0, 0, 1)
         love.graphics.rectangle("fill", 835, 670, 250, 12)
@@ -641,9 +602,9 @@ function love.draw()
         love.graphics.rectangle("fill", 835, 670, 250 * (math.floor(player.settings.volume * 100) / 100), 12)
 
         love.graphics.setColor(1, 1, 1, 1)
-        love.graphics.setFont(font_AfacadBold24)
+        love.graphics.setFont(fonts.Afacad.bold._24)
         love.graphics.printf("Theme", 710, 700, 500, "center")
-        love.graphics.setFont(font_Afacad20)
+        love.graphics.setFont(fonts.Afacad.regular._20)
         love.graphics.printf(settings_themeNames[player.misc.theme], 710, 730, 500, "center")
         if player.misc.theme ~= settings_themes[1] then
             love.graphics.draw(imgs.buttons.arrowLeft, 820, 732)
@@ -657,12 +618,12 @@ function love.draw()
         love.graphics.setColor(accentColors[player.misc.theme].buttonOutlines)
         love.graphics.setLineWidth(2)
         love.graphics.rectangle("line", 910, 780, 100, 40, 2, 2)
-        love.graphics.setFont(font_Afacad24)
+        love.graphics.setFont(fonts.Afacad.regular._24)
         love.graphics.setColor(1, 1, 1, 1)
         love.graphics.printf("Back", 910, 782, 100, "center")
     end
     love.graphics.setColor(1, 1, 1, 1)
-    love.graphics.setFont(font_Afacad16)
+    love.graphics.setFont(fonts.Afacad.regular._16)
     love.graphics.printf("v" .. gameVersionSemantic .. " - " .. love.timer.getFPS() .. "fps, " .. player.debug.memUsage .. "KB, " .. player.debug.UPS .. "ups", 1643, 0, 220, "right")
     if player.menu.debugInfo then
         love.graphics.setColor(0, 0, 0, 0.8)

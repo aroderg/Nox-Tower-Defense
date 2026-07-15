@@ -21,8 +21,6 @@ function getUsername()
     return os.getenv("USERNAME") or os.getenv("USER") or "playername"
 end
 
-socket = require "socket"
-
 function loadGame()
     -- Initialize default player state
     defaultPlayerState = {

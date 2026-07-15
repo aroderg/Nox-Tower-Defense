@@ -149,7 +149,7 @@ end
 
 --- Draw the Sentry boss bar if the Sentry is alive.
 function enemyFuncs.drawSentryBossbar()
-    love.graphics.setFont(font_AfacadBold24)
+    love.graphics.setFont(fonts.Afacad.bold._24)
     love.graphics.setColor(1, 1, 1, 1)
     love.graphics.printf(string.format("Sentry - Wave %d", gameplay.wave), 810, 4, 300, "center")
     love.graphics.setColor(0, 0, 0, 0.5)
@@ -161,13 +161,13 @@ function enemyFuncs.drawSentryBossbar()
     love.graphics.setColor(1, 1, 1, 1)
     love.graphics.rectangle("line", 850, 40, 220, 30, 2, 2)
     love.graphics.setColor(1, 1, 1, 1)
-    love.graphics.setFont(font_AfacadBold20)
+    love.graphics.setFont(fonts.Afacad.bold._20)
     love.graphics.printf(string.format("%s/%s", notations.convertToLetterNotation(sentryCurrentHP, "precise"), notations.convertToLetterNotation(sentryMaxHP, "precise")), 810, 41, 300, "center")
 end
 
 --- Draw the Centurion boss bar if the Centurion is alive.
 function enemyFuncs.drawCenturionBossbar()
-    love.graphics.setFont(font_AfacadBold24)
+    love.graphics.setFont(fonts.Afacad.bold._24)
     love.graphics.setColor(1, 1, 1, 1)
     love.graphics.printf(string.format("Centurion - Wave %d", gameplay.wave), 810, 4, 300, "center")
     love.graphics.setColor(0, 0, 0, 0.5)
@@ -179,7 +179,7 @@ function enemyFuncs.drawCenturionBossbar()
     love.graphics.setColor(1, 1, 1, 1)
     love.graphics.rectangle("line", 850, 40, 220, 30, 2, 2)
     love.graphics.setColor(1, 1, 1, 1)
-    love.graphics.setFont(font_AfacadBold20)
+    love.graphics.setFont(fonts.Afacad.bold._20)
     love.graphics.printf(string.format("%s/%s", notations.convertToLetterNotation(centurionCurrentHP, "precise"), notations.convertToLetterNotation(centurionMaxHP, "precise")), 810, 41, 300, "center")
 end
 

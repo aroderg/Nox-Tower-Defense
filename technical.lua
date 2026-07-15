@@ -39,6 +39,8 @@ function technical.copyTable(toCopy)
 end
 
 function technical.loggedString(String)
-    local curTime = os.date("%X")
-    return "[" .. curTime .. "]" .. " " .. String;
+    local now = socket.gettime()
+    local curTime = {s=math.floor(now),ms=math.floor((now % 1) * 1000)}
+    local formatted = os.date("%X", curTime.s) .. string.format(".%03d",curTime.ms)
+    return "[" .. formatted .. "]" .. " " .. String;
 end

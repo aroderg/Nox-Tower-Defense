@@ -33,21 +33,21 @@ function abilityFunctions.showInfo.draw(ability)
         love.graphics.setColor(1, 1, 1, 1)
         love.graphics.setLineStyle("smooth")
         love.graphics.setLineWidth(1)
-        love.graphics.setFont(font_Afacad24)
+        love.graphics.setFont(fonts.Afacad.regular._24)
         love.graphics.draw(ability.preview, 885, 360)
-        love.graphics.setFont(font_AfacadBold24)
+        love.graphics.setFont(fonts.Afacad.bold._24)
         love.graphics.printf(ability.name, 810, 470, 300, "center")
         local roleTagColor = roleColors[(tostring(ability.tags.role)):sub(1, 1):lower() .. (tostring(ability.tags.role)):sub(2, -1)]
         love.graphics.setColor(roleTagColor)
         love.graphics.rectangle("fill", 890, 440, 15, 15, 2, 2)
         love.graphics.setColor(1, 1, 1, 1)
-        love.graphics.setFont(font_Afacad24)
+        love.graphics.setFont(fonts.Afacad.regular._24)
         if ability.level < #ability.levelRequirements - 1 then
             love.graphics.printf("Level " .. ability.level .. string.format(" (%d/%d)", ability.amount, ability.nextLevelRequirement), 670, 355, 216, "center")
         else
             love.graphics.printf("Level " .. ability.level .. string.format(" (%d)", ability.amount), 670, 355, 216, "center")
         end
-        love.graphics.setFont(font_Afacad20)
+        love.graphics.setFont(fonts.Afacad.regular._20)
         love.graphics.setLineWidth(1)
         if ability.level < #ability.levelRequirements - 1 then
             love.graphics.setColor(1, 0, 0, 1)
@@ -77,7 +77,7 @@ function abilityFunctions.showInfo.draw(ability)
         end
         local rowOffset = freqSuffix ~= "" and -16 or 0
         love.graphics.printf({{1, 1, 1, 1}, "Class: ", classColor, ability.class}, 1035, 381 + rowOffset, 224, "center")
-        love.graphics.printf({{1, 0.75, 0.5, 1}, table.len(ability.tags), {1, 1, 1, 1}, " tags"}, 1035, 411 + rowOffset, 224, "center")
+        love.graphics.printf({{1, 0.75, 0.5, 1}, #ability.tags, {1, 1, 1, 1}, " tags"}, 1035, 411 + rowOffset, 224, "center")
         love.graphics.draw(imgs.buttons.questionMark, 1180, 414 + rowOffset)
         --love.graphics.printf("Event: " .. ability.event, 1035, 385, 224, "center")
         --love.graphics.printf({{1, 1, 1, 1}, "Frequency: ", {0.35, 0.95, 0.7, 1}, not ability.guaranteed and ability.frequency or string.format("1/%d", ability.frequency), {1, 1, 1, 1}, ability.guaranteed and "(G)" or "", {1, 1, 1, 1}, ability.event == "Time" and "s" or not ability.guaranteed and "%" or ""}, 1035, 415, 224, "center")
@@ -94,7 +94,7 @@ function abilityFunctions.showInfo.draw(ability)
         love.graphics.setColor(accentColors[player.misc.theme].buttonOutlines)
         love.graphics.setLineWidth(2)
         love.graphics.rectangle("line", 910, 680, 100, 40, 2, 2)
-        love.graphics.setFont(font_Afacad24)
+        love.graphics.setFont(fonts.Afacad.regular._24)
         love.graphics.setColor(1, 1, 1, 1)
         love.graphics.printf("Back", 910, 682, 100, "center")
         if player.settings.tooltips then
