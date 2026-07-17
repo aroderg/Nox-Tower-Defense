@@ -1,5 +1,5 @@
 ## NoxTD 1.2.1 Polaris
-### ??? ??, 2026
+### Jul 19, 2026
 - Added an x10 purchase multiplier if the player is holding the Right Shift key.
 - Polaris tower has a visible shield while it is active.
 - Changed the Upgrade button and bossbars to match the theme colors.

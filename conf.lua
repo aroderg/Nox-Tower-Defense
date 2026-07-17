@@ -1,6 +1,6 @@
 function love.conf(t)
     gameVersion = "Polaris"
-    gameVersionSemantic = "1.2"
+    gameVersionSemantic = "1.2.1"
     t.version = "11.5"
     t.window.title = "NoxTD " .. gameVersionSemantic .. " " .. gameVersion
     t.window.icon = "assets/tower_nova.png"
