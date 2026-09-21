@@ -1170,7 +1170,7 @@ function love.update(dt)
     end
     if not player.canClaim.tokens then
         if player.timers.tokens < player.cooldowns.tokens then
-            player.timers.tokens = player.timers.tokens + logicStep
+            player.timers.tokens = player.timers.tokens + logicStep * 500
         else
             player.timers.tokens = 0
             player.canClaim.tokens = true

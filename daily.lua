@@ -12,6 +12,18 @@ function daily.init(keepTradeStates)
     local adjustedTime = nowTime - WEEK_OFFSET
     daily.week.startTime = (math.floor(adjustedTime / WEEKLY_CYCLE_DURATION) * WEEKLY_CYCLE_DURATION) + WEEK_OFFSET
     daily.week.endTime = daily.week.startTime + WEEKLY_CYCLE_DURATION
+
+    -- Reset bought flags if entering a new cycle
+    if player.tradesBought.dailySeed ~= daily.day.startTime then
+        player.tradesBought.daily = {false, false, false}
+        player.tradesBought.dailySeed = daily.day.startTime
+    end
+
+    if player.tradesBought.weeklySeed ~= daily.week.startTime then
+        player.tradesBought.weekly = {false, false, false, false}
+        player.tradesBought.weeklySeed = daily.week.startTime
+    end
+    
     local possibleTrades = {
         {sellCurrency = "token", buyCurrency = "electrum", sellAmount = 600, buyAmount = 95, weight = 3, active = true},
         {sellCurrency = "token", buyCurrency = "gold", sellAmount = 400, buyAmount = 250, weight = 3, active = true},
@@ -24,6 +36,7 @@ function daily.init(keepTradeStates)
         {sellCurrency = "token", buyCurrency = "silver", sellAmount = 30, buyAmount = 9000, weight = 22, active = true},
     }
     love.math.setRandomSeed(nowTime - math.floor(nowTime % DAILY_CYCLE_DURATION))
+    player.activeDailyTrades = {}
     for i=1,3 do
         local trade = dropTable.draw(possibleTrades)
         table.insert(player.activeDailyTrades, technical.copyTable(trade))
@@ -35,6 +48,7 @@ function daily.init(keepTradeStates)
         end
     end
     love.math.setRandomSeed(nowTime - math.floor(nowTime % WEEKLY_CYCLE_DURATION))
+    player.activeWeeklyTrades = {}
     for i=1,4 do
         local trade = dropTable.draw(possibleTrades)
         table.insert(player.activeWeeklyTrades, technical.copyTable(trade))
@@ -78,6 +92,7 @@ function daily.triggerUpgrades()
                 local trade = player.activeDailyTrades[tradeIndex]
                 if player.currencies.currentTokens >= trade.sellAmount then
                     trade.active = false
+                    player.tradesBought.daily[tradeIndex] = true
                     player.misc.jadeBuffer = player.misc.jadeBuffer + 1 * player.upgrades.jade.jadeBonus.value
                     if not player.activeDailyTrades[1].active and not player.activeDailyTrades[2].active and not player.activeDailyTrades[3].active then
                         player.misc.jadeBuffer = player.misc.jadeBuffer + 3 * player.upgrades.jade.jadeBonus.value

@@ -794,6 +794,7 @@ function inHub_mouse(x, y)
                         local trade = player.activeDailyTrades[i]
                         if player.currencies.currentTokens >= trade.sellAmount then
                             trade.active = false
+                            player.tradesBought.daily[i] = true
                             player.misc.jadeBuffer = player.misc.jadeBuffer + 1 * player.upgrades.jade.jadeBonus.value
                             if not player.activeDailyTrades[1].active and not player.activeDailyTrades[2].active and not player.activeDailyTrades[3].active then
                                 player.misc.jadeBuffer = player.misc.jadeBuffer + 3 * player.upgrades.jade.jadeBonus.value
@@ -810,6 +811,7 @@ function inHub_mouse(x, y)
                         local trade = player.activeWeeklyTrades[i]
                         if player.currencies.currentTokens >= trade.sellAmount then
                             trade.active = false
+                            player.tradesBought.weekly[i] = true
                             player.misc.jadeBuffer = player.misc.jadeBuffer + 4 * player.upgrades.jade.jadeBonus.value
                             if not player.activeWeeklyTrades[1].active and not player.activeWeeklyTrades[2].active and not player.activeWeeklyTrades[3].active and not player.activeWeeklyTrades[4].active then
                                 player.misc.jadeBuffer = player.misc.jadeBuffer + 15 * player.upgrades.jade.jadeBonus.value
