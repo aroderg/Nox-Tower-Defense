@@ -113,12 +113,12 @@ function loadGame()
                 silverBonus = {level = 1, cost = 1, value = 1},
             },
             nexus = {
-                attackDamage = {level = 1, cost = 1, value = 1},
-                attackSpeed = {level = 1, cost = 1, value = 1},
-                health = {level = 1, cost = 1, value = 1},
-                regeneration = {level = 1, cost = 1, value = 1},
-                abilityChance = {level = 1, cost = 1, value = 1},
-                abilityCooldown = {level = 1, cost = 1, value = 1},
+                attackDamage = {level = 1, cost = 20, value = 1},
+                attackSpeed = {level = 1, cost = 20, value = 1},
+                health = {level = 1, cost = 20, value = 1},
+                regeneration = {level = 1, cost = 20, value = 1},
+                abilityChance = {level = 1, cost = 20, value = 1},
+                abilityCooldown = {level = 1, cost = 20, value = 1},
             },
             jade = {
                 jadeBonus = {level = 1, cost = 1, value = 1},
@@ -195,8 +195,13 @@ function loadGame()
         player.storedGains.gold = player.storedGains.gold + (player.idleGains.gold * minutesPassed)
     end
 
-    -- Nexus values recalculation
+    -- Nexus values and costs recalculation
     local nexus = player.upgrades.nexus
+    for _, upgrade in pairs(nexus) do
+        if type(upgrade) == "table" and upgrade.level then
+            upgrade.cost = 20 + ((upgrade.level * (upgrade.level - 1)) / 2) * 5
+        end
+    end
     nexus.attackDamage.value = math.min(1 + (nexus.attackDamage.level - 1) * 0.10, 5)
     nexus.attackSpeed.value = math.min(1 + (nexus.attackSpeed.level - 1) * 0.04, 2)
     nexus.health.value = math.min(1 + (nexus.health.level - 1) * 0.10, 5)
