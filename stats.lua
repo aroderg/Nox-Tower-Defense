@@ -247,7 +247,7 @@ function statsMenus.battle.draw()
         if i ~= 1 and i ~= 2 then
             love.graphics.printf({color, string.format("%s", notations.convertToLetterNotation(statVars[i][1], statVars[i][2]))}, 860, rowCenter, 300, "right")    
         else
-            love.graphics.printf({color, string.format("%dm %ds", statVars[i] / 60, statVars[i] % 60)}, 860, rowCenter, 300, "right") 
+            love.graphics.printf({color, technical.formatTime(statVars[i])}, 860, rowCenter, 300, "right") 
         end
         love.graphics.setScissor()
     end

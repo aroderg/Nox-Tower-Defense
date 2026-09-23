@@ -195,7 +195,7 @@ function inHub_visual()
         if player.canClaim.tokens then
             love.graphics.printf("Claim", 1455, 265, 190, "center")
         else
-            love.graphics.printf(string.format("%dm %ds", (player.cooldowns.tokens - player.timers.tokens) / 60, (player.cooldowns.tokens - player.timers.tokens) % 60), 1455, 265, 190, "center")
+            love.graphics.printf(technical.formatTime(player.cooldowns.tokens - player.timers.tokens), 1455, 265, 190, "center")
         end
         if not player.canClaim.tokens then
             love.graphics.setColor(1, 0, 0, 1)
@@ -302,7 +302,7 @@ function inHub_visual()
         love.graphics.setFont(fonts.Afacad.bold._24)
         love.graphics.printf("Idle Gains", 1650, 300, 269, "center")
         love.graphics.setFont(fonts.Afacad.bold._18)
-        love.graphics.printf(string.format("%dm %ds/%dm", math.floor(player.idleTime / 60), player.idleTime % 60, math.floor(player.idleTimeCap / 60)), 1650, 335, 269, "center")
+        love.graphics.printf(string.format("%s/%dm", technical.formatTime(player.idleTime), math.floor(player.idleTimeCap / 60)), 1650, 335, 269, "center")
         love.graphics.setColor(1, 0, 0, 1)
         love.graphics.rectangle("fill", 1657, 330, 253, 8)
         love.graphics.setColor(0, 1, 0, 1)
@@ -359,7 +359,7 @@ function inHub_visual()
             love.graphics.setColor(0, 1, 0, 1)
             love.graphics.rectangle("fill", 810, 320, (player.timers.abilityAssembly / player.cooldowns.abilityAssembly_current) * 300, 8)
             love.graphics.setColor(1, 1, 1, 1)
-            love.graphics.printf(string.format("%dm %ds", (player.cooldowns.abilityAssembly_current - player.timers.abilityAssembly) / 60, (player.cooldowns.abilityAssembly_current - player.timers.abilityAssembly) % 60), 860, 325, 200, "center")
+            love.graphics.printf(technical.formatTime(player.cooldowns.abilityAssembly_current - player.timers.abilityAssembly), 860, 325, 200, "center")
         end
         if not abilityFunctions.checkMenuDisplay() and not player.menu.rolledAbilityDisplay and not player.menu.settings and not player.menu.saveStats and player.settings.tooltips then
             tooltips.displayAbilityInfo()

@@ -125,7 +125,7 @@ function tooltips.general()
 
         local abilityInfoTooltips = {
             {1040, 205, 24, 24, 390, 48, "Maximum amount of Abilities that can be equipped at once." .. ((player.abilities.maxEquipped + 1 < #equipSlotRequirements) and string.format("\n\nNext Ability slot unlocks after beating Wave %d of Difficulty %d.", equipSlotRequirements[player.abilities.maxEquipped + 1].wave, equipSlotRequirements[player.abilities.maxEquipped + 1].difficulty) or "\n\nAll Ability slots are unlocked!")},
-            {810, 253, 204, 54, 215, 46, "Assembling an Ability takes somewhere between " .. string.format("%dm %ds", player.cooldowns.abilityAssembly_min / 60, player.cooldowns.abilityAssembly_min % 60) .. " and " .. string.format("%dm %ds", player.cooldowns.abilityAssembly_max / 60, player.cooldowns.abilityAssembly_max % 60) .. "."},
+            {810, 253, 204, 54, 215, 46, "Assembling an Ability takes somewhere between " .. technical.formatTime(player.cooldowns.abilityAssembly_min) .. " and " .. technical.formatTime(player.cooldowns.abilityAssembly_max) .. "."},
             {1110, 268, 24, 24, 150, 75, "Class Probabilities:\nD: 60%\nC: 25%\nB: 10%\nA: 5%"}
         }
 
