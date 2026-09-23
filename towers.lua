@@ -14,6 +14,7 @@ function towers.reload()
             end
         end
     end
+    towers.stellar = towers.main
 
     --- Eclipse tower display & processing.
     --- @param i boolean The "mode" of the tower, true for processing, false for rendering.

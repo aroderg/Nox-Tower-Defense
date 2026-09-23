@@ -6,6 +6,12 @@ function createCollapseParticle()
     collapseParticle.speed = love.math.random(10, 50)
     collapseParticle.fadeTime = love.math.random(2, 3)
     collapseParticle.timer_fade = 0
+    collapseParticle.color = {1, 1, 1}
+    if player.misc.theme == "polaris" then
+        local pBrightness = love.math.random()
+        local pColor = {0.3+0.55*pBrightness, 0+0.6*pBrightness, 0.4+0.6*pBrightness}
+        collapseParticle.color = pColor
+    end
     table.insert(collapseParticles, collapseParticle)
 end
 
@@ -106,13 +112,12 @@ function renderParticles()
     end
     for i,v in ipairs(collapseParticles) do
         local particleAlpha = player.settings.particleMultiplierIndex == 1 and 0 or 1-v.timer_fade/v.fadeTime
-        love.graphics.setColor(1, 1, 1, particleAlpha)
-        love.graphics.draw(imgs.particles.collapse, v.x - 6, v.y - 6)
+        love.graphics.setColor(v.color[1], v.color[2], v.color[3], particleAlpha)
+        love.graphics.draw(player.misc.theme == "polaris" and imgs.particles.collapse_polaris or imgs.particles.collapse, v.x - 6, v.y - 6)
     end
     love.graphics.setFont(fonts.Afacad.regular._16)
     for i,v in ipairs(hitTextParticles) do
         love.graphics.setColor(1, v.isCrit and 0.2 or 1, v.isCrit and 0.4 or 1, 1-v.timer_fade/v.fadeTime)
-        --local hitText = v.isSupercrit and (string.format("%.1f (x%.2f)", v.damage, levelingInfo[11].supercriticalFactor[player.abilities.supercritical.level + 1])) or (v.damage)
         love.graphics.printf(v.isSupercrit and (string.format("%s (x%.2f)", v.damage, levelingInfo[11].supercriticalFactor[player.abilities.supercritical.level + 1])) or (v.damage), math.floor(v.x - 100 + enemyOffsets[v.origin]), math.floor(v.y - 15), 200, "center")
     end
     for i,v in ipairs(meteorParticles) do

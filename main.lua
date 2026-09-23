@@ -308,7 +308,9 @@ function love.draw()
             abilityObjects.JerelosBlessing.draw()
         end
         love.graphics.setColor(1, 1, 1, 1)
-        towers.polaris()
+        if towers[player.misc.theme] then
+            towers[player.misc.theme](false)
+        end
         love.graphics.setColor(1, 1, 1, 1)
         --[[ Different enemy types have different appearances ingame ]]--
         for i,v in ipairs(enemiesOnField) do
@@ -688,7 +690,9 @@ function love.update(dt)
         --[[ Automatically shoot the closest enemy in range ]]--
         if player.tower.currentHealth > 0 then
             if not player.menu.paused then
-                towers.polaris(true, logicStep)
+                if towers[player.misc.theme] then
+                    towers[player.misc.theme](true, logicStep)
+                end
             end
             if timers.projectile < 1 / player.tower.attackSpeed then
                 timers.projectile = timers.projectile + logicStep * gameplay.gameSpeed

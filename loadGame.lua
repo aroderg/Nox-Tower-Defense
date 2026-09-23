@@ -218,10 +218,30 @@ function loadGame()
     mods.acceleration.cost = mods.acceleration.unlocked and math.floor(5 * (2^(mods.acceleration.level))^0.21) or 15
     mods.acceleration.value = mods.acceleration.unlocked and math.min(0.04 * mods.acceleration.level, 0.8) or 0
 
-    -- Reload Science costs
-    for key, item in pairs(player.upgrades.science) do
-        local cat = (key:find("copper") or key:find("silver")) and "UTL" or (key:find("health") or key:find("regeneration") or key:find("resistance") or key:find("shield") or key:find("meteor") or key:find("lifesteal")) and "VIT" or "ATK"
-        -- Keeps existing formula assignment dynamically safe
+    -- Define layout metadata for science categories and index positions
+    local SCIENCE_MAPPING = {
+        ATK = {
+            "attackDamage", "attackSpeed", "critChance", "critFactor",
+            "range", "clusterFireChance", "clusterFireTargets", "clusterFireEfficiency"
+        },
+        VIT = {
+            "health", "regeneration", "resistance", "shieldCooldown",
+            "shieldDuration", "meteorAmount", "meteorRPM", "lifestealChance", "lifestealPercent"
+        },
+        UTL = {
+            "copperPerWave", "silverPerWave", "copperBonus", "silverBonus"
+        }
+    }
+
+    -- Recalculate costs dynamically
+    for category, upgrades in pairs(SCIENCE_MAPPING) do
+        for index, upgradeKey in ipairs(upgrades) do
+            local upgrade = player.upgrades.science[upgradeKey]
+            if upgrade then
+                local formulae = upgradeModuleFuncs.reloadFormulae(upgrade.level)
+                upgrade.cost = formulae["science"][category][index][1]
+            end
+        end
     end
 
     player.difficulty = {

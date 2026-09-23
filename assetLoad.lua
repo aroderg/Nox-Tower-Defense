@@ -54,6 +54,7 @@ function assetReload()
         },
         particles = {
             collapse = "particle_collapse.png",
+            collapse_polaris = "particle_collapse_polaris.png",
             kill_basic = "particle_kill_enemy_basic.png",
             kill_tank = "particle_kill_enemy_tank.png",
             kill_swift = "particle_kill_enemy_swift.png",
