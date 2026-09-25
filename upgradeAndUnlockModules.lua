@@ -85,6 +85,14 @@ function upgradeModuleFuncs.load()
         lifesteal = {"Lifesteal", 645, 680, 620, 60, player.upgrades.unlocks.lifesteal, 14},
         resourceBonus = {"Resource Bonus", 645, 910, 620, 60, player.upgrades.unlocks.resourceBonus, 5}
     }
+
+    local upgradeNames = {"jadeBonus", "jadePerLogin", "autobroker", "silverGain", "silverEquivalent"}
+    for i, name in ipairs(upgradeNames) do
+        local lvl = player.upgrades.jade[name].level or 1
+        local formulae = upgradeModuleFuncs.reloadFormulae(lvl)["jade"][i]
+        player.upgrades.jade[name].cost = formulae[1]
+        player.upgrades.jade[name].value = formulae[2]
+    end
 end
 
 ---Reload Battle/Science upgrade costs and values (effects) based on their level and whether you're in the Hub or in a Battle.
